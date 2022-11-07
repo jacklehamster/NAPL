@@ -1,0 +1,10 @@
+{
+  "$schema": "https://jacklehamster.github.io/dok-schema/auxiliaries/auxiliary-definition.json",
+  "Name": "Workspace",
+  "namespace": "com.dok.napl",
+  "aux": {
+    "ActiveFromList": {
+      "list": "apps"
+    }
+  }
+}

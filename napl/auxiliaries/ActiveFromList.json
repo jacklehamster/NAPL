@@ -1,0 +1,25 @@
+{
+  "$schema": "https://jacklehamster.github.io/dok-schema/auxiliaries/auxiliary-definition.json",
+  "Name": "ActiveFromList",
+  "namespace": "com.dok.napl",
+  "process": {
+    "lang": "NAPL",
+    "methods": [{
+      "name": "activeItem",
+      "return": {
+        "subject": {
+          "subject": "self",
+          "key": {
+            "subject": "config",
+            "key": "list"
+          }
+        },
+        "key": {
+          "subject": "self",
+          "key": "index"
+        },
+        "equivalent": "{self[config.list][self.index]}"
+      }
+    }]
+  }
+}

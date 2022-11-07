@@ -1,0 +1,17 @@
+{
+  "$schema": "https://jacklehamster.github.io/dok-schema/entities/workspace.json",
+  "Workspace": {
+    "apps": [
+      {
+        "Name": "Hello World",
+        "Scene": {
+          "scenes": [
+            {
+              "Reference": "hello-world.json"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

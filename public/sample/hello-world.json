@@ -1,0 +1,5 @@
+{
+  "$schema": "https://jacklehamster.github.io/dok-schema/entities/scene.json",
+  "Name": "Hello World",
+  "Dialog": "Hello World"
+}
