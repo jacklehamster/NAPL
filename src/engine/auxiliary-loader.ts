@@ -1,3 +1,5 @@
+import AuxiliaryDefinition from "./core/auxiliary-definition"
+
 /** AUX START: [import $className from "../../napl/auxiliaries/$className.json"] **/
 import ActiveFromList from "../../napl/auxiliaries/ActiveFromList.json"
 import Dialog from "../../napl/auxiliaries/Dialog.json"
@@ -6,7 +8,7 @@ import Scene from "../../napl/auxiliaries/Scene.json"
 import Workspace from "../../napl/auxiliaries/Workspace.json"
 /** AUX END **/
 
-const Auxiliaries = {
+const Auxiliaries: Record<string, AuxiliaryDefinition> = {
     /** AUX START: [    $className,] **/
     ActiveFromList,
     Dialog,

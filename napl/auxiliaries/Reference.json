@@ -41,12 +41,6 @@
               "assignTo": "var"
             }
           ]
-        },
-        "equivalent": {
-          "goDeep": {
-            "type": "key-value",
-            "value?=": "{config.params[value]}"
-          }
         }
       }
     ]

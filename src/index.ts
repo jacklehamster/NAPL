@@ -23,6 +23,7 @@ async function start() {
     const result = await engine.load();
     div.innerText = JSON.stringify(result, null, "  ");
     engine.process(result);
+    (<any>window).root = result;
 }
 
 document.addEventListener('DOMContentLoaded', start);
