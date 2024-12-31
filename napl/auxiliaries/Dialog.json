@@ -1,8 +1,0 @@
-{
-  "$schema": "https://jacklehamster.github.io/dok-schema/auxiliaries/auxiliary-definition.json",
-  "Name": "Dialog",
-  "namespace": "com.dok.napl",
-  "process": {
-    "lang": "NAPL"
-  }
-}
