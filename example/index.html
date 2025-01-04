@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Split Page</title>
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+      }
+      .frame {
+        height: 50%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe title="top" class="frame" src="frame.html?top"></iframe>
+    <iframe title="bottom" class="frame" src="frame.html?bottom"></iframe>
+  </body>
+</html>
