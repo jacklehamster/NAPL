@@ -28,11 +28,11 @@ export class SyncRoom {
     const clientState: ClientState = {
     };
     this.#sockets.set(client, clientState);
-    const newUpdates = [
+    const newUpdates: Update[] = [
       {
         path: ["clients", clientId],
         value: clientState,
-        confirmed: true,
+        confirmed: Date.now(),
       }
     ];
     this.shareUpdates(newUpdates, client);
@@ -52,14 +52,14 @@ export class SyncRoom {
         {
           path: ["clients", clientId],
           deleted: true,
-          confirmed: true,
+          confirmed: Date.now(),
         },
       ]);
       console.log(`client ${clientId} disconnected`);
       this.#onRoomChange.forEach((callback) => callback(this.#state));
     });
 
-    this.#updates = commitUpdates(this.#state, this.#updates);
+    this.#updates = commitUpdates(this.#state, this.#updates).remainingUpdates;
 
     //  update client just connected with state and updates
     const clientPayload: Payload = {
@@ -68,13 +68,14 @@ export class SyncRoom {
       updates: this.#updates,
     };
     client.send(JSON.stringify(clientPayload));
+    return { clientId };
   }
 
   shareUpdates(newUpdates: Update[], sender?: ws.WebSocket) {
     const unconfirmedUpdates = newUpdates.filter(update => !update.confirmed);
     this.#markUpdatesConfirmed(newUpdates);
     this.#pushUpdates(newUpdates);
-    this.#updates = commitUpdates(this.#state, Object.values(this.#updates));
+    this.#updates = commitUpdates(this.#state, Object.values(this.#updates)).remainingUpdates;
     this.#broadcastUpdates(newUpdates, client => client !== sender);
     this.#broadcastUpdates(unconfirmedUpdates, client => client === sender);
   }
@@ -107,7 +108,7 @@ export class SyncRoom {
     updates.forEach((update) => {
       const parts = Array.isArray(update.path) ? update.path : update.path.split("/");
       if (parts[0] !== "clients") {
-        update.confirmed = true;
+        update.confirmed = Date.now();
       }
     });
   }

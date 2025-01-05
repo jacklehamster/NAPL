@@ -24,7 +24,7 @@ Update {
   timestamp: number         // The time of the update
   path: [string|number]     // The path of the item to modify
   value: value|expresssion  // Set to value or expression
-  confirmed: boolean        // Only confirmed updates can be applied
+  confirmed: number         // Only confirmed updates can be applied.
 }
 
 - To perform an update, a program pushes a item into the Update array.

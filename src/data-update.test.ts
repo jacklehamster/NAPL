@@ -4,10 +4,10 @@ import { Update } from './types/Update';
 import { DataObject } from './types/DataObject';
 
 describe('commitUpdates', () => {
-  it('should sort updates by timestamp and apply them', () => {
+  it('should sort updates by confirmed timestamp and apply them', () => {
     const updates: Update[] = [
-      { timestamp: 2, path: 'a/b', value: 2, confirmed: true },
-      { timestamp: 1, path: 'a/b', value: 1, confirmed: true },
+      { path: 'a/b', value: 2, confirmed: 2 },
+      { path: 'a/b', value: 1, confirmed: 1 },
     ];
     const obj: DataObject = {};
 

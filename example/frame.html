@@ -11,13 +11,13 @@
     </style>
   </head>
   <body>
-    <script>
-      document.querySelector("#h1").textContent +=
-        ` - ${location.search.slice(1)}`;
-    </script>
     <div style="display: flex; flex-direction: row">
       <div>
         <h1 id="h1">WebSocket Test</h1>
+        <script>
+          document.querySelector("#h1").textContent +=
+            ` - ${location.search.slice(1)}`;
+        </script>
         <label for="data-area">Common Data:</label>
         <input type="checkbox" id="passive" />
         <label for="passive">Passive update</label>
@@ -31,7 +31,6 @@
         <div id="data-confirmed" style="color: red; opacity: 0; height: 20px">
           Saving...
         </div>
-        <div id="client-list" style="display: flex; flex-direction: row"></div>
       </div>
       <div>
         <label for="state-div">State:</label>
@@ -45,15 +44,20 @@
             font-family: monospace;
             background-color: lightyellow;
             overflow: auto;
-            font-size: 10px;
+            font-size: 9px;
           "
         ></div>
       </div>
     </div>
+    <div id="client-list" style="display: flex; flex-direction: row"></div>
     <script type="module">
       import { SocketClient, randomName, randomEmoji } from "./dist/index.js";
 
-      const client = new SocketClient(location.host, "example-room");
+      const config = await fetch("config.json").then((response) =>
+        response.json()
+      );
+
+      const client = new SocketClient(config.websocketHost ?? location.host);
       window.client = client;
 
       //  data
@@ -68,7 +72,7 @@
 
       //  cursor
       document.addEventListener("mousemove", (event) => {
-        client.setSelfData("cursor", [event.clientX, event.clientY]);
+        client.setSelfData("cursor", [event.pageX, event.pageY]);
       });
 
       function loop() {
