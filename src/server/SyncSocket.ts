@@ -1,133 +1,35 @@
 import type ws from "ws";
-import { DataObject } from "@/types/DataObject";
-import { Update } from "@/types/Update";
-import { addMessageReceiver } from "./SocketEventHandler";
-import { commitUpdates } from "@/data-update";
-import type { UUID } from "crypto";
-import { Payload } from "./SocketPayload";
-
-/**
- * Data format:
- * 
- * Client message
- * {
- *  updates: [
- *   [key: string, value: any]
- *  ],
- */
-
-interface ClientState {
-  owner: UUID;
-}
-
-interface ServerState {
-  clients: Record<number, ClientState>;
-}
+import { SyncRoom } from "./SyncRoom";
 
 export class SyncSocket {
-  readonly #sockets: Map<ws.WebSocket, ClientState> = new Map();
-  readonly #state: DataObject & ServerState = {
-    clients: {},
-  };
-  #updates: Update[] = [];
+  readonly #rooms: Record<string, SyncRoom> = {};
 
   constructor(server: ws.Server<any>) {
     this.#hookupSocketServer(server);
   }
 
-  shareUpdates(newUpdates: Update[], sender?: ws.WebSocket) {
-    const unconfirmedUpdates = newUpdates.filter(update => !update.confirmed);
-    this.#confirmUpdatesWithoutOwner(newUpdates);
-    this.#pushUpdates(newUpdates);
-    this.#updates = commitUpdates(this.#state, Object.values(this.#updates));
-    this.#broadcastUpdates(newUpdates, client => client !== sender);
-    this.#broadcastUpdates(unconfirmedUpdates, client => client === sender);
-  }
-
-  #pushUpdates(newUpdates: Update[] | undefined) {
-    if (newUpdates) {
-      newUpdates.forEach((update) => {
-        const path = Array.isArray(update.path) ? update.path.join("/") : update.path;
-        this.#updates.push(update);
-      });
-    }
-  }
-
-  #broadcastUpdates(newUpdates: Update[] | undefined, senderFilter?: (sender: ws.WebSocket) => boolean) {
-    if (!newUpdates?.length) {
-      return;
-    }
-    const payload = JSON.stringify({
-      updates: newUpdates,
-    });
-    this.#sockets.keys().forEach((client) => {
-      if (senderFilter && !senderFilter(client)) {
-        return;
-      }
-      client.send(payload);
-    });
-  }
-
-  #confirmUpdatesWithoutOwner(updates: Update[]) {
-    updates.forEach((update) => {
-      const parts = Array.isArray(update.path) ? update.path : update.path.split("/");
-      if (parts[0] !== "clients") {
-        update.confirmed = true;
-      }
-    });
-  }
-
   #hookupSocketServer(server: ws.Server) {
     server.on("connection", (socket: ws.WebSocket, req) => {
       //  extract query params
-      const parameters = new URLSearchParams(req.url?.split("?")[1]);
-      console.log("client connected", parameters);
-
-      //  initialize client state
-      const clientId = crypto.randomUUID();
-      const clientState: ClientState = {
-        owner: clientId,
-      };
-      this.#sockets.set(socket, clientState);
-      const newUpdates = [
-        {
-          path: ["clients", clientId],
-          value: clientState,
-          confirmed: true,
-        }
-      ];
-      this.shareUpdates(newUpdates, socket);
-
-      //  setup events
-      addMessageReceiver(socket, {
-        payloadReceived: (payload) => {
-          if (payload.updates) {
-            this.shareUpdates(payload.updates, socket);
+      const parameters: URLSearchParams = new URLSearchParams(req.url?.split("?")[1]);
+      const room = parameters.get("room") ?? "default";
+      console.log("client connected", parameters, " room", room);
+      if (!this.#rooms[room]) {
+        this.#rooms[room] = new SyncRoom(room);
+        let timeout: Timer;
+        this.#rooms[room].addRoomChangeListener((roomState) => {
+          if (Object.values(roomState.clients).length) {
+            clearTimeout(timeout);
+          } else {
+            //  close room if no clients
+            timeout = setTimeout(() => {
+              console.log("closing room", room);
+              delete this.#rooms[room];
+            }, 10000);
           }
-        },
-      });
-
-      socket.on("close", () => {
-        this.#sockets.delete(socket);
-        this.shareUpdates([
-          {
-            path: ["clients", clientId],
-            deleted: true,
-            confirmed: true,
-          },
-        ]);
-        console.log(`client ${clientId} disconnected`);
-      });
-
-      this.#updates = commitUpdates(this.#state, this.#updates);
-
-      //  update client just connected with state and updates
-      const clientPayload: Payload = {
-        myClientId: clientId,
-        state: this.#state,
-        updates: this.#updates,
-      };
-      socket.send(JSON.stringify(clientPayload));
+        });
+      }
+      this.#rooms[room].welcomeClient(socket);
     });
   }
 }

@@ -36,7 +36,7 @@ export class SocketClient {
     const socket = this.socket = new WebSocket(this.connectionUrl);
     return this.#connectionPromise = new Promise<void>((resolve, reject) => {
       socket.addEventListener("open", (event) => {
-        console.log("Connected to WebSocket server");
+        console.log(`Connected to WebSocket server ${this.connectionUrl}`);
       });
       socket.addEventListener("error", (event) => {
         console.error("Error connecting to WebSocket server", event);

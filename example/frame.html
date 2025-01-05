@@ -4,29 +4,52 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Data Sync</title>
+    <style>
+      body {
+        background-color: lightgray;
+      }
+    </style>
   </head>
   <body>
-    <h1 id="h1">WebSocket Test</h1>
     <script>
       document.querySelector("#h1").textContent +=
         ` - ${location.search.slice(1)}`;
     </script>
-    <div>
-      <label for="data-area">Common Data:</label>
-      <input type="checkbox" id="passive" />
-      <label for="passive">Passive update</label>
-      <br />
-      <textarea
-        id="data-area"
-        rows="4"
-        cols="50"
-        style="resize: both; overflow: auto"
-      ></textarea>
-      <div id="data-confirmed" style="color: red; opacity: 0; height: 20px">
-        Saving...
+    <div style="display: flex; flex-direction: row">
+      <div>
+        <h1 id="h1">WebSocket Test</h1>
+        <label for="data-area">Common Data:</label>
+        <input type="checkbox" id="passive" />
+        <label for="passive">Passive update</label>
+        <br />
+        <textarea
+          id="data-area"
+          rows="4"
+          cols="50"
+          style="resize: both; overflow: auto"
+        ></textarea>
+        <div id="data-confirmed" style="color: red; opacity: 0; height: 20px">
+          Saving...
+        </div>
+        <div id="client-list" style="display: flex; flex-direction: row"></div>
+      </div>
+      <div>
+        <label for="state-div">State:</label>
+        <div
+          id="state-div"
+          style="
+            white-space: pre;
+            padding: 5px;
+            border: 1px;
+            margin: 5px;
+            font-family: monospace;
+            background-color: lightyellow;
+            overflow: auto;
+            font-size: 10px;
+          "
+        ></div>
       </div>
     </div>
-    <div id="client-list"></div>
     <script type="module">
       import { SocketClient, randomName, randomEmoji } from "./dist/index.js";
 
@@ -43,94 +66,94 @@
           });
         });
 
-      const dataArea = document.querySelector("#data-area");
-
       //  cursor
       document.addEventListener("mousemove", (event) => {
-        client.setSelfData("cursor", {
-          x: event.clientX,
-          y: event.clientY,
-        });
+        client.setSelfData("cursor", [event.clientX, event.clientY]);
       });
 
       function loop() {
-        if (document.querySelector("#data-area").value !== client.state.data) {
+        const data = client.state.data ?? "";
+        if (document.querySelector("#data-area").value !== data) {
           if (document.querySelector("#data-area") !== document.activeElement) {
-            document.querySelector("#data-area").value =
-              client.state.data ?? "";
+            document.querySelector("#data-area").value = data;
           } else {
             document.querySelector("#data-confirmed").style.opacity = "1";
           }
         } else {
           document.querySelector("#data-confirmed").style.opacity = "0";
         }
-        const clients = Object.values(client.state.clients ?? {});
-        clients.forEach((clientInfo) => {
-          let clientBox = document.querySelector(`#client-${clientInfo.owner}`);
+        const clients = Object.entries(client.state.clients ?? {});
+        clients.forEach(([owner, clientInfo]) => {
+          let clientBox = document.querySelector(`#client-${owner}`);
           if (!clientBox) {
             clientBox = document.createElement("div");
-            clientBox.id = `client-${clientInfo.owner}`;
+            clientBox.id = `client-${owner}`;
             clientBox.style.border = "1px solid black";
+            clientBox.style.margin = "5px";
+            clientBox.style.padding = "5px";
+            clientBox.style.height = "100px";
+            clientBox.style.width = "200px";
             clientBox.style.backgroundColor =
-              clientInfo.owner === client.clientId ? "lightgreen" : "lightblue";
+              owner === client.clientId ? "lightgreen" : "lightblue";
             document.querySelector("#client-list").appendChild(clientBox);
             const emojiDiv = clientBox.appendChild(
               document.createElement("span")
             );
-            emojiDiv.id = `emoji-${clientInfo.owner}`;
+            emojiDiv.id = `emoji-${owner}`;
 
             const nameLabel = clientBox.appendChild(
               document.createElement("label")
             );
             nameLabel.textContent = "Name:";
-            nameLabel.htmlFor = `name-${clientInfo.owner}`;
+            nameLabel.htmlFor = `name-${owner}`;
             const nameInput = clientBox.appendChild(
               document.createElement("input")
             );
-            nameInput.disabled = clientInfo.owner !== client.clientId;
+            nameInput.disabled = owner !== client.clientId;
             nameInput.addEventListener("input", (event) => {
-              client.setData(
-                `clients/${clientInfo.owner}/name`,
-                event.target.value
-              );
+              client.setData(`clients/${owner}/name`, event.target.value);
             });
-            nameInput.id = `name-${clientInfo.owner}`;
+            nameInput.id = `name-${owner}`;
             const cursorDiv = clientBox.appendChild(
               document.createElement("div")
             );
-            cursorDiv.id = `cursor-${clientInfo.owner}`;
+            cursorDiv.id = `cursor-${owner}`;
             cursorDiv.style.position = "absolute";
             cursorDiv.style.width = "20px";
             cursorDiv.style.height = "20px";
             cursorDiv.style.fontSize = "20px";
             cursorDiv.style.pointerEvents = "none";
           }
-          const nameInput = document.querySelector(`#name-${clientInfo.owner}`);
+          const nameInput = document.querySelector(`#name-${owner}`);
           if (nameInput.value !== (clientInfo.name ?? "")) {
             nameInput.value = clientInfo.name ?? "";
           }
-          const emojiDiv = document.querySelector(`#emoji-${clientInfo.owner}`);
+          const emojiDiv = document.querySelector(`#emoji-${owner}`);
           const emoji = clientInfo.emoji ?? "";
           if (emojiDiv.textContent !== emoji) {
             emojiDiv.textContent = emoji;
           }
-          const cursorDiv = document.querySelector(
-            `#cursor-${clientInfo.owner}`
-          );
+          const cursorDiv = document.querySelector(`#cursor-${owner}`);
           if (cursorDiv && clientInfo.cursor) {
-            cursorDiv.style.left = `${clientInfo.cursor.x - 10}px`;
-            cursorDiv.style.top = `${clientInfo.cursor.y - 10}px`;
+            const [x, y] = clientInfo.cursor;
+            cursorDiv.style.left = `${x - 10}px`;
+            cursorDiv.style.top = `${y - 10}px`;
             cursorDiv.textContent = emoji;
           }
         });
-        const clientSet = new Set(
-          clients.map((client) => `client-${client.owner}`)
-        );
+        const clientSet = new Set(clients.map(([owner]) => `client-${owner}`));
         document.querySelectorAll("#client-list > div").forEach((clientBox) => {
           if (!clientSet.has(clientBox.id)) {
             clientBox.remove();
           }
         });
+
+        document.querySelector("#state-div").textContent = JSON.stringify(
+          client.state,
+          null,
+          2
+        );
+
         requestAnimationFrame(loop);
       }
       loop();

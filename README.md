@@ -15,7 +15,6 @@ NAPL is only meant to perform actions on its own data. Then an application can r
 ## Class Type
 
 - Object: {
-  owner: "ownerId"        // Owner of the object who can modify this data directly
   updates: [Update]       // Other clients issue modification commands through }
 
 ## Update
