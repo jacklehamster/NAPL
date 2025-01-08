@@ -3,9 +3,11 @@
 /// <reference lib="dom.iterable" />
 
 export { commitUpdates, SocketClient } from "napl";
+import stringify from "json-stringify-pretty-compact";
 
+let name: string;
 export function randomName() {
-  return "napl-" + Math.random().toString(36).substring(7);
+  return name ?? (name = "napl-" + Math.random().toString(36).substring(7));
 }
 
 const EMOJIS = [
@@ -27,7 +29,9 @@ const EMOJIS = [
   "🌾", "🌿", "☘️", "🍀", "🍁", "🍂", "🍃", "🍄", "🪨", "🪵"
 ];
 
-export function randomEmoji() {
-  const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
-  return emoji;
+let emoji: string;
+export function randomEmoji(forceRandom?: boolean) {
+  return (forceRandom ? null : emoji) ?? (emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)]);
 }
+
+export { stringify };

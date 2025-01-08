@@ -8,10 +8,46 @@
       body {
         background-color: lightgray;
       }
+      .container {
+        display: flex;
+        flex-direction: row;
+      }
+      #data-area {
+        resize: both;
+        overflow: auto;
+      }
+      #state-div {
+        white-space: pre;
+        padding: 5px;
+        border: 1px;
+        margin: 5px;
+        font-family: monospace;
+        background-color: lightyellow;
+        overflow: auto;
+        font-size: 9px;
+      }
+      #client-list {
+        display: flex;
+        flex-direction: row;
+      }
+      .client-box {
+        border: 1px solid black;
+        margin: 5px;
+        padding: 5px;
+        height: 100px;
+        width: 200px;
+      }
+      .cursor {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
-    <div style="display: flex; flex-direction: row">
+    <div class="container">
       <div>
         <h1 id="h1">WebSocket Test</h1>
         <script>
@@ -20,38 +56,29 @@
         </script>
         <label for="data-area">Common Data:</label>
         <input type="checkbox" id="passive" />
-        <label for="passive">Passive update</label>
+        <label
+          title="
+          Passive updates require response from server before being confirmed. Active updates are immediate.
+        "
+          for="passive"
+          >Passive update</label
+        >
         <br />
-        <textarea
-          id="data-area"
-          rows="4"
-          cols="50"
-          style="resize: both; overflow: auto"
-        ></textarea>
-        <div id="data-confirmed" style="color: red; opacity: 0; height: 20px">
-          Saving...
-        </div>
+        <textarea id="data-area" rows="4" cols="50"></textarea>
       </div>
       <div>
         <label for="state-div">State:</label>
-        <div
-          id="state-div"
-          style="
-            white-space: pre;
-            padding: 5px;
-            border: 1px;
-            margin: 5px;
-            font-family: monospace;
-            background-color: lightyellow;
-            overflow: auto;
-            font-size: 9px;
-          "
-        ></div>
+        <div id="state-div"></div>
       </div>
     </div>
-    <div id="client-list" style="display: flex; flex-direction: row"></div>
+    <div id="client-list"></div>
     <script type="module">
-      import { SocketClient, randomName, randomEmoji } from "./dist/index.js";
+      import {
+        SocketClient,
+        randomName,
+        randomEmoji,
+        stringify,
+      } from "./dist/index.js";
 
       const config = await fetch("config.json").then((response) =>
         response.json()
@@ -61,109 +88,116 @@
       window.client = client;
 
       //  data
-      document
-        .querySelector("#data-area")
-        .addEventListener("input", (event) => {
-          const passive = document.querySelector("#passive").checked;
-          client.setData("data", event.target.value, {
-            passive,
-          });
+      const dataHook = client.access("data");
+      const dataArea = document.querySelector("#data-area");
+      dataArea.addEventListener("input", (event) => {
+        dataHook.setData(undefined, event.target.value, {
+          passive: document.querySelector("#passive").checked,
         });
-
-      //  cursor
-      document.addEventListener("mousemove", (event) => {
-        client.setSelfData("cursor", [event.pageX, event.pageY]);
+      });
+      dataHook.observe([undefined], (observation) => {
+        dataArea.value = observation.value ?? "";
       });
 
-      function loop() {
-        const data = client.state.data ?? "";
-        if (document.querySelector("#data-area").value !== data) {
-          if (document.querySelector("#data-area") !== document.activeElement) {
-            document.querySelector("#data-area").value = data;
-          } else {
-            document.querySelector("#data-confirmed").style.opacity = "1";
-          }
-        } else {
-          document.querySelector("#data-confirmed").style.opacity = "0";
-        }
-        const clients = Object.entries(client.state.clients ?? {});
-        clients.forEach(([owner, clientInfo]) => {
-          let clientBox = document.querySelector(`#client-${owner}`);
-          if (!clientBox) {
-            clientBox = document.createElement("div");
-            clientBox.id = `client-${owner}`;
-            clientBox.style.border = "1px solid black";
-            clientBox.style.margin = "5px";
-            clientBox.style.padding = "5px";
-            clientBox.style.height = "100px";
-            clientBox.style.width = "200px";
-            clientBox.style.backgroundColor =
-              owner === client.clientId ? "lightgreen" : "lightblue";
-            document.querySelector("#client-list").appendChild(clientBox);
-            const emojiDiv = clientBox.appendChild(
-              document.createElement("span")
-            );
-            emojiDiv.id = `emoji-${owner}`;
+      //  cursor
+      document.addEventListener("mousemove", ({ pageX, pageY }) => {
+        client.self.setData("cursor", [pageX, pageY]);
+      });
 
-            const nameLabel = clientBox.appendChild(
-              document.createElement("label")
-            );
-            nameLabel.textContent = "Name:";
-            nameLabel.htmlFor = `name-${owner}`;
-            const nameInput = clientBox.appendChild(
-              document.createElement("input")
-            );
-            nameInput.disabled = owner !== client.clientId;
-            nameInput.addEventListener("input", (event) => {
-              client.setData(`clients/${owner}/name`, event.target.value);
-            });
-            nameInput.id = `name-${owner}`;
+      client.observe(["clients/{self}"], () => {
+        client.self.setData("name", randomName());
+        client.self.setData("emoji", randomEmoji());
+      });
+
+      client.observe(["clients/{keys}"], (observation) => {
+        observation.value
+          .filter((clientId) => !observation.previous?.includes(clientId))
+          .forEach((clientId) => {
+            // new client
+            const clientBox = document
+              .querySelector("#client-list")
+              .appendChild(document.createElement("div"));
+            clientBox.id = `client-${clientId}`;
+            clientBox.classList.add("client-box");
+            clientBox.style.backgroundColor =
+              clientId === client.self.id ? "lightgreen" : "lightblue";
+
+            //  cursor
             const cursorDiv = clientBox.appendChild(
               document.createElement("div")
             );
-            cursorDiv.id = `cursor-${owner}`;
-            cursorDiv.style.position = "absolute";
-            cursorDiv.style.width = "20px";
-            cursorDiv.style.height = "20px";
-            cursorDiv.style.fontSize = "20px";
-            cursorDiv.style.pointerEvents = "none";
-          }
-          const nameInput = document.querySelector(`#name-${owner}`);
-          if (nameInput.value !== (clientInfo.name ?? "")) {
-            nameInput.value = clientInfo.name ?? "";
-          }
-          const emojiDiv = document.querySelector(`#emoji-${owner}`);
-          const emoji = clientInfo.emoji ?? "";
-          if (emojiDiv.textContent !== emoji) {
-            emojiDiv.textContent = emoji;
-          }
-          const cursorDiv = document.querySelector(`#cursor-${owner}`);
-          if (cursorDiv && clientInfo.cursor) {
-            const [x, y] = clientInfo.cursor;
-            cursorDiv.style.left = `${x - 10}px`;
-            cursorDiv.style.top = `${y - 10}px`;
-            cursorDiv.textContent = emoji;
-          }
-        });
-        const clientSet = new Set(clients.map(([owner]) => `client-${owner}`));
-        document.querySelectorAll("#client-list > div").forEach((clientBox) => {
-          if (!clientSet.has(clientBox.id)) {
-            clientBox.remove();
-          }
-        });
+            cursorDiv.id = `cursor-${clientId}`;
+            cursorDiv.classList.add("cursor");
 
-        document.querySelector("#state-div").textContent = JSON.stringify(
-          client.state,
-          null,
-          2
+            //  emoji / name observer
+            {
+              //  name and emoji
+              const emojiDiv = clientBox.appendChild(
+                document.createElement("span")
+              );
+              emojiDiv.style.marginRight = "5px";
+              if (clientId === client.self.id) {
+                emojiDiv.style.cursor = "pointer";
+                emojiDiv.addEventListener("click", () => {
+                  client.self.setData("emoji", randomEmoji(true));
+                });
+              }
+
+              const nameLabel = clientBox.appendChild(
+                document.createElement("label")
+              );
+              nameLabel.textContent = "Name:";
+              nameLabel.htmlFor = `name-${clientId}`;
+              const nameInput = clientBox.appendChild(
+                document.createElement("input")
+              );
+              nameInput.id = `name-${clientId}`;
+              nameInput.disabled = clientId !== client.self.id;
+              nameInput.addEventListener("input", (event) => {
+                client.setData(`clients/${clientId}/name`, event.target.value);
+              });
+              const observer = client.observe(
+                [`clients/${clientId}/emoji`, `clients/${clientId}/name`],
+                (emoji, name) => {
+                  emojiDiv.textContent = emoji.value;
+                  nameInput.value = name.value;
+                  cursorDiv.textContent = emoji.value;
+                  if (!emoji.value && !name.value) {
+                    observer.close();
+                  }
+                }
+              );
+            }
+
+            //  cursor observer
+            {
+              const observer = client.observe(
+                [`clients/${clientId}/cursor`],
+                (cursor) => {
+                  if (!cursor.value) {
+                    observer.close();
+                    return;
+                  }
+                  const [x, y] = cursor.value;
+                  cursorDiv.style.left = `${x - 10}px`;
+                  cursorDiv.style.top = `${y - 10}px`;
+                }
+              );
+            }
+          });
+        observation.previous
+          ?.filter((clientId) => !observation.value?.includes(clientId))
+          .forEach((clientId) => {
+            const client = document.querySelector(`#client-${clientId}`);
+            client?.remove();
+          });
+      });
+
+      client.observe([], () => {
+        document.querySelector("#state-div").textContent = stringify(
+          client.state
         );
-
-        requestAnimationFrame(loop);
-      }
-      loop();
-
-      client.setSelfData("name", randomName());
-      client.setSelfData("emoji", randomEmoji());
+      });
     </script>
   </body>
 </html>

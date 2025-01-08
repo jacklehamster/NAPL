@@ -59,7 +59,8 @@ export class SyncRoom {
       this.#onRoomChange.forEach((callback) => callback(this.#state));
     });
 
-    this.#updates = commitUpdates(this.#state, this.#updates).remainingUpdates;
+    commitUpdates(this.#state, this.#updates);
+    this.#updates = this.#updates.filter(update => !update.confirmed)
 
     //  update client just connected with state and updates
     const clientPayload: Payload = {
@@ -72,20 +73,18 @@ export class SyncRoom {
   }
 
   shareUpdates(newUpdates: Update[], sender?: ws.WebSocket) {
-    const unconfirmedUpdates = newUpdates.filter(update => !update.confirmed);
-    this.#markUpdatesConfirmed(newUpdates);
+    const updatesForSender = newUpdates.filter(update => !update.confirmed);
+    this.#markCommonUpdatesConfirmed(newUpdates);
     this.#pushUpdates(newUpdates);
-    this.#updates = commitUpdates(this.#state, Object.values(this.#updates)).remainingUpdates;
+    commitUpdates(this.#state, Object.values(this.#updates));
+    this.#updates = this.#updates.filter(update => !update.confirmed);
     this.#broadcastUpdates(newUpdates, client => client !== sender);
-    this.#broadcastUpdates(unconfirmedUpdates, client => client === sender);
+    this.#broadcastUpdates(updatesForSender, client => client === sender);
   }
 
   #pushUpdates(newUpdates: Update[] | undefined) {
     if (newUpdates) {
-      newUpdates.forEach((update) => {
-        const path = Array.isArray(update.path) ? update.path.join("/") : update.path;
-        this.#updates.push(update);
-      });
+      newUpdates.forEach((update) => this.#updates.push(update));
     }
   }
 
@@ -104,7 +103,7 @@ export class SyncRoom {
     });
   }
 
-  #markUpdatesConfirmed(updates: Update[]) {
+  #markCommonUpdatesConfirmed(updates: Update[]) {
     updates.forEach((update) => {
       const parts = Array.isArray(update.path) ? update.path : update.path.split("/");
       if (parts[0] !== "clients") {

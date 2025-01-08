@@ -1,7 +1,7 @@
 import { DataObject } from "./types/DataObject";
 import { Update } from "./types/Update";
 
-export function commitUpdates(obj: DataObject, updates: Update[], pathsUpdated?: Set<string>) {
+export function commitUpdates(obj: DataObject, updates: Update[], pathsUpdated?: Set<(string | number)[]>) {
   const now = Date.now();
   const confirmedUpdates = updates?.filter(update => update.confirmed);
   confirmedUpdates?.sort((a, b) => {
@@ -16,11 +16,11 @@ export function commitUpdates(obj: DataObject, updates: Update[], pathsUpdated?:
   });
   confirmedUpdates?.forEach((update) => {
     const { path, value, deleted } = update;
-    if (pathsUpdated) {
-      pathsUpdated.add(Array.isArray(path) ? path.join("/") : path);
-    }
     const parts = Array.isArray(path) ? path : path.split("/");
-    const leaf = getLeafObject(obj, parts);
+    if (pathsUpdated) {
+      pathsUpdated.add(parts);
+    }
+    const leaf: any = getLeafObject(obj, parts, 1, true)!;
     const prop = parts[parts.length - 1];
     if (deleted) {
       delete leaf[prop];
@@ -28,13 +28,23 @@ export function commitUpdates(obj: DataObject, updates: Update[], pathsUpdated?:
       leaf[prop] = value;
     }
   });
-  return { remainingUpdates: updates?.filter(update => !update.confirmed) };
 }
 
-function getLeafObject(obj: DataObject, parts: (string | number)[]) {
+export function getLeafObject(obj: DataObject, parts: (string | number)[], offset: number, autoCreate: boolean, selfId?: string) {
   let current = obj;
-  for (let i = 0; i < parts.length - 1; i++) {
-    current = current[parts[i]] ?? (current[parts[i]] = {});
+  for (let i = 0; i < parts.length - offset; i++) {
+    const prop = selfId && parts[i] === "{self}" ? selfId : parts[i];
+    if (prop === "{keys}") {
+      return Object.keys(current);
+    }
+    if (current[prop] === undefined) {
+      if (autoCreate) {
+        current[prop] = {};
+      } else {
+        return undefined;
+      }
+    }
+    current = current[prop];
   }
   return current;
 }

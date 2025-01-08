@@ -32,17 +32,14 @@ export class SyncSocket {
   #getRoom(room: string) {
     if (!this.#rooms[room]) {
       this.#rooms[room] = new SyncRoom(room);
-      let timeout: Timer;
       this.#rooms[room].addRoomChangeListener((roomState) => {
-        if (Object.values(roomState.clients).length) {
-          clearTimeout(timeout);
-        } else {
-          //  close room after 10s if no clients
-          timeout = setTimeout(() => {
+        //  close room after 10s if no clients
+        setTimeout(() => {
+          if (!Object.values(roomState.clients).length) {
             console.log("closing room", room);
             delete this.#rooms[room];
-          }, 10000);
-        }
+          }
+        }, 10000);
       });
     }
     return this.#rooms[room];

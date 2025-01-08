@@ -18,5 +18,8 @@
   "peerDependencies": {
     "typescript": "^5.0.0",
     "napl": "link:napl"
+  },
+  "dependencies": {
+    "json-stringify-pretty-compact": "^4.0.0"
   }
 }
