@@ -25,6 +25,7 @@
         background-color: lightyellow;
         overflow: auto;
         font-size: 9px;
+        width: auto;
       }
       #client-list {
         display: flex;
@@ -35,7 +36,7 @@
         margin: 5px;
         padding: 5px;
         height: 100px;
-        width: 200px;
+        width: 150px;
       }
       .cursor {
         position: absolute;
@@ -66,9 +67,9 @@
         <br />
         <textarea id="data-area" rows="4" cols="50"></textarea>
       </div>
-      <div>
+      <div style="width: 100%">
         <label for="state-div">State:</label>
-        <div id="state-div"></div>
+        <div id="state-div" contenteditable="true"></div>
       </div>
     </div>
     <div id="client-list"></div>
@@ -100,9 +101,28 @@
       });
 
       //  cursor
-      document.addEventListener("mousemove", ({ pageX, pageY }) => {
+      document.addEventListener("mousemove", ({ pageX, pageY, target }) => {
+        if (target.id === "state-div") {
+          return;
+        }
         client.self.setData("cursor", [pageX, pageY]);
       });
+      document
+        .querySelector("#state-div")
+        .addEventListener("mouseout", ({ currentTarget }) => {
+          const state = JSON.parse(currentTarget.textContent);
+          for (let k in state) {
+            if (k !== "clients") {
+              if (
+                JSON.stringify(state[k]) !== JSON.stringify(client.state[k])
+              ) {
+                client.setData(k, state[k], {
+                  passive: true,
+                });
+              }
+            }
+          }
+        });
 
       client.observe(["clients/{self}"], () => {
         client.self.setData("name", randomName());
