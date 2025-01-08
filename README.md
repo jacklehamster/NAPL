@@ -29,3 +29,7 @@ Update {
 
 - To perform an update, a program pushes a item into the Update array.
 - The owner of the object performs updates in order of timestamp, then propagates updates.
+
+## Demo
+
+<https://jacklehamster.github.io/napl/example>
