@@ -4,6 +4,8 @@ import { Observer } from "./Observer";
 export interface SetDataOptions {
   passive?: boolean;
   room?: string;
+  push?: boolean;
+  insert?: number;
 }
 
 export interface ISharedData {

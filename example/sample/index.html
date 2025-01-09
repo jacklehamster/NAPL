@@ -110,19 +110,21 @@
       document
         .querySelector("#state-div")
         .addEventListener("mouseout", ({ currentTarget }) => {
-          const state = JSON.parse(currentTarget.textContent);
-          for (let k in state) {
-            if (k !== "clients") {
-              if (
-                JSON.stringify(state[k]) !==
-                JSON.stringify(socketClient.state[k])
-              ) {
-                socketClient.setData(k, state[k], {
-                  passive: true,
-                });
+          try {
+            const state = JSON.parse(currentTarget.textContent);
+            for (let k in state) {
+              if (k !== "clients") {
+                if (
+                  JSON.stringify(state[k]) !==
+                  JSON.stringify(socketClient.state[k])
+                ) {
+                  socketClient.setData(k, state[k], {
+                    passive: true,
+                  });
+                }
               }
             }
-          }
+          } catch (e) {}
         });
 
       socketClient.observe(["clients/{self}"]).onChange(() => {
@@ -135,13 +137,17 @@
         .onElementsAdded((clientIds) => {
           clientIds.forEach((clientId) => {
             // new client
-            const clientBox = document
-              .querySelector("#client-list")
-              .appendChild(document.createElement("div"));
+            const clientBox = document.createElement("div");
             clientBox.id = `client-${clientId}`;
             clientBox.classList.add("client-box");
             clientBox.style.backgroundColor =
               clientId === socketClient.self.id ? "lightgreen" : "lightblue";
+
+            if (clientId === socketClient.self.id) {
+              document.querySelector("#client-list").prepend(clientBox);
+            } else {
+              document.querySelector("#client-list").appendChild(clientBox);
+            }
 
             //  cursor
             const cursorDiv = clientBox.appendChild(

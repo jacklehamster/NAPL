@@ -15,7 +15,7 @@ export function commitUpdates(obj: DataObject, updates: Update[], pathsUpdated?:
     return pathA.localeCompare(pathB);
   });
   confirmedUpdates?.forEach((update) => {
-    const { path, value, deleted } = update;
+    const { path, value, deleted, push, insert } = update;
     const parts = Array.isArray(path) ? path : path.split("/");
     if (pathsUpdated) {
       pathsUpdated.add(parts);
@@ -25,7 +25,19 @@ export function commitUpdates(obj: DataObject, updates: Update[], pathsUpdated?:
     if (deleted) {
       delete leaf[prop];
     } else if (value !== undefined) {
-      leaf[prop] = value;
+      if (push) {
+        if (!Array.isArray(leaf[prop])) {
+          leaf[prop] = [];
+        }
+        leaf[prop] = [...leaf[prop], value];
+      } else if (insert !== undefined) {
+        if (!Array.isArray(leaf[prop])) {
+          leaf[prop] = [];
+        }
+        leaf[prop] = [...leaf[prop].slice(0, insert), value, ...leaf[prop].slice(insert)];
+      } else {
+        leaf[prop] = value;
+      }
     }
   });
 }
@@ -33,7 +45,7 @@ export function commitUpdates(obj: DataObject, updates: Update[], pathsUpdated?:
 export function getLeafObject(obj: DataObject, parts: (string | number)[], offset: number, autoCreate: boolean, selfId?: string) {
   let current = obj;
   for (let i = 0; i < parts.length - offset; i++) {
-    const prop = selfId && parts[i] === "{self}" ? selfId : parts[i];
+    let prop = selfId && parts[i] === "{self}" ? selfId : parts[i];
     if (prop === "{keys}") {
       return Object.keys(current);
     }

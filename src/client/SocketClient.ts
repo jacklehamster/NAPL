@@ -34,14 +34,15 @@ export class SocketClient implements ISharedData {
 
   async setData(path: Update["path"], value: any, options: SetDataOptions = {}) {
     await this.waitForConnection();
-    //  apply update locally
     const update: Update = {
       path,
       value,
       confirmed: options.passive ? undefined : Date.now(),
+      push: options.push,
+      insert: options.insert,
     };
 
-    //  commit updates
+    //  commit updates locally
     if (!options.passive) {
       this.#queueIncomingUpdates(update);
     }

@@ -1,24 +1,33 @@
 // ../dist/index.js
-function h(t, e, r) {
+function c(t, e, r) {
   let i = Date.now(), n = e?.filter((s) => s.confirmed);
   n?.sort((s, a) => {
-    let o = s.confirmed ?? i, c = a.confirmed ?? i;
-    if (o !== c)
-      return o - c;
-    let l = Array.isArray(s.path) ? s.path.join("/") : s.path, y = Array.isArray(a.path) ? a.path.join("/") : a.path;
-    return l.localeCompare(y);
+    let o = s.confirmed ?? i, u = a.confirmed ?? i;
+    if (o !== u)
+      return o - u;
+    let p = Array.isArray(s.path) ? s.path.join("/") : s.path, f = Array.isArray(a.path) ? a.path.join("/") : a.path;
+    return p.localeCompare(f);
   }), n?.forEach((s) => {
-    let { path: a, value: o, deleted: c } = s, l = Array.isArray(a) ? a : a.split("/");
+    let { path: a, value: o, deleted: u, push: p, insert: f } = s, d = Array.isArray(a) ? a : a.split("/");
     if (r)
-      r.add(l);
-    let y = f(t, l, 1, true), g = l[l.length - 1];
-    if (c)
-      delete y[g];
+      r.add(d);
+    let l = y(t, d, 1, true), h = d[d.length - 1];
+    if (u)
+      delete l[h];
     else if (o !== undefined)
-      y[g] = o;
+      if (p) {
+        if (!Array.isArray(l[h]))
+          l[h] = [];
+        l[h] = [...l[h], o];
+      } else if (f !== undefined) {
+        if (!Array.isArray(l[h]))
+          l[h] = [];
+        l[h] = [...l[h].slice(0, f), o, ...l[h].slice(f)];
+      } else
+        l[h] = o;
   });
 }
-function f(t, e, r, i, n) {
+function y(t, e, r, i, n) {
   let s = t;
   for (let a = 0;a < e.length - r; a++) {
     let o = n && e[a] === "{self}" ? n : e[a];
@@ -33,7 +42,7 @@ function f(t, e, r, i, n) {
   }
   return s;
 }
-async function A(t) {
+async function O(t) {
   let e;
   if (t instanceof Buffer)
     e = t.toString();
@@ -49,15 +58,15 @@ async function A(t) {
     return console.log(r), null;
   }
 }
-function b(t, { payloadReceived: e }) {
+function C(t, { payloadReceived: e }) {
   t.on("message", async (r) => {
-    let i = await A(r);
+    let i = await O(r);
     if (i)
       e(i);
   });
 }
 
-class u {
+class m {
   room;
   #t = new Map;
   #r;
@@ -74,18 +83,18 @@ class u {
     let e = crypto.randomUUID(), r = {};
     this.#t.set(t, r);
     let i = [{ path: ["clients", e], value: r, confirmed: Date.now() }];
-    this.#i(i, t), b(t, { payloadReceived: (s) => {
+    this.#i(i, t), C(t, { payloadReceived: (s) => {
       if (s.updates)
         this.#i(s.updates, t);
     } }), t.on("close", () => {
       this.#t.delete(t), this.#i([{ path: ["clients", e], deleted: true, confirmed: Date.now() }]), console.log(`client ${e} disconnected`), this.#s.forEach((s) => s(this.#r));
-    }), h(this.#r, this.#e), this.#e = this.#e.filter((s) => !s.confirmed);
+    }), c(this.#r, this.#e), this.#e = this.#e.filter((s) => !s.confirmed);
     let n = { myClientId: e, state: this.#r, updates: this.#e };
     return t.send(JSON.stringify(n)), { clientId: e };
   }
   #i(t, e) {
     let r = t.filter((i) => !i.confirmed);
-    this.#o(t), this.#a(t), h(this.#r, this.#e), this.#e = this.#e.filter((i) => !i.confirmed), this.#n(t, (i) => i !== e), this.#n(r, (i) => i === e);
+    this.#o(t), this.#a(t), c(this.#r, this.#e), this.#e = this.#e.filter((i) => !i.confirmed), this.#n(t, (i) => i !== e), this.#n(r, (i) => i === e);
   }
   #a(t) {
     if (t)
@@ -109,7 +118,7 @@ class u {
   }
 }
 
-class d {
+class v {
   #t = {};
   constructor(t) {
     this.#r(t);
@@ -130,7 +139,7 @@ class d {
   }
   #s(t) {
     if (!this.#t[t])
-      this.#t[t] = new u(t), this.#t[t].addRoomChangeListener((e) => {
+      this.#t[t] = new m(t), this.#t[t].addRoomChangeListener((e) => {
         setTimeout(() => {
           if (!Object.values(e.clients).length)
             console.log("closing room", t), delete this.#t[t];
@@ -140,7 +149,7 @@ class d {
   }
 }
 
-class p {
+class g {
   socketClient;
   id = "";
   constructor(t) {
@@ -162,7 +171,7 @@ class p {
   }
 }
 
-class m {
+class b {
   socketClient;
   parts;
   constructor(t, e) {
@@ -182,11 +191,11 @@ class m {
     return this.socketClient.setData([...this.parts, ...i], e, r);
   }
   get state() {
-    return f(this.socketClient.state, this.parts, 0, false) ?? {};
+    return y(this.socketClient.state, this.parts, 0, false) ?? {};
   }
 }
 
-class v {
+class A {
   socketClient;
   pathArrays;
   observations;
@@ -213,7 +222,7 @@ class v {
   }
   #t() {
     let t = this.pathArrays.map((e) => {
-      return f(this.socketClient.state, e, 0, false, this.socketClient.clientId);
+      return y(this.socketClient.state, e, 0, false, this.socketClient.clientId);
     });
     if (this.observations.length && this.observations.every((e, r) => {
       let i = t[r];
@@ -261,7 +270,7 @@ class v {
   }
 }
 
-class C {
+class D {
   state = {};
   #t;
   #r;
@@ -269,7 +278,7 @@ class C {
   #e;
   #i = [];
   #a = [];
-  #n = new p(this);
+  #n = new g(this);
   #o = new Set;
   constructor(t, e) {
     let r = globalThis.location.protocol === "https:";
@@ -280,7 +289,7 @@ class C {
   }
   async setData(t, e, r = {}) {
     await this.waitForConnection();
-    let i = { path: t, value: e, confirmed: r.passive ? undefined : Date.now() };
+    let i = { path: t, value: e, confirmed: r.passive ? undefined : Date.now(), push: r.push, insert: r.insert };
     if (!r.passive)
       this.#h(i);
     this.#f(i);
@@ -292,10 +301,10 @@ class C {
     return this.#n;
   }
   access(t) {
-    return new m(t, this);
+    return new b(t, this);
   }
   observe(t) {
-    let e = new v(this, t);
+    let e = new A(this, t);
     return this.#o.add(e), e.triggerIfChanged(), e;
   }
   async waitForConnection() {
@@ -340,7 +349,7 @@ class C {
     this.#t?.send(JSON.stringify(t)), this.#i.length = 0;
   }
   async#y() {
-    await this.waitForConnection(), this.#s.clear(), h(this.state, this.#a, this.#s), this.#a.length = 0, this.state.lastUpdated = Date.now(), this.triggerObservers();
+    await this.waitForConnection(), this.#s.clear(), c(this.state, this.#a, this.#s), this.#a.length = 0, this.state.lastUpdated = Date.now(), this.triggerObservers();
   }
   triggerObservers() {
     this.#o.forEach((t) => t.triggerIfChanged());
@@ -587,13 +596,13 @@ function randomEmoji(forceRandom) {
 var config = await fetch("../config.json").then((response) => response.json());
 var urlVars = new URLSearchParams(location.search);
 var room = urlVars.get("room") ?? undefined;
-var socketClient = new C(config.websocketHost ?? location.host, room);
+var socketClient = new D(config.websocketHost ?? location.host, room);
 export {
   stringify,
   socketClient,
   room,
   randomName,
   randomEmoji,
-  h as commitUpdates,
-  C as SocketClient
+  c as commitUpdates,
+  D as SocketClient
 };

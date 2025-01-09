@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Lobby</title>
+    <title>Chat Room</title>
     <style>
       body {
         background-color: lightgray;
@@ -12,18 +12,65 @@
         position: absolute;
         right: 5px;
         top: 5px;
+        z-index: 100;
+      }
+      .chat-log {
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 10px;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        border: 1px solid black;
+        overflow: auto;
+      }
+      .chat-box {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: calc(100% - 30px);
+        margin: 10px;
+        padding: 5px;
+        background-color: silver;
+        border: 1px solid black;
+        height: 100px;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="users"></div>
+      <div class="chat-log"></div>
+      <div class="chat-box" contenteditable="true"></div>
     </div>
 
     <script type="module">
       import { socketClient } from "../dist/index.js";
 
       window.socketClient = socketClient;
+
+      document.querySelector(".chat-box").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          const message = e.target.textContent;
+          e.target.textContent = "";
+          socketClient.setData(`chat`, message, {
+            push: true,
+          });
+          e.preventDefault();
+        }
+      });
+
+      socketClient.observe(["chat"]).onElementsAdded((elems) => {
+        console.log(elems, "<<");
+        elems.forEach((elem) => {
+          const chatLog = document.querySelector(".chat-log");
+          const chatMessage = document.createElement("div");
+          chatMessage.textContent = elem;
+          chatLog.appendChild(chatMessage);
+          chatLog.scrollTop = chatLog.scrollHeight;
+        });
+      });
 
       socketClient.observe([]).onChange(() => {
         console.log(JSON.parse(JSON.stringify(socketClient.state)));

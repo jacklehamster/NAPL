@@ -34,7 +34,7 @@
     <!-- Creating tab -->
     <div class="tabs">
       <button type="button" id="sample-test">Sample Test</button>
-      <button type="button" id="lobby-test">Lobby Test</button>
+      <button type="button" id="chatroom-test">Chatroom Test</button>
     </div>
     <div class="container">
       <div
@@ -47,18 +47,18 @@
       </div>
       <div
         class="content"
-        id="lobby-test-content"
+        id="chatroom-test-content"
         style="display: none; flex: 1"
       >
         <iframe
           title="top"
           class="frame"
-          data-src="lobby?top&&room=lobby"
+          data-src="chatroom?top&room=chatroom"
         ></iframe>
         <iframe
           title="bottom"
           class="frame"
-          data-src="lobby?bottom&room=lobby"
+          data-src="chatroom?bottom&room=chatroom"
         ></iframe>
       </div>
     </div>
@@ -81,7 +81,7 @@
           }
         });
       });
-      document.getElementById("lobby-test").addEventListener("click", () => {
+      document.getElementById("chatroom-test").addEventListener("click", () => {
         const contentDivs = document.querySelectorAll(".content");
         contentDivs.forEach((contentDiv) => {
           contentDiv.style.display = "none";
@@ -90,9 +90,11 @@
             //            iframe.removeAttribute("src");
           });
         });
-        const lobbyContentDiv = document.getElementById("lobby-test-content");
-        lobbyContentDiv.style.display = "block";
-        const iframes = lobbyContentDiv.querySelectorAll("iframe");
+        const chatroomContentDiv = document.getElementById(
+          "chatroom-test-content"
+        );
+        chatroomContentDiv.style.display = "block";
+        const iframes = chatroomContentDiv.querySelectorAll("iframe");
         iframes.forEach((iframe) => {
           if (!iframe.src.length) {
             iframe.src = iframe.getAttribute("data-src");
