@@ -10,11 +10,12 @@ interface Observation {
 export class Observer {
   readonly pathArrays: (string | number)[][];
   readonly observations: Observation[];
+  changeCallback?: (...values: any[]) => void;
+  addedElementsCallback?: (...keys: (any[] | undefined)[]) => void;
+  deletedElementsCallback?: (...keys: (any[] | undefined)[]) => void;
   constructor(
     readonly socketClient: SocketClient,
-    paths: Update["path"][],
-    readonly callback: (...values: any[]) => void
-  ) {
+    paths: Update["path"][]) {
     this.pathArrays = paths.map(p => p === undefined ? [] : Array.isArray(p) ? p : p.split("/"));
     this.observations = paths.map(() => {
       const observation = {
@@ -25,9 +26,30 @@ export class Observer {
     });
   }
 
-  triggerCallbackIfChanged() {
+  onInit(callback: (...values: any[]) => void): Observer {
+    this.#updatedObservations();
+    callback(...this.observations);
+    return this;
+  }
+
+  onChange(callback: (...values: any[]) => void): Observer {
+    this.changeCallback = callback;
+    return this;
+  }
+
+  onElementsAdded(callback: (...keys: (any[] | undefined)[]) => void): Observer {
+    this.addedElementsCallback = callback;
+    return this;
+  }
+
+  onElementsDeleted(callback: (...keys: (any[] | undefined)[]) => void): Observer {
+    this.deletedElementsCallback = callback;
+    return this;
+  }
+
+  #updatedObservations() {
     const newValues = this.pathArrays.map(p => {
-      return getLeafObject(this.socketClient.state, p, 0, false, this.socketClient.selfData.id);
+      return getLeafObject(this.socketClient.state, p, 0, false, this.socketClient.clientId);
     });
     if (this.observations.length && this.observations.every((ob, index) => {
       const newValue = newValues[index];
@@ -41,13 +63,52 @@ export class Observer {
       }
       return false;
     })) {
-      return;
+      return false;
     }
     this.observations.forEach((observation, index) => {
       observation.previous = observation.value;
       observation.value = newValues[index];
     });
-    this.callback(...this.observations);
+    return true;
+  }
+
+  triggerIfChanged() {
+    if (!this.#updatedObservations()) {
+      return;
+    }
+    this.changeCallback?.(...this.observations);
+    if (this.addedElementsCallback && this.observations.some((observation) => Array.isArray(observation.value))) {
+      let hasNewElements = false;
+      const newElementsArray = this.observations.map((observation) => {
+        if (Array.isArray(observation.value)) {
+          const previousSet = new Set(Array.isArray(observation.previous) ? observation.previous : []);
+          const newElements = observation.value.filter((clientId) => !previousSet.has(clientId));
+          if (newElements.length) {
+            hasNewElements = true;
+          }
+          return newElements;
+        }
+      });
+      if (hasNewElements) {
+        this.addedElementsCallback(...newElementsArray);
+      }
+    }
+    if (this.deletedElementsCallback && this.observations.some((observation) => Array.isArray(observation.previous))) {
+      let hasDeletedElements = false;
+      const deletedElementsArray = this.observations.map((observation) => {
+        if (Array.isArray(observation.previous)) {
+          const currentSet = new Set(Array.isArray(observation.value) ? observation.value : []);
+          const deletedElements = observation.previous.filter((clientId) => !currentSet.has(clientId));
+          if (deletedElements.length) {
+            hasDeletedElements = true;
+          }
+          return deletedElements;
+        }
+      });
+      if (hasDeletedElements) {
+        this.deletedElementsCallback(...deletedElementsArray);
+      }
+    }
   }
 
   close(): void {

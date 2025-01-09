@@ -29,19 +29,19 @@ export class SyncSocket {
     });
   }
 
-  #getRoom(room: string) {
-    if (!this.#rooms[room]) {
-      this.#rooms[room] = new SyncRoom(room);
-      this.#rooms[room].addRoomChangeListener((roomState) => {
+  #getRoom(roomName: string) {
+    if (!this.#rooms[roomName]) {
+      this.#rooms[roomName] = new SyncRoom(roomName);
+      this.#rooms[roomName].addRoomChangeListener((roomState) => {
         //  close room after 10s if no clients
         setTimeout(() => {
           if (!Object.values(roomState.clients).length) {
-            console.log("closing room", room);
-            delete this.#rooms[room];
+            console.log("closing room", roomName);
+            delete this.#rooms[roomName];
           }
         }, 10000);
       });
     }
-    return this.#rooms[room];
+    return this.#rooms[roomName];
   }
 }

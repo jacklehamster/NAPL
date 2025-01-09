@@ -5,7 +5,7 @@
 import { commitUpdates } from "@/data-update";
 import { Payload } from "@/server/SocketPayload";
 import { Update } from "@/types/Update";
-import { ISharedData } from "./ISharedData";
+import { ISharedData, SetDataOptions } from "./ISharedData";
 import { ClientData } from "./ClientData";
 import { SubData } from "./SubData";
 import { Observer } from "./Observer";
@@ -18,7 +18,7 @@ export class SocketClient implements ISharedData {
   readonly #connectionUrl: string;
   readonly #outgoingUpdates: Update[] = [];
   readonly #incomingUpdates: Update[] = [];
-  readonly selfData: ClientData = new ClientData(this);
+  readonly #selfData: ClientData = new ClientData(this);
   readonly #observers: Set<Observer> = new Set();
 
   constructor(host: string, room?: string) {
@@ -32,9 +32,7 @@ export class SocketClient implements ISharedData {
     });
   }
 
-  async setData(path: Update["path"], value: any, options: {
-    passive?: boolean,
-  } = {}) {
+  async setData(path: Update["path"], value: any, options: SetDataOptions = {}) {
     await this.waitForConnection();
     //  apply update locally
     const update: Update = {
@@ -50,18 +48,22 @@ export class SocketClient implements ISharedData {
     this.#queueOutgoingUpdates(update);
   }
 
+  get clientId() {
+    return this.#selfData.id;
+  }
+
   get self(): ISharedData {
-    return this.selfData;
+    return this.#selfData;
   }
 
   access(path: Update["path"]): SubData {
     return new SubData(path, this);
   }
 
-  observe(paths: Update["path"][], callback: (values: any[]) => void): Observer {
-    const observer = new Observer(this, paths, callback);
+  observe(paths: Update["path"][]): Observer {
+    const observer = new Observer(this, paths);
     this.#observers.add(observer);
-    observer.triggerCallbackIfChanged();
+    observer.triggerIfChanged();
     return observer;
   }
 
@@ -75,7 +77,7 @@ export class SocketClient implements ISharedData {
   async #connect() {
     const socket = this.#socket = new WebSocket(this.#connectionUrl);
     return this.#connectionPromise = new Promise<void>((resolve, reject) => {
-      socket.addEventListener("open", (event) => {
+      socket.addEventListener("open", () => {
         console.log("Connected to WebSocket server", this.#connectionUrl);
       });
       socket.addEventListener("error", (event) => {
@@ -87,7 +89,7 @@ export class SocketClient implements ISharedData {
         const payload: Payload = JSON.parse(event.data.toString());
         if (payload.myClientId) {
           // client ID confirmed
-          this.selfData.id = payload.myClientId;
+          this.#selfData.id = payload.myClientId;
           this.#connectionPromise = undefined;
           resolve();
         }
@@ -103,7 +105,7 @@ export class SocketClient implements ISharedData {
       socket.addEventListener("close", () => {
         console.log("Disconnected from WebSocket server");
         this.#socket = undefined;
-        this.selfData.id = "";
+        this.#selfData.id = "";
       });
     });
   }
@@ -143,7 +145,7 @@ export class SocketClient implements ISharedData {
   }
 
   triggerObservers() {
-    this.#observers.forEach(o => o.triggerCallbackIfChanged());
+    this.#observers.forEach(o => o.triggerIfChanged());
   }
 
   removeObserver(observer: Observer) {

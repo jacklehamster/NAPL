@@ -1,6 +1,6 @@
+import ws from "ws";
 import { commitUpdates } from "@/data-update";
 import { Update } from "@/types/Update";
-import ws from "ws";
 import { addMessageReceiver } from "./SocketEventHandler";
 import { Payload } from "./SocketPayload";
 import { ClientState } from "@/types/ClientState";
@@ -9,10 +9,10 @@ import { RoomState } from "@/types/ServerState";
 export class SyncRoom {
   readonly #sockets: Map<ws.WebSocket, ClientState> = new Map();
   readonly #state: RoomState;
+  readonly #onRoomChange: Set<(roomState: RoomState) => void> = new Set();
   #updates: Update[] = [];
-  #onRoomChange: Set<(roomState: RoomState) => void> = new Set();
 
-  constructor(readonly room: string) {
+  constructor(private room: string) {
     this.#state = {
       clients: {},
     };
@@ -35,20 +35,20 @@ export class SyncRoom {
         confirmed: Date.now(),
       }
     ];
-    this.shareUpdates(newUpdates, client);
+    this.#shareUpdates(newUpdates, client);
 
     //  setup events
     addMessageReceiver(client, {
       payloadReceived: (payload) => {
         if (payload.updates) {
-          this.shareUpdates(payload.updates, client);
+          this.#shareUpdates(payload.updates, client);
         }
       },
     });
 
     client.on("close", () => {
       this.#sockets.delete(client);
-      this.shareUpdates([
+      this.#shareUpdates([
         {
           path: ["clients", clientId],
           deleted: true,
@@ -72,11 +72,11 @@ export class SyncRoom {
     return { clientId };
   }
 
-  shareUpdates(newUpdates: Update[], sender?: ws.WebSocket) {
+  #shareUpdates(newUpdates: Update[], sender?: ws.WebSocket) {
     const updatesForSender = newUpdates.filter(update => !update.confirmed);
     this.#markCommonUpdatesConfirmed(newUpdates);
     this.#pushUpdates(newUpdates);
-    commitUpdates(this.#state, Object.values(this.#updates));
+    commitUpdates(this.#state, this.#updates);
     this.#updates = this.#updates.filter(update => !update.confirmed);
     this.#broadcastUpdates(newUpdates, client => client !== sender);
     this.#broadcastUpdates(updatesForSender, client => client === sender);

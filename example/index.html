@@ -9,15 +9,96 @@
       html {
         height: 100%;
         margin: 0;
+        display: flex;
+        flex-direction: column;
       }
       .frame {
         height: 50%;
         width: 100%;
+        border: 0;
+      }
+      .tabs {
+        display: flex;
+        justify-content: center;
+        flex: 0 0 auto; /* Tabs take only as much space as they need */
+      }
+      .container {
+        flex: 1 1 auto; /* Content takes the remaining space */
+        display: flex;
+        flex-direction: column;
+        gap: 0;
       }
     </style>
   </head>
   <body>
-    <iframe title="top" class="frame" src="frame.html?top"></iframe>
-    <iframe title="bottom" class="frame" src="frame.html?bottom"></iframe>
+    <!-- Creating tab -->
+    <div class="tabs">
+      <button type="button" id="sample-test">Sample Test</button>
+      <button type="button" id="lobby-test">Lobby Test</button>
+    </div>
+    <div class="container">
+      <div
+        class="content"
+        id="sample-test-content"
+        style="display: none; flex: 1"
+      >
+        <iframe title="top" class="frame" data-src="sample?top"></iframe>
+        <iframe title="bottom" class="frame" data-src="sample?bottom"></iframe>
+      </div>
+      <div
+        class="content"
+        id="lobby-test-content"
+        style="display: none; flex: 1"
+      >
+        <iframe
+          title="top"
+          class="frame"
+          data-src="lobby?top&&room=lobby"
+        ></iframe>
+        <iframe
+          title="bottom"
+          class="frame"
+          data-src="lobby?bottom&room=lobby"
+        ></iframe>
+      </div>
+    </div>
+    <script>
+      document.getElementById("sample-test").addEventListener("click", () => {
+        const contentDivs = document.querySelectorAll(".content");
+        contentDivs.forEach((contentDiv) => {
+          contentDiv.style.display = "none";
+          const iframes = contentDiv.querySelectorAll("iframe");
+          iframes.forEach((iframe) => {
+            //            iframe.removeAttribute("src");
+          });
+        });
+        const contentDiv = document.getElementById("sample-test-content");
+        contentDiv.style.display = "block";
+        const iframes = contentDiv.querySelectorAll("iframe");
+        iframes.forEach((iframe) => {
+          if (!iframe.src.length) {
+            iframe.src = iframe.getAttribute("data-src");
+          }
+        });
+      });
+      document.getElementById("lobby-test").addEventListener("click", () => {
+        const contentDivs = document.querySelectorAll(".content");
+        contentDivs.forEach((contentDiv) => {
+          contentDiv.style.display = "none";
+          const iframes = contentDiv.querySelectorAll("iframe");
+          iframes.forEach((iframe) => {
+            //            iframe.removeAttribute("src");
+          });
+        });
+        const lobbyContentDiv = document.getElementById("lobby-test-content");
+        lobbyContentDiv.style.display = "block";
+        const iframes = lobbyContentDiv.querySelectorAll("iframe");
+        iframes.forEach((iframe) => {
+          if (!iframe.src.length) {
+            iframe.src = iframe.getAttribute("data-src");
+          }
+        });
+      });
+    </script>
   </body>
 </html>

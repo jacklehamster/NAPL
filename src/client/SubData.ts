@@ -1,5 +1,5 @@
 import { Update } from "@/types/Update";
-import { ISharedData } from "./ISharedData";
+import { ISharedData, SetDataOptions } from "./ISharedData";
 import { SocketClient } from "./SocketClient";
 import { getLeafObject } from "@/data-update";
 import { Observer } from "./Observer";
@@ -10,15 +10,15 @@ export class SubData implements ISharedData {
     this.parts = Array.isArray(path) ? path : path.split("/");
   }
 
-  observe(paths: Update["path"][], callback: (values: any[]) => void): Observer {
+  observe(paths: Update["path"][]): Observer {
     const updatedPaths = paths.map(path => {
       const parts = path === undefined ? [] : Array.isArray(path) ? path : path.split("/");
       return [...this.parts, ...parts];
     });
-    return this.socketClient.observe(updatedPaths, callback);
+    return this.socketClient.observe(updatedPaths);
   }
 
-  async setData(path: Update["path"], value: any, options: { passive?: boolean; }): Promise<void> {
+  async setData(path: Update["path"], value: any, options: SetDataOptions): Promise<void> {
     await this.socketClient.waitForConnection();
     const parts = path === undefined ? [] : Array.isArray(path) ? path : path.split("/");
     return this.socketClient.setData([...this.parts, ...parts], value, options);

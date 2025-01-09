@@ -45,6 +45,9 @@
         font-size: 20px;
         pointer-events: none;
       }
+      .state-container {
+        width: 100%;
+      }
     </style>
   </head>
   <body>
@@ -67,7 +70,7 @@
         <br />
         <textarea id="data-area" rows="4" cols="50"></textarea>
       </div>
-      <div style="width: 100%">
+      <div class="state-container">
         <label for="state-div">State:</label>
         <div id="state-div" contenteditable="true"></div>
       </div>
@@ -75,28 +78,23 @@
     <div id="client-list"></div>
     <script type="module">
       import {
-        SocketClient,
         randomName,
         randomEmoji,
         stringify,
-      } from "./dist/index.js";
+        socketClient,
+      } from "../dist/index.js";
 
-      const config = await fetch("config.json").then((response) =>
-        response.json()
-      );
-
-      const client = new SocketClient(config.websocketHost ?? location.host);
-      window.client = client;
+      window.socketClient = socketClient;
 
       //  data
-      const dataHook = client.access("data");
+      const dataHook = socketClient.access("data");
       const dataArea = document.querySelector("#data-area");
       dataArea.addEventListener("input", (event) => {
         dataHook.setData(undefined, event.target.value, {
           passive: document.querySelector("#passive").checked,
         });
       });
-      dataHook.observe([undefined], (observation) => {
+      dataHook.observe([undefined]).onChange((observation) => {
         dataArea.value = observation.value ?? "";
       });
 
@@ -105,8 +103,10 @@
         if (target.id === "state-div") {
           return;
         }
-        client.self.setData("cursor", [pageX, pageY]);
+        socketClient.self.setData("cursor", [pageX, pageY]);
       });
+
+      //  update state
       document
         .querySelector("#state-div")
         .addEventListener("mouseout", ({ currentTarget }) => {
@@ -114,9 +114,10 @@
           for (let k in state) {
             if (k !== "clients") {
               if (
-                JSON.stringify(state[k]) !== JSON.stringify(client.state[k])
+                JSON.stringify(state[k]) !==
+                JSON.stringify(socketClient.state[k])
               ) {
-                client.setData(k, state[k], {
+                socketClient.setData(k, state[k], {
                   passive: true,
                 });
               }
@@ -124,15 +125,15 @@
           }
         });
 
-      client.observe(["clients/{self}"], () => {
-        client.self.setData("name", randomName());
-        client.self.setData("emoji", randomEmoji());
+      socketClient.observe(["clients/{self}"]).onChange(() => {
+        socketClient.self.setData("name", randomName());
+        socketClient.self.setData("emoji", randomEmoji());
       });
 
-      client.observe(["clients/{keys}"], (observation) => {
-        observation.value
-          .filter((clientId) => !observation.previous?.includes(clientId))
-          .forEach((clientId) => {
+      socketClient
+        .observe(["clients/{keys}"])
+        .onElementsAdded((clientIds) => {
+          clientIds.forEach((clientId) => {
             // new client
             const clientBox = document
               .querySelector("#client-list")
@@ -140,7 +141,7 @@
             clientBox.id = `client-${clientId}`;
             clientBox.classList.add("client-box");
             clientBox.style.backgroundColor =
-              clientId === client.self.id ? "lightgreen" : "lightblue";
+              clientId === socketClient.self.id ? "lightgreen" : "lightblue";
 
             //  cursor
             const cursorDiv = clientBox.appendChild(
@@ -156,10 +157,10 @@
                 document.createElement("span")
               );
               emojiDiv.style.marginRight = "5px";
-              if (clientId === client.self.id) {
+              if (clientId === socketClient.self.id) {
                 emojiDiv.style.cursor = "pointer";
                 emojiDiv.addEventListener("click", () => {
-                  client.self.setData("emoji", randomEmoji(true));
+                  socketClient.self.setData("emoji", randomEmoji(true));
                 });
               }
 
@@ -172,28 +173,38 @@
                 document.createElement("input")
               );
               nameInput.id = `name-${clientId}`;
-              nameInput.disabled = clientId !== client.self.id;
+              nameInput.disabled = clientId !== socketClient.self.id;
               nameInput.addEventListener("input", (event) => {
-                client.setData(`clients/${clientId}/name`, event.target.value);
+                socketClient.setData(
+                  `clients/${clientId}/name`,
+                  event.target.value
+                );
               });
-              const observer = client.observe(
-                [`clients/${clientId}/emoji`, `clients/${clientId}/name`],
-                (emoji, name) => {
+              const observer = socketClient
+                .observe([
+                  `clients/${clientId}/emoji`,
+                  `clients/${clientId}/name`,
+                ])
+                .onInit((emoji, name) => {
+                  emojiDiv.textContent = emoji.value;
+                  nameInput.value = name.value;
+                  cursorDiv.textContent = emoji.value;
+                })
+                .onChange((emoji, name) => {
                   emojiDiv.textContent = emoji.value;
                   nameInput.value = name.value;
                   cursorDiv.textContent = emoji.value;
                   if (!emoji.value && !name.value) {
                     observer.close();
                   }
-                }
-              );
+                });
             }
 
             //  cursor observer
             {
-              const observer = client.observe(
-                [`clients/${clientId}/cursor`],
-                (cursor) => {
+              const observer = socketClient
+                .observe([`clients/${clientId}/cursor`])
+                .onChange((cursor) => {
                   if (!cursor.value) {
                     observer.close();
                     return;
@@ -201,21 +212,24 @@
                   const [x, y] = cursor.value;
                   cursorDiv.style.left = `${x - 10}px`;
                   cursorDiv.style.top = `${y - 10}px`;
-                }
-              );
+                });
             }
           });
-        observation.previous
-          ?.filter((clientId) => !observation.value?.includes(clientId))
-          .forEach((clientId) => {
+        })
+        .onElementsDeleted((clientIds) => {
+          clientIds.forEach((clientId) => {
             const client = document.querySelector(`#client-${clientId}`);
-            client?.remove();
+            client.style.transition = "opacity 0.3s";
+            client.style.opacity = 0;
+            setTimeout(() => {
+              client.remove();
+            }, 300);
           });
-      });
+        });
 
-      client.observe([], () => {
+      socketClient.observe([]).onChange(() => {
         document.querySelector("#state-div").textContent = stringify(
-          client.state
+          socketClient.state
         );
       });
     </script>

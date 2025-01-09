@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lobby</title>
+    <style>
+      body {
+        background-color: lightgray;
+      }
+      .users {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="users"></div>
+    </div>
+
+    <script type="module">
+      import { socketClient } from "../dist/index.js";
+
+      window.socketClient = socketClient;
+
+      socketClient.observe([]).onChange(() => {
+        console.log(JSON.parse(JSON.stringify(socketClient.state)));
+      });
+
+      socketClient
+        .observe(["clients/{keys}"])
+        .onElementsAdded((clientIds) => {
+          clientIds.forEach((clientId) => {
+            // new client
+            const client = document.createElement("div");
+            client.id = `client-${clientId}`;
+            client.textContent = clientId;
+            if (clientId === socketClient.clientId) {
+              client.style.fontWeight = "bold";
+              client.style.backgroundColor = "yellow";
+              document.querySelector(".users").prepend(client);
+            } else {
+              document.querySelector(".users").appendChild(client);
+            }
+          });
+        })
+        .onElementsDeleted((clientIds) => {
+          clientIds.forEach((clientId) => {
+            const client = document.querySelector(`#client-${clientId}`);
+            client.style.transition = "opacity 0.3s";
+            client.style.opacity = 0;
+            setTimeout(() => {
+              client.remove();
+            }, 300);
+          });
+        });
+    </script>
+  </body>
+</html>
