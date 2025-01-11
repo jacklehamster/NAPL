@@ -2,18 +2,7 @@ import { DataObject } from "./types/DataObject";
 import { Update } from "./types/Update";
 
 export function commitUpdates(obj: DataObject, updates: Update[], pathsUpdated?: Set<(string | number)[]>) {
-  const now = Date.now();
-  const confirmedUpdates = updates?.filter(update => update.confirmed);
-  confirmedUpdates?.sort((a, b) => {
-    const confirmedA = a.confirmed ?? now;
-    const confirmedB = b.confirmed ?? now;
-    if (confirmedA !== confirmedB) {
-      return confirmedA - confirmedB;
-    }
-    const pathA = Array.isArray(a.path) ? a.path.join("/") : a.path;
-    const pathB = Array.isArray(b.path) ? b.path.join("/") : b.path;
-    return pathA.localeCompare(pathB);
-  });
+  const confirmedUpdates = getConfirmedUpdates(updates);
   confirmedUpdates?.forEach((update) => {
     const { path, value, deleted, push, insert } = update;
     const parts = Array.isArray(path) ? path : path.split("/");
@@ -40,6 +29,21 @@ export function commitUpdates(obj: DataObject, updates: Update[], pathsUpdated?:
       }
     }
   });
+}
+
+function getConfirmedUpdates(updates: Update[]) {
+  const confirmedUpdates = updates.filter(update => update.confirmed);
+  confirmedUpdates?.sort((a, b) => {
+    const confirmedA = a.confirmed ?? 0;
+    const confirmedB = b.confirmed ?? 0;
+    if (confirmedA !== confirmedB) {
+      return confirmedA - confirmedB;
+    }
+    const pathA = Array.isArray(a.path) ? a.path.join("/") : a.path;
+    const pathB = Array.isArray(b.path) ? b.path.join("/") : b.path;
+    return pathA.localeCompare(pathB);
+  });
+  return confirmedUpdates;
 }
 
 export function getLeafObject(obj: DataObject, parts: (string | number)[], offset: number, autoCreate: boolean, selfId?: string) {

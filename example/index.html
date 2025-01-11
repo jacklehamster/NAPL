@@ -28,28 +28,27 @@
         flex-direction: column;
         gap: 0;
       }
+      .content {
+        display: none;
+        flex: 1;
+      }
     </style>
   </head>
   <body>
+    <!-- <script type="module">
+      import "./dist/index.js";
+    </script> -->
     <!-- Creating tab -->
     <div class="tabs">
       <button type="button" id="sample-test">Sample Test</button>
       <button type="button" id="chatroom-test">Chatroom Test</button>
     </div>
     <div class="container">
-      <div
-        class="content"
-        id="sample-test-content"
-        style="display: none; flex: 1"
-      >
+      <div class="content" id="sample-test-content">
         <iframe title="top" class="frame" data-src="sample?top"></iframe>
         <iframe title="bottom" class="frame" data-src="sample?bottom"></iframe>
       </div>
-      <div
-        class="content"
-        id="chatroom-test-content"
-        style="display: none; flex: 1"
-      >
+      <div class="content" id="chatroom-test-content">
         <iframe
           title="top"
           class="frame"
@@ -67,10 +66,6 @@
         const contentDivs = document.querySelectorAll(".content");
         contentDivs.forEach((contentDiv) => {
           contentDiv.style.display = "none";
-          const iframes = contentDiv.querySelectorAll("iframe");
-          iframes.forEach((iframe) => {
-            //            iframe.removeAttribute("src");
-          });
         });
         const contentDiv = document.getElementById("sample-test-content");
         contentDiv.style.display = "block";
@@ -85,10 +80,6 @@
         const contentDivs = document.querySelectorAll(".content");
         contentDivs.forEach((contentDiv) => {
           contentDiv.style.display = "none";
-          const iframes = contentDiv.querySelectorAll("iframe");
-          iframes.forEach((iframe) => {
-            //            iframe.removeAttribute("src");
-          });
         });
         const chatroomContentDiv = document.getElementById(
           "chatroom-test-content"

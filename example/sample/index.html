@@ -191,11 +191,6 @@
                   `clients/${clientId}/emoji`,
                   `clients/${clientId}/name`,
                 ])
-                .onInit((emoji, name) => {
-                  emojiDiv.textContent = emoji.value;
-                  nameInput.value = name.value;
-                  cursorDiv.textContent = emoji.value;
-                })
                 .onChange((emoji, name) => {
                   emojiDiv.textContent = emoji.value;
                   nameInput.value = name.value;

@@ -64,7 +64,6 @@ export class SocketClient implements ISharedData {
   observe(paths: Update["path"][]): Observer {
     const observer = new Observer(this, paths);
     this.#observers.add(observer);
-    observer.triggerIfChanged();
     return observer;
   }
 

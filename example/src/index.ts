@@ -40,9 +40,13 @@ const config = await fetch("../config.json").then((response) =>
   response.json()
 );
 
-const urlVars = new URLSearchParams(location.search);
-export const room = urlVars.get("room") ?? undefined;
+function getSocketClient() {
+  const urlVars = new URLSearchParams(location.search);
+  const room = urlVars.get("room") ?? undefined;
+  return new SocketClient(config.websocketHost ?? location.host, room);
+}
 
-export const socketClient = new SocketClient(config.websocketHost ?? location.host, room);
+export const socketClient = getSocketClient();
+(window as any).socketClient = socketClient;
 
 export { stringify };

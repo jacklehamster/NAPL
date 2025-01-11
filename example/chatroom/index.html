@@ -46,7 +46,7 @@
     </div>
 
     <script type="module">
-      import { socketClient } from "../dist/index.js";
+      import { socketClient, randomEmoji, randomName } from "../dist/index.js";
 
       window.socketClient = socketClient;
 
@@ -54,32 +54,62 @@
         if (e.key === "Enter") {
           const message = e.target.textContent;
           e.target.textContent = "";
-          socketClient.setData(`chat`, message, {
-            push: true,
-          });
+          socketClient.setData(
+            `chat`,
+            {
+              message,
+              emoji: socketClient.self.state.emoji,
+              name: socketClient.self.state.name,
+            },
+            {
+              push: true,
+            }
+          );
           e.preventDefault();
         }
       });
 
       socketClient.observe(["chat"]).onElementsAdded((elems) => {
-        console.log(elems, "<<");
         elems.forEach((elem) => {
           const chatLog = document.querySelector(".chat-log");
-          const chatMessage = document.createElement("div");
-          chatMessage.textContent = elem;
-          chatLog.appendChild(chatMessage);
+          const chatEntry = chatLog.appendChild(document.createElement("div"));
+          chatEntry.style.display = "flex";
+          chatEntry.style.gap = "10px";
+          chatEntry.style.flexDirection = "row";
+          const chatAuthor = chatEntry.appendChild(
+            document.createElement("div")
+          );
+          chatAuthor.textContent = `${elem.emoji} ${elem.name}`;
+          chatAuthor.style.fontWeight = "bold";
+          const chatMessage = chatEntry.appendChild(
+            document.createElement("div")
+          );
+          chatMessage.textContent = `${elem.message}`;
           chatLog.scrollTop = chatLog.scrollHeight;
         });
       });
 
-      socketClient.observe([]).onChange(() => {
-        console.log(JSON.parse(JSON.stringify(socketClient.state)));
+      socketClient.observe(["clients/{self}"]).onChange(() => {
+        socketClient.self.setData("name", randomName());
+        socketClient.self.setData("emoji", randomEmoji());
       });
 
       socketClient
         .observe(["clients/{keys}"])
         .onElementsAdded((clientIds) => {
           clientIds.forEach((clientId) => {
+            socketClient
+              .observe([
+                `clients/${clientId}/name`,
+                `clients/${clientId}/emoji`,
+              ])
+              .onChange((name, emoji) => {
+                client.textContent = `${emoji.value} ${name.value}`;
+                if (!emoji.value && !name.value) {
+                  observer.close();
+                }
+              });
+
             // new client
             const client = document.createElement("div");
             client.id = `client-${clientId}`;

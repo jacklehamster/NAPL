@@ -24,12 +24,9 @@ export class Observer {
       };
       return observation;
     });
-  }
-
-  onInit(callback: (...values: any[]) => void): Observer {
-    this.#updatedObservations();
-    callback(...this.observations);
-    return this;
+    requestAnimationFrame(() => {
+      this.triggerIfChanged();
+    });
   }
 
   onChange(callback: (...values: any[]) => void): Observer {
