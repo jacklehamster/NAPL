@@ -2,8 +2,9 @@ import { Update } from "@/types/Update";
 import { ISharedData, SetDataOptions } from "./ISharedData";
 import { SocketClient } from "./SocketClient";
 import { Observer } from "./Observer";
+import { IObservable } from "./IObservable";
 
-export class ClientData implements ISharedData {
+export class ClientData implements ISharedData, IObservable {
   id: string = "";
   constructor(readonly socketClient: SocketClient) {
   }

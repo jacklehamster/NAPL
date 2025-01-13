@@ -140,7 +140,7 @@
         .observe("clients/{keys}")
         .onElementsAdded((clientIds) => {
           clientIds.forEach((clientId) => {
-            const isSelf = clientId === socketClient.self.id;
+            const isSelf = clientId === socketClient.clientId;
             // new client
             const clientBox = document.createElement("div");
             clientBox.id = `client-${clientId}`;

@@ -3,8 +3,9 @@ import { ISharedData, SetDataOptions } from "./ISharedData";
 import { SocketClient } from "./SocketClient";
 import { getLeafObject } from "@/data-update";
 import { Observer } from "./Observer";
+import { IObservable } from "./IObservable";
 
-export class SubData implements ISharedData {
+export class SubData implements ISharedData, IObservable {
   readonly parts: (string | number)[] = [];
   constructor(readonly path: Update["path"], readonly socketClient: SocketClient) {
     this.parts = path.split("/");

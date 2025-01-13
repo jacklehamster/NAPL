@@ -12,14 +12,14 @@ export function commitUpdates(root: DataObject, updates: Update[]) {
         leaf[prop] = [];
       }
       leaf[prop] = [...leaf[prop], update.value];
-    } else if (update.insert !== undefined) {
+    } else if ((update.insert ?? -1) >= 0) {
       if (!Array.isArray(leaf[prop])) {
         leaf[prop] = [];
       }
-      leaf[prop] = [...leaf[prop].slice(0, update.insert), update.value, ...leaf[prop].slice(update.insert)];
-    } else if (update.delete !== undefined) {
+      leaf[prop] = [...leaf[prop].slice(0, (update.insert ?? -1)), update.value, ...leaf[prop].slice(update.insert)];
+    } else if ((update.delete ?? -1) >= 0) {
       if (Array.isArray(leaf[prop])) {
-        leaf[prop] = [...leaf[prop].slice(0, update.delete), ...leaf[prop].slice(update.delete + 1)];
+        leaf[prop] = [...leaf[prop].slice(0, update.delete), ...leaf[prop].slice((update.delete ?? -1) + 1)];
       }
     } else if (update.value === undefined) {
       delete leaf[prop];

@@ -3,15 +3,16 @@
 /// <reference lib="dom.iterable" />
 
 import { commitUpdates, getLeafObject } from "@/data-update";
-import { Payload } from "@/server/SocketPayload";
 import { Update } from "@/types/Update";
 import { ISharedData, SetDataOptions } from "./ISharedData";
 import { ClientData } from "./ClientData";
 import { SubData } from "./SubData";
 import { Observer } from "./Observer";
 import { BlobBuilder, extractPayload } from "@dobuki/data-blob";
+import { IObservable } from "./IObservable";
+import { ObserverManager } from "./ObserverManager";
 
-export class SocketClient implements ISharedData {
+export class SocketClient implements ISharedData, IObservable {
   state: Record<string, any> = {};
   #socket: WebSocket | undefined;
   #connectionPromise: Promise<void> | undefined;
@@ -19,7 +20,7 @@ export class SocketClient implements ISharedData {
   readonly #outgoingUpdates: Update[] = [];
   readonly #incomingUpdates: Update[] = [];
   readonly #selfData: ClientData = new ClientData(this);
-  readonly #observers: Set<Observer> = new Set();
+  readonly #observerManager = new ObserverManager(this);
 
   constructor(host: string, room?: string) {
     const secure = globalThis.location.protocol === "https:";
@@ -32,12 +33,12 @@ export class SocketClient implements ISharedData {
     });
   }
 
-  fixPath(path: Update["path"]) {
+  #fixPath(path: Update["path"]) {
     const split = path.split("/");
     return split.map(part => part === "{self}" ? this.#selfData.id : part).join("/");
   }
 
-  usefulUpdate(update: Update) {
+  #usefulUpdate(update: Update) {
     const currentValue = getLeafObject(this.state, update.path, 0, false, this.#selfData.id);
     return update.value !== currentValue;
   }
@@ -45,14 +46,14 @@ export class SocketClient implements ISharedData {
   async setData(path: Update["path"], value: any, options: SetDataOptions = {}) {
     await this.#waitForConnection();
     const update: Update = {
-      path: this.fixPath(path),
+      path: this.#fixPath(path),
       value: options.delete ? undefined : value,
       confirmed: options.passive ? undefined : Date.now(),
       push: options.push,
       insert: options.insert,
     };
 
-    if (!this.usefulUpdate(update)) {
+    if (!this.#usefulUpdate(update)) {
       return;
     }
 
@@ -76,9 +77,7 @@ export class SocketClient implements ISharedData {
   }
 
   observe(...paths: Update["path"][]): Observer {
-    const observer = new Observer(this, paths);
-    this.#observers.add(observer);
-    return observer;
+    return this.#observerManager.observe(...paths);
   }
 
   async #waitForConnection() {
@@ -114,7 +113,7 @@ export class SocketClient implements ISharedData {
         if (payload.updates) {
           this.#queueIncomingUpdates(...payload.updates);
         }
-        this.triggerObservers();
+        this.#observerManager.triggerObservers();
       });
 
       socket.addEventListener("close", () => {
@@ -154,14 +153,10 @@ export class SocketClient implements ISharedData {
     commitUpdates(this.state, this.#incomingUpdates);
     this.#incomingUpdates.length = 0;
     this.state.lastUpdated = Date.now();
-    this.triggerObservers();
-  }
-
-  triggerObservers() {
-    this.#observers.forEach(o => o.triggerIfChanged());
+    this.#observerManager.triggerObservers();
   }
 
   removeObserver(observer: Observer) {
-    this.#observers.delete(observer);
+    this.#observerManager.removeObserver(observer);
   }
 }
