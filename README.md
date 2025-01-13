@@ -32,6 +32,6 @@ Update {
 
 ## Demo
 
-<https://jacklehamster.github.io/NAPL/example>
+<https://napl.dobuki.net>
 
 
