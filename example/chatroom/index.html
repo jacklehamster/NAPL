@@ -14,7 +14,7 @@
         top: 5px;
         z-index: 100;
       }
-      .chat-log {
+      .chat-container {
         position: absolute;
         left: 0;
         top: 0;
@@ -36,12 +36,19 @@
         border: 1px solid black;
         height: 100px;
       }
+      .chatting {
+        opacity: 0.5;
+        font-style: italic;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="users"></div>
-      <div class="chat-log"></div>
+      <div class="chat-container">
+        <div class="chat-log"></div>
+        <div class="chatting"></div>
+      </div>
       <div class="chat-box" contenteditable="true"></div>
     </div>
 
@@ -50,7 +57,14 @@
 
       window.socketClient = socketClient;
 
-      document.querySelector(".chat-box").addEventListener("keydown", (e) => {
+      const chatBox = document.querySelector(".chat-box");
+      chatBox.addEventListener("input", () => {
+        socketClient.setData(
+          "chatting/{self}",
+          chatBox.textContent.length > 0 ? true : undefined
+        );
+      });
+      chatBox.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           const message = e.target.textContent;
           e.target.textContent = "";
@@ -58,6 +72,7 @@
             `chat`,
             {
               message,
+              clientId: socketClient.clientId,
               emoji: socketClient.self.state.emoji,
               name: socketClient.self.state.name,
             },
@@ -65,11 +80,30 @@
               push: true,
             }
           );
+          socketClient.setData("chatting/{self}", undefined);
           e.preventDefault();
         }
       });
 
-      socketClient.observe(["chat"]).onElementsAdded((elems) => {
+      socketClient.observe("chatting/{keys}").onChange((chattingClients) => {
+        const chatting = document.querySelector(".chatting");
+        const otherClientsTyping = chattingClients.value
+          .filter(
+            (clientId) =>
+              clientId !== socketClient.clientId &&
+              socketClient.state.clients[clientId]
+          )
+          .map(
+            (clientId) =>
+              ` ${socketClient.state.clients[clientId].emoji} ${socketClient.state.clients[clientId].name}`
+          );
+        chatting.textContent =
+          otherClientsTyping.length > 0
+            ? `${otherClientsTyping.join(", ")} typing...`
+            : "";
+      });
+
+      socketClient.observe("chat").onElementsAdded((elems) => {
         elems.forEach((elem) => {
           const chatLog = document.querySelector(".chat-log");
           const chatEntry = chatLog.appendChild(document.createElement("div"));
@@ -81,6 +115,8 @@
           );
           chatAuthor.textContent = `${elem.emoji} ${elem.name}`;
           chatAuthor.style.fontWeight = "bold";
+          chatAuthor.style.backgroundColor =
+            elem.clientId === socketClient.clientId ? "yellow" : "";
           const chatMessage = chatEntry.appendChild(
             document.createElement("div")
           );
@@ -89,26 +125,26 @@
         });
       });
 
-      socketClient.observe(["clients/{self}"]).onChange(() => {
+      socketClient.observe("clients/{self}").onChange(() => {
         socketClient.self.setData("name", randomName());
         socketClient.self.setData("emoji", randomEmoji());
       });
 
       socketClient
-        .observe(["clients/{keys}"])
+        .observe("clients/{keys}")
         .onElementsAdded((clientIds) => {
           clientIds.forEach((clientId) => {
-            socketClient
-              .observe([
-                `clients/${clientId}/name`,
-                `clients/${clientId}/emoji`,
-              ])
-              .onChange((name, emoji) => {
-                client.textContent = `${emoji.value} ${name.value}`;
-                if (!emoji.value && !name.value) {
-                  observer.close();
-                }
-              });
+            const observers = new Set();
+            observers.add(
+              socketClient
+                .observe(
+                  `clients/${clientId}/name`,
+                  `clients/${clientId}/emoji`
+                )
+                .onChange((name, emoji) => {
+                  client.textContent = `${emoji.value} ${name.value}`;
+                })
+            );
 
             // new client
             const client = document.createElement("div");
@@ -121,6 +157,14 @@
             } else {
               document.querySelector(".users").appendChild(client);
             }
+
+            observers.add(
+              socketClient.observe(`clients/${clientId}`).onChange((client) => {
+                if (!client.value) {
+                  observers.forEach((observer) => observer.close());
+                }
+              })
+            );
           });
         })
         .onElementsDeleted((clientIds) => {

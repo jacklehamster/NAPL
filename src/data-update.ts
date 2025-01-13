@@ -1,32 +1,30 @@
 import { DataObject } from "./types/DataObject";
 import { Update } from "./types/Update";
 
-export function commitUpdates(obj: DataObject, updates: Update[], pathsUpdated?: Set<(string | number)[]>) {
+export function commitUpdates(root: DataObject, updates: Update[]) {
   const confirmedUpdates = getConfirmedUpdates(updates);
   confirmedUpdates?.forEach((update) => {
-    const { path, value, deleted, push, insert } = update;
-    const parts = Array.isArray(path) ? path : path.split("/");
-    if (pathsUpdated) {
-      pathsUpdated.add(parts);
-    }
-    const leaf: any = getLeafObject(obj, parts, 1, true)!;
+    const parts = update.path.split("/");
+    const leaf: any = getLeafObject(root, parts, 1, true)!;
     const prop = parts[parts.length - 1];
-    if (deleted) {
-      delete leaf[prop];
-    } else if (value !== undefined) {
-      if (push) {
-        if (!Array.isArray(leaf[prop])) {
-          leaf[prop] = [];
-        }
-        leaf[prop] = [...leaf[prop], value];
-      } else if (insert !== undefined) {
-        if (!Array.isArray(leaf[prop])) {
-          leaf[prop] = [];
-        }
-        leaf[prop] = [...leaf[prop].slice(0, insert), value, ...leaf[prop].slice(insert)];
-      } else {
-        leaf[prop] = value;
+    if (update.push) {
+      if (!Array.isArray(leaf[prop])) {
+        leaf[prop] = [];
       }
+      leaf[prop] = [...leaf[prop], update.value];
+    } else if (update.insert !== undefined) {
+      if (!Array.isArray(leaf[prop])) {
+        leaf[prop] = [];
+      }
+      leaf[prop] = [...leaf[prop].slice(0, update.insert), update.value, ...leaf[prop].slice(update.insert)];
+    } else if (update.delete !== undefined) {
+      if (Array.isArray(leaf[prop])) {
+        leaf[prop] = [...leaf[prop].slice(0, update.delete), ...leaf[prop].slice(update.delete + 1)];
+      }
+    } else if (update.value === undefined) {
+      delete leaf[prop];
+    } else {
+      leaf[prop] = update.value;
     }
   });
 }
@@ -39,19 +37,21 @@ function getConfirmedUpdates(updates: Update[]) {
     if (confirmedA !== confirmedB) {
       return confirmedA - confirmedB;
     }
-    const pathA = Array.isArray(a.path) ? a.path.join("/") : a.path;
-    const pathB = Array.isArray(b.path) ? b.path.join("/") : b.path;
-    return pathA.localeCompare(pathB);
+    return a.path.localeCompare(b.path);
   });
   return confirmedUpdates;
 }
 
-export function getLeafObject(obj: DataObject, parts: (string | number)[], offset: number, autoCreate: boolean, selfId?: string) {
+export function getLeafObject(obj: DataObject, path: string | (string | number)[], offset: number, autoCreate: boolean, selfId?: string) {
+  const parts = Array.isArray(path) ? path : path.split("/");
   let current = obj;
   for (let i = 0; i < parts.length - offset; i++) {
     let prop = selfId && parts[i] === "{self}" ? selfId : parts[i];
     if (prop === "{keys}") {
       return Object.keys(current);
+    }
+    if (prop === "{values}") {
+      return Object.values(current);
     }
     if (current[prop] === undefined) {
       if (autoCreate) {

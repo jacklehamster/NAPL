@@ -2,19 +2,19 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { commitUpdates } from "@/data-update";
+import { commitUpdates, getLeafObject } from "@/data-update";
 import { Payload } from "@/server/SocketPayload";
 import { Update } from "@/types/Update";
 import { ISharedData, SetDataOptions } from "./ISharedData";
 import { ClientData } from "./ClientData";
 import { SubData } from "./SubData";
 import { Observer } from "./Observer";
+import { BlobBuilder, extractPayload } from "@dobuki/data-blob";
 
 export class SocketClient implements ISharedData {
   state: Record<string, any> = {};
   #socket: WebSocket | undefined;
   #connectionPromise: Promise<void> | undefined;
-  readonly #pathsUpdated: Set<(string | number)[]> = new Set();
   readonly #connectionUrl: string;
   readonly #outgoingUpdates: Update[] = [];
   readonly #incomingUpdates: Update[] = [];
@@ -32,15 +32,29 @@ export class SocketClient implements ISharedData {
     });
   }
 
+  fixPath(path: Update["path"]) {
+    const split = path.split("/");
+    return split.map(part => part === "{self}" ? this.#selfData.id : part).join("/");
+  }
+
+  usefulUpdate(update: Update) {
+    const currentValue = getLeafObject(this.state, update.path, 0, false, this.#selfData.id);
+    return update.value !== currentValue;
+  }
+
   async setData(path: Update["path"], value: any, options: SetDataOptions = {}) {
-    await this.waitForConnection();
+    await this.#waitForConnection();
     const update: Update = {
-      path,
-      value,
+      path: this.fixPath(path),
+      value: options.delete ? undefined : value,
       confirmed: options.passive ? undefined : Date.now(),
       push: options.push,
       insert: options.insert,
     };
+
+    if (!this.usefulUpdate(update)) {
+      return;
+    }
 
     //  commit updates locally
     if (!options.passive) {
@@ -61,13 +75,13 @@ export class SocketClient implements ISharedData {
     return new SubData(path, this);
   }
 
-  observe(paths: Update["path"][]): Observer {
+  observe(...paths: Update["path"][]): Observer {
     const observer = new Observer(this, paths);
     this.#observers.add(observer);
     return observer;
   }
 
-  async waitForConnection() {
+  async #waitForConnection() {
     if (!this.#socket) {
       this.#connect();
     }
@@ -85,8 +99,9 @@ export class SocketClient implements ISharedData {
         reject(event);
       });
 
-      socket.addEventListener("message", (event: any) => {
-        const payload: Payload = JSON.parse(event.data.toString());
+      socket.addEventListener("message", async (event: MessageEvent<Blob>) => {
+        const [payload] = await extractPayload(event.data);
+
         if (payload.myClientId) {
           // client ID confirmed
           this.#selfData.id = payload.myClientId;
@@ -127,18 +142,16 @@ export class SocketClient implements ISharedData {
   }
 
   async #broadcastUpdates() {
-    await this.waitForConnection();
-    const payload: Payload = {
-      updates: this.#outgoingUpdates,
-    };
-    this.#socket?.send(JSON.stringify(payload));
+    await this.#waitForConnection();
+    this.#socket?.send(BlobBuilder
+      .payload({ updates: this.#outgoingUpdates })
+      .build());
     this.#outgoingUpdates.length = 0;
   }
 
   async #applyUpdates() {
-    await this.waitForConnection();
-    this.#pathsUpdated.clear();
-    commitUpdates(this.state, this.#incomingUpdates, this.#pathsUpdated);
+    await this.#waitForConnection();
+    commitUpdates(this.state, this.#incomingUpdates);
     this.#incomingUpdates.length = 0;
     this.state.lastUpdated = Date.now();
     this.triggerObservers();

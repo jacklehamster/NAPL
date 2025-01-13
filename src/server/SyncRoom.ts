@@ -5,11 +5,12 @@ import { addMessageReceiver } from "./SocketEventHandler";
 import { Payload } from "./SocketPayload";
 import { ClientState } from "@/types/ClientState";
 import { RoomState } from "@/types/ServerState";
+import { BlobBuilder } from "@dobuki/data-blob";
 
 export class SyncRoom {
   readonly #sockets: Map<ws.WebSocket, ClientState> = new Map();
   readonly #state: RoomState;
-  readonly #onRoomChange: Set<(roomState: RoomState) => void> = new Set();
+  readonly #onRoomChange = new Set<(roomState: RoomState) => void>();
   #updates: Update[] = [];
 
   constructor(private room: string) {
@@ -22,15 +23,15 @@ export class SyncRoom {
     this.#onRoomChange.add(callback);
   }
 
-  welcomeClient(client: ws.WebSocket) {
+  async welcomeClient(client: ws.WebSocket) {
     //  initialize client state
     const clientId = crypto.randomUUID();
-    const clientState: ClientState = {
-    };
+    const clientPath = `clients/${clientId}`;
+    const clientState: ClientState = {};
     this.#sockets.set(client, clientState);
     const newUpdates: Update[] = [
       {
-        path: ["clients", clientId],
+        path: clientPath,
         value: clientState,
         confirmed: Date.now(),
       }
@@ -50,8 +51,8 @@ export class SyncRoom {
       this.#sockets.delete(client);
       this.#shareUpdates([
         {
-          path: ["clients", clientId],
-          deleted: true,
+          path: clientPath,
+          value: undefined,
           confirmed: Date.now(),
         },
       ]);
@@ -68,7 +69,7 @@ export class SyncRoom {
       state: this.#state,
       updates: this.#updates,
     };
-    client.send(JSON.stringify(clientPayload));
+    client.send(await BlobBuilder.payload(clientPayload).build().arrayBuffer());
     return { clientId };
   }
 
@@ -88,18 +89,18 @@ export class SyncRoom {
     }
   }
 
-  #broadcastUpdates(newUpdates: Update[] | undefined, senderFilter?: (sender: ws.WebSocket) => boolean) {
+  async #broadcastUpdates(newUpdates: Update[] | undefined, senderFilter?: (sender: ws.WebSocket) => boolean) {
     if (!newUpdates?.length) {
       return;
     }
-    const payload = JSON.stringify({
-      updates: newUpdates,
-    });
+    const blob = BlobBuilder.payload({ updates: newUpdates }).build();
+    const buffer = await blob.arrayBuffer();
+
     this.#sockets.keys().forEach((client) => {
       if (senderFilter && !senderFilter(client)) {
         return;
       }
-      client.send(payload);
+      client.send(buffer);
     });
   }
 

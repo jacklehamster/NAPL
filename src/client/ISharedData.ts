@@ -6,10 +6,11 @@ export interface SetDataOptions {
   room?: string;
   push?: boolean;
   insert?: number;
+  delete?: boolean;
 }
 
 export interface ISharedData {
   setData(path: Update["path"], value: any, options: SetDataOptions): Promise<void>;
   state: Record<string, any>;
-  observe(paths: Update["path"][]): Observer;
+  observe(...paths: Update["path"][]): Observer;
 }

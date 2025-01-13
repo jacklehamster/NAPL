@@ -11,12 +11,12 @@ export class Observer {
   readonly pathArrays: (string | number)[][];
   readonly observations: Observation[];
   changeCallback?: (...values: any[]) => void;
-  addedElementsCallback?: (...keys: (any[] | undefined)[]) => void;
-  deletedElementsCallback?: (...keys: (any[] | undefined)[]) => void;
+  #addedElementsCallback?: (...keys: (any[] | undefined)[]) => void;
+  #deletedElementsCallback?: (...keys: (any[] | undefined)[]) => void;
   constructor(
     readonly socketClient: SocketClient,
     paths: Update["path"][]) {
-    this.pathArrays = paths.map(p => p === undefined ? [] : Array.isArray(p) ? p : p.split("/"));
+    this.pathArrays = paths.map(p => p === undefined ? [] : p.split("/"));
     this.observations = paths.map(() => {
       const observation = {
         previous: undefined,
@@ -35,19 +35,19 @@ export class Observer {
   }
 
   onElementsAdded(callback: (...keys: (any[] | undefined)[]) => void): Observer {
-    this.addedElementsCallback = callback;
+    this.#addedElementsCallback = callback;
     return this;
   }
 
   onElementsDeleted(callback: (...keys: (any[] | undefined)[]) => void): Observer {
-    this.deletedElementsCallback = callback;
+    this.#deletedElementsCallback = callback;
     return this;
   }
 
   #updatedObservations() {
-    const newValues = this.pathArrays.map(p => {
-      return getLeafObject(this.socketClient.state, p, 0, false, this.socketClient.clientId);
-    });
+    const newValues = this.pathArrays.map(p =>
+      getLeafObject(this.socketClient.state, p, 0, false, this.socketClient.clientId)
+    );
     if (this.observations.length && this.observations.every((ob, index) => {
       const newValue = newValues[index];
       if (ob.value === newValue) {
@@ -74,7 +74,7 @@ export class Observer {
       return;
     }
     this.changeCallback?.(...this.observations);
-    if (this.addedElementsCallback && this.observations.some((observation) => Array.isArray(observation.value))) {
+    if (this.#addedElementsCallback && this.observations.some((observation) => Array.isArray(observation.value))) {
       let hasNewElements = false;
       const newElementsArray = this.observations.map((observation) => {
         if (Array.isArray(observation.value)) {
@@ -87,10 +87,10 @@ export class Observer {
         }
       });
       if (hasNewElements) {
-        this.addedElementsCallback(...newElementsArray);
+        this.#addedElementsCallback(...newElementsArray);
       }
     }
-    if (this.deletedElementsCallback && this.observations.some((observation) => Array.isArray(observation.previous))) {
+    if (this.#deletedElementsCallback && this.observations.some((observation) => Array.isArray(observation.previous))) {
       let hasDeletedElements = false;
       const deletedElementsArray = this.observations.map((observation) => {
         if (Array.isArray(observation.previous)) {
@@ -103,12 +103,13 @@ export class Observer {
         }
       });
       if (hasDeletedElements) {
-        this.deletedElementsCallback(...deletedElementsArray);
+        this.#deletedElementsCallback(...deletedElementsArray);
       }
     }
   }
 
   close(): void {
+    console.log("Closed observer " + this.pathArrays.join("/"));
     this.socketClient.removeObserver(this);
   }
 }

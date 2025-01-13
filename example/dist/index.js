@@ -1,363 +1,528 @@
 // ../dist/index.js
-function h(t, e, r) {
-  C(e)?.forEach((n) => {
-    let { path: s, value: a, deleted: f, push: A, insert: u } = n, d = Array.isArray(s) ? s : s.split("/");
-    if (r)
-      r.add(d);
-    let o = c(t, d, 1, true), l = d[d.length - 1];
-    if (f)
-      delete o[l];
-    else if (a !== undefined)
-      if (A) {
-        if (!Array.isArray(o[l]))
-          o[l] = [];
-        o[l] = [...o[l], a];
-      } else if (u !== undefined) {
-        if (!Array.isArray(o[l]))
-          o[l] = [];
-        o[l] = [...o[l].slice(0, u), a, ...o[l].slice(u)];
-      } else
-        o[l] = a;
-  });
-}
-function C(t) {
-  let e = t.filter((r) => r.confirmed);
-  return e?.sort((r, i) => {
-    let n = r.confirmed ?? 0, s = i.confirmed ?? 0;
-    if (n !== s)
-      return n - s;
-    let a = Array.isArray(r.path) ? r.path.join("/") : r.path, f = Array.isArray(i.path) ? i.path.join("/") : i.path;
-    return a.localeCompare(f);
-  }), e;
-}
-function c(t, e, r, i, n) {
-  let s = t;
-  for (let a = 0;a < e.length - r; a++) {
-    let f = n && e[a] === "{self}" ? n : e[a];
-    if (f === "{keys}")
-      return Object.keys(s);
-    if (s[f] === undefined)
-      if (i)
-        s[f] = {};
-      else
-        return;
-    s = s[f];
-  }
-  return s;
-}
-async function O(t) {
-  let e;
-  if (t instanceof Buffer)
-    e = t.toString();
-  else if (t instanceof ArrayBuffer)
-    e = Buffer.from(t).toString();
-  else if (t instanceof Blob)
-    e = await t.text();
-  else
-    throw new Error("Unsupported data type");
-  try {
-    return JSON.parse(e);
-  } catch (r) {
-    return console.log(r), null;
-  }
-}
-function b(t, { payloadReceived: e }) {
-  t.on("message", async (r) => {
-    let i = await O(r);
-    if (i)
-      e(i);
-  });
-}
-
-class y {
-  room;
-  #t = new Map;
-  #r;
-  #s = new Set;
-  #e = [];
-  constructor(t) {
-    this.room = t;
-    this.#r = { clients: {} };
-  }
-  addRoomChangeListener(t) {
-    this.#s.add(t);
-  }
-  welcomeClient(t) {
-    let e = crypto.randomUUID(), r = {};
-    this.#t.set(t, r);
-    let i = [{ path: ["clients", e], value: r, confirmed: Date.now() }];
-    this.#i(i, t), b(t, { payloadReceived: (s) => {
-      if (s.updates)
-        this.#i(s.updates, t);
-    } }), t.on("close", () => {
-      this.#t.delete(t), this.#i([{ path: ["clients", e], deleted: true, confirmed: Date.now() }]), console.log(`client ${e} disconnected`), this.#s.forEach((s) => s(this.#r));
-    }), h(this.#r, this.#e), this.#e = this.#e.filter((s) => !s.confirmed);
-    let n = { myClientId: e, state: this.#r, updates: this.#e };
-    return t.send(JSON.stringify(n)), { clientId: e };
-  }
-  #i(t, e) {
-    let r = t.filter((i) => !i.confirmed);
-    this.#o(t), this.#a(t), h(this.#r, this.#e), this.#e = this.#e.filter((i) => !i.confirmed), this.#n(t, (i) => i !== e), this.#n(r, (i) => i === e);
-  }
-  #a(t) {
-    if (t)
-      t.forEach((e) => this.#e.push(e));
-  }
-  #n(t, e) {
-    if (!t?.length)
-      return;
-    let r = JSON.stringify({ updates: t });
-    this.#t.keys().forEach((i) => {
-      if (e && !e(i))
-        return;
-      i.send(r);
-    });
-  }
-  #o(t) {
-    t.forEach((e) => {
-      if ((Array.isArray(e.path) ? e.path : e.path.split("/"))[0] !== "clients")
-        e.confirmed = Date.now();
-    });
-  }
-}
-
-class p {
-  #t = {};
-  constructor(t) {
-    this.#r(t);
-  }
-  #r(t) {
-    t.on("listening", () => {
-      let e = t.address();
-      if (typeof e === "string")
-        console.log(`WebSocket server listening on ${e}`);
-      else if (e && typeof e === "object") {
-        let r = e.address === "::" ? "localhost" : e.address;
-        console.log(`WebSocket server listening on ws://${r}:${e.port}`);
+function commitUpdates(root, updates) {
+  const confirmedUpdates = getConfirmedUpdates(updates);
+  confirmedUpdates?.forEach((update) => {
+    const parts = update.path.split("/");
+    const leaf = getLeafObject(root, parts, 1, true);
+    const prop = parts[parts.length - 1];
+    if (update.push) {
+      if (!Array.isArray(leaf[prop])) {
+        leaf[prop] = [];
       }
-    }), t.on("connection", (e, r) => {
-      let n = new URLSearchParams(r.url?.split("?")[1]).get("room") ?? "default", s = this.#s(n), { clientId: a } = s.welcomeClient(e);
-      console.log(`client ${a} connected in room ${n}.`);
+      leaf[prop] = [...leaf[prop], update.value];
+    } else if (update.insert !== undefined) {
+      if (!Array.isArray(leaf[prop])) {
+        leaf[prop] = [];
+      }
+      leaf[prop] = [...leaf[prop].slice(0, update.insert), update.value, ...leaf[prop].slice(update.insert)];
+    } else if (update.delete !== undefined) {
+      if (Array.isArray(leaf[prop])) {
+        leaf[prop] = [...leaf[prop].slice(0, update.delete), ...leaf[prop].slice(update.delete + 1)];
+      }
+    } else if (update.value === undefined) {
+      delete leaf[prop];
+    } else {
+      leaf[prop] = update.value;
+    }
+  });
+}
+function getConfirmedUpdates(updates) {
+  const confirmedUpdates = updates.filter((update) => update.confirmed);
+  confirmedUpdates?.sort((a, b) => {
+    const confirmedA = a.confirmed ?? 0;
+    const confirmedB = b.confirmed ?? 0;
+    if (confirmedA !== confirmedB) {
+      return confirmedA - confirmedB;
+    }
+    return a.path.localeCompare(b.path);
+  });
+  return confirmedUpdates;
+}
+function getLeafObject(obj, path, offset, autoCreate, selfId) {
+  const parts = Array.isArray(path) ? path : path.split("/");
+  let current = obj;
+  for (let i = 0;i < parts.length - offset; i++) {
+    let prop = selfId && parts[i] === "{self}" ? selfId : parts[i];
+    if (prop === "{keys}") {
+      return Object.keys(current);
+    }
+    if (prop === "{values}") {
+      return Object.values(current);
+    }
+    if (current[prop] === undefined) {
+      if (autoCreate) {
+        current[prop] = {};
+      } else {
+        return;
+      }
+    }
+    current = current[prop];
+  }
+  return current;
+}
+
+class a {
+  data = [];
+  encoder = new TextEncoder;
+  static payload(r) {
+    return new a().payload(r);
+  }
+  static blob(r) {
+    return new a().blob(r);
+  }
+  payload(r) {
+    let n = new Uint8Array([1]);
+    this.data.push(n.buffer);
+    let e = JSON.stringify(r), t = this.encoder.encode(e), s = new Uint32Array([t.byteLength]);
+    return this.data.push(s.buffer), this.data.push(t.buffer), this;
+  }
+  blob(r) {
+    let n = new Uint8Array([2]);
+    this.data.push(n.buffer);
+    let e = new Uint32Array([r.size]);
+    return this.data.push(e.buffer), this.data.push(r), this;
+  }
+  build() {
+    return new Blob(this.data);
+  }
+}
+async function c(r) {
+  let n = [], e = 0, t;
+  while (e < r.size) {
+    t = t ?? await r.arrayBuffer();
+    let s = new Uint8Array(t, e, 1);
+    e += Uint8Array.BYTES_PER_ELEMENT;
+    let o = new Uint32Array(t.slice(e, e + Uint32Array.BYTES_PER_ELEMENT), 0, 1);
+    switch (e += Uint32Array.BYTES_PER_ELEMENT, s[0]) {
+      case 1:
+        n.push(f(t, e, o[0]));
+        break;
+      case 2:
+        n.push(new Blob([t.slice(e, e + o[0])]));
+        break;
+    }
+    e += o[0];
+  }
+  return n;
+}
+function f(r, n, e) {
+  let t = new TextDecoder().decode(new Uint8Array(r, n, e));
+  return JSON.parse(t);
+}
+function addMessageReceiver(socket, {
+  payloadReceived
+}) {
+  socket.on("message", async (message) => {
+    if (message instanceof Buffer) {
+      const blob = new Blob([message]);
+      const result = await c(blob);
+      if (result[0]) {
+        payloadReceived(result[0]);
+      }
+    }
+  });
+}
+
+class SyncRoom {
+  room;
+  #sockets = new Map;
+  #state;
+  #onRoomChange = new Set;
+  #updates = [];
+  constructor(room) {
+    this.room = room;
+    this.#state = {
+      clients: {}
+    };
+  }
+  addRoomChangeListener(callback) {
+    this.#onRoomChange.add(callback);
+  }
+  async welcomeClient(client) {
+    const clientId = crypto.randomUUID();
+    const clientPath = `clients/${clientId}`;
+    const clientState = {};
+    this.#sockets.set(client, clientState);
+    const newUpdates = [
+      {
+        path: clientPath,
+        value: clientState,
+        confirmed: Date.now()
+      }
+    ];
+    this.#shareUpdates(newUpdates, client);
+    addMessageReceiver(client, {
+      payloadReceived: (payload) => {
+        if (payload.updates) {
+          this.#shareUpdates(payload.updates, client);
+        }
+      }
+    });
+    client.on("close", () => {
+      this.#sockets.delete(client);
+      this.#shareUpdates([
+        {
+          path: clientPath,
+          value: undefined,
+          confirmed: Date.now()
+        }
+      ]);
+      console.log(`client ${clientId} disconnected`);
+      this.#onRoomChange.forEach((callback) => callback(this.#state));
+    });
+    commitUpdates(this.#state, this.#updates);
+    this.#updates = this.#updates.filter((update) => !update.confirmed);
+    const clientPayload = {
+      myClientId: clientId,
+      state: this.#state,
+      updates: this.#updates
+    };
+    client.send(await a.payload(clientPayload).build().arrayBuffer());
+    return { clientId };
+  }
+  #shareUpdates(newUpdates, sender) {
+    const updatesForSender = newUpdates.filter((update) => !update.confirmed);
+    this.#markCommonUpdatesConfirmed(newUpdates);
+    this.#pushUpdates(newUpdates);
+    commitUpdates(this.#state, this.#updates);
+    this.#updates = this.#updates.filter((update) => !update.confirmed);
+    this.#broadcastUpdates(newUpdates, (client) => client !== sender);
+    this.#broadcastUpdates(updatesForSender, (client) => client === sender);
+  }
+  #pushUpdates(newUpdates) {
+    if (newUpdates) {
+      newUpdates.forEach((update) => this.#updates.push(update));
+    }
+  }
+  async#broadcastUpdates(newUpdates, senderFilter) {
+    if (!newUpdates?.length) {
+      return;
+    }
+    const blob = a.payload({ updates: newUpdates }).build();
+    const buffer = await blob.arrayBuffer();
+    this.#sockets.keys().forEach((client) => {
+      if (senderFilter && !senderFilter(client)) {
+        return;
+      }
+      client.send(buffer);
     });
   }
-  #s(t) {
-    if (!this.#t[t])
-      this.#t[t] = new y(t), this.#t[t].addRoomChangeListener((e) => {
+  #markCommonUpdatesConfirmed(updates) {
+    updates.forEach((update) => {
+      const parts = Array.isArray(update.path) ? update.path : update.path.split("/");
+      if (parts[0] !== "clients") {
+        update.confirmed = Date.now();
+      }
+    });
+  }
+}
+
+class SyncSocket {
+  #rooms = {};
+  constructor(server) {
+    this.#hookupSocketServer(server);
+  }
+  #hookupSocketServer(websocketServer) {
+    websocketServer.on("listening", () => {
+      const address = websocketServer.address();
+      if (typeof address === "string") {
+        console.log(`WebSocket server listening on ${address}`);
+      } else if (address && typeof address === "object") {
+        const host = address.address === "::" ? "localhost" : address.address;
+        console.log(`WebSocket server listening on ws://${host}:${address.port}`);
+      }
+    });
+    websocketServer.on("connection", async (socket, req) => {
+      const parameters = new URLSearchParams(req.url?.split("?")[1]);
+      const roomName = parameters.get("room") ?? "default";
+      const room = this.#getRoom(roomName);
+      const { clientId } = await room.welcomeClient(socket);
+      console.log(`client ${clientId} connected in room ${roomName}.`);
+    });
+  }
+  #getRoom(roomName) {
+    if (!this.#rooms[roomName]) {
+      this.#rooms[roomName] = new SyncRoom(roomName);
+      this.#rooms[roomName].addRoomChangeListener((roomState) => {
         setTimeout(() => {
-          if (!Object.values(e.clients).length)
-            console.log("closing room", t), delete this.#t[t];
+          if (!Object.values(roomState.clients).length) {
+            console.log("closing room", roomName);
+            delete this.#rooms[roomName];
+          }
         }, 1e4);
       });
-    return this.#t[t];
+    }
+    return this.#rooms[roomName];
   }
 }
 
-class m {
+class ClientData {
   socketClient;
   id = "";
-  constructor(t) {
-    this.socketClient = t;
+  constructor(socketClient) {
+    this.socketClient = socketClient;
   }
-  observe(t) {
-    let e = t.map((r) => {
-      return ["clients", "self", ...Array.isArray(r) ? r : r.split("/")];
-    });
-    return this.socketClient.observe(e);
+  #getAbsolutePath(path) {
+    return path ? `clients/{self}/${path}` : "clients/{self}";
   }
-  async setData(t, e, r) {
-    await this.socketClient.waitForConnection();
-    let i = Array.isArray(t) ? t : t.split("/");
-    return this.socketClient.setData(["clients", this.id ?? "", ...i], e, r);
+  observe(...paths) {
+    const updatedPaths = paths.map((path) => this.#getAbsolutePath(path));
+    return this.socketClient.observe(...updatedPaths);
+  }
+  async setData(path, value, options) {
+    return this.socketClient.setData(this.#getAbsolutePath(path), value, options);
   }
   get state() {
     return this.socketClient.state.clients?.[this.id] ?? {};
   }
 }
 
-class v {
+class SubData {
+  path;
   socketClient;
-  parts;
-  constructor(t, e) {
-    this.socketClient = e;
-    this.parts = Array.isArray(t) ? t : t.split("/");
+  parts = [];
+  constructor(path, socketClient) {
+    this.path = path;
+    this.socketClient = socketClient;
+    this.parts = path.split("/");
   }
-  observe(t) {
-    let e = t.map((r) => {
-      let i = r === undefined ? [] : Array.isArray(r) ? r : r.split("/");
-      return [...this.parts, ...i];
-    });
-    return this.socketClient.observe(e);
+  #getAbsolutePath(path) {
+    return path ? `${this.path}/${path}` : this.path;
   }
-  async setData(t, e, r) {
-    await this.socketClient.waitForConnection();
-    let i = t === undefined ? [] : Array.isArray(t) ? t : t.split("/");
-    return this.socketClient.setData([...this.parts, ...i], e, r);
+  observe(...paths) {
+    const updatedPaths = paths.map((path) => this.#getAbsolutePath(path));
+    return this.socketClient.observe(...updatedPaths);
+  }
+  async setData(path, value, options) {
+    return this.socketClient.setData(this.#getAbsolutePath(path), value, options);
   }
   get state() {
-    return c(this.socketClient.state, this.parts, 0, false) ?? {};
+    return getLeafObject(this.socketClient.state, this.parts, 0, false) ?? {};
   }
 }
 
-class g {
+class Observer {
   socketClient;
   pathArrays;
   observations;
   changeCallback;
-  addedElementsCallback;
-  deletedElementsCallback;
-  constructor(t, e) {
-    this.socketClient = t;
-    this.pathArrays = e.map((r) => r === undefined ? [] : Array.isArray(r) ? r : r.split("/")), this.observations = e.map(() => {
-      return { previous: undefined, value: undefined };
-    }), requestAnimationFrame(() => {
+  #addedElementsCallback;
+  #deletedElementsCallback;
+  constructor(socketClient, paths) {
+    this.socketClient = socketClient;
+    this.pathArrays = paths.map((p) => p === undefined ? [] : p.split("/"));
+    this.observations = paths.map(() => {
+      const observation = {
+        previous: undefined,
+        value: undefined
+      };
+      return observation;
+    });
+    requestAnimationFrame(() => {
       this.triggerIfChanged();
     });
   }
-  onChange(t) {
-    return this.changeCallback = t, this;
+  onChange(callback) {
+    this.changeCallback = callback;
+    return this;
   }
-  onElementsAdded(t) {
-    return this.addedElementsCallback = t, this;
+  onElementsAdded(callback) {
+    this.#addedElementsCallback = callback;
+    return this;
   }
-  onElementsDeleted(t) {
-    return this.deletedElementsCallback = t, this;
+  onElementsDeleted(callback) {
+    this.#deletedElementsCallback = callback;
+    return this;
   }
-  #t() {
-    let t = this.pathArrays.map((e) => {
-      return c(this.socketClient.state, e, 0, false, this.socketClient.clientId);
+  #updatedObservations() {
+    const newValues = this.pathArrays.map((p) => getLeafObject(this.socketClient.state, p, 0, false, this.socketClient.clientId));
+    if (this.observations.length && this.observations.every((ob, index) => {
+      const newValue = newValues[index];
+      if (ob.value === newValue) {
+        return true;
+      }
+      if (Array.isArray(ob.value) && Array.isArray(newValue) && ob.value.length === newValue.length && ob.value.every((elem, idx) => elem === newValue[idx])) {
+        return true;
+      }
+      return false;
+    })) {
+      return false;
+    }
+    this.observations.forEach((observation, index) => {
+      observation.previous = observation.value;
+      observation.value = newValues[index];
     });
-    if (this.observations.length && this.observations.every((e, r) => {
-      let i = t[r];
-      if (e.value === i)
-        return true;
-      if (Array.isArray(e.value) && Array.isArray(i) && e.value.length === i.length && e.value.every((n, s) => n === i[s]))
-        return true;
-      return false;
-    }))
-      return false;
-    return this.observations.forEach((e, r) => {
-      e.previous = e.value, e.value = t[r];
-    }), true;
+    return true;
   }
   triggerIfChanged() {
-    if (!this.#t())
+    if (!this.#updatedObservations()) {
       return;
-    if (this.changeCallback?.(...this.observations), this.addedElementsCallback && this.observations.some((t) => Array.isArray(t.value))) {
-      let t = false, e = this.observations.map((r) => {
-        if (Array.isArray(r.value)) {
-          let i = new Set(Array.isArray(r.previous) ? r.previous : []), n = r.value.filter((s) => !i.has(s));
-          if (n.length)
-            t = true;
-          return n;
-        }
-      });
-      if (t)
-        this.addedElementsCallback(...e);
     }
-    if (this.deletedElementsCallback && this.observations.some((t) => Array.isArray(t.previous))) {
-      let t = false, e = this.observations.map((r) => {
-        if (Array.isArray(r.previous)) {
-          let i = new Set(Array.isArray(r.value) ? r.value : []), n = r.previous.filter((s) => !i.has(s));
-          if (n.length)
-            t = true;
-          return n;
+    this.changeCallback?.(...this.observations);
+    if (this.#addedElementsCallback && this.observations.some((observation) => Array.isArray(observation.value))) {
+      let hasNewElements = false;
+      const newElementsArray = this.observations.map((observation) => {
+        if (Array.isArray(observation.value)) {
+          const previousSet = new Set(Array.isArray(observation.previous) ? observation.previous : []);
+          const newElements = observation.value.filter((clientId) => !previousSet.has(clientId));
+          if (newElements.length) {
+            hasNewElements = true;
+          }
+          return newElements;
         }
       });
-      if (t)
-        this.deletedElementsCallback(...e);
+      if (hasNewElements) {
+        this.#addedElementsCallback(...newElementsArray);
+      }
+    }
+    if (this.#deletedElementsCallback && this.observations.some((observation) => Array.isArray(observation.previous))) {
+      let hasDeletedElements = false;
+      const deletedElementsArray = this.observations.map((observation) => {
+        if (Array.isArray(observation.previous)) {
+          const currentSet = new Set(Array.isArray(observation.value) ? observation.value : []);
+          const deletedElements = observation.previous.filter((clientId) => !currentSet.has(clientId));
+          if (deletedElements.length) {
+            hasDeletedElements = true;
+          }
+          return deletedElements;
+        }
+      });
+      if (hasDeletedElements) {
+        this.#deletedElementsCallback(...deletedElementsArray);
+      }
     }
   }
   close() {
+    console.log("Closed observer " + this.pathArrays.join("/"));
     this.socketClient.removeObserver(this);
   }
 }
 
-class D {
+class SocketClient {
   state = {};
-  #t;
-  #r;
-  #s = new Set;
-  #e;
-  #i = [];
-  #a = [];
-  #n = new m(this);
-  #o = new Set;
-  constructor(t, e) {
-    let r = globalThis.location.protocol === "https:";
-    this.#e = `${r ? "wss" : "ws"}://${t}${e ? `?room=${e}` : ""}`, this.#l(), globalThis.addEventListener("focus", () => {
-      if (!this.#t)
-        this.#l();
+  #socket;
+  #connectionPromise;
+  #connectionUrl;
+  #outgoingUpdates = [];
+  #incomingUpdates = [];
+  #selfData = new ClientData(this);
+  #observers = new Set;
+  constructor(host, room) {
+    const secure = globalThis.location.protocol === "https:";
+    this.#connectionUrl = `${secure ? "wss" : "ws"}://${host}${room ? `?room=${room}` : ""}`;
+    this.#connect();
+    globalThis.addEventListener("focus", () => {
+      if (!this.#socket) {
+        this.#connect();
+      }
     });
   }
-  async setData(t, e, r = {}) {
-    await this.waitForConnection();
-    let i = { path: t, value: e, confirmed: r.passive ? undefined : Date.now(), push: r.push, insert: r.insert };
-    if (!r.passive)
-      this.#f(i);
-    this.#h(i);
+  fixPath(path) {
+    const split = path.split("/");
+    return split.map((part) => part === "{self}" ? this.#selfData.id : part).join("/");
+  }
+  usefulUpdate(update) {
+    const currentValue = getLeafObject(this.state, update.path, 0, false, this.#selfData.id);
+    return update.value !== currentValue;
+  }
+  async setData(path, value, options = {}) {
+    await this.#waitForConnection();
+    const update = {
+      path: this.fixPath(path),
+      value: options.delete ? undefined : value,
+      confirmed: options.passive ? undefined : Date.now(),
+      push: options.push,
+      insert: options.insert
+    };
+    if (!this.usefulUpdate(update)) {
+      return;
+    }
+    if (!options.passive) {
+      this.#queueIncomingUpdates(update);
+    }
+    this.#queueOutgoingUpdates(update);
   }
   get clientId() {
-    return this.#n.id;
+    return this.#selfData.id;
   }
   get self() {
-    return this.#n;
+    return this.#selfData;
   }
-  access(t) {
-    return new v(t, this);
+  access(path) {
+    return new SubData(path, this);
   }
-  observe(t) {
-    let e = new g(this, t);
-    return this.#o.add(e), e;
+  observe(...paths) {
+    const observer = new Observer(this, paths);
+    this.#observers.add(observer);
+    return observer;
   }
-  async waitForConnection() {
-    if (!this.#t)
-      this.#l();
-    return this.#r;
+  async#waitForConnection() {
+    if (!this.#socket) {
+      this.#connect();
+    }
+    return this.#connectionPromise;
   }
-  async#l() {
-    let t = this.#t = new WebSocket(this.#e);
-    return this.#r = new Promise((e, r) => {
-      t.addEventListener("open", () => {
-        console.log("Connected to WebSocket server", this.#e);
-      }), t.addEventListener("error", (i) => {
-        console.error("Error connecting to WebSocket server", i), r(i);
-      }), t.addEventListener("message", (i) => {
-        let n = JSON.parse(i.data.toString());
-        if (n.myClientId)
-          this.#n.id = n.myClientId, this.#r = undefined, e();
-        if (n.state)
-          this.state = n.state;
-        if (n.updates)
-          this.#f(...n.updates);
+  async#connect() {
+    const socket = this.#socket = new WebSocket(this.#connectionUrl);
+    return this.#connectionPromise = new Promise((resolve, reject) => {
+      socket.addEventListener("open", () => {
+        console.log("Connected to WebSocket server", this.#connectionUrl);
+      });
+      socket.addEventListener("error", (event) => {
+        console.error("Error connecting to WebSocket server", event);
+        reject(event);
+      });
+      socket.addEventListener("message", async (event) => {
+        const [payload] = await c(event.data);
+        if (payload.myClientId) {
+          this.#selfData.id = payload.myClientId;
+          this.#connectionPromise = undefined;
+          resolve();
+        }
+        if (payload.state) {
+          this.state = payload.state;
+        }
+        if (payload.updates) {
+          this.#queueIncomingUpdates(...payload.updates);
+        }
         this.triggerObservers();
-      }), t.addEventListener("close", () => {
-        console.log("Disconnected from WebSocket server"), this.#t = undefined, this.#n.id = "";
+      });
+      socket.addEventListener("close", () => {
+        console.log("Disconnected from WebSocket server");
+        this.#socket = undefined;
+        this.#selfData.id = "";
       });
     });
   }
-  #h(...t) {
-    if (!this.#i.length)
-      requestAnimationFrame(() => this.#c());
-    this.#i.push(...t);
+  #queueOutgoingUpdates(...updates) {
+    if (!this.#outgoingUpdates.length) {
+      requestAnimationFrame(() => this.#broadcastUpdates());
+    }
+    this.#outgoingUpdates.push(...updates);
   }
-  #f(...t) {
-    if (!this.#a.length)
-      requestAnimationFrame(() => this.#d());
-    this.#a.push(...t);
+  #queueIncomingUpdates(...updates) {
+    if (!this.#incomingUpdates.length) {
+      requestAnimationFrame(() => this.#applyUpdates());
+    }
+    this.#incomingUpdates.push(...updates);
   }
-  async#c() {
-    await this.waitForConnection();
-    let t = { updates: this.#i };
-    this.#t?.send(JSON.stringify(t)), this.#i.length = 0;
+  async#broadcastUpdates() {
+    await this.#waitForConnection();
+    this.#socket?.send(a.payload({ updates: this.#outgoingUpdates }).build());
+    this.#outgoingUpdates.length = 0;
   }
-  async#d() {
-    await this.waitForConnection(), this.#s.clear(), h(this.state, this.#a, this.#s), this.#a.length = 0, this.state.lastUpdated = Date.now(), this.triggerObservers();
+  async#applyUpdates() {
+    await this.#waitForConnection();
+    commitUpdates(this.state, this.#incomingUpdates);
+    this.#incomingUpdates.length = 0;
+    this.state.lastUpdated = Date.now();
+    this.triggerObservers();
   }
   triggerObservers() {
-    this.#o.forEach((t) => t.triggerIfChanged());
+    this.#observers.forEach((o) => o.triggerIfChanged());
   }
-  removeObserver(t) {
-    this.#o.delete(t);
+  removeObserver(observer) {
+    this.#observers.delete(observer);
   }
 }
 // node_modules/json-stringify-pretty-compact/index.js
@@ -599,7 +764,7 @@ var config = await fetch("../config.json").then((response) => response.json());
 function getSocketClient() {
   const urlVars = new URLSearchParams(location.search);
   const room = urlVars.get("room") ?? undefined;
-  return new D(config.websocketHost ?? location.host, room);
+  return new SocketClient(config.websocketHost ?? location.host, room);
 }
 var socketClient = getSocketClient();
 window.socketClient = socketClient;
@@ -608,6 +773,6 @@ export {
   socketClient,
   randomName,
   randomEmoji,
-  h as commitUpdates,
-  D as SocketClient
+  commitUpdates,
+  SocketClient
 };

@@ -1,8 +1,8 @@
 export interface Update {
-  path: (string | number)[] | string;
-  value?: any;
+  path: string;
+  value: any | undefined;
   push?: boolean;
   insert?: number;
+  delete?: number;
   confirmed?: number;
-  deleted?: boolean;
 }

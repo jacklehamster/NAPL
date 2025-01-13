@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Image Room</title>
+    <style>
+      body {
+        background-color: lightgray;
+      }
+      .users {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        z-index: 100;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="users"></div>
+    </div>
+
+    <script type="module">
+      import { socketClient, randomEmoji, randomName } from "../dist/index.js";
+
+      window.socketClient = socketClient;
+
+    </script>
+  </body>
+</html>

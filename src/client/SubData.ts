@@ -5,23 +5,22 @@ import { getLeafObject } from "@/data-update";
 import { Observer } from "./Observer";
 
 export class SubData implements ISharedData {
-  readonly parts: (string | number)[];
-  constructor(path: Update["path"], readonly socketClient: SocketClient) {
-    this.parts = Array.isArray(path) ? path : path.split("/");
+  readonly parts: (string | number)[] = [];
+  constructor(readonly path: Update["path"], readonly socketClient: SocketClient) {
+    this.parts = path.split("/");
   }
 
-  observe(paths: Update["path"][]): Observer {
-    const updatedPaths = paths.map(path => {
-      const parts = path === undefined ? [] : Array.isArray(path) ? path : path.split("/");
-      return [...this.parts, ...parts];
-    });
-    return this.socketClient.observe(updatedPaths);
+  #getAbsolutePath(path: Update["path"]): string {
+    return path ? `${this.path}/${path}` : this.path;
+  }
+
+  observe(...paths: Update["path"][]): Observer {
+    const updatedPaths = paths.map(path => this.#getAbsolutePath(path));
+    return this.socketClient.observe(...updatedPaths);
   }
 
   async setData(path: Update["path"], value: any, options: SetDataOptions): Promise<void> {
-    await this.socketClient.waitForConnection();
-    const parts = path === undefined ? [] : Array.isArray(path) ? path : path.split("/");
-    return this.socketClient.setData([...this.parts, ...parts], value, options);
+    return this.socketClient.setData(this.#getAbsolutePath(path), value, options);
   }
 
   get state(): Record<string, any> {

@@ -94,16 +94,20 @@
           passive: document.querySelector("#passive").checked,
         });
       });
-      dataHook.observe([undefined]).onChange((observation) => {
+      dataHook.observe(undefined).onChange((observation) => {
         dataArea.value = observation.value ?? "";
       });
 
       //  cursor
       document.addEventListener("mousemove", ({ pageX, pageY, target }) => {
         if (target.id === "state-div") {
+          socketClient.self.setData("cursor", undefined);
           return;
         }
         socketClient.self.setData("cursor", [pageX, pageY]);
+      });
+      document.addEventListener("mouseout", ({ target }) => {
+        socketClient.self.setData("cursor", undefined);
       });
 
       //  update state
@@ -127,23 +131,25 @@
           } catch (e) {}
         });
 
-      socketClient.observe(["clients/{self}"]).onChange(() => {
+      socketClient.observe("clients/{self}").onChange(() => {
         socketClient.self.setData("name", randomName());
         socketClient.self.setData("emoji", randomEmoji());
       });
 
       socketClient
-        .observe(["clients/{keys}"])
+        .observe("clients/{keys}")
         .onElementsAdded((clientIds) => {
           clientIds.forEach((clientId) => {
+            const isSelf = clientId === socketClient.self.id;
             // new client
             const clientBox = document.createElement("div");
             clientBox.id = `client-${clientId}`;
             clientBox.classList.add("client-box");
-            clientBox.style.backgroundColor =
-              clientId === socketClient.self.id ? "lightgreen" : "lightblue";
+            clientBox.style.backgroundColor = isSelf
+              ? "lightgreen"
+              : "lightblue";
 
-            if (clientId === socketClient.self.id) {
+            if (isSelf) {
               document.querySelector("#client-list").prepend(clientBox);
             } else {
               document.querySelector("#client-list").appendChild(clientBox);
@@ -156,6 +162,8 @@
             cursorDiv.id = `cursor-${clientId}`;
             cursorDiv.classList.add("cursor");
 
+            const observers = new Set();
+
             //  emoji / name observer
             {
               //  name and emoji
@@ -163,7 +171,7 @@
                 document.createElement("span")
               );
               emojiDiv.style.marginRight = "5px";
-              if (clientId === socketClient.self.id) {
+              if (isSelf) {
                 emojiDiv.style.cursor = "pointer";
                 emojiDiv.addEventListener("click", () => {
                   socketClient.self.setData("emoji", randomEmoji(true));
@@ -179,42 +187,52 @@
                 document.createElement("input")
               );
               nameInput.id = `name-${clientId}`;
-              nameInput.disabled = clientId !== socketClient.self.id;
+              nameInput.disabled = !isSelf;
               nameInput.addEventListener("input", (event) => {
                 socketClient.setData(
                   `clients/${clientId}/name`,
                   event.target.value
                 );
               });
-              const observer = socketClient
-                .observe([
-                  `clients/${clientId}/emoji`,
-                  `clients/${clientId}/name`,
-                ])
-                .onChange((emoji, name) => {
-                  emojiDiv.textContent = emoji.value;
-                  nameInput.value = name.value;
-                  cursorDiv.textContent = emoji.value;
-                  if (!emoji.value && !name.value) {
-                    observer.close();
-                  }
-                });
+              observers.add(
+                socketClient
+                  .observe(
+                    `clients/${clientId}/emoji`,
+                    `clients/${clientId}/name`
+                  )
+                  .onChange((emoji, name) => {
+                    emojiDiv.textContent = emoji.value;
+                    nameInput.value = name.value;
+                    cursorDiv.textContent = emoji.value;
+                  })
+              );
             }
 
             //  cursor observer
             {
-              const observer = socketClient
-                .observe([`clients/${clientId}/cursor`])
-                .onChange((cursor) => {
-                  if (!cursor.value) {
-                    observer.close();
-                    return;
-                  }
-                  const [x, y] = cursor.value;
-                  cursorDiv.style.left = `${x - 10}px`;
-                  cursorDiv.style.top = `${y - 10}px`;
-                });
+              observers.add(
+                socketClient
+                  .observe(`clients/${clientId}/cursor`)
+                  .onChange((cursor) => {
+                    if (!cursor.value) {
+                      cursorDiv.style.display = "none";
+                      return;
+                    }
+                    const [x, y] = cursor.value;
+                    cursorDiv.style.display = "block";
+                    cursorDiv.style.left = `${x - 10}px`;
+                    cursorDiv.style.top = `${y - 10}px`;
+                  })
+              );
             }
+
+            observers.add(
+              socketClient.observe(`clients/${clientId}`).onChange((client) => {
+                if (!client.value) {
+                  observers.forEach((observer) => observer.close());
+                }
+              })
+            );
           });
         })
         .onElementsDeleted((clientIds) => {
@@ -228,11 +246,14 @@
           });
         });
 
-      socketClient.observe([]).onChange(() => {
-        document.querySelector("#state-div").textContent = stringify(
-          socketClient.state
+      socketClient
+        .observe()
+        .onChange(
+          () =>
+            (document.querySelector("#state-div").textContent = stringify(
+              socketClient.state
+            ))
         );
-      });
     </script>
   </body>
 </html>

@@ -8,18 +8,17 @@ export class ClientData implements ISharedData {
   constructor(readonly socketClient: SocketClient) {
   }
 
-  observe(paths: Update["path"][]): Observer {
-    const updatedPaths = paths.map(path => {
-      const parts = Array.isArray(path) ? path : path.split("/");
-      return ["clients", "self", ...parts];
-    });
-    return this.socketClient.observe(updatedPaths);
+  #getAbsolutePath(path: Update["path"]): string {
+    return path ? `clients/{self}/${path}` : "clients/{self}";
+  }
+
+  observe(...paths: Update["path"][]): Observer {
+    const updatedPaths = paths.map(path => this.#getAbsolutePath(path));
+    return this.socketClient.observe(...updatedPaths);
   }
 
   async setData(path: Update["path"], value: any, options: SetDataOptions): Promise<void> {
-    await this.socketClient.waitForConnection();
-    const parts = Array.isArray(path) ? path : path.split("/");
-    return this.socketClient.setData(["clients", this.id ?? "", ...parts], value, options);
+    return this.socketClient.setData(this.#getAbsolutePath(path), value, options);
   }
 
   get state() {

@@ -42,6 +42,7 @@
     <div class="tabs">
       <button type="button" id="sample-test">Sample Test</button>
       <button type="button" id="chatroom-test">Chatroom Test</button>
+      <button type="button" id="image-test">Image Test</button>
     </div>
     <div class="container">
       <div class="content" id="sample-test-content">
@@ -58,6 +59,18 @@
           title="bottom"
           class="frame"
           data-src="chatroom?bottom&room=chatroom"
+        ></iframe>
+      </div>
+      <div class="content" id="image-test-content">
+        <iframe
+          title="top"
+          class="frame"
+          data-src="image-test?top&room=image-test"
+        ></iframe>
+        <iframe
+          title="bottom"
+          class="frame"
+          data-src="image-test?bottom&room=image-test"
         ></iframe>
       </div>
     </div>
@@ -84,6 +97,21 @@
         const chatroomContentDiv = document.getElementById(
           "chatroom-test-content"
         );
+        chatroomContentDiv.style.display = "block";
+        const iframes = chatroomContentDiv.querySelectorAll("iframe");
+        iframes.forEach((iframe) => {
+          if (!iframe.src.length) {
+            iframe.src = iframe.getAttribute("data-src");
+          }
+        });
+      });
+      document.getElementById("image-test").addEventListener("click", () => {
+        const contentDivs = document.querySelectorAll(".content");
+        contentDivs.forEach((contentDiv) => {
+          contentDiv.style.display = "none";
+        });
+        const chatroomContentDiv =
+          document.getElementById("image-test-content");
         chatroomContentDiv.style.display = "block";
         const iframes = chatroomContentDiv.querySelectorAll("iframe");
         iframes.forEach((iframe) => {

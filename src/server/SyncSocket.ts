@@ -19,12 +19,12 @@ export class SyncSocket {
       }
     });
 
-    websocketServer.on("connection", (socket: ws.WebSocket, req) => {
+    websocketServer.on("connection", async (socket: ws.WebSocket, req) => {
       //  extract query params
       const parameters = new URLSearchParams(req.url?.split("?")[1]);
       const roomName = parameters.get("room") ?? "default";
       const room = this.#getRoom(roomName);
-      const { clientId } = room.welcomeClient(socket);
+      const { clientId } = await room.welcomeClient(socket);
       console.log(`client ${clientId} connected in room ${roomName}.`);
     });
   }
