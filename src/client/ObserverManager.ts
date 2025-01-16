@@ -6,7 +6,7 @@ import { IObservable } from "./IObservable";
 export class ObserverManager implements IObservable {
   readonly #observers: Set<Observer> = new Set();
 
-  constructor(private socketClient: SocketClient) {
+  constructor(private readonly socketClient: SocketClient) {
   }
 
   observe(...paths: Update["path"][]): Observer {

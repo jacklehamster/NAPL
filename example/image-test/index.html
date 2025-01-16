@@ -1,24 +1,56 @@
 <!doctype html>
-<html lang="en-US">
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Image Room</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Drop Area</title>
     <style>
       body {
         background-color: lightgray;
       }
-      .users {
-        position: absolute;
-        right: 5px;
-        top: 5px;
-        z-index: 100;
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .container .drop-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        border-radius: 10px;
+        background-color: white;
+      }
+      .drop-area {
+        border: 2px dashed #ccc;
+        border-radius: 10px;
+        width: 300px;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin: 20px auto;
+        transition: border-color 0.3s;
+      }
+      .drop-area.active {
+        border-color: #000;
+      }
+      .drop-message {
+        font-size: 16px;
+        color: #666;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="users"></div>
+      <!-- DRAG DROP IMAGE CONTAINER -->
+      <div class="drop-container">
+        <div class="drop-message">Drop your image here</div>
+        <div class="drop-area"></div>
+      </div>
     </div>
 
     <script type="module">
@@ -26,6 +58,48 @@
 
       window.socketClient = socketClient;
 
+      const dropArea = document.querySelector(".drop-area");
+      const dropMessage = document.querySelector(".drop-message");
+      dropArea.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        dropArea.classList.add("active");
+        dropMessage.textContent = "Release to drop the image";
+      });
+      dropArea.addEventListener("dragleave", (event) => {
+        event.preventDefault();
+        dropArea.classList.remove("active");
+        dropMessage.textContent = "Drop your image here";
+      });
+      dropArea.addEventListener("drop", (event) => {
+        event.preventDefault();
+        dropArea.classList.remove("active");
+        dropMessage.textContent = "Drop your image here";
+
+        const files = event.dataTransfer.files;
+        if (files.length > 0) {
+          const file = files[0];
+          if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              socketClient.setData("image", new Blob([e.target.result]));
+            };
+            reader.readAsArrayBuffer(file);
+          } else {
+            alert("Please drop an image file.");
+          }
+        }
+      });
+      socketClient.observe("image").onChange((image) => {
+        if (image.value) {
+          const blob = socketClient.state.blobs[image.value];
+          if (blob instanceof Blob) {
+            const url = URL.createObjectURL(blob);
+            dropArea.style.backgroundImage = `url(${url})`;
+            dropArea.style.backgroundSize = "contain";
+            dropArea.style.backgroundPosition = "center";
+          }
+        }
+      });
     </script>
   </body>
 </html>

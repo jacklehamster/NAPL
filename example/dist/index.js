@@ -10,14 +10,14 @@ function commitUpdates(root, updates) {
         leaf[prop] = [];
       }
       leaf[prop] = [...leaf[prop], update.value];
-    } else if (update.insert !== undefined) {
+    } else if ((update.insert ?? -1) >= 0) {
       if (!Array.isArray(leaf[prop])) {
         leaf[prop] = [];
       }
-      leaf[prop] = [...leaf[prop].slice(0, update.insert), update.value, ...leaf[prop].slice(update.insert)];
-    } else if (update.delete !== undefined) {
+      leaf[prop] = [...leaf[prop].slice(0, update.insert ?? -1), update.value, ...leaf[prop].slice(update.insert)];
+    } else if ((update.delete ?? -1) >= 0) {
       if (Array.isArray(leaf[prop])) {
-        leaf[prop] = [...leaf[prop].slice(0, update.delete), ...leaf[prop].slice(update.delete + 1)];
+        leaf[prop] = [...leaf[prop].slice(0, update.delete), ...leaf[prop].slice((update.delete ?? -1) + 1)];
       }
     } else if (update.value === undefined) {
       delete leaf[prop];
@@ -61,63 +61,93 @@ function getLeafObject(obj, path, offset, autoCreate, selfId) {
   return current;
 }
 
-class a {
+class f {
   data = [];
-  encoder = new TextEncoder;
-  static payload(r) {
-    return new a().payload(r);
+  #t = new TextEncoder;
+  static payload(t, e) {
+    return new f().payload(t, e);
   }
-  static blob(r) {
-    return new a().blob(r);
+  static blob(t, e) {
+    return new f().blob(t, e);
   }
-  payload(r) {
+  #r(t) {
+    let e = this.#t.encode(t), n = new Uint8Array([e.byteLength]);
+    this.data.push(n.buffer), this.data.push(e.buffer);
+  }
+  payload(t, e) {
+    this.#r(t);
     let n = new Uint8Array([1]);
     this.data.push(n.buffer);
-    let e = JSON.stringify(r), t = this.encoder.encode(e), s = new Uint32Array([t.byteLength]);
-    return this.data.push(s.buffer), this.data.push(t.buffer), this;
+    let r = JSON.stringify(e), s = this.#t.encode(r), i = new Uint32Array([s.byteLength]);
+    return this.data.push(i.buffer), this.data.push(s.buffer), this;
   }
-  blob(r) {
+  blob(t, e) {
+    this.#r(t);
     let n = new Uint8Array([2]);
     this.data.push(n.buffer);
-    let e = new Uint32Array([r.size]);
-    return this.data.push(e.buffer), this.data.push(r), this;
+    let r = new Uint32Array([e.size]);
+    return this.data.push(r.buffer), this.data.push(e), this;
   }
   build() {
     return new Blob(this.data);
   }
 }
-async function c(r) {
-  let n = [], e = 0, t;
-  while (e < r.size) {
-    t = t ?? await r.arrayBuffer();
-    let s = new Uint8Array(t, e, 1);
-    e += Uint8Array.BYTES_PER_ELEMENT;
-    let o = new Uint32Array(t.slice(e, e + Uint32Array.BYTES_PER_ELEMENT), 0, 1);
-    switch (e += Uint32Array.BYTES_PER_ELEMENT, s[0]) {
+async function m(t) {
+  let e = new TextDecoder, n = {}, r = 0, s;
+  while (r < t.size) {
+    s = s ?? await t.arrayBuffer();
+    let i = new Uint8Array(s, r, 1);
+    r += Uint8Array.BYTES_PER_ELEMENT;
+    let a = e.decode(new Uint8Array(s, r, i[0]));
+    r += i[0];
+    let h = new Uint8Array(s, r, 1);
+    r += Uint8Array.BYTES_PER_ELEMENT;
+    let o = new Uint32Array(s.slice(r, r + Uint32Array.BYTES_PER_ELEMENT), 0, 1);
+    switch (r += Uint32Array.BYTES_PER_ELEMENT, h[0]) {
       case 1:
-        n.push(f(t, e, o[0]));
+        try {
+          let c = e.decode(new Uint8Array(s, r, o[0]));
+          n[a] = JSON.parse(c);
+        } catch (c) {
+          console.warn("Failed to parse JSON payload", c);
+        }
         break;
       case 2:
-        n.push(new Blob([t.slice(e, e + o[0])]));
+        n[a] = new Blob([s.slice(r, r + o[0])]);
         break;
     }
-    e += o[0];
+    r += o[0];
   }
   return n;
 }
-function f(r, n, e) {
-  let t = new TextDecoder().decode(new Uint8Array(r, n, e));
-  return JSON.parse(t);
+async function u(t, e, n = () => globalThis.crypto.randomUUID()) {
+  if (typeof t === "string" && t.startsWith("blob:")) {
+    let r = await fetch(t).then((i) => i.blob());
+    URL.revokeObjectURL(t);
+    let s = `{blobUrl:${n()}}`;
+    return e[s] = r, s;
+  }
+  if (typeof t === "object" && t instanceof Blob) {
+    let r = `{blob:${n()}}`;
+    return e[r] = t, r;
+  }
+  if (Array.isArray(t))
+    await Promise.all(t.map(async (r, s) => {
+      t[s] = await u(r, e, n);
+    }));
+  else if (typeof t === "object" && t)
+    await Promise.all(Object.entries(t).map(async ([r, s]) => {
+      t[r] = await u(s, e, n);
+    }));
+  return t;
 }
-function addMessageReceiver(socket, {
-  payloadReceived
-}) {
+function addMessageReceiver(socket, payloadReceived) {
   socket.on("message", async (message) => {
     if (message instanceof Buffer) {
       const blob = new Blob([message]);
-      const result = await c(blob);
-      if (result[0]) {
-        payloadReceived(result[0]);
+      const { payload, ...blobs } = await m(blob);
+      if (payload) {
+        payloadReceived(payload, blobs);
       }
     }
   });
@@ -132,7 +162,8 @@ class SyncRoom {
   constructor(room) {
     this.room = room;
     this.#state = {
-      clients: {}
+      clients: {},
+      blobs: {}
     };
   }
   addRoomChangeListener(callback) {
@@ -143,44 +174,49 @@ class SyncRoom {
     const clientPath = `clients/${clientId}`;
     const clientState = {};
     this.#sockets.set(client, clientState);
-    const newUpdates = [
-      {
-        path: clientPath,
-        value: clientState,
-        confirmed: Date.now()
-      }
-    ];
+    const newUpdates = [{
+      path: clientPath,
+      value: clientState,
+      confirmed: Date.now(),
+      blobs: {}
+    }];
     this.#shareUpdates(newUpdates, client);
-    addMessageReceiver(client, {
-      payloadReceived: (payload) => {
-        if (payload.updates) {
-          this.#shareUpdates(payload.updates, client);
-        }
-      }
+    addMessageReceiver(client, (payload, blobs) => {
+      Object.entries(blobs).forEach(([key, blob]) => this.#state.blobs[key] = blob);
+      payload.updates?.forEach((update) => {
+        const blobs2 = update.blobs ?? {};
+        Object.keys(blobs2).forEach((key) => blobs2[key] = this.#state.blobs[key]);
+      });
+      this.#shareUpdates(payload.updates, client);
+      setImmediate(() => this.#cleanupBlobs());
     });
     client.on("close", () => {
       this.#sockets.delete(client);
-      this.#shareUpdates([
-        {
-          path: clientPath,
-          value: undefined,
-          confirmed: Date.now()
-        }
-      ]);
-      console.log(`client ${clientId} disconnected`);
+      this.#shareUpdates([{
+        path: clientPath,
+        value: undefined,
+        confirmed: Date.now(),
+        blobs: {}
+      }]);
+      console.log(`client ${clientId} disconnected from room ${this.room}`);
       this.#onRoomChange.forEach((callback) => callback(this.#state));
     });
     commitUpdates(this.#state, this.#updates);
     this.#updates = this.#updates.filter((update) => !update.confirmed);
-    const clientPayload = {
+    const blobBuilder = f.payload("payload", {
       myClientId: clientId,
-      state: this.#state,
+      state: { ...this.#state, blobs: undefined },
       updates: this.#updates
-    };
-    client.send(await a.payload(clientPayload).build().arrayBuffer());
+    });
+    Object.entries(this.#state.blobs).forEach(([key, blob]) => blobBuilder.blob(key, blob));
+    this.#updates.forEach((update) => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => blobBuilder.blob(key, blob)));
+    client.send(await blobBuilder.build().arrayBuffer());
     return { clientId };
   }
   #shareUpdates(newUpdates, sender) {
+    if (!newUpdates?.length) {
+      return;
+    }
     const updatesForSender = newUpdates.filter((update) => !update.confirmed);
     this.#markCommonUpdatesConfirmed(newUpdates);
     this.#pushUpdates(newUpdates);
@@ -190,16 +226,15 @@ class SyncRoom {
     this.#broadcastUpdates(updatesForSender, (client) => client === sender);
   }
   #pushUpdates(newUpdates) {
-    if (newUpdates) {
-      newUpdates.forEach((update) => this.#updates.push(update));
-    }
+    newUpdates?.forEach((update) => this.#updates.push(update));
   }
   async#broadcastUpdates(newUpdates, senderFilter) {
     if (!newUpdates?.length) {
       return;
     }
-    const blob = a.payload({ updates: newUpdates }).build();
-    const buffer = await blob.arrayBuffer();
+    const blobBuilder = f.payload("payload", { updates: newUpdates });
+    newUpdates.forEach((update) => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => blobBuilder.blob(key, blob)));
+    const buffer = await blobBuilder.build().arrayBuffer();
     this.#sockets.keys().forEach((client) => {
       if (senderFilter && !senderFilter(client)) {
         return;
@@ -209,11 +244,40 @@ class SyncRoom {
   }
   #markCommonUpdatesConfirmed(updates) {
     updates.forEach((update) => {
-      const parts = Array.isArray(update.path) ? update.path : update.path.split("/");
-      if (parts[0] !== "clients") {
+      if (!this.#restrictedPath(update.path)) {
         update.confirmed = Date.now();
       }
     });
+  }
+  #restrictedPath(path) {
+    return path.startsWith("clients/") || path.startsWith("blobs/");
+  }
+  #cleanupBlobs() {
+    const blobSet = new Set(Object.keys(this.#state.blobs));
+    this.#findUsedBlobs(this.#state, blobSet);
+    if (blobSet.size) {
+      const updates = [];
+      const now = Date.now();
+      blobSet.forEach((key) => {
+        updates.push({
+          path: `blobs/${key}`,
+          value: undefined,
+          confirmed: now
+        });
+      });
+      this.#shareUpdates(updates);
+    }
+  }
+  #findUsedBlobs(root, blobSet) {
+    if (typeof root === "string") {
+      if (blobSet.has(root)) {
+        blobSet.delete(root);
+      }
+    } else if (Array.isArray(root)) {
+      root.forEach((value) => this.#findUsedBlobs(value, blobSet));
+    } else if (typeof root === "object") {
+      Object.values(root).forEach((value) => this.#findUsedBlobs(value, blobSet));
+    }
   }
 }
 
@@ -398,6 +462,25 @@ class Observer {
   }
 }
 
+class ObserverManager {
+  socketClient;
+  #observers = new Set;
+  constructor(socketClient) {
+    this.socketClient = socketClient;
+  }
+  observe(...paths) {
+    const observer = new Observer(this.socketClient, paths);
+    this.#observers.add(observer);
+    return observer;
+  }
+  triggerObservers() {
+    this.#observers.forEach((o) => o.triggerIfChanged());
+  }
+  removeObserver(observer) {
+    this.#observers.delete(observer);
+  }
+}
+
 class SocketClient {
   state = {};
   #socket;
@@ -406,7 +489,7 @@ class SocketClient {
   #outgoingUpdates = [];
   #incomingUpdates = [];
   #selfData = new ClientData(this);
-  #observers = new Set;
+  #observerManager = new ObserverManager(this);
   constructor(host, room) {
     const secure = globalThis.location.protocol === "https:";
     this.#connectionUrl = `${secure ? "wss" : "ws"}://${host}${room ? `?room=${room}` : ""}`;
@@ -417,24 +500,27 @@ class SocketClient {
       }
     });
   }
-  fixPath(path) {
+  #fixPath(path) {
     const split = path.split("/");
     return split.map((part) => part === "{self}" ? this.#selfData.id : part).join("/");
   }
-  usefulUpdate(update) {
+  #usefulUpdate(update) {
     const currentValue = getLeafObject(this.state, update.path, 0, false, this.#selfData.id);
     return update.value !== currentValue;
   }
   async setData(path, value, options = {}) {
     await this.#waitForConnection();
+    const payloadBlobs = {};
+    value = await u(value, payloadBlobs);
     const update = {
-      path: this.fixPath(path),
+      path: this.#fixPath(path),
       value: options.delete ? undefined : value,
       confirmed: options.passive ? undefined : Date.now(),
       push: options.push,
-      insert: options.insert
+      insert: options.insert,
+      blobs: payloadBlobs
     };
-    if (!this.usefulUpdate(update)) {
+    if (!this.#usefulUpdate(update)) {
       return;
     }
     if (!options.passive) {
@@ -452,9 +538,7 @@ class SocketClient {
     return new SubData(path, this);
   }
   observe(...paths) {
-    const observer = new Observer(this, paths);
-    this.#observers.add(observer);
-    return observer;
+    return this.#observerManager.observe(...paths);
   }
   async#waitForConnection() {
     if (!this.#socket) {
@@ -473,7 +557,7 @@ class SocketClient {
         reject(event);
       });
       socket.addEventListener("message", async (event) => {
-        const [payload] = await c(event.data);
+        const { payload, ...blobs } = await m(event.data);
         if (payload.myClientId) {
           this.#selfData.id = payload.myClientId;
           this.#connectionPromise = undefined;
@@ -481,11 +565,17 @@ class SocketClient {
         }
         if (payload.state) {
           this.state = payload.state;
+          this.state.blobs = blobs;
         }
         if (payload.updates) {
+          const updates = payload.updates;
+          updates.forEach((update) => {
+            const updateBlobs = update.blobs ?? {};
+            Object.keys(updateBlobs).forEach((key) => updateBlobs[key] = blobs[key]);
+          });
           this.#queueIncomingUpdates(...payload.updates);
         }
-        this.triggerObservers();
+        this.#observerManager.triggerObservers();
       });
       socket.addEventListener("close", () => {
         console.log("Disconnected from WebSocket server");
@@ -508,21 +598,33 @@ class SocketClient {
   }
   async#broadcastUpdates() {
     await this.#waitForConnection();
-    this.#socket?.send(a.payload({ updates: this.#outgoingUpdates }).build());
+    const blobBuilder = f.payload("payload", { updates: this.#outgoingUpdates });
+    const addedBlob = new Set;
+    this.#outgoingUpdates.forEach((update) => {
+      Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
+        if (!addedBlob.has(key)) {
+          blobBuilder.blob(key, blob);
+          addedBlob.add(key);
+        }
+      });
+    });
+    this.#socket?.send(blobBuilder.build());
     this.#outgoingUpdates.length = 0;
   }
-  async#applyUpdates() {
-    await this.#waitForConnection();
+  #saveBlobsFromUpdates(updates) {
+    updates.forEach((update) => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
+      this.state.blobs[key] = blob;
+    }));
+  }
+  #applyUpdates() {
+    this.#saveBlobsFromUpdates(this.#incomingUpdates);
     commitUpdates(this.state, this.#incomingUpdates);
     this.#incomingUpdates.length = 0;
     this.state.lastUpdated = Date.now();
-    this.triggerObservers();
-  }
-  triggerObservers() {
-    this.#observers.forEach((o) => o.triggerIfChanged());
+    this.#observerManager.triggerObservers();
   }
   removeObserver(observer) {
-    this.#observers.delete(observer);
+    this.#observerManager.removeObserver(observer);
   }
 }
 // node_modules/json-stringify-pretty-compact/index.js

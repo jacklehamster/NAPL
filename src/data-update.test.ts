@@ -11,7 +11,7 @@ describe('commitUpdates', () => {
     ];
     const obj: DataObject = {};
 
-    commitUpdates(obj, updates);
+    commitUpdates(obj, updates, {});
 
     expect(obj).toEqual({ a: { b: 2 } });
   });

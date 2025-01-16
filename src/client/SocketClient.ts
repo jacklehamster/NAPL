@@ -11,6 +11,7 @@ import { Observer } from "./Observer";
 import { BlobBuilder, extractPayload } from "@dobuki/data-blob";
 import { IObservable } from "./IObservable";
 import { ObserverManager } from "./ObserverManager";
+import { extractBlobsFromPayload } from "@dobuki/data-blob";
 
 export class SocketClient implements ISharedData, IObservable {
   state: Record<string, any> = {};
@@ -45,12 +46,17 @@ export class SocketClient implements ISharedData, IObservable {
 
   async setData(path: Update["path"], value: any, options: SetDataOptions = {}) {
     await this.#waitForConnection();
+
+    const payloadBlobs: Record<string, Blob> = {};
+    value = await extractBlobsFromPayload(value, payloadBlobs);
+
     const update: Update = {
       path: this.#fixPath(path),
       value: options.delete ? undefined : value,
       confirmed: options.passive ? undefined : Date.now(),
       push: options.push,
       insert: options.insert,
+      blobs: payloadBlobs,
     };
 
     if (!this.#usefulUpdate(update)) {
@@ -99,7 +105,7 @@ export class SocketClient implements ISharedData, IObservable {
       });
 
       socket.addEventListener("message", async (event: MessageEvent<Blob>) => {
-        const [payload] = await extractPayload(event.data);
+        const { payload, ...blobs } = await extractPayload(event.data);
 
         if (payload.myClientId) {
           // client ID confirmed
@@ -109,8 +115,14 @@ export class SocketClient implements ISharedData, IObservable {
         }
         if (payload.state) {
           this.state = payload.state;
+          this.state.blobs = blobs;
         }
         if (payload.updates) {
+          const updates: Update[] = payload.updates;
+          updates.forEach(update => {
+            const updateBlobs = update.blobs ?? {};
+            Object.keys(updateBlobs).forEach(key => updateBlobs[key] = blobs[key]);
+          });
           this.#queueIncomingUpdates(...payload.updates);
         }
         this.#observerManager.triggerObservers();
@@ -142,14 +154,28 @@ export class SocketClient implements ISharedData, IObservable {
 
   async #broadcastUpdates() {
     await this.#waitForConnection();
-    this.#socket?.send(BlobBuilder
-      .payload({ updates: this.#outgoingUpdates })
-      .build());
+    const blobBuilder = BlobBuilder.payload("payload", { updates: this.#outgoingUpdates });
+    const addedBlob = new Set<string>();
+    this.#outgoingUpdates.forEach(update => {
+      Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
+        if (!addedBlob.has(key)) {
+          blobBuilder.blob(key, blob);
+          addedBlob.add(key);
+        }
+      });
+    });
+    this.#socket?.send(blobBuilder.build());
     this.#outgoingUpdates.length = 0;
   }
 
-  async #applyUpdates() {
-    await this.#waitForConnection();
+  #saveBlobsFromUpdates(updates: Update[]) {
+    updates.forEach(update => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
+      this.state.blobs[key] = blob;
+    }));
+  }
+
+  #applyUpdates() {
+    this.#saveBlobsFromUpdates(this.#incomingUpdates);
     commitUpdates(this.state, this.#incomingUpdates);
     this.#incomingUpdates.length = 0;
     this.state.lastUpdated = Date.now();
