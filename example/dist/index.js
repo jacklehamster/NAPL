@@ -558,16 +558,16 @@ class SocketClient {
       });
       socket.addEventListener("message", async (event) => {
         const { payload, ...blobs } = await m(event.data);
-        if (payload.myClientId) {
+        if (payload?.myClientId) {
           this.#selfData.id = payload.myClientId;
           this.#connectionPromise = undefined;
           resolve();
         }
-        if (payload.state) {
+        if (payload?.state) {
           this.state = payload.state;
           this.state.blobs = blobs;
         }
-        if (payload.updates) {
+        if (payload?.updates) {
           const updates = payload.updates;
           updates.forEach((update) => {
             const updateBlobs = update.blobs ?? {};

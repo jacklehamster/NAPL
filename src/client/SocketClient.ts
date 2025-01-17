@@ -107,17 +107,17 @@ export class SocketClient implements ISharedData, IObservable {
       socket.addEventListener("message", async (event: MessageEvent<Blob>) => {
         const { payload, ...blobs } = await extractPayload(event.data);
 
-        if (payload.myClientId) {
+        if (payload?.myClientId) {
           // client ID confirmed
           this.#selfData.id = payload.myClientId;
           this.#connectionPromise = undefined;
           resolve();
         }
-        if (payload.state) {
+        if (payload?.state) {
           this.state = payload.state;
           this.state.blobs = blobs;
         }
-        if (payload.updates) {
+        if (payload?.updates) {
           const updates: Update[] = payload.updates;
           updates.forEach(update => {
             const updateBlobs = update.blobs ?? {};
