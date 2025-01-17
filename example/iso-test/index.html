@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neverending Fontazee MMO</title>
+    <style>
+      body,
+      html {
+        background-color: lightgray;
+      }
+      .container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container"></div>
+
+    <script type="module">
+      import { socketClient } from "../dist/index.js";
+
+      window.socketClient = socketClient;
+    </script>
+  </body>
+</html>
