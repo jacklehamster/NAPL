@@ -15,7 +15,7 @@
     "sha": "0d6af7c607d5454cae666895e10913235c0a8196"
   },
   "client/SocketClient.ts": {
-    "sha": "9f9d0c546978b63007d93fc15bd546a9f01ce592"
+    "sha": "ba5d3101b27a2786f046277ca767c68c9efdd7af"
   },
   "client/SubData.ts": {
     "sha": "7de3281f17a46a33d9216ce9d342efe8bd79afc0"
@@ -29,7 +29,7 @@
   "index.ts": {
     "sha": "27c4b147d4a85bbd484d109c39f26577587e1e31"
   },
-  "md5": "e92b010718902179a794b18864ed6d60",
+  "md5": "bf359934a748b18134c012ac7b00b8bc",
   "server/SocketEventHandler.ts": {
     "sha": "19419ccf57cdf16632a20baa23f35120d4c115db"
   },
