@@ -1,0 +1,15 @@
+{
+  "SocketEventHandler.ts": {
+    "sha": "19419ccf57cdf16632a20baa23f35120d4c115db"
+  },
+  "SocketPayload.ts": {
+    "sha": "a2b112b84929ff0f770a4b7fe14349e77f996ee5"
+  },
+  "SyncRoom.ts": {
+    "sha": "fb5c826ef949b79fb7352695127f0e340ef24212"
+  },
+  "SyncSocket.ts": {
+    "sha": "f7a24f0c109834d53162dcaaf7a38a233223e762"
+  },
+  "md5": "e57372a16444cb76647afcfa3447d559"
+}

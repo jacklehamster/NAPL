@@ -1,0 +1,24 @@
+{
+  "ClientData.ts": {
+    "sha": "b4d8c9febbbacc5c015f9a9a0c9d4f7a1898f96a"
+  },
+  "IObservable.ts": {
+    "sha": "8dce059249b75c2ddc823fa73e3bc208ca0a8dc8"
+  },
+  "ISharedData.ts": {
+    "sha": "ba833560f133aa98b95414493055bbbe712e9bec"
+  },
+  "Observer.ts": {
+    "sha": "66abc06acec108f4eb64742bc563f034dc1aae5a"
+  },
+  "ObserverManager.ts": {
+    "sha": "0d6af7c607d5454cae666895e10913235c0a8196"
+  },
+  "SocketClient.ts": {
+    "sha": "9f9d0c546978b63007d93fc15bd546a9f01ce592"
+  },
+  "SubData.ts": {
+    "sha": "7de3281f17a46a33d9216ce9d342efe8bd79afc0"
+  },
+  "md5": "3ec36793d973df7c2205e94ef7bbf798"
+}

@@ -1,0 +1,57 @@
+{
+  "client/ClientData.ts": {
+    "sha": "b4d8c9febbbacc5c015f9a9a0c9d4f7a1898f96a"
+  },
+  "client/IObservable.ts": {
+    "sha": "8dce059249b75c2ddc823fa73e3bc208ca0a8dc8"
+  },
+  "client/ISharedData.ts": {
+    "sha": "ba833560f133aa98b95414493055bbbe712e9bec"
+  },
+  "client/Observer.ts": {
+    "sha": "66abc06acec108f4eb64742bc563f034dc1aae5a"
+  },
+  "client/ObserverManager.ts": {
+    "sha": "0d6af7c607d5454cae666895e10913235c0a8196"
+  },
+  "client/SocketClient.ts": {
+    "sha": "9f9d0c546978b63007d93fc15bd546a9f01ce592"
+  },
+  "client/SubData.ts": {
+    "sha": "7de3281f17a46a33d9216ce9d342efe8bd79afc0"
+  },
+  "data-update.test.ts": {
+    "sha": "d9ea0a70e32571eda410db8a0d64a28419a99726"
+  },
+  "data-update.ts": {
+    "sha": "2b1fd247015de16f9ef907c0cee9a0defc18674f"
+  },
+  "index.ts": {
+    "sha": "27c4b147d4a85bbd484d109c39f26577587e1e31"
+  },
+  "md5": "e92b010718902179a794b18864ed6d60",
+  "server/SocketEventHandler.ts": {
+    "sha": "19419ccf57cdf16632a20baa23f35120d4c115db"
+  },
+  "server/SocketPayload.ts": {
+    "sha": "a2b112b84929ff0f770a4b7fe14349e77f996ee5"
+  },
+  "server/SyncRoom.ts": {
+    "sha": "fb5c826ef949b79fb7352695127f0e340ef24212"
+  },
+  "server/SyncSocket.ts": {
+    "sha": "f7a24f0c109834d53162dcaaf7a38a233223e762"
+  },
+  "types/ClientState.ts": {
+    "sha": "26673e1c7ff25595408776a77725af1f257fd9ca"
+  },
+  "types/DataObject.ts": {
+    "sha": "ba747a6f38117b0f2cf5791957d0e208ba019bb4"
+  },
+  "types/ServerState.ts": {
+    "sha": "f0f8a9a1161e06759c5c505b9c9621214f47bd4f"
+  },
+  "types/Update.ts": {
+    "sha": "3512580b858d740bb12f6fe3510e222cee475897"
+  }
+}

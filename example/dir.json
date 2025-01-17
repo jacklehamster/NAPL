@@ -1,0 +1,84 @@
+{
+  "README.md": {
+    "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
+  },
+  "app.icns": {
+    "sha": "8c414c12983adc8e19dd67d522fe3f6c894831a8"
+  },
+  "app.ico": {
+    "sha": "c58c010b4a3906da7c4ff220162378a7008e3092"
+  },
+  "bun.lockb": {
+    "sha": "9b8d904ba5f43b02a07f56f4e563820b88ea6e03"
+  },
+  "chatroom/index.html": {
+    "sha": "d92a6868904c59a14b84ced04c5583fe4d1fe386"
+  },
+  "config.json": {
+    "sha": "3628fc1bb2182254f99328a0c79ce69e7f2d1d55"
+  },
+  "dist/index.js": {
+    "sha": "da47e135055d72bb5599ff55ef3df6fc74335b5f"
+  },
+  "favicon-120.png": {
+    "sha": "69b3e5c9a01fe3ed4195b5c971674d80fc0f4318"
+  },
+  "favicon-128.png": {
+    "sha": "39664cbca2a68c306730c5092b7ce34970d0fe07"
+  },
+  "favicon-144.png": {
+    "sha": "0ef0e9f14eb28c0870d4535808e222d8327ac514"
+  },
+  "favicon-152.png": {
+    "sha": "f8f60c82c382966252c7b2f207cdb80b62c102b3"
+  },
+  "favicon-195.png": {
+    "sha": "0bb68d0ab504b9a36e020ff619e86b2f97c1dbcd"
+  },
+  "favicon-228.png": {
+    "sha": "5b41a3758f28cd5ece1aa1fb7ada351f49d5b023"
+  },
+  "favicon-32.png": {
+    "sha": "3df095fc7fb5157149b80ec1eba97fd9d78c8743"
+  },
+  "favicon-57.png": {
+    "sha": "63b2c63b594029095f826df603e88a75ac8785a7"
+  },
+  "favicon-72.png": {
+    "sha": "b132fef29fa67c8653bc8c95fae183005685e99e"
+  },
+  "favicon-96.png": {
+    "sha": "fbdfed1ddbb93f3b45bb49500f26db46f16e41de"
+  },
+  "favicon.ico": {
+    "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
+  },
+  "image-test/index.html": {
+    "sha": "903397d79ab002ff5959242220d5c4c9a5c9f837"
+  },
+  "index.html": {
+    "sha": "7863190fdcf979df46480dd535b352ad18bef140"
+  },
+  "index.ts": {
+    "sha": "f9b4e3e6ecf188777bf77aade218e69c3951a12c"
+  },
+  "iso-test/index.html": {
+    "sha": "bec8a96ec43e912c62ceb3883de3190fe3527708"
+  },
+  "json-test/index.html": {
+    "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
+  },
+  "md5": "11a989daff5a45db90bdf0b7e2db06d0",
+  "package.json": {
+    "sha": "d7c391db3fd8d68b20055bcb9cf46a7262ca1fca"
+  },
+  "sample/index.html": {
+    "sha": "fc4b343dd263970462fb9a930412d116fea4bcc1"
+  },
+  "src/index.ts": {
+    "sha": "347692b333b45687ac5eabfee957ed7fc3f7a23f"
+  },
+  "tsconfig.json": {
+    "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
+  }
+}

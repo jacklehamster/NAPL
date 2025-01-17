@@ -1,0 +1,12 @@
+{
+  "config.json": {
+    "sha": "3628fc1bb2182254f99328a0c79ce69e7f2d1d55"
+  },
+  "md5": "2282227b465f1acc3e1bae98b42cdee6",
+  "package.json": {
+    "sha": "d7c391db3fd8d68b20055bcb9cf46a7262ca1fca"
+  },
+  "tsconfig.json": {
+    "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
+  }
+}
