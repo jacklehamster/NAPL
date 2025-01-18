@@ -57,7 +57,7 @@
     "sha": "903397d79ab002ff5959242220d5c4c9a5c9f837"
   },
   "index.html": {
-    "sha": "7863190fdcf979df46480dd535b352ad18bef140"
+    "sha": "c2ce0c0b67f2537d2766aca95cc6c8ba608f3f59"
   },
   "index.ts": {
     "sha": "f9b4e3e6ecf188777bf77aade218e69c3951a12c"
@@ -68,12 +68,12 @@
   "json-test/index.html": {
     "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
   },
-  "md5": "e30fb696ffaa2cc6fbe2d534c2ec5c2a",
+  "md5": "4fc1b9c115421630905d542bbd9ed45c",
   "package.json": {
     "sha": "d7c391db3fd8d68b20055bcb9cf46a7262ca1fca"
   },
   "sample/index.html": {
-    "sha": "24e2c9b8428365df074a9c0a45e11f4b5f590a62"
+    "sha": "9cc09b9b4beea5aa6d8be0ca986f82332d6428bf"
   },
   "src/index.ts": {
     "sha": "347692b333b45687ac5eabfee957ed7fc3f7a23f"
