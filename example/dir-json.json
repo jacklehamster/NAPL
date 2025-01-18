@@ -2,7 +2,10 @@
   "config.json": {
     "sha": "3628fc1bb2182254f99328a0c79ce69e7f2d1d55"
   },
-  "md5": "2282227b465f1acc3e1bae98b42cdee6",
+  "iso-test/random-iso.json": {
+    "sha": "25d512df006ad9b67f66baee12eff33318299443"
+  },
+  "md5": "ecbcbf93dfe1edad33ab322ba03329c1",
   "package.json": {
     "sha": "d7c391db3fd8d68b20055bcb9cf46a7262ca1fca"
   },
