@@ -22,9 +22,21 @@
       import { socketClient } from "../dist/index.js";
 
       window.socketClient = socketClient;
-      fetch("dir.json")
+      fetch("dir-json.json")
         .then((res) => res.json())
-        .then((dir) => {});
+        .then((file) => Object.keys(file).filter((a) => a.endsWith(".json")))
+        .then((files) =>
+          Promise.all(
+            files.map((file) =>
+              fetch(file)
+                .then((res) => res.json())
+                .then((data) => data)
+            )
+          )
+        )
+        .then((data) => {
+          console.log(data);
+        });
     </script>
   </body>
 </html>
