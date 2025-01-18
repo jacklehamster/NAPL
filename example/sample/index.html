@@ -198,6 +198,7 @@
                 document.createElement("input")
               );
               nameInput.id = `name-${clientId}`;
+              nameInput.style.width = "calc(100% - 10px)";
               nameInput.disabled = !isSelf;
               nameInput.addEventListener("input", (event) => {
                 socketClient.setData(

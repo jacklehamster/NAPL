@@ -35,118 +35,54 @@
     </style>
   </head>
   <body>
-    <!-- <script type="module">
-      import "./dist/index.js";
-    </script> -->
-    <!-- Creating tab -->
-    <div class="tabs">
-      <button type="button" id="sample-test">Sample Test</button>
-      <button type="button" id="chatroom-test">Chatroom Test</button>
-      <button type="button" id="image-test">Image Test</button>
-      <button type="button" id="json-test">Json Test</button>
-    </div>
-    <div class="container">
-      <div class="content" id="sample-test-content">
-        <iframe title="top" class="frame" data-src="sample?top"></iframe>
-        <iframe title="bottom" class="frame" data-src="sample?bottom"></iframe>
-      </div>
-      <div class="content" id="chatroom-test-content">
-        <iframe
-          title="top"
-          class="frame"
-          data-src="chatroom?top&room=chatroom"
-        ></iframe>
-        <iframe
-          title="bottom"
-          class="frame"
-          data-src="chatroom?bottom&room=chatroom"
-        ></iframe>
-      </div>
-      <div class="content" id="image-test-content">
-        <iframe
-          title="top"
-          class="frame"
-          data-src="image-test?top&room=image-test"
-        ></iframe>
-        <iframe
-          title="bottom"
-          class="frame"
-          data-src="image-test?bottom&room=image-test"
-        ></iframe>
-      </div>
-      <div class="content" id="json-test-content">
-        <iframe
-          title="top"
-          class="frame"
-          data-src="json-test?top&room=json-test"
-        ></iframe>
-        <iframe
-          title="bottom"
-          class="frame"
-          data-src="json-test?bottom&room=json-test"
-        ></iframe>
-      </div>
-    </div>
     <script>
-      document.getElementById("sample-test").addEventListener("click", () => {
-        const contentDivs = document.querySelectorAll(".content");
-        contentDivs.forEach((contentDiv) => {
-          contentDiv.style.display = "none";
-        });
-        const contentDiv = document.getElementById("sample-test-content");
-        contentDiv.style.display = "block";
-        const iframes = contentDiv.querySelectorAll("iframe");
-        iframes.forEach((iframe) => {
-          if (!iframe.src.length) {
-            iframe.src = iframe.getAttribute("data-src");
-          }
-        });
-      });
-      document.getElementById("chatroom-test").addEventListener("click", () => {
-        const contentDivs = document.querySelectorAll(".content");
-        contentDivs.forEach((contentDiv) => {
-          contentDiv.style.display = "none";
-        });
-        const chatroomContentDiv = document.getElementById(
-          "chatroom-test-content"
-        );
-        chatroomContentDiv.style.display = "block";
-        const iframes = chatroomContentDiv.querySelectorAll("iframe");
-        iframes.forEach((iframe) => {
-          if (!iframe.src.length) {
-            iframe.src = iframe.getAttribute("data-src");
-          }
-        });
-      });
-      document.getElementById("image-test").addEventListener("click", () => {
-        const contentDivs = document.querySelectorAll(".content");
-        contentDivs.forEach((contentDiv) => {
-          contentDiv.style.display = "none";
-        });
-        const chatroomContentDiv =
-          document.getElementById("image-test-content");
-        chatroomContentDiv.style.display = "block";
-        const iframes = chatroomContentDiv.querySelectorAll("iframe");
-        iframes.forEach((iframe) => {
-          if (!iframe.src.length) {
-            iframe.src = iframe.getAttribute("data-src");
-          }
-        });
-      });
-      document.getElementById("json-test").addEventListener("click", () => {
-        const contentDivs = document.querySelectorAll(".content");
-        contentDivs.forEach((contentDiv) => {
-          contentDiv.style.display = "none";
-        });
-        const chatroomContentDiv = document.getElementById("json-test-content");
-        chatroomContentDiv.style.display = "block";
-        const iframes = chatroomContentDiv.querySelectorAll("iframe");
-        iframes.forEach((iframe) => {
-          if (!iframe.src.length) {
-            iframe.src = iframe.getAttribute("data-src");
-          }
+      document.addEventListener("DOMContentLoaded", async () => {
+        const tabsContainer = document.querySelector(".tabs");
+        const container = document.querySelector(".container");
+        const dir = await fetch("dir.json").then((res) => res.json());
+        const regex = /(.*)\/index.html/;
+        const sites = Object.keys(dir)
+          .map((file) => {
+            const [, subdir] = file.match(regex) ?? [];
+            return subdir;
+          })
+          .filter((s) => !!s);
+        sites.forEach((site) => {
+          const button = document.createElement("button");
+          button.textContent = site;
+          button.addEventListener("click", () => {
+            if (!document.querySelector(`#${site}-content`)) {
+              const div = container.appendChild(document.createElement("div"));
+              div.id = `${site}-content`;
+              div.classList.add("content");
+              const topF = div.appendChild(document.createElement("iframe"));
+              topF.title = "top";
+              topF.classList.add("frame");
+              topF.setAttribute("src", `${site}?top&room=${site}`);
+              const bottomF = div.appendChild(document.createElement("iframe"));
+              bottomF.title = "bottom";
+              bottomF.classList.add("frame");
+              bottomF.setAttribute("src", `${site}?bottom&room=${site}`);
+            }
+
+            const contentDivs = document.querySelectorAll(".content");
+            contentDivs.forEach((contentDiv) => {
+              contentDiv.style.display = "none";
+            });
+            const contentDiv = document.getElementById(`${site}-content`);
+            contentDiv.style.display = "block";
+          });
+          tabsContainer.appendChild(button);
         });
       });
     </script>
+    <!-- Creating tab -->
+    <div class="tabs">
+      <!-- <button type="button" id="sample-test">Sample Test</button>
+      <button type="button" id="chatroom-test">Chatroom Test</button>
+      <button type="button" id="image-test">Image Test</button>
+      <button type="button" id="json-test">Json Test</button> -->
+    </div>
+    <div class="container"></div>
   </body>
 </html>
