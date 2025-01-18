@@ -63,7 +63,7 @@
     "sha": "f9b4e3e6ecf188777bf77aade218e69c3951a12c"
   },
   "iso-test/index.html": {
-    "sha": "add9c369848c3320ec9800c5125fdb022b83f32c"
+    "sha": "db58d415898de58072a8afbc8c3c9ead41dccff6"
   },
   "iso-test/random-iso.json": {
     "sha": "25d512df006ad9b67f66baee12eff33318299443"
@@ -74,7 +74,7 @@
   "json-test/index.html": {
     "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
   },
-  "md5": "74fdcd0d11d2eee52e367a7468162843",
+  "md5": "66b3bdb350d02ebae713ab76e0325d59",
   "package.json": {
     "sha": "d7c391db3fd8d68b20055bcb9cf46a7262ca1fca"
   },
