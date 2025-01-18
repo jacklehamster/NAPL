@@ -22,6 +22,9 @@
       import { socketClient } from "../dist/index.js";
 
       window.socketClient = socketClient;
+      fetch("dir.json")
+        .then((res) => res.json())
+        .then((dir) => {});
     </script>
   </body>
 </html>
