@@ -18,7 +18,7 @@ export class ClientData implements ISharedData, IObservable {
     return this.socketClient.observe(...updatedPaths);
   }
 
-  async setData(path: Update["path"], value: any, options: SetDataOptions): Promise<void> {
+  async setData(path: Update["path"], value: any, options?: SetDataOptions): Promise<void> {
     return this.socketClient.setData(this.#getAbsolutePath(path), value, options);
   }
 

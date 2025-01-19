@@ -10,7 +10,7 @@ interface Observation {
 export class Observer {
   readonly pathArrays: (string | number)[][];
   readonly observations: Observation[];
-  changeCallback?: (...values: any[]) => void;
+  changeCallbacks: Set<(...values: any[]) => void> = new Set();
   #addedElementsCallback?: (...keys: (any[] | undefined)[]) => void;
   #deletedElementsCallback?: (...keys: (any[] | undefined)[]) => void;
   constructor(
@@ -29,8 +29,8 @@ export class Observer {
     });
   }
 
-  onChange(callback: (...values: any[]) => void): Observer {
-    this.changeCallback = callback;
+  onChange(callback: (...values: Observation[]) => void): Observer {
+    this.changeCallbacks.add(callback);
     return this;
   }
 
@@ -73,7 +73,7 @@ export class Observer {
     if (!this.#updatedObservations()) {
       return;
     }
-    this.changeCallback?.(...this.observations);
+    this.changeCallbacks.forEach(callback => callback(...this.observations));
     if (this.#addedElementsCallback && this.observations.some((observation) => Array.isArray(observation.value))) {
       let hasNewElements = false;
       const newElementsArray = this.observations.map((observation) => {

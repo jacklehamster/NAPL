@@ -10,6 +10,6 @@ export interface SetDataOptions {
 }
 
 export interface ISharedData {
-  setData(path: Update["path"], value: any, options: SetDataOptions): Promise<void>;
+  setData(path: Update["path"], value: any, options?: SetDataOptions): Promise<void>;
   state: Record<string, any>;
 }

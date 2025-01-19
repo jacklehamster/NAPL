@@ -44,7 +44,7 @@ export class SocketClient implements ISharedData, IObservable {
     return update.value !== currentValue;
   }
 
-  async setData(path: Update["path"], value: any, options: SetDataOptions = {}) {
+  async setData(path: Update["path"], value: any, options?: SetDataOptions) {
     await this.#waitForConnection();
 
     const payloadBlobs: Record<string, Blob> = {};
@@ -52,10 +52,10 @@ export class SocketClient implements ISharedData, IObservable {
 
     const update: Update = {
       path: this.#fixPath(path),
-      value: options.delete ? undefined : value,
-      confirmed: options.passive ? undefined : Date.now(),
-      push: options.push,
-      insert: options.insert,
+      value: options?.delete ? undefined : value,
+      confirmed: options?.passive ? undefined : Date.now(),
+      push: options?.push,
+      insert: options?.insert,
       blobs: payloadBlobs,
     };
 
@@ -64,7 +64,7 @@ export class SocketClient implements ISharedData, IObservable {
     }
 
     //  commit updates locally
-    if (!options.passive) {
+    if (!options?.passive) {
       this.#queueIncomingUpdates(update);
     }
     this.#queueOutgoingUpdates(update);

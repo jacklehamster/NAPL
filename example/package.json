@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
-    "bun-types": "^1.1.13",
+    "bun-types": "^1.1.45",
     "express": "^4.21.2",
     "icon-gen": "^4.0.0",
     "png-to-ico": "^2.1.8",
@@ -20,6 +20,7 @@
     "napl": "link:napl"
   },
   "dependencies": {
+    "aseprite-sheet": "^1.0.5",
     "json-stringify-pretty-compact": "^4.0.0"
   }
 }
