@@ -1,24 +1,24 @@
 {
   "client/ClientData.ts": {
-    "sha": "b4d8c9febbbacc5c015f9a9a0c9d4f7a1898f96a"
+    "sha": "ed9612e857cefc3f0ca7106d76bdd1efe86478bf"
   },
   "client/IObservable.ts": {
     "sha": "8dce059249b75c2ddc823fa73e3bc208ca0a8dc8"
   },
   "client/ISharedData.ts": {
-    "sha": "ba833560f133aa98b95414493055bbbe712e9bec"
+    "sha": "260a2cc82b50c0a273da31a6dc2157a351d09947"
   },
   "client/Observer.ts": {
-    "sha": "66abc06acec108f4eb64742bc563f034dc1aae5a"
+    "sha": "65a5db07b711ee5ac0d9a8bec42c53141f6a0f30"
   },
   "client/ObserverManager.ts": {
     "sha": "0d6af7c607d5454cae666895e10913235c0a8196"
   },
   "client/SocketClient.ts": {
-    "sha": "ba5d3101b27a2786f046277ca767c68c9efdd7af"
+    "sha": "cfa1ca42738bb00e55f53b18b34ac45f884b0e21"
   },
   "client/SubData.ts": {
-    "sha": "7de3281f17a46a33d9216ce9d342efe8bd79afc0"
+    "sha": "ee50ee89553db212026349c5be662bd783413906"
   },
   "data-update.test.ts": {
     "sha": "d9ea0a70e32571eda410db8a0d64a28419a99726"
@@ -29,7 +29,7 @@
   "index.ts": {
     "sha": "27c4b147d4a85bbd484d109c39f26577587e1e31"
   },
-  "md5": "bf359934a748b18134c012ac7b00b8bc",
+  "md5": "b76d5f18ba3225dfc94632d08534eef2",
   "server/SocketEventHandler.ts": {
     "sha": "19419ccf57cdf16632a20baa23f35120d4c115db"
   },
