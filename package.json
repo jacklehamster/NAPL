@@ -46,6 +46,6 @@
   },
   "description": "Not Another Programming Language",
   "dependencies": {
-    "@dobuki/data-blob": "^1.0.11"
+    "@dobuki/data-blob": "^1.0.12"
   }
 }

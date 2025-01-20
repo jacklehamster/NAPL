@@ -132,9 +132,9 @@ export async function displayIsoUI(path: string) {
           }
         })
     );
-    observers.add(trackCursorObserver(clientId, (cursor) => {
+    observers.add(trackCursorObserver(clientId, (cursor, selected) => {
+      console.log(cursor, selected);
       const draggedItem = getDraggedItem(clientId);
-      const selected = socketClient.state.clients[clientId].selected;
       if (!cursor || selected === undefined) {
         draggedItem.style.display = "none"
         return;
@@ -143,7 +143,7 @@ export async function displayIsoUI(path: string) {
       const [x, y] = cursor;
       draggedItem.style.left = `${x - 40}px`;
       draggedItem.style.top = `${y - 40}px`;
-    }));
+    }, [`clients/${clientId}/selected`]));
   }, (clientId) => {
     const client = document.querySelector(`#client-${clientId}`) as HTMLDivElement;
     if (client) {
@@ -171,6 +171,7 @@ export async function displayIsoUI(path: string) {
         div.style.transformOrigin = "top left";
         div.addEventListener("mousedown", () => {
           socketClient.self.setData("selected", type);
+          socketClient.self.setData("cursor", [x, y]);
           socketClient.setData(`iso/world/${uid}`, undefined);
         });
         document.body.appendChild(div);
@@ -265,15 +266,15 @@ export function handleUsersChanged(onUserAdded: (clientId: string, isSelf: boole
     });
 }
 
-export function trackCursorObserver(clientId: string, callback: (cursor?: [number, number]) => void) {
+export function trackCursorObserver(clientId: string, callback: (cursor?: [number, number], ...extra: any[]) => void, extraObservations: string[] = []) {
   //  cursor observer
   return socketClient
-    .observe(`clients/${clientId}/cursor`)
-    .onChange((cursor) => {
+    .observe(...[`clients/${clientId}/cursor`, ...extraObservations])
+    .onChange((cursor, ...extra) => {
       if (!cursor.value) {
         callback();
         return;
       }
-      callback(cursor.value);
+      callback(cursor.value, ...extra.map((e) => e.value));
     })
 }

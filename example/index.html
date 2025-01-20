@@ -13,9 +13,12 @@
         flex-direction: column;
       }
       .frame {
-        height: 50%;
+        height: 100%;
         width: 100%;
         border: 0;
+      }
+      .frame.split {
+        height: 50%;
       }
       .tabs {
         display: flex;
@@ -36,6 +39,11 @@
   </head>
   <body>
     <script>
+      const shouldSplit = new URLSearchParams(location.search).has("split");
+      const initialTab =
+        new URLSearchParams(location.search).get("room") ?? "chatroom";
+      const showTab = new URLSearchParams(location.search).get("show-tab");
+
       document.addEventListener("DOMContentLoaded", async () => {
         const tabsContainer = document.querySelector(".tabs");
         const container = document.querySelector(".container");
@@ -49,6 +57,7 @@
           .filter((s) => !!s);
         sites.forEach((site) => {
           const button = document.createElement("button");
+          button.id = `${site}-button`;
           button.textContent = site;
           button.addEventListener("click", () => {
             if (!document.querySelector(`#${site}-content`)) {
@@ -59,10 +68,17 @@
               topF.title = "top";
               topF.classList.add("frame");
               topF.setAttribute("src", `${site}?top&room=${site}`);
-              const bottomF = div.appendChild(document.createElement("iframe"));
-              bottomF.title = "bottom";
-              bottomF.classList.add("frame");
-              bottomF.setAttribute("src", `${site}?bottom&room=${site}`);
+              if (shouldSplit) {
+                const bottomF = div.appendChild(
+                  document.createElement("iframe")
+                );
+                bottomF.title = "bottom";
+                bottomF.classList.add("frame");
+                bottomF.setAttribute("src", `${site}?bottom&room=${site}`);
+
+                topF.classList.add("split");
+                bottomF.classList.add("split");
+              }
             }
 
             const contentDivs = document.querySelectorAll(".content");
@@ -74,15 +90,19 @@
           });
           tabsContainer.appendChild(button);
         });
+        if (initialTab) {
+          const button = document.querySelector(`#${initialTab}-button`);
+          if (button) {
+            button.click();
+          }
+          if (!showTab) {
+            tabsContainer.style.display = "none";
+          }
+        }
       });
     </script>
     <!-- Creating tab -->
-    <div class="tabs">
-      <!-- <button type="button" id="sample-test">Sample Test</button>
-      <button type="button" id="chatroom-test">Chatroom Test</button>
-      <button type="button" id="image-test">Image Test</button>
-      <button type="button" id="json-test">Json Test</button> -->
-    </div>
+    <div class="tabs"></div>
     <div class="container"></div>
   </body>
 </html>

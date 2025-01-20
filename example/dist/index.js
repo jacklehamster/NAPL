@@ -61,91 +61,106 @@ function getLeafObject(obj, path, offset, autoCreate, selfId) {
   return current;
 }
 
-class f {
+class A {
   data = [];
-  #t = new TextEncoder;
-  static payload(t, e) {
-    return new f().payload(t, e);
+  #n = new TextEncoder;
+  static payload(n, h) {
+    return new A().payload(n, h);
   }
-  static blob(t, e) {
-    return new f().blob(t, e);
+  static blob(n, h) {
+    return new A().blob(n, h);
   }
-  #r(t) {
-    let e = this.#t.encode(t), n = new Uint8Array([e.byteLength]);
-    this.data.push(n.buffer), this.data.push(e.buffer);
+  #h(n) {
+    let h = this.#n.encode(n), c = new Uint8Array([h.byteLength]);
+    this.data.push(c.buffer), this.data.push(h.buffer);
   }
-  payload(t, e) {
-    this.#r(t);
-    let n = new Uint8Array([1]);
-    this.data.push(n.buffer);
-    let r = JSON.stringify(e), s = this.#t.encode(r), i = new Uint32Array([s.byteLength]);
-    return this.data.push(i.buffer), this.data.push(s.buffer), this;
+  payload(n, h) {
+    this.#h(n);
+    let c = new Uint8Array([1]);
+    this.data.push(c.buffer);
+    let t = JSON.stringify(h), i = this.#n.encode(t), w = new Uint32Array([i.byteLength]);
+    return this.data.push(w.buffer), this.data.push(i.buffer), this;
   }
-  blob(t, e) {
-    this.#r(t);
-    let n = new Uint8Array([2]);
-    this.data.push(n.buffer);
-    let r = new Uint32Array([e.size]);
-    return this.data.push(r.buffer), this.data.push(e), this;
+  blob(n, h) {
+    this.#h(n);
+    let c = new Uint8Array([2]);
+    this.data.push(c.buffer);
+    let t = new Uint32Array([h.size]);
+    return this.data.push(t.buffer), this.data.push(h), this;
   }
   build() {
     return new Blob(this.data);
   }
 }
-async function m(t) {
-  let e = new TextDecoder, n = {}, r = 0, s;
-  while (r < t.size) {
-    s = s ?? await t.arrayBuffer();
-    let i = new Uint8Array(s, r, 1);
-    r += Uint8Array.BYTES_PER_ELEMENT;
-    let a = e.decode(new Uint8Array(s, r, i[0]));
-    r += i[0];
-    let h = new Uint8Array(s, r, 1);
-    r += Uint8Array.BYTES_PER_ELEMENT;
-    let o = new Uint32Array(s.slice(r, r + Uint32Array.BYTES_PER_ELEMENT), 0, 1);
-    switch (r += Uint32Array.BYTES_PER_ELEMENT, h[0]) {
+var J = new TextDecoder;
+function G(n, h) {
+  let [c, t] = T(n, h);
+  return [J.decode(new Uint8Array(n, t, c)), t + c];
+}
+function H(n, h) {
+  let [c, t] = E(n, h);
+  return [J.decode(new Uint8Array(n, t, c)), t + c];
+}
+function I(n, h) {
+  let [c, t] = E(n, h);
+  return [new Blob([new Uint8Array(n, t, c)], { type: "application/octet-stream" }), t + c];
+}
+function E(n, h) {
+  return [new Uint32Array(n.slice(h, h + Uint32Array.BYTES_PER_ELEMENT), 0, 1)[0], h + Uint32Array.BYTES_PER_ELEMENT];
+}
+function T(n, h) {
+  return [new Uint8Array(n, h, 1)[0], h + Uint8Array.BYTES_PER_ELEMENT];
+}
+async function W(n) {
+  let h = {}, c = 0, t;
+  while (c < n.size) {
+    t = t ?? await n.arrayBuffer();
+    let [i, w] = G(t, c);
+    c = w;
+    let [j, K] = T(t, c);
+    switch (c = K, j) {
       case 1:
         try {
-          let c = e.decode(new Uint8Array(s, r, o[0]));
-          n[a] = JSON.parse(c);
-        } catch (c) {
-          console.warn("Failed to parse JSON payload", c);
+          let [m, C] = H(t, c);
+          c = C, h[i] = JSON.parse(m);
+        } catch (m) {
+          console.warn("Failed to parse JSON payload", m);
         }
         break;
       case 2:
-        n[a] = new Blob([s.slice(r, r + o[0])]);
+        let [g, q] = I(t, c);
+        c = q, h[i] = g;
         break;
     }
-    r += o[0];
   }
-  return n;
+  return h;
 }
-async function u(t, e, n = () => globalThis.crypto.randomUUID()) {
-  if (typeof t === "string" && t.startsWith("blob:")) {
-    let r = await fetch(t).then((i) => i.blob());
-    URL.revokeObjectURL(t);
-    let s = `{blobUrl:${n()}}`;
-    return e[s] = r, s;
+async function N(n, h, c = () => globalThis.crypto.randomUUID()) {
+  if (typeof n === "string" && n.startsWith("blob:")) {
+    let t = await fetch(n).then((w) => w.blob());
+    URL.revokeObjectURL(n);
+    let i = `{blobUrl:${c()}}`;
+    return h[i] = t, i;
   }
-  if (typeof t === "object" && t instanceof Blob) {
-    let r = `{blob:${n()}}`;
-    return e[r] = t, r;
+  if (typeof n === "object" && n instanceof Blob) {
+    let t = `{blob:${c()}}`;
+    return h[t] = n, t;
   }
-  if (Array.isArray(t))
-    await Promise.all(t.map(async (r, s) => {
-      t[s] = await u(r, e, n);
+  if (Array.isArray(n))
+    await Promise.all(n.map(async (t, i) => {
+      n[i] = await N(t, h, c);
     }));
-  else if (typeof t === "object" && t)
-    await Promise.all(Object.entries(t).map(async ([r, s]) => {
-      t[r] = await u(s, e, n);
+  else if (typeof n === "object" && n)
+    await Promise.all(Object.entries(n).map(async ([t, i]) => {
+      n[t] = await N(i, h, c);
     }));
-  return t;
+  return n;
 }
 function addMessageReceiver(socket, payloadReceived) {
   socket.on("message", async (message) => {
     if (message instanceof Buffer) {
       const blob = new Blob([message]);
-      const { payload, ...blobs } = await m(blob);
+      const { payload, ...blobs } = await W(blob);
       if (payload) {
         payloadReceived(payload, blobs);
       }
@@ -203,7 +218,7 @@ class SyncRoom {
     });
     commitUpdates(this.#state, this.#updates);
     this.#updates = this.#updates.filter((update) => !update.confirmed);
-    const blobBuilder = f.payload("payload", {
+    const blobBuilder = A.payload("payload", {
       myClientId: clientId,
       state: { ...this.#state, blobs: undefined },
       updates: this.#updates
@@ -232,7 +247,7 @@ class SyncRoom {
     if (!newUpdates?.length) {
       return;
     }
-    const blobBuilder = f.payload("payload", { updates: newUpdates });
+    const blobBuilder = A.payload("payload", { updates: newUpdates });
     newUpdates.forEach((update) => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => blobBuilder.blob(key, blob)));
     const buffer = await blobBuilder.build().arrayBuffer();
     this.#sockets.keys().forEach((client) => {
@@ -511,7 +526,7 @@ class SocketClient {
   async setData(path, value, options) {
     await this.#waitForConnection();
     const payloadBlobs = {};
-    value = await u(value, payloadBlobs);
+    value = await N(value, payloadBlobs);
     const update = {
       path: this.#fixPath(path),
       value: options?.delete ? undefined : value,
@@ -557,7 +572,7 @@ class SocketClient {
         reject(event);
       });
       socket.addEventListener("message", async (event) => {
-        const { payload, ...blobs } = await m(event.data);
+        const { payload, ...blobs } = await W(event.data);
         if (payload?.myClientId) {
           this.#selfData.id = payload.myClientId;
           this.#connectionPromise = undefined;
@@ -598,7 +613,7 @@ class SocketClient {
   }
   async#broadcastUpdates() {
     await this.#waitForConnection();
-    const blobBuilder = f.payload("payload", { updates: this.#outgoingUpdates });
+    const blobBuilder = A.payload("payload", { updates: this.#outgoingUpdates });
     const addedBlob = new Set;
     this.#outgoingUpdates.forEach((update) => {
       Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
@@ -706,15 +721,15 @@ class p {
     return this.spriteDefinitions[this.frames[e % this.frames.length]];
   }
   draw(e, i, t, n = 0, r = 1) {
-    let o = this.getSpriteDefinition(n), { x: s, y: m2, w: a, h } = o.frame;
-    e.drawImage(this.spriteSheet.getImage(), s, m2, a, h, i, t, a * r, h * r);
+    let o = this.getSpriteDefinition(n), { x: s, y: m, w: a, h } = o.frame;
+    e.drawImage(this.spriteSheet.getImage(), s, m, a, h, i, t, a * r, h * r);
   }
   makeCanvas(e = 0, i = 1) {
     let { w: t, h: n } = this.getSpriteDefinition(e).frame, r = document.createElement("canvas"), o = r.getContext("2d");
     if (r.classList.add("sprite-canvas"), r.width = t * i, r.height = n * i, this.draw(o, 0, 0, e, i), this.onFrameChange?.(e), this.frames.length > 1) {
-      let s = performance.now(), m2 = this.spriteDefinitions[this.frames[e]], a = () => {
-        let c = performance.now() - s, f2 = Math.floor(c / m2.duration) % this.frames.length;
-        o.clearRect(0, 0, r.width, r.height), this.draw(o, 0, 0, f2, i), this.onFrameChange?.(f2), requestAnimationFrame(a);
+      let s = performance.now(), m = this.spriteDefinitions[this.frames[e]], a = () => {
+        let c = performance.now() - s, f = Math.floor(c / m.duration) % this.frames.length;
+        o.clearRect(0, 0, r.width, r.height), this.draw(o, 0, 0, f, i), this.onFrameChange?.(f), requestAnimationFrame(a);
       };
       a();
     }
@@ -730,7 +745,7 @@ class p {
     if (t.classList.add("sprite"), t.style.backgroundImage = `url(${this.spriteSheet.definition.meta.image})`, t.style.backgroundPosition = `-${i.frame.x}px -${i.frame.y}px`, t.style.minWidth = `${i.frame.w}px`, t.style.minHeight = `${i.frame.h}px`, t.style.backgroundSize = `${this.spriteSheet.definition.meta.size.w}px ${this.spriteSheet.definition.meta.size.h}px`, this.frames.length > 1) {
       let n = 0, r = "@keyframes animateSprite {";
       for (let s = 0;s < this.frames.length; s++) {
-        let m2 = this.frames[s], a = this.spriteDefinitions[m2], h = s / this.frames.length * 100;
+        let m = this.frames[s], a = this.spriteDefinitions[m], h = s / this.frames.length * 100;
         r += `${h}% { background-position: -${a.frame.x}px -${a.frame.y}px; } `, n += a.duration;
       }
       r += "}";
@@ -1060,9 +1075,9 @@ async function displayIsoUI(path) {
         getDraggedItem(clientId).replaceChildren(sprite.generateDiv());
       }
     }));
-    observers.add(trackCursorObserver(clientId, (cursor) => {
+    observers.add(trackCursorObserver(clientId, (cursor, selected) => {
+      console.log(cursor, selected);
       const draggedItem = getDraggedItem(clientId);
-      const selected = socketClient.state.clients[clientId].selected;
       if (!cursor || selected === undefined) {
         draggedItem.style.display = "none";
         return;
@@ -1071,7 +1086,7 @@ async function displayIsoUI(path) {
       const [x, y] = cursor;
       draggedItem.style.left = `${x - 40}px`;
       draggedItem.style.top = `${y - 40}px`;
-    }));
+    }, [`clients/${clientId}/selected`]));
   }, (clientId) => {
     const client = document.querySelector(`#client-${clientId}`);
     if (client) {
@@ -1097,6 +1112,7 @@ async function displayIsoUI(path) {
         div.style.transformOrigin = "top left";
         div.addEventListener("mousedown", () => {
           socketClient.self.setData("selected", type);
+          socketClient.self.setData("cursor", [x, y]);
           socketClient.setData(`iso/world/${uid}`, undefined);
         });
         document.body.appendChild(div);
@@ -1172,13 +1188,13 @@ function handleUsersChanged(onUserAdded, onUserRemoved) {
     clientIds?.forEach((clientId) => onUserRemoved?.(clientId));
   });
 }
-function trackCursorObserver(clientId, callback) {
-  return socketClient.observe(`clients/${clientId}/cursor`).onChange((cursor) => {
+function trackCursorObserver(clientId, callback, extraObservations = []) {
+  return socketClient.observe(...[`clients/${clientId}/cursor`, ...extraObservations]).onChange((cursor, ...extra) => {
     if (!cursor.value) {
       callback();
       return;
     }
-    callback(cursor.value);
+    callback(cursor.value, ...extra.map((e) => e.value));
   });
 }
 export {
