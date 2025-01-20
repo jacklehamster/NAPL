@@ -7,9 +7,9 @@
   },
   "/example/chatroom/dir.json": {
     "index.html": {
-      "sha": "befb19ce2b43da55f5573804470aa935ec1f1d04"
+      "sha": "2573d3aae83fa5f1957a2412b75edcaeb9899828"
     },
-    "md5": "848e4aff26ac4591556e5cc8e2b322b7"
+    "md5": "d14e8d3917207da9037fa09ffbac0576"
   },
   "/example/config.json": {
     "websocketHost": "api.dobuki.net"
@@ -46,13 +46,13 @@
       "sha": "836474c87c9bb464ec4d316999a76fc2774ea523"
     },
     "chatroom/index.html": {
-      "sha": "befb19ce2b43da55f5573804470aa935ec1f1d04"
+      "sha": "2573d3aae83fa5f1957a2412b75edcaeb9899828"
     },
     "config.json": {
       "sha": "3628fc1bb2182254f99328a0c79ce69e7f2d1d55"
     },
     "dist/index.js": {
-      "sha": "38dc9b21c2385e7f8c30e0b9fc5c91125d821ca9"
+      "sha": "2d83adc10f228fb8879ca0be2083f514b74c7263"
     },
     "favicon-120.png": {
       "sha": "69b3e5c9a01fe3ed4195b5c971674d80fc0f4318"
@@ -91,7 +91,7 @@
       "sha": "903397d79ab002ff5959242220d5c4c9a5c9f837"
     },
     "index.html": {
-      "sha": "c2ce0c0b67f2537d2766aca95cc6c8ba608f3f59"
+      "sha": "1e6734fdb5b28f8eca87df7838b96c4fa1b84ee4"
     },
     "index.ts": {
       "sha": "f9b4e3e6ecf188777bf77aade218e69c3951a12c"
@@ -108,7 +108,7 @@
     "json-test/index.html": {
       "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
     },
-    "md5": "3cbf8f5fff3ff8d3784aa5f382716f3b",
+    "md5": "6960e9ffb79c3b100815df6146479e82",
     "package.json": {
       "sha": "09e46830bf778fbdc83612bf8e93158c228148c8"
     },
@@ -122,7 +122,7 @@
       "sha": "603130522fbfc957ce69bd618a85c2e5eedc218a"
     },
     "src/index.ts": {
-      "sha": "badfec923242378471b48949054e47aa7b24e03f"
+      "sha": "08b349ba3cb1bddc47b2159b29e31463654c19e8"
     },
     "tsconfig.json": {
       "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
@@ -130,9 +130,9 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "38dc9b21c2385e7f8c30e0b9fc5c91125d821ca9"
+      "sha": "2d83adc10f228fb8879ca0be2083f514b74c7263"
     },
-    "md5": "453e27c7b76a7bd568cbb998980509be"
+    "md5": "3242c81eec5025f11717fc809932f7f8"
   },
   "/example/image-test/dir.json": {
     "index.html": {
@@ -1038,9 +1038,9 @@
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "badfec923242378471b48949054e47aa7b24e03f"
+      "sha": "08b349ba3cb1bddc47b2159b29e31463654c19e8"
     },
-    "md5": "2a9f304731e141fe66b599ee61edeea8"
+    "md5": "6279aa2d6cda2a7eed052c0b6773ca8f"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -1113,14 +1113,14 @@
     "files": [
       "dist"
     ],
-    "version": "1.0.6",
+    "version": "1.0.7",
     "author": {
       "name": "Jack Le Hamster",
       "email": "jacklehamster@gmail.com"
     },
     "description": "Not Another Programming Language",
     "dependencies": {
-      "@dobuki/data-blob": "^1.0.11"
+      "@dobuki/data-blob": "^1.0.12"
     }
   },
   "/src/client/dir.json": {
