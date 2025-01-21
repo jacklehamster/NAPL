@@ -4,12 +4,14 @@
   "type": "module",
   "scripts": {
     "start": "bun run build && bun run index.ts --watch",
+    "start:prod": "bun run build && NODE_ENV=production bun run index.ts --watch",
     "build": "bun i && bun run build-icon && bun build --target=node ./src/index.ts --outfile=dist/index.js",
     "build-icon": "icon-gen -i ../icon.png -o ."
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
     "bun-types": "^1.1.45",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "icon-gen": "^4.0.0",
     "png-to-ico": "^2.1.8",

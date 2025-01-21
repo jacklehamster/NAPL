@@ -3,6 +3,8 @@ import express from "express";
 import ws from "ws";
 import path from "path";
 import { attachSyncSocket } from "napl";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const PORT = 3000;
@@ -14,7 +16,14 @@ const wss = new ws.Server<typeof ws.WebSocket>({ server });
 attachSyncSocket(wss);
 
 app.get("/config.json", (_req, res) => {
-  res.json({});
+  if (process.env.NODE_ENV === "production") {
+    res.sendFile(path.join(__dirname, "config.json"));
+    return;
+  }
+  res.json({
+    "split": true,
+    "show-tab": true,
+  });
 });
 
 app.use(express.static(path.join(__dirname, ".")));
@@ -30,6 +39,7 @@ server.addListener("listening", () => {
   } else if (address && typeof address === "object") {
     const host = address.address === '::' ? 'localhost' : address.address;
     console.log(`Listening on http://${host}:${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV ?? "dev"}`);
   }
 });
 

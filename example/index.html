@@ -39,12 +39,17 @@
   </head>
   <body>
     <script>
-      const shouldSplit = new URLSearchParams(location.search).has("split");
-      const initialTab =
-        new URLSearchParams(location.search).get("room") ?? "chatroom";
-      const showTab = new URLSearchParams(location.search).get("show-tab");
-
       document.addEventListener("DOMContentLoaded", async () => {
+        const configJson = await fetch("config.json").then((res) => res.json());
+
+        const shouldSplit =
+          new URLSearchParams(location.search).get("split") ?? configJson.split;
+        const initialTab =
+          new URLSearchParams(location.search).get("room") ?? configJson.room;
+        const showTab =
+          new URLSearchParams(location.search).get("show-tab") ??
+          configJson["show-tab"];
+
         const tabsContainer = document.querySelector(".tabs");
         const container = document.querySelector(".container");
         const dir = await fetch("dir.json").then((res) => res.json());

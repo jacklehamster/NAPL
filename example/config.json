@@ -1,3 +1,4 @@
 {
-  "websocketHost": "api.dobuki.net"
+  "websocketHost": "api.dobuki.net",
+  "room": "chatroom"
 }
