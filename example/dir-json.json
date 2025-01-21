@@ -1,13 +1,13 @@
 {
   "config.json": {
-    "sha": "3628fc1bb2182254f99328a0c79ce69e7f2d1d55"
+    "sha": "ab4d02e4061f00d513ac5226db97ac76df9e9e4d"
   },
   "iso-test/random-iso.json": {
     "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
   },
-  "md5": "78c706bbc8436ee40ee174e6d4a511ed",
+  "md5": "9f37e09809251fdfc26739c80ab76d67",
   "package.json": {
-    "sha": "09e46830bf778fbdc83612bf8e93158c228148c8"
+    "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
   },
   "random-iso.json": {
     "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
