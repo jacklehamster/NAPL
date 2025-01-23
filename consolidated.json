@@ -53,7 +53,7 @@
       "sha": "ab4d02e4061f00d513ac5226db97ac76df9e9e4d"
     },
     "dist/index.js": {
-      "sha": "2d83adc10f228fb8879ca0be2083f514b74c7263"
+      "sha": "7d7badd2798155d86d0dc1db93ed720d2a1d814b"
     },
     "favicon-120.png": {
       "sha": "69b3e5c9a01fe3ed4195b5c971674d80fc0f4318"
@@ -98,7 +98,7 @@
       "sha": "6093adae3b9eaca8e6157d19198735ac2f97a0a0"
     },
     "iso-test/index.html": {
-      "sha": "1cb57e4f85b69d56cfe5f1068ef5ce7069f29a0e"
+      "sha": "0edfeaa6d0891cccd8058b2d1e336ebd53d4d903"
     },
     "iso-test/random-iso.json": {
       "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
@@ -109,7 +109,7 @@
     "json-test/index.html": {
       "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
     },
-    "md5": "044f7bfa4b28c8871d4cf180c085f591",
+    "md5": "6efd102b1d35804bacf9f4bba642858d",
     "package.json": {
       "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
     },
@@ -120,10 +120,13 @@
       "sha": "1554c267f94aa89dcc9efd969f0a369450a626a2"
     },
     "sample/index.html": {
-      "sha": "603130522fbfc957ce69bd618a85c2e5eedc218a"
+      "sha": "a96b0f3bc64acb40d389689e43f903e1e23a7807"
     },
     "src/index.ts": {
-      "sha": "08b349ba3cb1bddc47b2159b29e31463654c19e8"
+      "sha": "af56a4c608e570af6b0a32d12144d8539a88c513"
+    },
+    "src/iso-test/iso-utils.ts": {
+      "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
     },
     "tsconfig.json": {
       "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
@@ -131,9 +134,9 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "2d83adc10f228fb8879ca0be2083f514b74c7263"
+      "sha": "7d7badd2798155d86d0dc1db93ed720d2a1d814b"
     },
-    "md5": "3242c81eec5025f11717fc809932f7f8"
+    "md5": "da6cb572151fed09c76a627d1853efcb"
   },
   "/example/image-test/dir.json": {
     "index.html": {
@@ -149,9 +152,9 @@
   },
   "/example/iso-test/dir.json": {
     "index.html": {
-      "sha": "1cb57e4f85b69d56cfe5f1068ef5ce7069f29a0e"
+      "sha": "0edfeaa6d0891cccd8058b2d1e336ebd53d4d903"
     },
-    "md5": "87096fac7605d6494c4bee53f8f088f2",
+    "md5": "c90339e269c7ff665927398b330a2794",
     "random-iso.json": {
       "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
     },
@@ -1035,15 +1038,24 @@
   },
   "/example/sample/dir.json": {
     "index.html": {
-      "sha": "603130522fbfc957ce69bd618a85c2e5eedc218a"
+      "sha": "a96b0f3bc64acb40d389689e43f903e1e23a7807"
     },
-    "md5": "2811867432f9c628b7ae3ef5bc8796b2"
+    "md5": "079a3eebc22a3a9833c27d5b35cccfca"
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "08b349ba3cb1bddc47b2159b29e31463654c19e8"
+      "sha": "af56a4c608e570af6b0a32d12144d8539a88c513"
     },
-    "md5": "6279aa2d6cda2a7eed052c0b6773ca8f"
+    "iso-test/iso-utils.ts": {
+      "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
+    },
+    "md5": "d8d6241f99e8574d45c2b7cde3fc7e11"
+  },
+  "/example/src/iso-test/dir.json": {
+    "iso-utils.ts": {
+      "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
+    },
+    "md5": "87417d18e2f3a9af819fde230bf71263"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -1117,7 +1129,7 @@
     "files": [
       "dist"
     ],
-    "version": "1.0.7",
+    "version": "1.0.8",
     "author": {
       "name": "Jack Le Hamster",
       "email": "jacklehamster@gmail.com"
@@ -1144,12 +1156,12 @@
       "sha": "0d6af7c607d5454cae666895e10913235c0a8196"
     },
     "SocketClient.ts": {
-      "sha": "cfa1ca42738bb00e55f53b18b34ac45f884b0e21"
+      "sha": "99e4de47a8ed38a855f09f094e46737d1ea18bec"
     },
     "SubData.ts": {
       "sha": "ee50ee89553db212026349c5be662bd783413906"
     },
-    "md5": "98495311ad667f36f091860aaac00529"
+    "md5": "d66aa605c571d99f3273c29f56c92828"
   },
   "/src/dir.json": {
     "client/ClientData.ts": {
@@ -1168,7 +1180,7 @@
       "sha": "0d6af7c607d5454cae666895e10913235c0a8196"
     },
     "client/SocketClient.ts": {
-      "sha": "cfa1ca42738bb00e55f53b18b34ac45f884b0e21"
+      "sha": "99e4de47a8ed38a855f09f094e46737d1ea18bec"
     },
     "client/SubData.ts": {
       "sha": "ee50ee89553db212026349c5be662bd783413906"
@@ -1182,7 +1194,7 @@
     "index.ts": {
       "sha": "27c4b147d4a85bbd484d109c39f26577587e1e31"
     },
-    "md5": "b76d5f18ba3225dfc94632d08534eef2",
+    "md5": "5f7b882d7696ed941b6b3b31f1cb6174",
     "server/SocketEventHandler.ts": {
       "sha": "19419ccf57cdf16632a20baa23f35120d4c115db"
     },
