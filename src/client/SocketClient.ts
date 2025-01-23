@@ -178,7 +178,6 @@ export class SocketClient implements ISharedData, IObservable {
     this.#saveBlobsFromUpdates(this.#incomingUpdates);
     commitUpdates(this.state, this.#incomingUpdates);
     this.#incomingUpdates.length = 0;
-    this.state.lastUpdated = Date.now();
     this.#observerManager.triggerObservers();
   }
 
