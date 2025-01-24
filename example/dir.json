@@ -74,7 +74,7 @@
   "json-test/index.html": {
     "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
   },
-  "md5": "6efd102b1d35804bacf9f4bba642858d",
+  "md5": "792c54c6a5e801e60e369a105777b099",
   "package.json": {
     "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
   },
@@ -86,6 +86,9 @@
   },
   "sample/index.html": {
     "sha": "a96b0f3bc64acb40d389689e43f903e1e23a7807"
+  },
+  "spin-room/index.html": {
+    "sha": "7412b5f4c1aa5f1ea10d12d5c82f2e266f5fab8c"
   },
   "src/index.ts": {
     "sha": "af56a4c608e570af6b0a32d12144d8539a88c513"
