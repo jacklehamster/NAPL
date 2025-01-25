@@ -18,7 +18,7 @@
     "sha": "ab4d02e4061f00d513ac5226db97ac76df9e9e4d"
   },
   "dist/index.js": {
-    "sha": "7d7badd2798155d86d0dc1db93ed720d2a1d814b"
+    "sha": "a726e585c717285037bf66733c07aba210e8e650"
   },
   "favicon-120.png": {
     "sha": "69b3e5c9a01fe3ed4195b5c971674d80fc0f4318"
@@ -57,7 +57,7 @@
     "sha": "903397d79ab002ff5959242220d5c4c9a5c9f837"
   },
   "index.html": {
-    "sha": "821733bda1c3cf16e3be5e69ccb11602df1f7969"
+    "sha": "9458be4796f1d5e6bc797429247b93cfc2afe4a2"
   },
   "index.ts": {
     "sha": "6093adae3b9eaca8e6157d19198735ac2f97a0a0"
@@ -74,7 +74,7 @@
   "json-test/index.html": {
     "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
   },
-  "md5": "792c54c6a5e801e60e369a105777b099",
+  "md5": "7e2e1d18045349ce7a77423c39ed5991",
   "package.json": {
     "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
   },
@@ -88,7 +88,7 @@
     "sha": "a96b0f3bc64acb40d389689e43f903e1e23a7807"
   },
   "spin-room/index.html": {
-    "sha": "7412b5f4c1aa5f1ea10d12d5c82f2e266f5fab8c"
+    "sha": "0f4191fc126666cf3dca303e060677e52a70ad0f"
   },
   "src/index.ts": {
     "sha": "af56a4c608e570af6b0a32d12144d8539a88c513"
