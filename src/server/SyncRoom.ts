@@ -1,4 +1,4 @@
-import ws from "ws";
+import { WebSocket } from "ws";
 import { commitUpdates } from "@/data-update";
 import { Update } from "@/types/Update";
 import { addMessageReceiver } from "./SocketEventHandler";
@@ -8,7 +8,7 @@ import { RoomState } from "@/types/ServerState";
 import { BlobBuilder } from "@dobuki/data-blob";
 
 export class SyncRoom {
-  readonly #sockets: Map<ws.WebSocket, ClientState> = new Map();
+  readonly #sockets: Map<WebSocket, ClientState> = new Map();
   readonly #state: RoomState;
   readonly #onRoomChange = new Set<(roomState: RoomState) => void>();
   #updates: Update[] = [];
@@ -24,7 +24,7 @@ export class SyncRoom {
     this.#onRoomChange.add(callback);
   }
 
-  async welcomeClient(client: ws.WebSocket) {
+  async welcomeClient(client: WebSocket) {
     //  initialize client state
     const clientId = crypto.randomUUID();
     const clientPath = `clients/${clientId}`;
@@ -80,7 +80,7 @@ export class SyncRoom {
     return { clientId };
   }
 
-  #shareUpdates(newUpdates?: Update[], sender?: ws.WebSocket) {
+  #shareUpdates(newUpdates?: Update[], sender?: WebSocket) {
     if (!newUpdates?.length) {
       return;
     }
@@ -97,7 +97,7 @@ export class SyncRoom {
     newUpdates?.forEach((update) => this.#updates.push(update));
   }
 
-  async #broadcastUpdates(newUpdates: Update[] | undefined, senderFilter?: (sender: ws.WebSocket) => boolean) {
+  async #broadcastUpdates(newUpdates: Update[] | undefined, senderFilter?: (sender: WebSocket) => boolean) {
     if (!newUpdates?.length) {
       return;
     }

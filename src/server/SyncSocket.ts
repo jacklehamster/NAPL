@@ -1,14 +1,14 @@
-import type ws from "ws";
+import type { Server, WebSocket } from "ws";
 import { SyncRoom } from "./SyncRoom";
 
 export class SyncSocket {
   readonly #rooms: Record<string, SyncRoom> = {};
 
-  constructor(server: ws.Server<any>) {
+  constructor(server: Server<any>) {
     this.#hookupSocketServer(server);
   }
 
-  #hookupSocketServer(websocketServer: ws.Server) {
+  #hookupSocketServer(websocketServer: Server) {
     websocketServer.on("listening", () => {
       const address = websocketServer.address();
       if (typeof address === "string") {
@@ -19,7 +19,7 @@ export class SyncSocket {
       }
     });
 
-    websocketServer.on("connection", async (socket: ws.WebSocket, req) => {
+    websocketServer.on("connection", async (socket: WebSocket, req) => {
       //  extract query params
       const parameters = new URLSearchParams(req.url?.split("?")[1]);
       const roomName = parameters.get("room") ?? "default";
