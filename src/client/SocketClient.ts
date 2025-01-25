@@ -24,8 +24,8 @@ export class SocketClient implements ISharedData, IObservable {
   readonly #observerManager = new ObserverManager(this);
 
   constructor(host: string, room?: string) {
-    const secure = globalThis.location.protocol === "https:";
-    this.#connectionUrl = `${secure ? "wss" : "ws"}://${host}${room ? `?room=${room}` : ""}`;
+    const prefix = host.startsWith("ws://") || host.startsWith("wss://") ? "" : globalThis.location.protocol === "https:" ? "wss://" : "ws://";
+    this.#connectionUrl = `${prefix}${host}${room ? `?room=${room}` : ""}`;
     this.#connect();
     globalThis.addEventListener("focus", () => {
       if (!this.#socket) {
