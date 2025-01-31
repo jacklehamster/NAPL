@@ -9,16 +9,16 @@
     "sha": "260a2cc82b50c0a273da31a6dc2157a351d09947"
   },
   "client/Observer.ts": {
-    "sha": "65a5db07b711ee5ac0d9a8bec42c53141f6a0f30"
+    "sha": "0cdcab00e37757b7ca7684d80db09ee696922271"
   },
   "client/ObserverManager.ts": {
-    "sha": "0d6af7c607d5454cae666895e10913235c0a8196"
+    "sha": "083882255535de7d229edb811472901b021651e5"
   },
   "client/SocketClient.ts": {
-    "sha": "cb317696f3f82124167a2bf4a7a235a4d6b0396c"
+    "sha": "4b72ffe1d99c6992f7eb81404b728b8d7450d8b1"
   },
   "client/SubData.ts": {
-    "sha": "ee50ee89553db212026349c5be662bd783413906"
+    "sha": "0128a97072e1610ab395c48901ee12221ece5be2"
   },
   "data-update.test.ts": {
     "sha": "d9ea0a70e32571eda410db8a0d64a28419a99726"
@@ -29,7 +29,7 @@
   "index.ts": {
     "sha": "45db207865251163bf4d5ef104cceed8e9501c09"
   },
-  "md5": "46a3b54eb690535a3d782bc5250e549f",
+  "md5": "e401348f226aeed8d6e563416aa21524",
   "server/SocketEventHandler.ts": {
     "sha": "aecf58955629f4178e2d85904d0c1121a1fc23dc"
   },
@@ -37,7 +37,7 @@
     "sha": "a2b112b84929ff0f770a4b7fe14349e77f996ee5"
   },
   "server/SyncRoom.ts": {
-    "sha": "61a6015cd4ca215d2359d7cc634c31b678dbfd20"
+    "sha": "95ad662b1759e557290f056c2665abcf2c0b5b9c"
   },
   "server/SyncSocket.ts": {
     "sha": "659bec0bf88be00a6085ba15226798dc1aec50d1"
