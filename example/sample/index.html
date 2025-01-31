@@ -105,7 +105,7 @@
       const dataHook = socketClient.access("data");
       const dataArea = document.querySelector("#data-area");
       dataArea.addEventListener("input", (event) => {
-        dataHook.setData(undefined, event.target.value, {
+        dataHook.setData(undefined, event.target.value || undefined, {
           passive: document.querySelector("#passive").checked,
         });
       });

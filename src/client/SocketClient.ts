@@ -13,8 +13,12 @@ import { IObservable } from "./IObservable";
 import { ObserverManager } from "./ObserverManager";
 import { extractBlobsFromPayload } from "@dobuki/data-blob";
 
+const LOCAL_TAG = "#local";
+
 export class SocketClient implements ISharedData, IObservable {
-  state: Record<string, any> = {};
+  state: Record<string, any> = {
+    [LOCAL_TAG]: {},
+  };
   #socket: WebSocket | undefined;
   #connectionPromise: Promise<void> | undefined;
   readonly #connectionUrl: string;
@@ -111,10 +115,11 @@ export class SocketClient implements ISharedData, IObservable {
           // client ID confirmed
           this.#selfData.id = payload.myClientId;
           this.#connectionPromise = undefined;
+          this.localState.id = payload.myClientId;
           resolve();
         }
         if (payload?.state) {
-          this.state = payload.state;
+          this.state = { ...payload.state, [LOCAL_TAG]: this.state[LOCAL_TAG] };
           this.state.blobs = blobs;
         }
         if (payload?.updates) {
@@ -183,5 +188,9 @@ export class SocketClient implements ISharedData, IObservable {
 
   removeObserver(observer: Observer) {
     this.#observerManager.removeObserver(observer);
+  }
+
+  get localState() {
+    return this.state[LOCAL_TAG];
   }
 }

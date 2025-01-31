@@ -12,6 +12,7 @@ export class ObserverManager implements IObservable {
   observe(...paths: Update["path"][]): Observer {
     const observer = new Observer(this.socketClient, paths);
     this.#observers.add(observer);
+    this.#updateState();
     return observer;
   }
 
@@ -21,5 +22,10 @@ export class ObserverManager implements IObservable {
 
   removeObserver(observer: Observer) {
     this.#observers.delete(observer);
+  }
+
+  #updateState() {
+    this.socketClient.localState.observers = Array.from(new Set(Array.from(this.#observers).map(o => o.paths).flat()));
+    this.socketClient.localState.observers.sort();
   }
 }

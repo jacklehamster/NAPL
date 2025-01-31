@@ -150,7 +150,7 @@ export class SyncRoom {
       }
     } else if (Array.isArray(root)) {
       root.forEach(value => this.#findUsedBlobs(value, blobSet));
-    } else if (typeof root === "object") {
+    } else if (root && typeof root === "object") {
       Object.values(root).forEach(value => this.#findUsedBlobs(value, blobSet));
     }
   }

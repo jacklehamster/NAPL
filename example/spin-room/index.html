@@ -71,34 +71,36 @@
         }
       }
 
-      let speed = 0;
       let angle = 0;
-
-      let mouseAngle = null;
 
       function getAngle(x, y) {
         return Math.atan2(y - POS.y, x - POS.x);
       }
 
       document.addEventListener("mousedown", (event) => {
-        mouseAngle = getAngle(event.clientX * 2, event.clientY * 2);
+        socketClient.setData(
+          "mouseAngle",
+          getAngle(event.clientX * 2, event.clientY * 2)
+        );
       });
       document.addEventListener("mousemove", (event) => {
-        if (mouseAngle) {
+        if (socketClient.state.mouseAngle) {
           const angle = getAngle(event.clientX * 2, event.clientY * 2);
-          mouseAngle = angle;
+          socketClient.setData("mouseAngle", angle);
         }
       });
       document.addEventListener("mouseup", () => {
-        const diffAngle = mouseAngle - angle;
-        speed = diffAngle * 2;
-        mouseAngle = null;
+        const diffAngle = socketClient.state.mouseAngle - angle;
+        socketClient.setData("mouseAngle", null);
+        socketClient.setData("speed", diffAngle * 2);
       });
 
       requestAnimationFrame(function animate() {
-        const diffAngle = mouseAngle ? mouseAngle - angle : speed;
+        const diffAngle = socketClient.state.mouseAngle
+          ? socketClient.state.mouseAngle - angle
+          : (socketClient.state.speed ?? 0);
         angle += diffAngle * 0.1;
-        drawCircle(POS.x, POS.y, angle, speed);
+        drawCircle(POS.x, POS.y, angle, socketClient.state.speed ?? 0);
         requestAnimationFrame(animate);
       });
     </script>

@@ -124,7 +124,7 @@ export function handleUsersChanged(onUserAdded: (clientId: string, isSelf: boole
         onUserAdded(clientId, isSelf, observers);
         observers.add(
           socketClient.observe(`clients/${clientId}`).onChange((client) => {
-            if (!client.value) {
+            if (client.value === undefined) {
               observers.forEach((observer) => observer.close());
             }
           })

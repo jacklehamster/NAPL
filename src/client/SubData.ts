@@ -6,9 +6,9 @@ import { Observer } from "./Observer";
 import { IObservable } from "./IObservable";
 
 export class SubData implements ISharedData, IObservable {
-  readonly parts: (string | number)[] = [];
+  readonly #parts: (string | number)[] = [];
   constructor(readonly path: Update["path"], readonly socketClient: SocketClient) {
-    this.parts = path.split("/");
+    this.#parts = path.split("/");
   }
 
   #getAbsolutePath(path: Update["path"]): string {
@@ -25,6 +25,6 @@ export class SubData implements ISharedData, IObservable {
   }
 
   get state(): Record<string, any> {
-    return getLeafObject(this.socketClient.state, this.parts, 0, false) ?? {};
+    return getLeafObject(this.socketClient.state, this.#parts, 0, false) ?? {};
   }
 }
