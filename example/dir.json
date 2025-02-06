@@ -18,7 +18,7 @@
     "sha": "ab4d02e4061f00d513ac5226db97ac76df9e9e4d"
   },
   "dist/index.js": {
-    "sha": "95b8e0fddea743617dd075b8a78070448fa79e67"
+    "sha": "bf4ff88aac51153a5992015db3fc63143a997bef"
   },
   "favicon-120.png": {
     "sha": "69b3e5c9a01fe3ed4195b5c971674d80fc0f4318"
@@ -74,7 +74,7 @@
   "json-test/index.html": {
     "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
   },
-  "md5": "3c2ce771e3b6d9db224ea687561d43f1",
+  "md5": "ffd987f6b4ffe5311e4daf79d1fc0ba3",
   "package.json": {
     "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
   },
@@ -84,6 +84,9 @@
   "random-iso.png": {
     "sha": "1554c267f94aa89dcc9efd969f0a369450a626a2"
   },
+  "react-test/index.html": {
+    "sha": "929b2e396ac395d148b1cdff2f412863f0b35fcf"
+  },
   "sample/index.html": {
     "sha": "87971026f499e032eab2a285f7c128d3194b08fb"
   },
@@ -91,10 +94,16 @@
     "sha": "2955a8db5763436cfadb707f762fd895b190d04e"
   },
   "src/index.ts": {
-    "sha": "b819211d8360e9435717216edfb6233408e7c0a1"
+    "sha": "2691be91a0ab824497b1a6240990368254abd233"
   },
   "src/iso-test/iso-utils.ts": {
     "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
+  },
+  "src/react/component.tsx": {
+    "sha": "f47b84fa549c79a6cbe4a1214eabade175418689"
+  },
+  "src/react/socket-client.ts": {
+    "sha": "6b89e67286231f9cc0e6474cc778473b33efdd12"
   },
   "tsconfig.json": {
     "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
