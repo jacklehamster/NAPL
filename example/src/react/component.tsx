@@ -7,9 +7,12 @@ interface Props {
 }
 
 export function SharedText({ socketClient }: Props) {
-  const { useData } = useSocketClient(socketClient);
+  const { useData } = useSocketClient({ socketClient });
   const [data, setData] = useData<string>("data");
-  return <textarea title="shared-text" value={data ?? ""} onChange={e => {
+  return <textarea style={{
+    width: "100%",
+    height: "500px",
+  }} title="shared-text" value={data ?? ""} onChange={e => {
     setData(e.target.value);
   }} />;
 }

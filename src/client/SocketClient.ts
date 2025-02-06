@@ -55,6 +55,11 @@ export class SocketClient implements ISharedData, IObservable {
   async setData(path: Update["path"], value: any, options?: SetDataOptions) {
     await this.#waitForConnection();
 
+    if (typeof value === "function") {
+      const updater = value as (prev: any) => any;
+      value = updater(this.getData(path));
+    }
+
     const payloadBlobs: Record<string, Blob> = {};
     value = await extractBlobsFromPayload(value, payloadBlobs);
 
