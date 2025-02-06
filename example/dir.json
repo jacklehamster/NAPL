@@ -18,7 +18,7 @@
     "sha": "ab4d02e4061f00d513ac5226db97ac76df9e9e4d"
   },
   "dist/index.js": {
-    "sha": "bf4ff88aac51153a5992015db3fc63143a997bef"
+    "sha": "b8cd5a74df356117ca67417d0c871d958eb478e9"
   },
   "favicon-120.png": {
     "sha": "69b3e5c9a01fe3ed4195b5c971674d80fc0f4318"
@@ -74,7 +74,7 @@
   "json-test/index.html": {
     "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
   },
-  "md5": "ffd987f6b4ffe5311e4daf79d1fc0ba3",
+  "md5": "9d6f4a8a2cfac45e2e92b18f3334bcce",
   "package.json": {
     "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
   },
@@ -100,10 +100,10 @@
     "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
   },
   "src/react/component.tsx": {
-    "sha": "f47b84fa549c79a6cbe4a1214eabade175418689"
+    "sha": "9b48a0ca9f89985a9bccb58cf3b17be918b0a940"
   },
   "src/react/socket-client.ts": {
-    "sha": "6b89e67286231f9cc0e6474cc778473b33efdd12"
+    "sha": "347ec53403304fd7311cea38961873988b42ddb7"
   },
   "tsconfig.json": {
     "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
