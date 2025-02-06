@@ -1086,9 +1086,9 @@ var require_scheduler_development = __commonJS((exports) => {
       }
       return first;
     }
-    function compare(a, b) {
-      var diff = a.sortIndex - b.sortIndex;
-      return diff !== 0 ? diff : a.id - b.id;
+    function compare(a, b2) {
+      var diff = a.sortIndex - b2.sortIndex;
+      return diff !== 0 ? diff : a.id - b2.id;
     }
     function advanceTimers(currentTime) {
       for (var timer = peek(timerQueue);timer !== null; ) {
@@ -1919,15 +1919,15 @@ Error generating stack: ` + x.message + `
           throw Error("Unable to find node on an unmounted component.");
         return alternate !== fiber ? null : fiber;
       }
-      for (var a = fiber, b = alternate;; ) {
+      for (var a = fiber, b2 = alternate;; ) {
         var parentA = a.return;
         if (parentA === null)
           break;
         var parentB = parentA.alternate;
         if (parentB === null) {
-          b = parentA.return;
-          if (b !== null) {
-            a = b;
+          b2 = parentA.return;
+          if (b2 !== null) {
+            a = b2;
             continue;
           }
           break;
@@ -1936,25 +1936,25 @@ Error generating stack: ` + x.message + `
           for (parentB = parentA.child;parentB; ) {
             if (parentB === a)
               return assertIsMounted(parentA), fiber;
-            if (parentB === b)
+            if (parentB === b2)
               return assertIsMounted(parentA), alternate;
             parentB = parentB.sibling;
           }
           throw Error("Unable to find node on an unmounted component.");
         }
-        if (a.return !== b.return)
-          a = parentA, b = parentB;
+        if (a.return !== b2.return)
+          a = parentA, b2 = parentB;
         else {
           for (var didFindChild = false, _child = parentA.child;_child; ) {
             if (_child === a) {
               didFindChild = true;
               a = parentA;
-              b = parentB;
+              b2 = parentB;
               break;
             }
-            if (_child === b) {
+            if (_child === b2) {
               didFindChild = true;
-              b = parentA;
+              b2 = parentA;
               a = parentB;
               break;
             }
@@ -1965,12 +1965,12 @@ Error generating stack: ` + x.message + `
               if (_child === a) {
                 didFindChild = true;
                 a = parentB;
-                b = parentA;
+                b2 = parentA;
                 break;
               }
-              if (_child === b) {
+              if (_child === b2) {
                 didFindChild = true;
-                b = parentB;
+                b2 = parentB;
                 a = parentA;
                 break;
               }
@@ -1980,7 +1980,7 @@ Error generating stack: ` + x.message + `
               throw Error("Child was not found in either parent set. This indicates a bug in React related to the return pointer. Please file an issue.");
           }
         }
-        if (a.alternate !== b)
+        if (a.alternate !== b2)
           throw Error("Return fibers should always be each others' alternates. This error is likely caused by a bug in React. Please file an issue.");
       }
       if (a.tag !== 3)
@@ -3495,9 +3495,9 @@ This will cause a hydration error.%s`, parentTag, warnKey);
           }
       }
     }
-    function batchedUpdates$1(fn, a, b) {
+    function batchedUpdates$1(fn, a, b2) {
       if (isInsideEventHandler)
-        return fn(a, b);
+        return fn(a, b2);
       isInsideEventHandler = true;
       try {
         var JSCompiler_inline_result = fn(a);
@@ -3710,8 +3710,8 @@ This will cause a hydration error.%s`, parentTag, warnKey);
       if (domEventName === "input" || domEventName === "change")
         return getInstIfValueChanged(targetInst);
     }
-    function is(x, y) {
-      return x === y && (x !== 0 || 1 / x === 1 / y) || x !== x && y !== y;
+    function is(x, y2) {
+      return x === y2 && (x !== 0 || 1 / x === 1 / y2) || x !== x && y2 !== y2;
     }
     function shallowEqual(objA, objB) {
       if (objectIs(objA, objB))
@@ -16792,7 +16792,7 @@ ${currentIndent}`);
 }
 
 // node_modules/aseprite-sheet/dist/index.js
-class p {
+class f {
   spriteSheet;
   frames;
   spriteDefinitions;
@@ -16805,43 +16805,43 @@ class p {
   getSpriteDefinition(e = 0) {
     return this.spriteDefinitions[this.frames[e % this.frames.length]];
   }
-  draw(e, i, t, n = 0, r = 1) {
-    let o = this.getSpriteDefinition(n), { x: s, y: m, w: a, h } = o.frame;
-    e.drawImage(this.spriteSheet.getImage(), s, m, a, h, i, t, a * r, h * r);
+  draw(e, i, t, r = 0, n = 1) {
+    let a = this.getSpriteDefinition(r), { x: o, y: h, w: m, h: p } = a.frame;
+    e.drawImage(this.spriteSheet.getImage(), o, h, m, p, i, t, m * n, p * n);
   }
   makeCanvas(e = 0, i = 1) {
-    let { w: t, h: n } = this.getSpriteDefinition(e).frame, r = document.createElement("canvas"), o = r.getContext("2d");
-    if (r.classList.add("sprite-canvas"), r.width = t * i, r.height = n * i, this.draw(o, 0, 0, e, i), this.onFrameChange?.(e), this.frames.length > 1) {
-      let s = performance.now(), m = this.spriteDefinitions[this.frames[e]], a = () => {
-        let c = performance.now() - s, f = Math.floor(c / m.duration) % this.frames.length;
-        o.clearRect(0, 0, r.width, r.height), this.draw(o, 0, 0, f, i), this.onFrameChange?.(f), requestAnimationFrame(a);
+    let { w: t, h: r } = this.getSpriteDefinition(e).frame, n = document.createElement("canvas"), a = n.getContext("2d");
+    if (n.classList.add("sprite-canvas"), n.width = t * i, n.height = r * i, this.draw(a, 0, 0, e, i), this.onFrameChange?.(e), this.frames.length > 1) {
+      let o = performance.now(), h = this.spriteDefinitions[this.frames[e]], m = () => {
+        let g = performance.now() - o, c = Math.floor(g / h.duration) % this.frames.length;
+        a.clearRect(0, 0, n.width, n.height), this.draw(a, 0, 0, c, i), this.onFrameChange?.(c), requestAnimationFrame(m);
       };
-      a();
+      m();
     }
-    return r;
+    return n;
   }
   async makeBlob(e, i = 1) {
     return new Promise((t) => {
-      this.makeCanvas(e, i).toBlob((n) => t(n));
+      this.makeCanvas(e, i).toBlob((r) => t(r));
     });
   }
   generateDiv(e = 0) {
     let i = this.getSpriteDefinition(e), t = document.createElement("div");
     if (t.classList.add("sprite"), t.style.backgroundImage = `url(${this.spriteSheet.definition.meta.image})`, t.style.backgroundPosition = `-${i.frame.x}px -${i.frame.y}px`, t.style.minWidth = `${i.frame.w}px`, t.style.minHeight = `${i.frame.h}px`, t.style.backgroundSize = `${this.spriteSheet.definition.meta.size.w}px ${this.spriteSheet.definition.meta.size.h}px`, this.frames.length > 1) {
-      let n = 0, r = "@keyframes animateSprite {";
-      for (let s = 0;s < this.frames.length; s++) {
-        let m = this.frames[s], a = this.spriteDefinitions[m], h = s / this.frames.length * 100;
-        r += `${h}% { background-position: -${a.frame.x}px -${a.frame.y}px; } `, n += a.duration;
+      let r = 0, n = "@keyframes animateSprite {";
+      for (let o = 0;o < this.frames.length; o++) {
+        let h = this.frames[o], m = this.spriteDefinitions[h], p = o / this.frames.length * 100;
+        n += `${p}% { background-position: -${m.frame.x}px -${m.frame.y}px; } `, r += m.duration;
       }
-      r += "}";
-      let o = document.createElement("style");
-      o.innerText = r, document.head.appendChild(o), t.style.animation = `animateSprite ${n}ms steps(1) infinite`;
+      n += "}";
+      let a = document.createElement("style");
+      a.innerText = n, document.head.appendChild(a), t.style.animation = `animateSprite ${r}ms steps(1) infinite`;
     }
     return t;
   }
 }
 
-class d {
+class u {
   definition;
   image = new Image;
   loadPromise;
@@ -16855,25 +16855,25 @@ class d {
   constructor(e) {
     this.definition = e;
     Object.entries(e.frames).forEach(([i, t]) => {
-      let [, n] = i.match(g) ?? [];
-      this.spriteDefinitions[parseInt(n)] = t;
+      let [, r] = i.match(l) ?? [];
+      this.spriteDefinitions[parseInt(r)] = t;
     });
   }
   getImage() {
     return this.image;
   }
   getSprite(e) {
-    return this.sprites[e] ?? (this.sprites[e] = new p(this, [e]));
+    return this.sprites[e] ?? (this.sprites[e] = new f(this, [e]));
   }
   getTaggedSprite(e) {
     if (this.taggedSprites[e])
       return this.taggedSprites[e];
     let i = this.definition.meta.frameTags.find((t) => t.name === e);
     if (i) {
-      let { from: t, to: n } = i, r = Math.sign(n - t) || 1, o = [];
-      for (let s = t;s <= n; s += r)
-        o.push(s);
-      return this.taggedSprites[e] = new p(this, this.calculateFrames(o, i.direction));
+      let { from: t, to: r } = i, n = Math.sign(r - t) || 1, a = [];
+      for (let o = t;o <= r; o += n)
+        a.push(o);
+      return this.taggedSprites[e] = new f(this, this.calculateFrames(a, i.direction));
     }
     return;
   }
@@ -16884,13 +16884,13 @@ class d {
         t.reverse();
         break;
       case "pingpong":
-        for (let n = e.length - 2;n >= 1; n--)
-          t.push(e[n]);
+        for (let r = e.length - 2;r >= 1; r--)
+          t.push(e[r]);
         break;
       case "pingpong_reverse":
         t.reverse();
-        for (let n = 1;n < e.length - 1; n++)
-          t.push(e[n]);
+        for (let r = 1;r < e.length - 1; r++)
+          t.push(e[r]);
         break;
     }
     return t;
@@ -16901,17 +16901,43 @@ class d {
   async load() {
     if (!this.loadPromise && !this.loaded)
       this.loadPromise = new Promise(async (e, i) => {
-        await new Promise((t, n) => {
-          this.image = new Image, this.image.onload = () => t(), this.image.onerror = n, this.image.src = this.definition.meta.image;
+        await new Promise((t, r) => {
+          this.image = new Image, this.image.onload = () => t(), this.image.onerror = r, this.image.src = this.definition.meta.image;
         }), e(), this.loadPromise = undefined;
       });
     return await this.loadPromise, this;
   }
 }
-var g = /.*\s(\d+).aseprite/;
-async function S(e) {
+var l = /.*\s(\d+).aseprite/;
+async function y(e) {
   return await fetch(e).then((t) => t.json());
 }
+var d;
+((s) => {
+  s.NORMAL = "normal";
+  s.MULTIPLY = "multiply";
+  s.SCREEN = "screen";
+  s.OVERLAY = "overlay";
+  s.DARKEN = "darken";
+  s.LIGHTEN = "lighten";
+  s.COLOR_DODGE = "color-dodge";
+  s.COLOR_BURN = "color-burn";
+  s.HARD_LIGHT = "hard-light";
+  s.SOFT_LIGHT = "soft-light";
+  s.DIFFERENCE = "difference";
+  s.EXCLUSION = "exclusion";
+  s.HUE = "hue";
+  s.SATURATION = "saturation";
+  s.COLOR = "color";
+  s.LUMINOSITY = "luminosity";
+})(d ||= {});
+var b;
+((n) => {
+  n.FORWARD = "forward";
+  n.REVERSE = "reverse";
+  n.PINGPONG = "pingpong";
+  n.PINGPONG_REVERSE = "pingpong_reverse";
+})(b ||= {});
 
 // src/react/socket-client.ts
 var import_react = __toESM(require_react(), 1);
@@ -16967,11 +16993,11 @@ function hookupDiv(div, socketClient) {
 // src/iso-test/iso-utils.ts
 var scaleX = 70;
 var scaleY = 40;
-function gridPositionToView(x, y) {
-  return [(x + y) * scaleX / 2, (-x + y) * scaleY / 2];
+function gridPositionToView(x, y2) {
+  return [(x + y2) * scaleX / 2, (-x + y2) * scaleY / 2];
 }
-function viewPositionToGrid(x, y) {
-  return [Math.round(x / scaleX - y / scaleY), Math.round(x / scaleX + y / scaleY)];
+function viewPositionToGrid(x, y2) {
+  return [Math.round(x / scaleX - y2 / scaleY), Math.round(x / scaleX + y2 / scaleY)];
 }
 async function displayIsoUI(path) {
   function getDraggedItem(clientId) {
@@ -17045,8 +17071,8 @@ async function displayIsoUI(path) {
         socketClient.self.setData("isoCursor", undefined);
         return;
       }
-      const [x, y] = cursor;
-      socketClient.self.setData("isoCursor", viewPositionToGrid(x, y));
+      const [x, y2] = cursor;
+      socketClient.self.setData("isoCursor", viewPositionToGrid(x, y2));
       draggedItem.style.display = "";
     }, [`clients/${clientId}/selected`])).add(trackIsoCursorObserver(clientId, (cursor) => {
       const draggedItem = getDraggedItem(clientId);
@@ -17055,9 +17081,9 @@ async function displayIsoUI(path) {
         return;
       }
       draggedItem.style.display = "";
-      const [x, y] = gridPositionToView(cursor[0], cursor[1]);
+      const [x, y2] = gridPositionToView(cursor[0], cursor[1]);
       draggedItem.style.left = `${x - 40}px`;
-      draggedItem.style.top = `${y - 40}px`;
+      draggedItem.style.top = `${y2 - 40}px`;
     }));
   }, (clientId) => {
     const client = document.querySelector(`#client-${clientId}`);
@@ -17072,10 +17098,10 @@ async function displayIsoUI(path) {
   function trackIsoWorldObserver() {
     socketClient.observe("iso/world/{keys}").onElementsAdded((keys) => {
       keys?.forEach((uid) => {
-        const { type, x, y } = socketClient.state.iso.world[uid];
+        const { type, x, y: y2 } = socketClient.state.iso.world[uid];
         const sprite = spriteSheet.getTaggedSprite(type) ?? spriteSheet.getSprite(type);
         const div = sprite.generateDiv();
-        const [viewX, viewY] = gridPositionToView(x, y);
+        const [viewX, viewY] = gridPositionToView(x, y2);
         div.id = `elem-${uid}`;
         div.style.position = "absolute";
         div.style.left = `${viewX - 40}px`;
@@ -17085,7 +17111,7 @@ async function displayIsoUI(path) {
         div.addEventListener("mousedown", () => {
           socketClient.self.setData("selected", type);
           selectedTime = Date.now();
-          socketClient.self.setData("cursor", [x, y]);
+          socketClient.self.setData("cursor", [x, y2]);
           socketClient.setData(`iso/world/${uid}`, undefined);
         });
         document.body.appendChild(div);
@@ -17101,9 +17127,9 @@ async function displayIsoUI(path) {
   }
   trackIsoWorldObserver();
 }
-function insertInIsoWorld(type, x, y) {
+function insertInIsoWorld(type, x, y2) {
   const uid = Math.random().toString(36).substring(3);
-  socketClient.setData(`iso/world/${uid}`, { type, x, y });
+  socketClient.setData(`iso/world/${uid}`, { type, x, y: y2 });
 }
 
 // src/index.ts
@@ -17286,8 +17312,8 @@ function getSocketClient() {
 var socketClient = getSocketClient();
 window.socketClient = socketClient;
 async function getSpriteSheet(path) {
-  const spritesheetDefinition = await S(path);
-  return new d(spritesheetDefinition);
+  const spritesheetDefinition = await y(path);
+  return new u(spritesheetDefinition);
 }
 function introduceName() {
   socketClient.observe("clients/{self}").onChange(() => {

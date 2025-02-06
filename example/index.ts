@@ -1,6 +1,6 @@
 import { createServer } from "https";
 import express from "express";
-import ws from "ws";
+import { WebSocketServer } from "ws";
 import path from "path";
 import { attachSyncSocket } from "napl";
 import dotenv from 'dotenv';
@@ -11,7 +11,7 @@ const PORT = 3000;
 
 const server = createServer(app);
 
-const wss = new ws.Server<typeof ws.WebSocket>({ server });
+const wss = new WebSocketServer({ server });
 
 attachSyncSocket(wss);
 
