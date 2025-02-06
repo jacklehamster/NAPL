@@ -44,8 +44,12 @@ export class SocketClient implements ISharedData, IObservable {
   }
 
   #usefulUpdate(update: Update) {
-    const currentValue = getLeafObject(this.state, update.path, 0, false, this.#selfData.id);
+    const currentValue = this.getData(update.path);
     return update.value !== currentValue;
+  }
+
+  getData(path: Update["path"]) {
+    return getLeafObject(this.state, path, 0, false, this.#selfData.id) as any;
   }
 
   async setData(path: Update["path"], value: any, options?: SetDataOptions) {

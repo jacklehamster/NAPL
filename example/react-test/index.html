@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>React Room</title>
+    <style>
+      body {
+        background-color: lightgray;
+      }
+      .users {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        z-index: 100;
+      }
+      .chat-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 10px;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        border: 1px solid black;
+        overflow: auto;
+      }
+      .chat-box {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: calc(100% - 30px);
+        margin: 10px;
+        padding: 5px;
+        background-color: silver;
+        border: 1px solid black;
+        height: 100px;
+      }
+      .chatting {
+        opacity: 0.5;
+        font-style: italic;
+      }
+      .ai-checkbox-group {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        z-index: 100;
+        display: none; /* Not yet ready */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container"></div>
+
+    <script type="module">
+      import { hookDiv } from "../dist/index.js";
+      hookDiv(document.querySelector(".container"));
+    </script>
+  </body>
+</html>
