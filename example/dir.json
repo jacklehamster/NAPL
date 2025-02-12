@@ -18,7 +18,7 @@
     "sha": "ab4d02e4061f00d513ac5226db97ac76df9e9e4d"
   },
   "dist/index.js": {
-    "sha": "604cc1b794bfd9e60b3916c0ee2d1eeb02009ba4"
+    "sha": "bef8ba440dfff4a7c16700b9ba0e5fb1d0f6caf9"
   },
   "favicon-120.png": {
     "sha": "69b3e5c9a01fe3ed4195b5c971674d80fc0f4318"
@@ -74,7 +74,7 @@
   "json-test/index.html": {
     "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
   },
-  "md5": "d04c6622baea30c5936cd64fe6313b3b",
+  "md5": "102d2776baf1c4757d418f65a4221f7a",
   "package.json": {
     "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
   },
@@ -85,7 +85,7 @@
     "sha": "1554c267f94aa89dcc9efd969f0a369450a626a2"
   },
   "react-test/index.html": {
-    "sha": "929b2e396ac395d148b1cdff2f412863f0b35fcf"
+    "sha": "b7b986c76fc8f78204e95498aef051618845d170"
   },
   "sample/index.html": {
     "sha": "87971026f499e032eab2a285f7c128d3194b08fb"
@@ -107,5 +107,8 @@
   },
   "tsconfig.json": {
     "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
+  },
+  "youtube-test/index.html": {
+    "sha": "99cc727980229c37fa0e92d68c02b09309ebb8c7"
   }
 }
