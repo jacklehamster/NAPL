@@ -150,19 +150,32 @@ export class SocketClient implements ISharedData, IObservable {
     });
   }
 
-  #queueOutgoingUpdates(...updates: Update[]) {
-    //  send broadcast
-    if (!this.#outgoingUpdates.length) {
-      requestAnimationFrame(() => this.#broadcastUpdates());
+  nextFrameInProcess = false;
+  #prepareNextFrame() {
+    if (this.nextFrameInProcess) {
+      return;
     }
+    this.nextFrameInProcess = true;
+    requestAnimationFrame(() => this.#processNextFrame());
+  }
+
+  #processNextFrame() {
+    this.nextFrameInProcess = false;
+    if (this.#incomingUpdates.length) {
+      this.#applyUpdates();
+    }
+    if (this.#outgoingUpdates.length) {
+      this.#broadcastUpdates();
+    }
+  }
+
+  #queueOutgoingUpdates(...updates: Update[]) {
+    this.#prepareNextFrame();
     this.#outgoingUpdates.push(...updates);
   }
 
   #queueIncomingUpdates(...updates: Update[]) {
-    //  apply updates
-    if (!this.#incomingUpdates.length) {
-      requestAnimationFrame(() => this.#applyUpdates());
-    }
+    this.#prepareNextFrame();
     this.#incomingUpdates.push(...updates);
   }
 

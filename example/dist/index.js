@@ -16682,16 +16682,29 @@ class SocketClient {
       });
     });
   }
-  #queueOutgoingUpdates(...updates) {
-    if (!this.#outgoingUpdates.length) {
-      requestAnimationFrame(() => this.#broadcastUpdates());
+  nextFrameInProcess = false;
+  #prepareNextFrame() {
+    if (this.nextFrameInProcess) {
+      return;
     }
+    this.nextFrameInProcess = true;
+    requestAnimationFrame(() => this.#processNextFrame());
+  }
+  #processNextFrame() {
+    this.nextFrameInProcess = false;
+    if (this.#incomingUpdates.length) {
+      this.#applyUpdates();
+    }
+    if (this.#outgoingUpdates.length) {
+      this.#broadcastUpdates();
+    }
+  }
+  #queueOutgoingUpdates(...updates) {
+    this.#prepareNextFrame();
     this.#outgoingUpdates.push(...updates);
   }
   #queueIncomingUpdates(...updates) {
-    if (!this.#incomingUpdates.length) {
-      requestAnimationFrame(() => this.#applyUpdates());
-    }
+    this.#prepareNextFrame();
     this.#incomingUpdates.push(...updates);
   }
   async#broadcastUpdates() {
