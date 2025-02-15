@@ -3,13 +3,13 @@
     "sha": "aecf58955629f4178e2d85904d0c1121a1fc23dc"
   },
   "SocketPayload.ts": {
-    "sha": "a2b112b84929ff0f770a4b7fe14349e77f996ee5"
+    "sha": "5c34076961b7c5986bb46fc559745b4c09c576c6"
   },
   "SyncRoom.ts": {
-    "sha": "95ad662b1759e557290f056c2665abcf2c0b5b9c"
+    "sha": "8d504a52eb594066ab5da8b3811ebf70d3a8ff60"
   },
   "SyncSocket.ts": {
     "sha": "659bec0bf88be00a6085ba15226798dc1aec50d1"
   },
-  "md5": "bc9fd6d21ba61ec990b39a023f1a312a"
+  "md5": "d05f58417faced1e11f46fd0dcb0ebf1"
 }
