@@ -1,4 +1,4 @@
-import { getLeafObject } from "@/data-update";
+import { getLeafObject } from "@/data/data-update";
 import { Update } from "@/types/Update";
 import { SocketClient } from "./SocketClient";
 

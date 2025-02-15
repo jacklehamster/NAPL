@@ -16064,6 +16064,10 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
 });
 
 // ../dist/index.js
+var SELF = "{self}";
+var KEYS = "{keys}";
+var VALUES = "{values}";
+var SERVER_TIME = "~{serverTime}";
 function commitUpdates(root, updates) {
   const confirmedUpdates = getConfirmedUpdates(updates);
   confirmedUpdates?.forEach((update) => {
@@ -16107,11 +16111,11 @@ function getLeafObject(obj, path, offset, autoCreate, selfId) {
   const parts = Array.isArray(path) ? path : path.split("/");
   let current = obj;
   for (let i = 0;i < parts.length - offset; i++) {
-    let prop = selfId && parts[i] === "{self}" ? selfId : parts[i];
-    if (prop === "{keys}") {
+    let prop = selfId && parts[i] === SELF ? selfId : parts[i];
+    if (prop === KEYS) {
       return Object.keys(current);
     }
-    if (prop === "{values}") {
+    if (prop === VALUES) {
       return Object.values(current);
     }
     if (current[prop] === undefined) {
@@ -16124,6 +16128,16 @@ function getLeafObject(obj, path, offset, autoCreate, selfId) {
     current = current[prop];
   }
   return current;
+}
+function markCommonUpdateConfirmed(update, now) {
+  if (!update.confirmed) {
+    update.confirmed = now;
+    switch (update.value) {
+      case SERVER_TIME:
+        update.value = now;
+        break;
+    }
+  }
 }
 
 class A {
@@ -16254,10 +16268,11 @@ class SyncRoom {
     const clientPath = `clients/${clientId}`;
     const clientState = {};
     this.#sockets.set(client, clientState);
+    const now = Date.now();
     const newUpdates = [{
       path: clientPath,
       value: clientState,
-      confirmed: Date.now(),
+      confirmed: now,
       blobs: {}
     }];
     this.#shareUpdates(newUpdates, client);
@@ -16267,6 +16282,8 @@ class SyncRoom {
         const blobs2 = update.blobs ?? {};
         Object.keys(blobs2).forEach((key) => blobs2[key] = this.#state.blobs[key]);
       });
+      const cancelledUpdates = payload.updates?.filter((update) => this.#restrictedPath(update.path, clientId));
+      payload.updates = payload.updates?.filter((update) => !this.#restrictedPath(update.path, clientId));
       this.#shareUpdates(payload.updates, client);
       setImmediate(() => this.#cleanupBlobs());
     });
@@ -16283,22 +16300,27 @@ class SyncRoom {
     });
     commitUpdates(this.#state, this.#updates);
     this.#updates = this.#updates.filter((update) => !update.confirmed);
-    const blobBuilder = A.payload("payload", {
+    const welcomeBlobBuilder = A.payload("payload", {
       myClientId: clientId,
       state: { ...this.#state, blobs: undefined },
-      updates: this.#updates
+      updates: this.#updates,
+      serverTime: now
     });
-    Object.entries(this.#state.blobs).forEach(([key, blob]) => blobBuilder.blob(key, blob));
-    this.#updates.forEach((update) => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => blobBuilder.blob(key, blob)));
-    client.send(await blobBuilder.build().arrayBuffer());
+    Object.entries(this.#state.blobs).forEach(([key, blob]) => welcomeBlobBuilder.blob(key, blob));
+    this.#updates.forEach((update) => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => welcomeBlobBuilder.blob(key, blob)));
+    client.send(await welcomeBlobBuilder.build().arrayBuffer());
     return { clientId };
+  }
+  #restrictedPath(path, clientId) {
+    return path.startsWith(`clients/`) && !path.startsWith(`clients/${clientId}/`) || path.startsWith("blobs/");
   }
   #shareUpdates(newUpdates, sender) {
     if (!newUpdates?.length) {
       return;
     }
     const updatesForSender = newUpdates.filter((update) => !update.confirmed);
-    this.#markCommonUpdatesConfirmed(newUpdates);
+    const now = Date.now();
+    newUpdates.forEach((update) => markCommonUpdateConfirmed(update, now));
     this.#pushUpdates(newUpdates);
     commitUpdates(this.#state, this.#updates);
     this.#updates = this.#updates.filter((update) => !update.confirmed);
@@ -16321,16 +16343,6 @@ class SyncRoom {
       }
       client.send(buffer);
     });
-  }
-  #markCommonUpdatesConfirmed(updates) {
-    updates.forEach((update) => {
-      if (!this.#restrictedPath(update.path)) {
-        update.confirmed = Date.now();
-      }
-    });
-  }
-  #restrictedPath(path) {
-    return path.startsWith("clients/") || path.startsWith("blobs/");
   }
   #cleanupBlobs() {
     const blobSet = new Set(Object.keys(this.#state.blobs));
@@ -16580,6 +16592,7 @@ class SocketClient {
   #incomingUpdates = [];
   #selfData = new ClientData(this);
   #observerManager = new ObserverManager(this);
+  #serverTimeOffset = 0;
   constructor(host, room) {
     const prefix = host.startsWith("ws://") || host.startsWith("wss://") ? "" : globalThis.location.protocol === "https:" ? "wss://" : "ws://";
     this.#connectionUrl = `${prefix}${host}${room ? `?room=${room}` : ""}`;
@@ -16612,11 +16625,13 @@ class SocketClient {
     const update = {
       path: this.#fixPath(path),
       value: options?.delete ? undefined : value,
-      confirmed: options?.passive ? undefined : Date.now(),
       push: options?.push,
       insert: options?.insert,
       blobs: payloadBlobs
     };
+    if (!options?.passive) {
+      markCommonUpdateConfirmed(update, this.serverTime);
+    }
     if (!this.#usefulUpdate(update)) {
       return;
     }
@@ -16655,6 +16670,9 @@ class SocketClient {
       });
       socket.addEventListener("message", async (event) => {
         const { payload, ...blobs } = await W(event.data);
+        if (payload?.serverTime) {
+          this.#serverTimeOffset = payload.serverTime - Date.now();
+        }
         if (payload?.myClientId) {
           this.#selfData.id = payload.myClientId;
           this.#connectionPromise = undefined;
@@ -16738,6 +16756,9 @@ class SocketClient {
   }
   get localState() {
     return this.state[LOCAL_TAG];
+  }
+  get serverTime() {
+    return Date.now() + this.#serverTimeOffset;
   }
 }
 // node_modules/json-stringify-pretty-compact/index.js

@@ -1,7 +1,7 @@
 import { Update } from "@/types/Update";
 import { ISharedData, SetDataOptions } from "./ISharedData";
 import { SocketClient } from "./SocketClient";
-import { getLeafObject } from "@/data-update";
+import { getLeafObject } from "@/data/data-update";
 import { Observer } from "./Observer";
 import { IObservable } from "./IObservable";
 

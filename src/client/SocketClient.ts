@@ -2,7 +2,7 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { commitUpdates, getLeafObject } from "@/data-update";
+import { commitUpdates, getLeafObject, markCommonUpdateConfirmed } from "@/data/data-update";
 import { Update } from "@/types/Update";
 import { ISharedData, SetDataOptions } from "./ISharedData";
 import { ClientData } from "./ClientData";
@@ -26,6 +26,7 @@ export class SocketClient implements ISharedData, IObservable {
   readonly #incomingUpdates: Update[] = [];
   readonly #selfData: ClientData = new ClientData(this);
   readonly #observerManager = new ObserverManager(this);
+  #serverTimeOffset = 0;
 
   constructor(host: string, room?: string) {
     const prefix = host.startsWith("ws://") || host.startsWith("wss://") ? "" : globalThis.location.protocol === "https:" ? "wss://" : "ws://";
@@ -66,12 +67,14 @@ export class SocketClient implements ISharedData, IObservable {
     const update: Update = {
       path: this.#fixPath(path),
       value: options?.delete ? undefined : value,
-      confirmed: options?.passive ? undefined : Date.now(),
       push: options?.push,
       insert: options?.insert,
       blobs: payloadBlobs,
     };
 
+    if (!options?.passive) {
+      markCommonUpdateConfirmed(update, this.serverTime);
+    }
     if (!this.#usefulUpdate(update)) {
       return;
     }
@@ -120,6 +123,9 @@ export class SocketClient implements ISharedData, IObservable {
       socket.addEventListener("message", async (event: MessageEvent<Blob>) => {
         const { payload, ...blobs } = await extractPayload(event.data);
 
+        if (payload?.serverTime) {
+          this.#serverTimeOffset = payload.serverTime - Date.now();
+        }
         if (payload?.myClientId) {
           // client ID confirmed
           this.#selfData.id = payload.myClientId;
@@ -214,5 +220,9 @@ export class SocketClient implements ISharedData, IObservable {
 
   get localState() {
     return this.state[LOCAL_TAG];
+  }
+
+  get serverTime() {
+    return Date.now() + this.#serverTimeOffset;
   }
 }

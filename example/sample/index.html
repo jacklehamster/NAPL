@@ -124,10 +124,7 @@
             const state = JSON.parse(currentTarget.textContent);
             for (let k in state) {
               if (k !== "clients") {
-                if (
-                  JSON.stringify(state[k]) !==
-                  JSON.stringify(socketClient.state[k])
-                ) {
+                if (stringify(state[k]) !== stringify(socketClient.state[k])) {
                   socketClient.setData(k, state[k], {
                     passive: true,
                   });
@@ -171,7 +168,13 @@
             if (isSelf) {
               emojiDiv.style.cursor = "pointer";
               emojiDiv.addEventListener("click", () => {
-                socketClient.self.setData("emoji", randomEmoji(true));
+                socketClient.setData(
+                  `clients/${clientId}/emoji`,
+                  randomEmoji(true),
+                  {
+                    passive: true,
+                  }
+                );
               });
             }
 

@@ -73,6 +73,7 @@
               topF.title = "top";
               topF.classList.add("frame");
               topF.setAttribute("src", `${site}?top&room=${site}`);
+              topF.setAttribute("allow", "autoplay");
               if (shouldSplit) {
                 const bottomF = div.appendChild(
                   document.createElement("iframe")
@@ -80,6 +81,7 @@
                 bottomF.title = "bottom";
                 bottomF.classList.add("frame");
                 bottomF.setAttribute("src", `${site}?bottom&room=${site}`);
+                bottomF.setAttribute("allow", "autoplay");
 
                 topF.classList.add("split");
                 bottomF.classList.add("split");

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import { commitUpdates } from './data-update';
-import { Update } from './types/Update';
-import { DataObject } from './types/DataObject';
+import { Update } from '../types/Update';
+import { DataObject } from '../types/DataObject';
 
 describe('commitUpdates', () => {
   it('should sort updates by confirmed timestamp and apply them', () => {
@@ -11,7 +11,7 @@ describe('commitUpdates', () => {
     ];
     const obj: DataObject = {};
 
-    commitUpdates(obj, updates, {});
+    commitUpdates(obj, updates);
 
     expect(obj).toEqual({ a: { b: 2 } });
   });

@@ -1,5 +1,10 @@
-import { DataObject } from "./types/DataObject";
-import { Update } from "./types/Update";
+import { DataObject } from "../types/DataObject";
+import { Update } from "../types/Update";
+
+const SELF = "{self}";
+const KEYS = "{keys}";
+const VALUES = "{values}";
+const SERVER_TIME = "~{serverTime}";
 
 export function commitUpdates(root: DataObject, updates: Update[]) {
   const confirmedUpdates = getConfirmedUpdates(updates);
@@ -46,11 +51,11 @@ export function getLeafObject(obj: DataObject, path: string | (string | number)[
   const parts = Array.isArray(path) ? path : path.split("/");
   let current = obj;
   for (let i = 0; i < parts.length - offset; i++) {
-    let prop = selfId && parts[i] === "{self}" ? selfId : parts[i];
-    if (prop === "{keys}") {
+    let prop = selfId && parts[i] === SELF ? selfId : parts[i];
+    if (prop === KEYS) {
       return Object.keys(current);
     }
-    if (prop === "{values}") {
+    if (prop === VALUES) {
       return Object.values(current);
     }
     if (current[prop] === undefined) {
@@ -63,4 +68,16 @@ export function getLeafObject(obj: DataObject, path: string | (string | number)[
     current = current[prop];
   }
   return current;
+}
+
+export function markCommonUpdateConfirmed(update: Update, now: number) {
+  if (!update.confirmed) {
+    update.confirmed = now;
+    //  adjust update
+    switch (update.value) {
+      case SERVER_TIME:
+        update.value = now;
+        break;
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import { WebSocket } from "ws";
-import { commitUpdates } from "@/data-update";
+import { commitUpdates, markCommonUpdateConfirmed } from "@/data/data-update";
 import { Update } from "@/types/Update";
 import { addMessageReceiver } from "./SocketEventHandler";
 import { Payload } from "./SocketPayload";
@@ -31,11 +31,13 @@ export class SyncRoom {
     const clientState: ClientState = {};
     this.#sockets.set(client, clientState);
 
+    const now = Date.now();
+
     //  annouce new client to all clients
     const newUpdates: Update[] = [{
       path: clientPath,
       value: clientState,
-      confirmed: Date.now(),
+      confirmed: now,
       blobs: {},
     }];
     this.#shareUpdates(newUpdates, client);
@@ -47,6 +49,11 @@ export class SyncRoom {
         const blobs = update.blobs ?? {};
         Object.keys(blobs).forEach(key => blobs[key] = this.#state.blobs[key]);
       });
+
+      //  remove updates that are not allowed
+      const cancelledUpdates = payload.updates?.filter(update => this.#restrictedPath(update.path, clientId));
+      payload.updates = payload.updates?.filter(update => !this.#restrictedPath(update.path, clientId));
+
       this.#shareUpdates(payload.updates, client);
       setImmediate(() => this.#cleanupBlobs());
     });
@@ -68,16 +75,21 @@ export class SyncRoom {
     this.#updates = this.#updates.filter(update => !update.confirmed)
 
     //  update client just connected with state and updates
-    const blobBuilder = BlobBuilder.payload<Payload>("payload", {
+    const welcomeBlobBuilder = BlobBuilder.payload<Payload>("payload", {
       myClientId: clientId,
       state: { ...this.#state, blobs: undefined },
       updates: this.#updates,
+      serverTime: now,
     });
-    Object.entries(this.#state.blobs).forEach(([key, blob]) => blobBuilder.blob(key, blob));
-    this.#updates.forEach(update => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => blobBuilder.blob(key, blob)));
+    Object.entries(this.#state.blobs).forEach(([key, blob]) => welcomeBlobBuilder.blob(key, blob));
+    this.#updates.forEach(update => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => welcomeBlobBuilder.blob(key, blob)));
 
-    client.send(await blobBuilder.build().arrayBuffer());
+    client.send(await welcomeBlobBuilder.build().arrayBuffer());
     return { clientId };
+  }
+
+  #restrictedPath(path: string, clientId: string) {
+    return path.startsWith(`clients/`) && !path.startsWith(`clients/${clientId}/`) || path.startsWith("blobs/");
   }
 
   #shareUpdates(newUpdates?: Update[], sender?: WebSocket) {
@@ -85,7 +97,8 @@ export class SyncRoom {
       return;
     }
     const updatesForSender = newUpdates.filter(update => !update.confirmed);
-    this.#markCommonUpdatesConfirmed(newUpdates);
+    const now = Date.now();
+    newUpdates.forEach(update => markCommonUpdateConfirmed(update, now));
     this.#pushUpdates(newUpdates);
     commitUpdates(this.#state, this.#updates);
     this.#updates = this.#updates.filter(update => !update.confirmed);
@@ -111,18 +124,6 @@ export class SyncRoom {
       }
       client.send(buffer);
     });
-  }
-
-  #markCommonUpdatesConfirmed(updates: Update[]) {
-    updates.forEach((update) => {
-      if (!this.#restrictedPath(update.path)) {
-        update.confirmed = Date.now();
-      }
-    });
-  }
-
-  #restrictedPath(path: string) {
-    return path.startsWith("clients/") || path.startsWith("blobs/");
   }
 
   #cleanupBlobs() {
