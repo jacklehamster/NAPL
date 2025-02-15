@@ -25,10 +25,26 @@
           id="ytplayer"
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/u30MbFhLLvw?controls=0&enablejsapi=1&mute=1"
+          src="https://www.youtube.com/embed/u30MbFhLLvw?controls=0&enablejsapi=1&autoplay=1&mute=1&rel=0&disablekb=1&iv_load_policy=3"
           frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         ></iframe>
       </div>
+      <div class="playhead-container">
+        <span id="current-time">0:00</span>
+        <input
+          title="Seek"
+          type="range"
+          id="playhead"
+          class="playhead-bar"
+          min="0"
+          max="100"
+          value="0"
+        />
+        <span id="duration">0:00</span>
+      </div>
+      <label for="mute">Mute</label>
+      <input type="checkbox" id="mute" />
     </div>
     <div id="client-list"></div>
     <script type="module">
@@ -91,30 +107,82 @@
       });
 
       document.querySelector("#video").addEventListener("click", () => {
-        socketClient.setData("videoPlaying", (playing) => !playing);
-        socketClient.setData("videoStarted", "~{serverTime}");
+        const isPlaying = socketClient.state.videoStarted;
+        const newPlaying = !isPlaying;
+        socketClient.setData(
+          "videoStarted",
+          newPlaying
+            ? socketClient.serverTime - (player?.getCurrentTime() ?? 0) * 1000
+            : 0
+        );
       });
 
-      socketClient.observe("videoPlaying").onChange((videoPlaying) => {
+      document.querySelector("#mute").addEventListener("change", (event) => {
+        socketClient.setData("muted", event.target.checked);
+      });
+
+      socketClient.observe("videoStarted").onChange((videoStarted) => {
+        window.videoStarted = videoStarted.value;
+        catchUp();
+      });
+
+      socketClient.observe("muted").onChange((muted) => {
+        document.querySelector("#mute").checked = muted.value;
         const player = window.player;
-        if (videoPlaying.value) {
-          player.playVideo?.();
-        } else {
-          player.pauseVideo?.();
+        if (player?.mute) {
+          if (muted.value) {
+            player.mute();
+          } else {
+            player.unMute();
+          }
         }
       });
 
-      socketClient
-        .observe()
-        .onChange(() => console.log(stringify(socketClient.state)));
+      //      socketClient
+      //      .observe()
+      //    .onChange(() => console.log(stringify(socketClient.state)));
     </script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
       let player;
 
+      function checkPlayState() {
+        if (player.getPlayerState) {
+          if (window.videoStarted && player.getPlayerState() !== 1) {
+            player.playVideo();
+            if (socketClient.state.muted) {
+              player.mute();
+            } else {
+              player.unMute();
+            }
+          } else if (!window.videoStarted && player.getPlayerState() === 1) {
+            player.pauseVideo();
+          }
+        }
+      }
+
+      function catchUp() {
+        checkPlayState();
+        if (window.videoStarted) {
+          if (player.getCurrentTime) {
+            const time = (socketClient.serverTime - window.videoStarted) / 1000;
+            if (Math.abs(time - player.getCurrentTime()) > 0.1) {
+              player.seekTo(time, true);
+            }
+          }
+        }
+      }
+
       function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.ENDED) {
           console.log("ENDED");
+        } else {
+          const bar = document.querySelector("#playhead");
+          console.log("State change", event.data);
+          console.log("Current time", player.getCurrentTime());
+          console.log("Duration", player.getDuration());
+          bar.value = (player.getCurrentTime() / player.getDuration()) * 100;
+          catchUp();
         }
       }
 
@@ -122,6 +190,7 @@
       function onYouTubeIframeAPIReady() {
         player = new YT.Player("ytplayer", {
           events: {
+            onReady: catchUp,
             onStateChange: onPlayerStateChange,
           },
         });
