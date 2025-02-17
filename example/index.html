@@ -28,12 +28,12 @@
       .container {
         flex: 1 1 auto; /* Content takes the remaining space */
         display: flex;
-        flex-direction: row; /*column;*/
-        gap: 0;
       }
       .content {
         display: none;
         flex: 1;
+        flex-direction: row; /*column;*/
+        gap: 2px;
       }
     </style>
   </head>
@@ -85,6 +85,23 @@
 
                 topF.classList.add("split");
                 bottomF.classList.add("split");
+
+                topF.addEventListener("load", () => {
+                  topF.contentWindow.addEventListener("focus", () => {
+                    topF.style.outline = "2px solid yellow";
+                  });
+                  topF.contentWindow.addEventListener("blur", () => {
+                    topF.style.outline = "none";
+                  });
+                });
+                bottomF.addEventListener("load", () => {
+                  bottomF.contentWindow.addEventListener("focus", () => {
+                    bottomF.style.outline = "2px solid yellow";
+                  });
+                  bottomF.contentWindow.addEventListener("blur", () => {
+                    bottomF.style.outline = "none";
+                  });
+                });
               }
             }
 
@@ -93,7 +110,7 @@
               contentDiv.style.display = "none";
             });
             const contentDiv = document.getElementById(`${site}-content`);
-            contentDiv.style.display = "block";
+            contentDiv.style.display = "flex";
           });
           tabsContainer.appendChild(button);
         });
