@@ -15,13 +15,19 @@
         font-size: 20px;
         pointer-events: none;
       }
+      #video {
+        cursor: pointer;
+      }
+      #ytplayer {
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <div id="video" style="cursor: pointer">
+      <div id="video">
         <iframe
-          style="pointer-events: none"
+          title="YouTube video player"
           id="ytplayer"
           width="560"
           height="315"
@@ -38,8 +44,9 @@
           id="playhead"
           class="playhead-bar"
           min="0"
-          max="100"
+          max="1"
           value="0"
+          step="0.001"
         />
         <span id="duration">0:00</span>
       </div>
@@ -56,6 +63,7 @@
         socketClient,
         stringify,
       } from "../dist/index.js";
+      window.socketClient = socketClient;
 
       introduceName();
 
@@ -108,17 +116,28 @@
 
       document.querySelector("#video").addEventListener("click", () => {
         const isPlaying = socketClient.state.videoStarted;
-        const newPlaying = !isPlaying;
-        socketClient.setData(
-          "videoStarted",
-          newPlaying
-            ? socketClient.serverTime - (player?.getCurrentTime() ?? 0) * 1000
-            : 0
-        );
+        const videoStarted = !isPlaying ? socketClient.serverTime : 0;
+        socketClient.setData("videoStarted", videoStarted);
       });
 
       document.querySelector("#mute").addEventListener("change", (event) => {
         socketClient.setData("muted", event.target.checked);
+      });
+
+      document.querySelector("#playhead").addEventListener("input", (event) => {
+        socketClient.setData("playhead", event.target.value);
+        const isPlaying = socketClient.state.videoStarted;
+        if (isPlaying) {
+          socketClient.setData("videoStarted", socketClient.serverTime);
+        }
+      });
+
+      socketClient.observe("playhead").onChange((playhead) => {
+        document.querySelector("#playhead").value = playhead.value;
+        const player = window.player;
+        if (player?.seekTo) {
+          player.seekTo(player.getDuration() * playhead.value, true);
+        }
       });
 
       socketClient.observe("videoStarted").onChange((videoStarted) => {
@@ -147,6 +166,7 @@
       let player;
 
       function checkPlayState() {
+        const socketClient = window.socketClient;
         if (player.getPlayerState) {
           if (window.videoStarted && player.getPlayerState() !== 1) {
             player.playVideo();
@@ -161,15 +181,32 @@
         }
       }
 
+      function formatTime(time) {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+      }
+
       function catchUp() {
+        const socketClient = window.socketClient;
         checkPlayState();
-        if (window.videoStarted) {
-          if (player.getCurrentTime) {
-            const time = (socketClient.serverTime - window.videoStarted) / 1000;
-            if (Math.abs(time - player.getCurrentTime()) > 0.1) {
-              player.seekTo(time, true);
-            }
+        if (player.getCurrentTime) {
+          const playHead = document.querySelector("#playhead");
+          const playHeadTimeMs = playHead.value * player.getDuration();
+          const timeSinceStart = socketClient.serverTime - window.videoStarted;
+          const time = timeSinceStart / 1000 + playHeadTimeMs;
+          if (Math.abs(time - player.getCurrentTime()) > 0.1) {
+            player.seekTo(time, true);
           }
+        }
+
+        if (player.getCurrentTime) {
+          document.querySelector("#current-time").textContent = formatTime(
+            player.getCurrentTime()
+          );
+          document.querySelector("#duration").textContent = formatTime(
+            player.getDuration()
+          );
         }
       }
 
@@ -178,10 +215,9 @@
           console.log("ENDED");
         } else {
           const bar = document.querySelector("#playhead");
-          console.log("State change", event.data);
-          console.log("Current time", player.getCurrentTime());
-          console.log("Duration", player.getDuration());
-          bar.value = (player.getCurrentTime() / player.getDuration()) * 100;
+          if (!window.videoStarted) {
+            bar.value = player.getCurrentTime() / player.getDuration();
+          }
           catchUp();
         }
       }
