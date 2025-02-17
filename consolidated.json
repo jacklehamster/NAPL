@@ -89,13 +89,13 @@
       "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
     },
     "game-room/index.html": {
-      "sha": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+      "sha": "02bd8a33ea625a57411276a330cf5af0f92a1e2b"
     },
     "image-test/index.html": {
       "sha": "d653ed70ce60fae95e23101c7f6dd72576533fad"
     },
     "index.html": {
-      "sha": "0bb4e364880364fc35d91008347e9f2679761a83"
+      "sha": "95dc45226a44903f356ab34578a0b1520c0369ca"
     },
     "index.ts": {
       "sha": "ac834c3cc33efac04591f41b6021e23bda5a881d"
@@ -112,7 +112,7 @@
     "json-test/index.html": {
       "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
     },
-    "md5": "e3a4e5b632abd2d463ee61c53d8b5f58",
+    "md5": "ee5763cfacf24bf76b6c834c8d367b51",
     "package.json": {
       "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
     },
@@ -158,9 +158,9 @@
   },
   "/example/game-room/dir.json": {
     "index.html": {
-      "sha": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+      "sha": "02bd8a33ea625a57411276a330cf5af0f92a1e2b"
     },
-    "md5": "949785e3a434218c15bbd95829534b42"
+    "md5": "8e4c4bcb178fc6a6658238d62b4ba895"
   },
   "/example/image-test/dir.json": {
     "index.html": {
