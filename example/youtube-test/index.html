@@ -193,10 +193,13 @@
         if (player.getCurrentTime) {
           const playHead = document.querySelector("#playhead");
           const playHeadTimeMs = playHead.value * player.getDuration();
-          const timeSinceStart = socketClient.serverTime - window.videoStarted;
-          const time = timeSinceStart / 1000 + playHeadTimeMs;
-          if (Math.abs(time - player.getCurrentTime()) > 0.1) {
-            player.seekTo(time, true);
+          if (window.videoStarted) {
+            const timeSinceStart =
+              socketClient.serverTime - window.videoStarted;
+            const time = timeSinceStart / 1000 + playHeadTimeMs;
+            if (Math.abs(time - player.getCurrentTime()) > 0.1) {
+              player.seekTo(time, true);
+            }
           }
         }
 
