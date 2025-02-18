@@ -7,9 +7,9 @@
   },
   "/example/chatroom/dir.json": {
     "index.html": {
-      "sha": "2573d3aae83fa5f1957a2412b75edcaeb9899828"
+      "sha": "ecc7543e13eb7e9cb22115d8e5593700e285e6c0"
     },
-    "md5": "d14e8d3917207da9037fa09ffbac0576"
+    "md5": "ecdb0babf67b9aba88eb8e650cd96be2"
   },
   "/example/config.json": {
     "websocketHost": "api.dobuki.net",
@@ -47,7 +47,7 @@
       "sha": "cd396ed065328b04831bbf3e36e80c78d13e4e29"
     },
     "chatroom/index.html": {
-      "sha": "2573d3aae83fa5f1957a2412b75edcaeb9899828"
+      "sha": "ecc7543e13eb7e9cb22115d8e5593700e285e6c0"
     },
     "config.json": {
       "sha": "ab4d02e4061f00d513ac5226db97ac76df9e9e4d"
@@ -112,7 +112,7 @@
     "json-test/index.html": {
       "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
     },
-    "md5": "10f2936de7eae3990cae92b8ff551c99",
+    "md5": "d7b0f116b4fbfa8bdc56f6f1efc6678e",
     "package.json": {
       "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
     },
@@ -147,7 +147,7 @@
       "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
     },
     "youtube-test/index.html": {
-      "sha": "3dd6dfeb3b26065b8e80caf46012444a30149a28"
+      "sha": "e085fb732f23ed3fbefde35ba679ac2fb1408a54"
     }
   },
   "/example/dist/dir.json": {
@@ -1140,9 +1140,9 @@
   },
   "/example/youtube-test/dir.json": {
     "index.html": {
-      "sha": "3dd6dfeb3b26065b8e80caf46012444a30149a28"
+      "sha": "e085fb732f23ed3fbefde35ba679ac2fb1408a54"
     },
-    "md5": "f7d51799e44c9c1657112c36891aafd3"
+    "md5": "5f452bfaccb528217cbc237b288cd513"
   },
   "/package.json": {
     "name": "napl",
