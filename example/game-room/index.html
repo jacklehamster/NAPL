@@ -23,15 +23,17 @@
     <script type="module">
       import { socketClient } from "../dist/index.js";
 
-      socketClient.self.setData(
-        "color",
-        `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`
-      );
-      socketClient.self.setData("x", Math.random() * 200);
-      socketClient.self.setData("y", Math.random() * 100);
-      socketClient.self.setData("moveStart", 0);
-      socketClient.self.setData("dx", 0);
-      socketClient.self.setData("dy", 0);
+      socketClient.observe("clients/{self}").onChange(() => {
+        socketClient.self.setData(
+          "color",
+          `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`
+        );
+        socketClient.self.setData("x", Math.random() * 200);
+        socketClient.self.setData("y", Math.random() * 100);
+        socketClient.self.setData("moveStart", 0);
+        socketClient.self.setData("dx", 0);
+        socketClient.self.setData("dy", 0);
+      });
 
       const keys = {};
       document.addEventListener("keydown", (event) => {
@@ -80,21 +82,28 @@
         return y + dy * (moveStart ? socketClient.serverTime - moveStart : 0);
       }
 
+      let animationFrame;
       const loop = () => {
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         Object.values(socketClient.state.clients ?? {}).forEach((client) => {
-          const x = calcX(client);
-          const y = calcY(client);
-          ctx.fillStyle = client.color;
-          ctx.fillRect(x ?? 0, y ?? 0, 20, 20);
+          if (client.color) {
+            const x = calcX(client);
+            const y = calcY(client);
+            ctx.fillStyle = client.color;
+            ctx.fillRect(x ?? 0, y ?? 0, 20, 20);
+          }
         });
-        requestAnimationFrame(loop);
+        animationFrame = requestAnimationFrame(loop);
       };
       loop();
-      socketClient.observe("clients").onChange(() => {
-        console.log(socketClient.state.clients);
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          cancelAnimationFrame(animationFrame);
+        } else {
+          loop();
+        }
       });
     </script>
   </body>
