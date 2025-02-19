@@ -82,6 +82,7 @@
         return y + dy * (moveStart ? socketClient.serverTime - moveStart : 0);
       }
 
+      const localPlayers = new Map();
       let animationFrame;
       const loop = () => {
         const canvas = document.getElementById("canvas");
@@ -89,10 +90,17 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         Object.values(socketClient.state.clients ?? {}).forEach((client) => {
           if (client.color) {
-            const x = calcX(client);
-            const y = calcY(client);
+            const x = calcX(client) ?? 0;
+            const y = calcY(client) ?? 0;
+            if (!localPlayers.has(client)) {
+              localPlayers.set(client, { x, y });
+            }
+            const localPlayer = localPlayers.get(client);
+            const mul = 0.4;
+            localPlayer.x += (x - localPlayer.x) * mul;
+            localPlayer.y += (y - localPlayer.y) * mul;
             ctx.fillStyle = client.color;
-            ctx.fillRect(x ?? 0, y ?? 0, 20, 20);
+            ctx.fillRect(localPlayer.x, localPlayer.y, 20, 20);
           }
         });
         animationFrame = requestAnimationFrame(loop);
