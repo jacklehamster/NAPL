@@ -23,11 +23,11 @@
     <script type="module">
       import { socketClient } from "../dist/index.js";
 
+      const keys = {};
+
       socketClient.observe("clients/{self}").onChange(() => {
-        socketClient.self.setData(
-          "color",
-          `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`
-        );
+        const randomColor = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+        socketClient.self.setData("color", randomColor);
         socketClient.self.setData("x", Math.random() * 200);
         socketClient.self.setData("y", Math.random() * 100);
         socketClient.self.setData("moveStart", 0);
@@ -35,16 +35,17 @@
         socketClient.self.setData("dy", 0);
       });
 
-      const keys = {};
       document.addEventListener("keydown", (event) => {
-        if (keys[event.key]) return;
-        keys[event.key] = true;
-        updateMove();
+        if (!keys[event.key]) {
+          keys[event.key] = true;
+          updateMove();
+        }
       });
       document.addEventListener("keyup", (event) => {
-        if (!keys[event.key]) return;
-        keys[event.key] = false;
-        updateMove();
+        if (keys[event.key]) {
+          keys[event.key] = false;
+          updateMove();
+        }
       });
 
       function updateMove() {
@@ -84,10 +85,10 @@
 
       const localPlayers = new Map();
       let animationFrame;
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
       const loop = () => {
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         Object.values(socketClient.state.clients ?? {}).forEach((client) => {
           if (client.color) {
             const x = calcX(client) ?? 0;

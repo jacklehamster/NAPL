@@ -16063,7 +16063,7 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
   }
 });
 
-// ../dist/index.js
+// ../src/data/data-update.ts
 var SELF = "{self}";
 var KEYS = "{keys}";
 var VALUES = "{values}";
@@ -16140,6 +16140,7 @@ function markCommonUpdateConfirmed(update, now) {
   }
 }
 
+// ../node_modules/@dobuki/data-blob/dist/index.js
 class A {
   data = [];
   #n = new TextEncoder;
@@ -16235,6 +16236,8 @@ async function N(n, h, c = () => globalThis.crypto.randomUUID()) {
     }));
   return n;
 }
+
+// ../src/server/SocketEventHandler.ts
 function addMessageReceiver(socket, payloadReceived) {
   socket.on("message", async (message) => {
     if (message instanceof Buffer) {
@@ -16247,6 +16250,7 @@ function addMessageReceiver(socket, payloadReceived) {
   });
 }
 
+// ../src/server/SyncRoom.ts
 class SyncRoom {
   room;
   #sockets = new Map;
@@ -16373,6 +16377,7 @@ class SyncRoom {
   }
 }
 
+// ../src/server/SyncSocket.ts
 class SyncSocket {
   #rooms = {};
   constructor(server) {
@@ -16411,7 +16416,7 @@ class SyncSocket {
     return this.#rooms[roomName];
   }
 }
-
+// ../src/client/ClientData.ts
 class ClientData {
   socketClient;
   id = "";
@@ -16433,6 +16438,7 @@ class ClientData {
   }
 }
 
+// ../src/client/SubData.ts
 class SubData {
   path;
   socketClient;
@@ -16457,6 +16463,7 @@ class SubData {
   }
 }
 
+// ../src/client/Observer.ts
 class Observer {
   socketClient;
   paths;
@@ -16556,6 +16563,7 @@ class Observer {
   }
 }
 
+// ../src/client/ObserverManager.ts
 class ObserverManager {
   socketClient;
   #observers = new Set;
@@ -16573,12 +16581,15 @@ class ObserverManager {
   }
   removeObserver(observer) {
     this.#observers.delete(observer);
+    this.#updateState();
   }
   #updateState() {
     this.socketClient.localState.observers = Array.from(new Set(Array.from(this.#observers).map((o) => o.paths).flat()));
     this.socketClient.localState.observers.sort();
   }
 }
+
+// ../src/client/SocketClient.ts
 var LOCAL_TAG = "#local";
 
 class SocketClient {
@@ -16973,30 +16984,47 @@ var b;
   n.PINGPONG_REVERSE = "pingpong_reverse";
 })(b ||= {});
 
+// style-helper:__style_helper__
+function injectStyle(text) {
+  if (typeof document !== "undefined") {
+    const styleTag = document.getElementById("bun_lightningcss");
+    if (styleTag) {
+      const node2 = document.createTextNode(text);
+      styleTag.appendChild(node2);
+      return;
+    }
+    var style = document.createElement("style");
+    style.id = "bun_lightningcss";
+    var node = document.createTextNode(text);
+    style.appendChild(node);
+    document.head.appendChild(style);
+  }
+}
+
+// src/react/style.module.css
+injectStyle(".NWlSQG_shared-text{width:100%;height:500px}");
+var style_module_default = { "shared-text": "NWlSQG_shared-text" };
+
 // src/react/socket-client.ts
 var import_react = __toESM(require_react(), 1);
 function useSocketClient(props) {
-  const socketClient = "socketClient" in props ? props.socketClient : new SocketClient(props.host, props.room);
-  function useData(path) {
+  const socketClient = import_react.useMemo(() => {
+    return props.socketClient ?? (props.host ? new SocketClient(props.host, props.room) : undefined);
+  }, [props.socketClient, props.host, props.room]);
+  const useData = import_react.useCallback((path) => {
     const [data, setData] = import_react.useState(null);
     import_react.useEffect(() => {
-      const observer = socketClient.observe(path).onChange((value) => {
-        setData(value.value);
-      });
-      return () => {
-        observer.close();
-      };
+      const observer = socketClient.observe(path).onChange(({ value }) => setData(value));
+      return () => observer.close();
     }, [path]);
     return [
       data,
-      (value) => {
+      import_react.useCallback((value) => {
         socketClient.setData(path, value);
-      }
+      }, [])
     ];
-  }
-  return {
-    useData
-  };
+  }, [socketClient]);
+  return { useData };
 }
 
 // src/react/component.tsx
@@ -17006,15 +17034,10 @@ function SharedText({ socketClient }) {
   const { useData } = useSocketClient({ socketClient });
   const [data, setData] = useData("data");
   return /* @__PURE__ */ jsx_dev_runtime.jsxDEV("textarea", {
-    style: {
-      width: "100%",
-      height: "500px"
-    },
+    className: style_module_default["shared-text"],
     title: "shared-text",
     value: data ?? "",
-    onChange: (e) => {
-      setData(e.target.value);
-    }
+    onChange: (e) => setData(e.target.value)
   }, undefined, false, undefined, this);
 }
 function hookupDiv(div, socketClient) {
@@ -17448,3 +17471,5 @@ export {
   commitUpdates,
   SocketClient
 };
+
+//# debugId=163A9AC40B29235E64756E2164756E21

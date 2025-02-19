@@ -6,6 +6,7 @@
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
+    "esModuleInterop": true,
     "moduleDetection": "force",
     "allowImportingTsExtensions": true,
     "noEmit": true,
@@ -17,7 +18,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "types": [ "bun-types" ],
+    "types": [ "bun-types" ]
   },
   "include": [
     "**/*.ts",

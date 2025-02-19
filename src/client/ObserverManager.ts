@@ -22,6 +22,7 @@ export class ObserverManager implements IObservable {
 
   removeObserver(observer: Observer) {
     this.#observers.delete(observer);
+    this.#updateState();
   }
 
   #updateState() {
