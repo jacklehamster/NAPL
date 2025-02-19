@@ -1,5 +1,3 @@
-import type { UUID } from "crypto";
-
 /**
  * Data format:
  *

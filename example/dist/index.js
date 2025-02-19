@@ -16257,6 +16257,7 @@ class SyncRoom {
   #state;
   #onRoomChange = new Set;
   #updates = [];
+  static nextClientId = 1;
   constructor(room) {
     this.room = room;
     this.#state = {
@@ -16268,7 +16269,7 @@ class SyncRoom {
     this.#onRoomChange.add(callback);
   }
   async welcomeClient(client) {
-    const clientId = crypto.randomUUID();
+    const clientId = `client-${SyncRoom.nextClientId++}`;
     const clientPath = `clients/${clientId}`;
     const clientState = {};
     this.#sockets.set(client, clientState);
@@ -16590,7 +16591,7 @@ class ObserverManager {
 }
 
 // ../src/client/SocketClient.ts
-var LOCAL_TAG = "#local";
+var LOCAL_TAG = "$-local";
 
 class SocketClient {
   state = {
@@ -17472,4 +17473,4 @@ export {
   SocketClient
 };
 
-//# debugId=163A9AC40B29235E64756E2164756E21
+//# debugId=1BB95FA9E0F56DFC64756E2164756E21

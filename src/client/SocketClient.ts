@@ -13,7 +13,7 @@ import { IObservable } from "./IObservable";
 import { ObserverManager } from "./ObserverManager";
 import { extractBlobsFromPayload } from "@dobuki/data-blob";
 
-const LOCAL_TAG = "#local";
+const LOCAL_TAG = "$-local";
 
 export class SocketClient implements ISharedData, IObservable {
   state: Record<string, any> = {

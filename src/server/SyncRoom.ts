@@ -12,6 +12,7 @@ export class SyncRoom {
   readonly #state: RoomState;
   readonly #onRoomChange = new Set<(roomState: RoomState) => void>();
   #updates: Update[] = [];
+  static nextClientId = 1;
 
   constructor(private room: string) {
     this.#state = {
@@ -26,7 +27,7 @@ export class SyncRoom {
 
   async welcomeClient(client: WebSocket) {
     //  initialize client state
-    const clientId = crypto.randomUUID();
+    const clientId = `client-${SyncRoom.nextClientId++}`;
     const clientPath = `clients/${clientId}`;
     const clientState: ClientState = {};
     this.#sockets.set(client, clientState);
