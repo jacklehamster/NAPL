@@ -1,6 +1,12 @@
 {
   "index.js": {
-    "sha": "81d0787aee5a5ddb6106d283668e235418e5e64a"
+    "sha": "cf7230b82e27e6dda703524832e6dc40e982ae62"
   },
-  "md5": "bbfa9d54e10d50c6bdb72236bef650da"
+  "index.js.map": {
+    "sha": "0481b6526947ee473ada2ddb0a1c45a98fbcd5db"
+  },
+  "md5": "377e3b7ba91d2fe766e553bdbf2c9b47",
+  "styles-da87zv4s.css": {
+    "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
+  }
 }

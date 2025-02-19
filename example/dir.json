@@ -9,7 +9,10 @@
     "sha": "c58c010b4a3906da7c4ff220162378a7008e3092"
   },
   "bun.lockb": {
-    "sha": "cd396ed065328b04831bbf3e36e80c78d13e4e29"
+    "sha": "44fa79ebcee30d4ceb5d724d960ba45703102bfb"
+  },
+  "bundler/bundler.ts": {
+    "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
   },
   "chatroom/index.html": {
     "sha": "ecc7543e13eb7e9cb22115d8e5593700e285e6c0"
@@ -18,7 +21,13 @@
     "sha": "ab4d02e4061f00d513ac5226db97ac76df9e9e4d"
   },
   "dist/index.js": {
-    "sha": "81d0787aee5a5ddb6106d283668e235418e5e64a"
+    "sha": "cf7230b82e27e6dda703524832e6dc40e982ae62"
+  },
+  "dist/index.js.map": {
+    "sha": "0481b6526947ee473ada2ddb0a1c45a98fbcd5db"
+  },
+  "dist/styles-da87zv4s.css": {
+    "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
   },
   "favicon-120.png": {
     "sha": "69b3e5c9a01fe3ed4195b5c971674d80fc0f4318"
@@ -54,10 +63,10 @@
     "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
   },
   "game-room/index.html": {
-    "sha": "b5bd765d8cf1fd54b2121b791a4cdac93c58c846"
+    "sha": "a08fc554cd2f961f5ba12d9f7bf80486fd3fb442"
   },
   "image-test/index.html": {
-    "sha": "d653ed70ce60fae95e23101c7f6dd72576533fad"
+    "sha": "719850ced84f9531ecfc6692a1dc03422f148393"
   },
   "index.html": {
     "sha": "95dc45226a44903f356ab34578a0b1520c0369ca"
@@ -77,9 +86,9 @@
   "json-test/index.html": {
     "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
   },
-  "md5": "d7b0f116b4fbfa8bdc56f6f1efc6678e",
+  "md5": "dd15cd5366304ac2c944da76780d79e2",
   "package.json": {
-    "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
+    "sha": "f188cdbf939c04dd799f3a7c88a0a943c1a95f06"
   },
   "random-iso.json": {
     "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
@@ -93,9 +102,6 @@
   "sample/index.html": {
     "sha": "082ad0d94e11214521e722e1504a3051ee9a01b1"
   },
-  "spin-room/index.html": {
-    "sha": "2955a8db5763436cfadb707f762fd895b190d04e"
-  },
   "src/index.ts": {
     "sha": "2691be91a0ab824497b1a6240990368254abd233"
   },
@@ -103,13 +109,19 @@
     "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
   },
   "src/react/component.tsx": {
-    "sha": "9b48a0ca9f89985a9bccb58cf3b17be918b0a940"
+    "sha": "7b7d08043d3317017724edb151cc266d0eb11b9b"
+  },
+  "src/react/index.d.ts": {
+    "sha": "7980ec238c4dd00704399f7d8fe89cf26f194398"
   },
   "src/react/socket-client.ts": {
-    "sha": "347ec53403304fd7311cea38961873988b42ddb7"
+    "sha": "808b01d7796b7d284a136f2b48cbce1b9d4c10d6"
+  },
+  "src/react/style.module.css": {
+    "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
   },
   "tsconfig.json": {
-    "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
+    "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
   },
   "youtube-test/index.html": {
     "sha": "e085fb732f23ed3fbefde35ba679ac2fb1408a54"

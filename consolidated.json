@@ -5,6 +5,12 @@
     },
     "md5": "10471cb9fc41dc7d543432c9c9b00ca7"
   },
+  "/example/bundler/dir.json": {
+    "bundler.ts": {
+      "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
+    },
+    "md5": "8e993d7f3f5b568419c135c29211cdc9"
+  },
   "/example/chatroom/dir.json": {
     "index.html": {
       "sha": "ecc7543e13eb7e9cb22115d8e5593700e285e6c0"
@@ -22,15 +28,15 @@
     "iso-test/random-iso.json": {
       "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
     },
-    "md5": "9f37e09809251fdfc26739c80ab76d67",
+    "md5": "892a8202aa6d2175fc080c4eec204ed7",
     "package.json": {
-      "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
+      "sha": "f188cdbf939c04dd799f3a7c88a0a943c1a95f06"
     },
     "random-iso.json": {
       "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
     },
     "tsconfig.json": {
-      "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
+      "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
     }
   },
   "/example/dir.json": {
@@ -44,7 +50,10 @@
       "sha": "c58c010b4a3906da7c4ff220162378a7008e3092"
     },
     "bun.lockb": {
-      "sha": "cd396ed065328b04831bbf3e36e80c78d13e4e29"
+      "sha": "44fa79ebcee30d4ceb5d724d960ba45703102bfb"
+    },
+    "bundler/bundler.ts": {
+      "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
     },
     "chatroom/index.html": {
       "sha": "ecc7543e13eb7e9cb22115d8e5593700e285e6c0"
@@ -53,7 +62,13 @@
       "sha": "ab4d02e4061f00d513ac5226db97ac76df9e9e4d"
     },
     "dist/index.js": {
-      "sha": "81d0787aee5a5ddb6106d283668e235418e5e64a"
+      "sha": "cf7230b82e27e6dda703524832e6dc40e982ae62"
+    },
+    "dist/index.js.map": {
+      "sha": "0481b6526947ee473ada2ddb0a1c45a98fbcd5db"
+    },
+    "dist/styles-da87zv4s.css": {
+      "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     },
     "favicon-120.png": {
       "sha": "69b3e5c9a01fe3ed4195b5c971674d80fc0f4318"
@@ -89,10 +104,10 @@
       "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
     },
     "game-room/index.html": {
-      "sha": "b5bd765d8cf1fd54b2121b791a4cdac93c58c846"
+      "sha": "a08fc554cd2f961f5ba12d9f7bf80486fd3fb442"
     },
     "image-test/index.html": {
-      "sha": "d653ed70ce60fae95e23101c7f6dd72576533fad"
+      "sha": "719850ced84f9531ecfc6692a1dc03422f148393"
     },
     "index.html": {
       "sha": "95dc45226a44903f356ab34578a0b1520c0369ca"
@@ -112,9 +127,9 @@
     "json-test/index.html": {
       "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
     },
-    "md5": "d7b0f116b4fbfa8bdc56f6f1efc6678e",
+    "md5": "dd15cd5366304ac2c944da76780d79e2",
     "package.json": {
-      "sha": "a104ece8f5b47ece23e58a19a70d091500489f87"
+      "sha": "f188cdbf939c04dd799f3a7c88a0a943c1a95f06"
     },
     "random-iso.json": {
       "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
@@ -128,9 +143,6 @@
     "sample/index.html": {
       "sha": "082ad0d94e11214521e722e1504a3051ee9a01b1"
     },
-    "spin-room/index.html": {
-      "sha": "2955a8db5763436cfadb707f762fd895b190d04e"
-    },
     "src/index.ts": {
       "sha": "2691be91a0ab824497b1a6240990368254abd233"
     },
@@ -138,13 +150,19 @@
       "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
     },
     "src/react/component.tsx": {
-      "sha": "9b48a0ca9f89985a9bccb58cf3b17be918b0a940"
+      "sha": "7b7d08043d3317017724edb151cc266d0eb11b9b"
+    },
+    "src/react/index.d.ts": {
+      "sha": "7980ec238c4dd00704399f7d8fe89cf26f194398"
     },
     "src/react/socket-client.ts": {
-      "sha": "347ec53403304fd7311cea38961873988b42ddb7"
+      "sha": "808b01d7796b7d284a136f2b48cbce1b9d4c10d6"
+    },
+    "src/react/style.module.css": {
+      "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     },
     "tsconfig.json": {
-      "sha": "937928a0b0565cec579a715a45c29874c0c939f8"
+      "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
     },
     "youtube-test/index.html": {
       "sha": "e085fb732f23ed3fbefde35ba679ac2fb1408a54"
@@ -152,21 +170,27 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "81d0787aee5a5ddb6106d283668e235418e5e64a"
+      "sha": "cf7230b82e27e6dda703524832e6dc40e982ae62"
     },
-    "md5": "bbfa9d54e10d50c6bdb72236bef650da"
+    "index.js.map": {
+      "sha": "0481b6526947ee473ada2ddb0a1c45a98fbcd5db"
+    },
+    "md5": "377e3b7ba91d2fe766e553bdbf2c9b47",
+    "styles-da87zv4s.css": {
+      "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
+    }
   },
   "/example/game-room/dir.json": {
     "index.html": {
-      "sha": "b5bd765d8cf1fd54b2121b791a4cdac93c58c846"
+      "sha": "a08fc554cd2f961f5ba12d9f7bf80486fd3fb442"
     },
-    "md5": "880236049bb52a824bdbd529623da0e9"
+    "md5": "e26ff41dcadc209109c6625036e97c50"
   },
   "/example/image-test/dir.json": {
     "index.html": {
-      "sha": "d653ed70ce60fae95e23101c7f6dd72576533fad"
+      "sha": "719850ced84f9531ecfc6692a1dc03422f148393"
     },
-    "md5": "5c51410a7550e2d8d187e9f99747515c"
+    "md5": "abd3d1c541c0e630f090682871f2b5dd"
   },
   "/example/iso-test/dir-json.json": {
     "md5": "3aff6cb73787b9d676de08c97a43afee",
@@ -619,12 +643,13 @@
     "scripts": {
       "start": "bun run build && bun run index.ts --watch",
       "start:prod": "bun run build && NODE_ENV=production bun run index.ts --watch",
-      "build": "bun i && bun run build-icon && bun build --target=node ./src/index.ts --outfile=dist/index.js",
+      "build": "bun i && bun run build-icon && bun run bundler/bundler.ts",
       "build-icon": "icon-gen -i ../icon.png -o ."
     },
     "devDependencies": {
       "@types/express": "^5.0.0",
-      "bun-types": "^1.1.45",
+      "bun-lightningcss": "^0.2.0",
+      "bun-types": "^1.2.2",
       "dotenv": "^16.4.7",
       "express": "^4.21.2",
       "icon-gen": "^4.0.0",
@@ -1072,12 +1097,6 @@
     },
     "md5": "05177c79c5295a531c500ca16d4d9298"
   },
-  "/example/spin-room/dir.json": {
-    "index.html": {
-      "sha": "2955a8db5763436cfadb707f762fd895b190d04e"
-    },
-    "md5": "91cb9d2ece65dcac97ba194f4969bb8d"
-  },
   "/example/src/dir.json": {
     "index.ts": {
       "sha": "2691be91a0ab824497b1a6240990368254abd233"
@@ -1085,12 +1104,18 @@
     "iso-test/iso-utils.ts": {
       "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
     },
-    "md5": "3450644592a54f9e929a1abc036d3abf",
+    "md5": "9bfa45dc953acc0ea468971de62cb4dd",
     "react/component.tsx": {
-      "sha": "9b48a0ca9f89985a9bccb58cf3b17be918b0a940"
+      "sha": "7b7d08043d3317017724edb151cc266d0eb11b9b"
+    },
+    "react/index.d.ts": {
+      "sha": "7980ec238c4dd00704399f7d8fe89cf26f194398"
     },
     "react/socket-client.ts": {
-      "sha": "347ec53403304fd7311cea38961873988b42ddb7"
+      "sha": "808b01d7796b7d284a136f2b48cbce1b9d4c10d6"
+    },
+    "react/style.module.css": {
+      "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
   },
   "/example/src/iso-test/dir.json": {
@@ -1101,11 +1126,17 @@
   },
   "/example/src/react/dir.json": {
     "component.tsx": {
-      "sha": "9b48a0ca9f89985a9bccb58cf3b17be918b0a940"
+      "sha": "7b7d08043d3317017724edb151cc266d0eb11b9b"
     },
-    "md5": "8434262837461ed59e7d35fdfd004d34",
+    "index.d.ts": {
+      "sha": "7980ec238c4dd00704399f7d8fe89cf26f194398"
+    },
+    "md5": "dc0db162ea58008641be3712c132b709",
     "socket-client.ts": {
-      "sha": "347ec53403304fd7311cea38961873988b42ddb7"
+      "sha": "808b01d7796b7d284a136f2b48cbce1b9d4c10d6"
+    },
+    "style.module.css": {
+      "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
   },
   "/example/tsconfig.json": {
@@ -1118,6 +1149,7 @@
       "module": "esnext",
       "target": "esnext",
       "moduleResolution": "bundler",
+      "esModuleInterop": true,
       "moduleDetection": "force",
       "allowImportingTsExtensions": true,
       "noEmit": true,
@@ -1210,15 +1242,15 @@
       "sha": "2eec4037721a07fb794d1b6bb0ce06c65c64d00b"
     },
     "ObserverManager.ts": {
-      "sha": "083882255535de7d229edb811472901b021651e5"
+      "sha": "ce4e5508db7f44ef0a7b629c6d4306f77fb7cfc8"
     },
     "SocketClient.ts": {
-      "sha": "bfbd28e1f0d86c807fd10ee66c26db4f1c80d21f"
+      "sha": "4cbeef010ff5002e896f2259f972720bb4c85ff9"
     },
     "SubData.ts": {
       "sha": "d05470c02fdff3e2bf83125d7e353a466762f405"
     },
-    "md5": "1f566e8548bac12b71a0e570351ebe03"
+    "md5": "d14a893cccf96c5c37c8c4e5e34d1c5c"
   },
   "/src/data/dir.json": {
     "data-update.test.ts": {
@@ -1243,10 +1275,10 @@
       "sha": "2eec4037721a07fb794d1b6bb0ce06c65c64d00b"
     },
     "client/ObserverManager.ts": {
-      "sha": "083882255535de7d229edb811472901b021651e5"
+      "sha": "ce4e5508db7f44ef0a7b629c6d4306f77fb7cfc8"
     },
     "client/SocketClient.ts": {
-      "sha": "bfbd28e1f0d86c807fd10ee66c26db4f1c80d21f"
+      "sha": "4cbeef010ff5002e896f2259f972720bb4c85ff9"
     },
     "client/SubData.ts": {
       "sha": "d05470c02fdff3e2bf83125d7e353a466762f405"
@@ -1260,7 +1292,7 @@
     "index.ts": {
       "sha": "267d6ea1ddf2bf9961149ae3e3f57f2670a31db3"
     },
-    "md5": "eb6a3ba1f7f7f19d31816c1a73392e92",
+    "md5": "f0c4bb7ac867e6abcaeeef1187dcda0e",
     "server/SocketEventHandler.ts": {
       "sha": "aecf58955629f4178e2d85904d0c1121a1fc23dc"
     },
@@ -1268,13 +1300,13 @@
       "sha": "5c34076961b7c5986bb46fc559745b4c09c576c6"
     },
     "server/SyncRoom.ts": {
-      "sha": "8d504a52eb594066ab5da8b3811ebf70d3a8ff60"
+      "sha": "9dc21abdf45772fa5f1839d68be58b83046906e0"
     },
     "server/SyncSocket.ts": {
       "sha": "659bec0bf88be00a6085ba15226798dc1aec50d1"
     },
     "types/ClientState.ts": {
-      "sha": "26673e1c7ff25595408776a77725af1f257fd9ca"
+      "sha": "a2f5e522070f9459ef7a6da91310746128b11d31"
     },
     "types/DataObject.ts": {
       "sha": "ba747a6f38117b0f2cf5791957d0e208ba019bb4"
@@ -1294,16 +1326,16 @@
       "sha": "5c34076961b7c5986bb46fc559745b4c09c576c6"
     },
     "SyncRoom.ts": {
-      "sha": "8d504a52eb594066ab5da8b3811ebf70d3a8ff60"
+      "sha": "9dc21abdf45772fa5f1839d68be58b83046906e0"
     },
     "SyncSocket.ts": {
       "sha": "659bec0bf88be00a6085ba15226798dc1aec50d1"
     },
-    "md5": "d05f58417faced1e11f46fd0dcb0ebf1"
+    "md5": "a37b0dc7bf40a140249389d8ca5ffcf8"
   },
   "/src/types/dir.json": {
     "ClientState.ts": {
-      "sha": "26673e1c7ff25595408776a77725af1f257fd9ca"
+      "sha": "a2f5e522070f9459ef7a6da91310746128b11d31"
     },
     "DataObject.ts": {
       "sha": "ba747a6f38117b0f2cf5791957d0e208ba019bb4"
@@ -1314,7 +1346,7 @@
     "Update.ts": {
       "sha": "3512580b858d740bb12f6fe3510e222cee475897"
     },
-    "md5": "bb494bddc72cd307883f68f9bc2972a3"
+    "md5": "8607cb2a6b42304ccd594b84dcc36fda"
   },
   "/tsconfig.json": {
     "compilerOptions": {

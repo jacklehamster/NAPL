@@ -1,6 +1,6 @@
 {
   "ClientState.ts": {
-    "sha": "26673e1c7ff25595408776a77725af1f257fd9ca"
+    "sha": "a2f5e522070f9459ef7a6da91310746128b11d31"
   },
   "DataObject.ts": {
     "sha": "ba747a6f38117b0f2cf5791957d0e208ba019bb4"
@@ -11,5 +11,5 @@
   "Update.ts": {
     "sha": "3512580b858d740bb12f6fe3510e222cee475897"
   },
-  "md5": "bb494bddc72cd307883f68f9bc2972a3"
+  "md5": "8607cb2a6b42304ccd594b84dcc36fda"
 }
