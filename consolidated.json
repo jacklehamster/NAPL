@@ -127,9 +127,9 @@
     "json-test/index.html": {
       "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
     },
-    "md5": "e0545664353dee2b5b0411e068cbe2a2",
+    "md5": "2d2239be2698f9ac032f8fdc74572ccf",
     "mobile/index.html": {
-      "sha": "c9871aa084ca7472a535757fef0cf3e7aba830ae"
+      "sha": "5007c8eed1ce7f35a80f74d1060d7785fe99aa7c"
     },
     "package.json": {
       "sha": "f188cdbf939c04dd799f3a7c88a0a943c1a95f06"
@@ -641,9 +641,9 @@
   },
   "/example/mobile/dir.json": {
     "index.html": {
-      "sha": "c9871aa084ca7472a535757fef0cf3e7aba830ae"
+      "sha": "5007c8eed1ce7f35a80f74d1060d7785fe99aa7c"
     },
-    "md5": "ea5923048b43e450fe6e60e6769832cf"
+    "md5": "d7b4ad4965c01effc1317e2b4d0daca8"
   },
   "/example/package.json": {
     "name": "example",
@@ -1227,7 +1227,7 @@
     "files": [
       "dist"
     ],
-    "version": "1.0.13",
+    "version": "1.0.14",
     "author": {
       "name": "Jack Le Hamster",
       "email": "jacklehamster@gmail.com"
