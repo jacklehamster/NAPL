@@ -15,16 +15,38 @@
       <h1>Mobile Room</h1>
       <p>Shake your device to see the acceleration in the console.</p>
       <div id="status"></div>
+      <img
+        id="qrcode"
+        src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="
+        alt="QR code"
+      />
+      <div id="client-box"></div>
+      <script>
+        const qrCode = document.getElementById("qrcode");
+        const url = new URL(location.href);
+        qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${url}`;
+      </script>
     </div>
-    <script>
+    <script type="module">
+      import { socketClient, handleUsersChanged } from "../dist/index.js";
+
+      const clientBox = document.getElementById("client-box");
+      handleUsersChanged((clientId, isSelf, observers) => {
+        const clientDiv = clientBox.appendChild(document.createElement("div"));
+
+        observers.add(
+          socketClient
+            .observe(`clients/${clientId}/acceleration`)
+            .onChange(
+              (acceleration) =>
+                (clientDiv.textContent = `${JSON.stringify(acceleration, null, "  ")}`)
+            )
+        );
+      });
+
       window.addEventListener("devicemotion", (event) => {
         const status = document.getElementById("status");
-        status.innerHTML = `
-          <p>Acceleration in m/s2:</p>
-          <p>x: ${event.acceleration.x}</p>
-          <p>y: ${event.acceleration.y}</p>
-          <p>z: ${event.acceleration.z}</p>
-        `;
+        socketClient.self.setData("acceleration", event.acceleration);
       });
     </script>
   </body>
