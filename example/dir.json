@@ -9,7 +9,7 @@
     "sha": "c58c010b4a3906da7c4ff220162378a7008e3092"
   },
   "bun.lockb": {
-    "sha": "20a2b94baf7b721d36899465508e3164578ff900"
+    "sha": "44fa79ebcee30d4ceb5d724d960ba45703102bfb"
   },
   "bundler/bundler.ts": {
     "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
@@ -72,7 +72,7 @@
     "sha": "b8a6f588c21e65bf7e82dc55308763c16dcfde89"
   },
   "index.ts": {
-    "sha": "ac834c3cc33efac04591f41b6021e23bda5a881d"
+    "sha": "e48bef045ccb9707654425adba34ac32aaacd87c"
   },
   "iso-test/index.html": {
     "sha": "0edfeaa6d0891cccd8058b2d1e336ebd53d4d903"
@@ -86,9 +86,9 @@
   "json-test/index.html": {
     "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
   },
-  "md5": "92ce46e47dd2fa5823a1bff644f35a42",
+  "md5": "e0545664353dee2b5b0411e068cbe2a2",
   "mobile/index.html": {
-    "sha": "a1acffa9f03ebb9d1620e1b01d7317c897a5b529"
+    "sha": "c9871aa084ca7472a535757fef0cf3e7aba830ae"
   },
   "package.json": {
     "sha": "f188cdbf939c04dd799f3a7c88a0a943c1a95f06"
