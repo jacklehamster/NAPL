@@ -91,7 +91,7 @@
           );
         },
         (clientId) => {
-          const client = document.querySelector(`#client-${clientId}`);
+          const client = document.getElementById(`client-${clientId}`);
           if (client) {
             client.style.transition = "opacity 0.3s";
             client.style.opacity = 0;
