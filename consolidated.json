@@ -50,7 +50,7 @@
       "sha": "c58c010b4a3906da7c4ff220162378a7008e3092"
     },
     "bun.lockb": {
-      "sha": "44fa79ebcee30d4ceb5d724d960ba45703102bfb"
+      "sha": "20a2b94baf7b721d36899465508e3164578ff900"
     },
     "bundler/bundler.ts": {
       "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
@@ -127,9 +127,9 @@
     "json-test/index.html": {
       "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
     },
-    "md5": "b7dd6525a9bfccfd2a298c7f9f619f54",
+    "md5": "92ce46e47dd2fa5823a1bff644f35a42",
     "mobile/index.html": {
-      "sha": "8b076498600f7f74edb947152e96952498b67147"
+      "sha": "a1acffa9f03ebb9d1620e1b01d7317c897a5b529"
     },
     "package.json": {
       "sha": "f188cdbf939c04dd799f3a7c88a0a943c1a95f06"
@@ -641,9 +641,9 @@
   },
   "/example/mobile/dir.json": {
     "index.html": {
-      "sha": "8b076498600f7f74edb947152e96952498b67147"
+      "sha": "a1acffa9f03ebb9d1620e1b01d7317c897a5b529"
     },
-    "md5": "39ea947a68383168d1763d038ab8b913"
+    "md5": "45737ecd005adab62f7444c5ea133f78"
   },
   "/example/package.json": {
     "name": "example",
@@ -1227,7 +1227,7 @@
     "files": [
       "dist"
     ],
-    "version": "1.0.11",
+    "version": "1.0.12",
     "author": {
       "name": "Jack Le Hamster",
       "email": "jacklehamster@gmail.com"
