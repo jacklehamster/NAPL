@@ -45,10 +45,12 @@
         const shouldSplit =
           new URLSearchParams(location.search).get("split") ?? configJson.split;
         const initialTab =
-          new URLSearchParams(location.search).get("room") ?? configJson.room;
+          new URLSearchParams(location.search).get("tab") ?? configJson.tab;
         const showTab =
           new URLSearchParams(location.search).get("show-tab") ??
           configJson["show-tab"];
+        const room =
+          new URLSearchParams(location.search).get("room") ?? configJson.room;
 
         const tabsContainer = document.querySelector(".tabs");
         const container = document.querySelector(".container");
@@ -66,13 +68,14 @@
           button.textContent = site;
           button.addEventListener("click", () => {
             if (!document.querySelector(`#${site}-content`)) {
+              const frameRoom = room ?? site;
               const div = container.appendChild(document.createElement("div"));
               div.id = `${site}-content`;
               div.classList.add("content");
               const topF = div.appendChild(document.createElement("iframe"));
               topF.title = "top";
               topF.classList.add("frame");
-              topF.setAttribute("src", `${site}?top&room=${site}`);
+              topF.setAttribute("src", `${site}?top&room=${frameRoom}`);
               topF.setAttribute("allow", "autoplay");
               if (shouldSplit) {
                 const bottomF = div.appendChild(
@@ -80,7 +83,7 @@
                 );
                 bottomF.title = "bottom";
                 bottomF.classList.add("frame");
-                bottomF.setAttribute("src", `${site}?bottom&room=${site}`);
+                bottomF.setAttribute("src", `${site}?bottom&room=${frameRoom}`);
                 bottomF.setAttribute("allow", "autoplay");
 
                 topF.classList.add("split");

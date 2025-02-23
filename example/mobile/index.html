@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mobile Room</title>
+    <style>
+      body {
+        background-color: lightgray;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Mobile Room</h1>
+      <p>Shake your device to see the acceleration in the console.</p>
+      <div id="status"></div>
+    </div>
+    <script>
+      window.addEventListener("devicemotion", (event) => {
+        const status = document.getElementById("status");
+        status.innerHTML = `
+          <p>Acceleration in m/s2:</p>
+          <p>x: ${event.acceleration.x}</p>
+          <p>y: ${event.acceleration.y}</p>
+          <p>z: ${event.acceleration.z}</p>
+        `;
+      });
+    </script>
+  </body>
+</html>
