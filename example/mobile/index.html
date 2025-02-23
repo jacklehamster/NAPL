@@ -24,7 +24,7 @@
       <script>
         const qrCode = document.getElementById("qrcode");
         const url = new URL(location.href);
-        qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${url}`;
+        qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
       </script>
     </div>
     <script type="module">
@@ -33,20 +33,67 @@
       const clientBox = document.getElementById("client-box");
       handleUsersChanged((clientId, isSelf, observers) => {
         const clientDiv = clientBox.appendChild(document.createElement("div"));
+        clientDiv.style.border = "1px solid black";
+        clientDiv.style.padding = "10px";
+        const RANGE = 360;
+        const xValue = document.createElement("span");
+        const yValue = document.createElement("span");
+        const zValue = document.createElement("span");
+        const xKnob = document.createElement("input");
+        xKnob.type = "range";
+        xKnob.min = 0;
+        xKnob.max = RANGE;
+        xKnob.step = 0.01;
+        xKnob.value = 0;
+        const yKnob = document.createElement("input");
+        yKnob.type = "range";
+        yKnob.min = 0;
+        yKnob.max = RANGE;
+        yKnob.step = 0.01;
+        yKnob.value = 0;
+        const zKnob = document.createElement("input");
+        zKnob.type = "range";
+        zKnob.min = 0;
+        zKnob.max = RANGE;
+        zKnob.step = 0.01;
+        zKnob.value = 0;
+        const xGroup = clientDiv.appendChild(document.createElement("div"));
+        const yGroup = clientDiv.appendChild(document.createElement("div"));
+        const zGroup = clientDiv.appendChild(document.createElement("div"));
+        xGroup.appendChild(xKnob);
+        xGroup.appendChild(xValue);
+        yGroup.appendChild(yKnob);
+        yGroup.appendChild(yValue);
+        zGroup.appendChild(zKnob);
+        zGroup.appendChild(zValue);
 
         observers.add(
           socketClient
             .observe(`clients/${clientId}/acceleration`)
-            .onChange(
-              (acceleration) =>
-                (clientDiv.textContent = `${JSON.stringify(acceleration, null, "  ")}`)
-            )
+            .onChange((acceleration) => {
+              if (acceleration.value) {
+                const { x, y, z } = acceleration.value;
+                const xVal = ((x ?? 0) + RANGE) % RANGE;
+                const yVal = ((y ?? 0) + RANGE) % RANGE;
+                const zVal = ((z ?? 0) + RANGE) % RANGE;
+                xKnob.value = xVal;
+                yKnob.value = yVal;
+                zKnob.value = zVal;
+                xValue.textContent = `x: ${xVal.toFixed(2) ?? 0}`;
+                yValue.textContent = `y: ${yVal.toFixed(2) ?? 0}`;
+                zValue.textContent = `z: ${zVal.toFixed(2) ?? 0}`;
+              }
+            })
         );
       });
 
-      window.addEventListener("devicemotion", (event) => {
-        const status = document.getElementById("status");
-        socketClient.self.setData("acceleration", event.acceleration);
+      window.addEventListener("deviceorientation", (event) => {
+        const acceleration = {
+          x: event.alpha,
+          y: event.beta,
+          z: event.gamma,
+        };
+        socketClient.self.setData("acceleration", acceleration);
       });
     </script>
   </body>

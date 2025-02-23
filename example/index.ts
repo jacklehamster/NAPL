@@ -23,6 +23,7 @@ app.get("/config.json", (_req, res) => {
   res.json({
     "split": true,
     "show-tab": true,
+    "websocketHost": "wss://api.dobuki.net",
   });
 });
 
