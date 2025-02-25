@@ -71,6 +71,21 @@
           zGroup.appendChild(zKnob);
           zGroup.appendChild(zValue);
 
+          const tapBox = clientDiv.appendChild(document.createElement("div"));
+          tapBox.style.border = "1px solid black";
+          tapBox.style.width = "100px";
+          tapBox.style.height = "20px";
+
+          observers.add(
+            socketClient.observe(`clients/${clientId}/tap`).onChange((tap) => {
+              if (tap.value) {
+                tapBox.style.backgroundColor = "red";
+              } else {
+                tapBox.style.backgroundColor = "white";
+              }
+            })
+          );
+
           observers.add(
             socketClient
               .observe(`clients/${clientId}/acceleration`)
@@ -109,6 +124,17 @@
           z: event.gamma,
         };
         socketClient.self.setData("acceleration", acceleration);
+      });
+      //  detect tap
+      window.addEventListener("touchstart", (event) => {
+        if (!socketClient.self.tap) {
+          socketClient.self.setData("tap", socketClient.serverTime);
+        }
+      });
+      window.addEventListener("touchend", (event) => {
+        if (socketClient.self.tap) {
+          socketClient.self.setData("tap", 0);
+        }
       });
     </script>
   </body>
