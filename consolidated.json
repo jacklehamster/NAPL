@@ -127,9 +127,9 @@
     "json-test/index.html": {
       "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
     },
-    "md5": "eb5ce24c6a4ae02cc60fd607b216a145",
+    "md5": "5aa361295c6f81a91aa5de563a6831da",
     "mobile/index.html": {
-      "sha": "44eb38145406f62ee2a380ac9226088c1d6f236f"
+      "sha": "da7fc32018f9e63c66e22c593062c3cb7604695a"
     },
     "package.json": {
       "sha": "f188cdbf939c04dd799f3a7c88a0a943c1a95f06"
@@ -641,9 +641,9 @@
   },
   "/example/mobile/dir.json": {
     "index.html": {
-      "sha": "44eb38145406f62ee2a380ac9226088c1d6f236f"
+      "sha": "da7fc32018f9e63c66e22c593062c3cb7604695a"
     },
-    "md5": "f8da194cee922ecbae3c41843dbb60c4"
+    "md5": "2a12f010a851cf824f15f15ac9e6fae6"
   },
   "/example/package.json": {
     "name": "example",
