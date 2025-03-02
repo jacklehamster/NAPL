@@ -16063,7 +16063,7 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
   }
 });
 
-// ../src/data/data-update.ts
+// node_modules/@dobuki/syncopath/dist/index.js
 var SELF = "{self}";
 var KEYS = "{keys}";
 var VALUES = "{values}";
@@ -16140,7 +16140,6 @@ function markCommonUpdateConfirmed(update, now) {
   }
 }
 
-// ../node_modules/@dobuki/data-blob/dist/index.js
 class A {
   data = [];
   #n = new TextEncoder;
@@ -16236,8 +16235,6 @@ async function N(n, h, c = () => globalThis.crypto.randomUUID()) {
     }));
   return n;
 }
-
-// ../src/server/SocketEventHandler.ts
 function addMessageReceiver(socket, payloadReceived) {
   socket.on("message", async (message) => {
     if (message instanceof Buffer) {
@@ -16250,7 +16247,6 @@ function addMessageReceiver(socket, payloadReceived) {
   });
 }
 
-// ../src/server/SyncRoom.ts
 class SyncRoom {
   room;
   #sockets = new Map;
@@ -16378,7 +16374,6 @@ class SyncRoom {
   }
 }
 
-// ../src/server/SyncSocket.ts
 class SyncSocket {
   #rooms = {};
   constructor(server) {
@@ -16417,7 +16412,7 @@ class SyncSocket {
     return this.#rooms[roomName];
   }
 }
-// ../src/client/ClientData.ts
+
 class ClientData {
   socketClient;
   id = "";
@@ -16439,7 +16434,6 @@ class ClientData {
   }
 }
 
-// ../src/client/SubData.ts
 class SubData {
   path;
   socketClient;
@@ -16464,7 +16458,6 @@ class SubData {
   }
 }
 
-// ../src/client/Observer.ts
 class Observer {
   socketClient;
   paths;
@@ -16564,7 +16557,6 @@ class Observer {
   }
 }
 
-// ../src/client/ObserverManager.ts
 class ObserverManager {
   socketClient;
   #observers = new Set;
@@ -16589,8 +16581,6 @@ class ObserverManager {
     this.socketClient.localState.observers.sort();
   }
 }
-
-// ../src/client/SocketClient.ts
 var LOCAL_TAG = "$-local";
 
 class SocketClient {
@@ -17473,4 +17463,4 @@ export {
   SocketClient
 };
 
-//# debugId=1BB95FA9E0F56DFC64756E2164756E21
+//# debugId=6F72E19B10803ECA64756E2164756E21

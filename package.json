@@ -45,8 +45,5 @@
     "name": "Jack Le Hamster",
     "email": "jacklehamster@gmail.com"
   },
-  "description": "Not Another Programming Language",
-  "dependencies": {
-    "@dobuki/data-blob": "^1.0.12"
-  }
+  "description": "Not Another Programming Language"
 }

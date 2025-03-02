@@ -1,5 +1,5 @@
 import styles from "./style.module.css";
-import { SocketClient } from "napl";
+import { SocketClient } from "@dobuki/syncopath";
 import { useSocketClient } from "./socket-client";
 import ReactDOM from 'react-dom/client';
 
