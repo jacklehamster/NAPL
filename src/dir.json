@@ -1,6 +1,33 @@
 {
-  "index.ts": {
-    "sha": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+  "core/Component.ts": {
+    "sha": "fb895aad8766b5d984f165e9ed9536c6f2fd0dad"
   },
-  "md5": "2b67705b6b62517e0d1e77e8e6d79189"
+  "core/DefaultComponents.ts": {
+    "sha": "e1592729f166fc8de6d9fa6461a67ab846eb5496"
+  },
+  "core/LoopCycle.ts": {
+    "sha": "e92e664a5b8b575d391a015cf888ea238ef86c7f"
+  },
+  "core/ProjectLoader.ts": {
+    "sha": "193982999fd45a562c92e939098648b5bd453194"
+  },
+  "core/ProjectProcessor.ts": {
+    "sha": "7af7ff424a75c8716564b8dca3942bd718a4d279"
+  },
+  "core/Registry.ts": {
+    "sha": "f2a44331ee13b4a97c028c0423de9bdb5a631a38"
+  },
+  "index.ts": {
+    "sha": "832b54a35c087ca2ee17361f733a927587599ce9"
+  },
+  "md5": "c5f130f08d60517f31b0e8c062390775",
+  "model/Code.ts": {
+    "sha": "5362a538fb5949108eaf5e3d0c25421bf178a405"
+  },
+  "model/Project.ts": {
+    "sha": "e297addd920e43120c7871252fe2f3ca28b927be"
+  },
+  "model/RegistryConfig.ts": {
+    "sha": "eab8f071bbccf802b2bac313559decb8b103c27b"
+  }
 }

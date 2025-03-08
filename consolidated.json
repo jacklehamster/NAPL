@@ -11,29 +11,16 @@
     },
     "md5": "8e993d7f3f5b568419c135c29211cdc9"
   },
-  "/example/chatroom/dir.json": {
-    "index.html": {
-      "sha": "ecc7543e13eb7e9cb22115d8e5593700e285e6c0"
-    },
-    "md5": "ecdb0babf67b9aba88eb8e650cd96be2"
-  },
   "/example/config.json": {
-    "websocketHost": "api.dobuki.net",
-    "tab": "chatroom"
+    "tab": "game-room"
   },
   "/example/dir-json.json": {
     "config.json": {
-      "sha": "98387d623bcf6077316ad093fd89f762c23f9a4f"
+      "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
-    "iso-test/random-iso.json": {
-      "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
-    },
-    "md5": "e0f661aec6be3561b328311cb14a2f01",
+    "md5": "dd552ba8ee1d3a86cec7cba02a32da29",
     "package.json": {
-      "sha": "4c324840cc1a53675b135f28d04e92c0af41f4c9"
-    },
-    "random-iso.json": {
-      "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
+      "sha": "e8101abb0636eeca113f01f4eb499ae23b4b1de6"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -43,607 +30,61 @@
     "README.md": {
       "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
     },
-    "app.icns": {
-      "sha": "8c414c12983adc8e19dd67d522fe3f6c894831a8"
-    },
-    "app.ico": {
-      "sha": "c58c010b4a3906da7c4ff220162378a7008e3092"
-    },
     "bun.lockb": {
-      "sha": "a48e2e25a3491dab695fd34f3e8ad452e35b5323"
+      "sha": "37abf839857fe16f4624c35ca85af6272df44f98"
     },
     "bundler/bundler.ts": {
       "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
     },
-    "chatroom/index.html": {
-      "sha": "ecc7543e13eb7e9cb22115d8e5593700e285e6c0"
-    },
     "config.json": {
-      "sha": "98387d623bcf6077316ad093fd89f762c23f9a4f"
+      "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "2d076292485d9e61c0dd067d00a38e4df3b2bd11"
+      "sha": "0058ee40497738eb6c495ab57acf084e23c2e584"
     },
     "dist/index.js.map": {
-      "sha": "3329cb4ed1ef640a4551fc393c6b3c733fe1c758"
+      "sha": "e854b51e527d9fed48141f2da374eec845766d46"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     },
-    "favicon-120.png": {
-      "sha": "69b3e5c9a01fe3ed4195b5c971674d80fc0f4318"
-    },
-    "favicon-128.png": {
-      "sha": "39664cbca2a68c306730c5092b7ce34970d0fe07"
-    },
-    "favicon-144.png": {
-      "sha": "0ef0e9f14eb28c0870d4535808e222d8327ac514"
-    },
-    "favicon-152.png": {
-      "sha": "f8f60c82c382966252c7b2f207cdb80b62c102b3"
-    },
-    "favicon-195.png": {
-      "sha": "0bb68d0ab504b9a36e020ff619e86b2f97c1dbcd"
-    },
-    "favicon-228.png": {
-      "sha": "5b41a3758f28cd5ece1aa1fb7ada351f49d5b023"
-    },
-    "favicon-32.png": {
-      "sha": "3df095fc7fb5157149b80ec1eba97fd9d78c8743"
-    },
-    "favicon-57.png": {
-      "sha": "63b2c63b594029095f826df603e88a75ac8785a7"
-    },
-    "favicon-72.png": {
-      "sha": "b132fef29fa67c8653bc8c95fae183005685e99e"
-    },
-    "favicon-96.png": {
-      "sha": "fbdfed1ddbb93f3b45bb49500f26db46f16e41de"
-    },
-    "favicon.ico": {
-      "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
-    },
     "game-room/index.html": {
-      "sha": "a08fc554cd2f961f5ba12d9f7bf80486fd3fb442"
-    },
-    "image-test/index.html": {
-      "sha": "719850ced84f9531ecfc6692a1dc03422f148393"
+      "sha": "d5ee8c82218497ac88461bc7ce64d2183279c535"
     },
     "index.html": {
-      "sha": "b8a6f588c21e65bf7e82dc55308763c16dcfde89"
+      "sha": "90b592fe6147341a7bfdb04ee74880260ae11f8f"
     },
     "index.ts": {
-      "sha": "7181490ba56a9447cfbdbf3f4d69bc9efd6f2301"
+      "sha": "947037d72b1b28885ed440652b2eabb1a93c8b51"
     },
-    "iso-test/index.html": {
-      "sha": "0edfeaa6d0891cccd8058b2d1e336ebd53d4d903"
-    },
-    "iso-test/random-iso.json": {
-      "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
-    },
-    "iso-test/random-iso.png": {
-      "sha": "1554c267f94aa89dcc9efd969f0a369450a626a2"
-    },
-    "json-test/index.html": {
-      "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
-    },
-    "md5": "5d49f00e39e001e64e0cfd5522c18549",
-    "mobile/index.html": {
-      "sha": "da7fc32018f9e63c66e22c593062c3cb7604695a"
-    },
+    "md5": "3e362cf7a712e02c8c44fa466c398927",
     "package.json": {
-      "sha": "4c324840cc1a53675b135f28d04e92c0af41f4c9"
-    },
-    "random-iso.json": {
-      "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
-    },
-    "random-iso.png": {
-      "sha": "1554c267f94aa89dcc9efd969f0a369450a626a2"
-    },
-    "react-test/index.html": {
-      "sha": "b7b986c76fc8f78204e95498aef051618845d170"
-    },
-    "sample/index.html": {
-      "sha": "082ad0d94e11214521e722e1504a3051ee9a01b1"
+      "sha": "e8101abb0636eeca113f01f4eb499ae23b4b1de6"
     },
     "src/index.ts": {
-      "sha": "d1159d5cda2890245af330da6d91e42ed1fe4ae5"
-    },
-    "src/iso-test/iso-utils.ts": {
-      "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
-    },
-    "src/react/component.tsx": {
-      "sha": "8b6ea4af4538d0b028152362a99c84d6439c15bd"
-    },
-    "src/react/index.d.ts": {
-      "sha": "7980ec238c4dd00704399f7d8fe89cf26f194398"
-    },
-    "src/react/socket-client.ts": {
-      "sha": "4aaa1736565b6781a650b9f6a6085ab569f659f4"
-    },
-    "src/react/style.module.css": {
-      "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
+      "sha": "79cd2876cece5b51dd0d739c7b316e7d49f9468b"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
-    },
-    "youtube-test/index.html": {
-      "sha": "e085fb732f23ed3fbefde35ba679ac2fb1408a54"
     }
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "2d076292485d9e61c0dd067d00a38e4df3b2bd11"
+      "sha": "0058ee40497738eb6c495ab57acf084e23c2e584"
     },
     "index.js.map": {
-      "sha": "3329cb4ed1ef640a4551fc393c6b3c733fe1c758"
+      "sha": "e854b51e527d9fed48141f2da374eec845766d46"
     },
-    "md5": "587d115948f6fbc594c0d4bc3e247616",
+    "md5": "f962fee2d19a678653a80895c8a920c5",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
   },
   "/example/game-room/dir.json": {
     "index.html": {
-      "sha": "a08fc554cd2f961f5ba12d9f7bf80486fd3fb442"
+      "sha": "d5ee8c82218497ac88461bc7ce64d2183279c535"
     },
-    "md5": "e26ff41dcadc209109c6625036e97c50"
-  },
-  "/example/image-test/dir.json": {
-    "index.html": {
-      "sha": "719850ced84f9531ecfc6692a1dc03422f148393"
-    },
-    "md5": "abd3d1c541c0e630f090682871f2b5dd"
-  },
-  "/example/iso-test/dir-json.json": {
-    "md5": "3aff6cb73787b9d676de08c97a43afee",
-    "random-iso.json": {
-      "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
-    }
-  },
-  "/example/iso-test/dir.json": {
-    "index.html": {
-      "sha": "0edfeaa6d0891cccd8058b2d1e336ebd53d4d903"
-    },
-    "md5": "c90339e269c7ff665927398b330a2794",
-    "random-iso.json": {
-      "sha": "d05d34fb92c02b85a64a01f43775b5a71ce58912"
-    },
-    "random-iso.png": {
-      "sha": "1554c267f94aa89dcc9efd969f0a369450a626a2"
-    }
-  },
-  "/example/iso-test/random-iso.json": {
-    "frames": {
-      "rando 0.aseprite": {
-        "frame": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 1.aseprite": {
-        "frame": {
-          "x": 512,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 2.aseprite": {
-        "frame": {
-          "x": 1024,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 3.aseprite": {
-        "frame": {
-          "x": 1536,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 4.aseprite": {
-        "frame": {
-          "x": 2048,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 5.aseprite": {
-        "frame": {
-          "x": 2560,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 6.aseprite": {
-        "frame": {
-          "x": 3072,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 7.aseprite": {
-        "frame": {
-          "x": 3584,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 8.aseprite": {
-        "frame": {
-          "x": 4096,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 9.aseprite": {
-        "frame": {
-          "x": 4608,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 10.aseprite": {
-        "frame": {
-          "x": 5120,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 11.aseprite": {
-        "frame": {
-          "x": 5632,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 12.aseprite": {
-        "frame": {
-          "x": 6144,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 13.aseprite": {
-        "frame": {
-          "x": 6656,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 14.aseprite": {
-        "frame": {
-          "x": 7168,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 15.aseprite": {
-        "frame": {
-          "x": 7680,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 16.aseprite": {
-        "frame": {
-          "x": 8192,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 17.aseprite": {
-        "frame": {
-          "x": 8704,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      }
-    },
-    "meta": {
-      "app": "https://www.aseprite.org/",
-      "version": "1.3.11-arm64",
-      "image": "random-iso.png",
-      "format": "RGBA8888",
-      "size": {
-        "w": 9216,
-        "h": 512
-      },
-      "scale": "1",
-      "frameTags": [
-        {
-          "name": "Tongue",
-          "from": 14,
-          "to": 17,
-          "direction": "pingpong",
-          "color": "#fe5b59ff"
-        }
-      ],
-      "layers": [
-        {
-          "name": "Layer 1",
-          "opacity": 255,
-          "blendMode": "normal"
-        },
-        {
-          "name": "Layer 2",
-          "opacity": 255,
-          "blendMode": "normal"
-        },
-        {
-          "name": "Layer 3",
-          "opacity": 255,
-          "blendMode": "normal"
-        }
-      ],
-      "slices": []
-    }
-  },
-  "/example/json-test/dir.json": {
-    "index.html": {
-      "sha": "9b3d48916b0d0404e894b2d8e29a54f067259495"
-    },
-    "md5": "1292b2af9bf116c21c205f478cf24d1b"
-  },
-  "/example/mobile/dir.json": {
-    "index.html": {
-      "sha": "da7fc32018f9e63c66e22c593062c3cb7604695a"
-    },
-    "md5": "2a12f010a851cf824f15f15ac9e6fae6"
+    "md5": "4ddf8489c486b2f4599789f717da0f33"
   },
   "/example/package.json": {
     "name": "example",
@@ -653,10 +94,10 @@
       "start": "bun run build && bun run index.ts --watch",
       "start:prod": "bun run build && NODE_ENV=production bun run index.ts --watch",
       "build": "bun i && bun run build-icon && bun run bundler/bundler.ts",
-      "build-icon": "icon-gen -i ../icon.png -o ."
+      "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons"
     },
     "devDependencies": {
-      "@dobuki/syncopath": "^1.0.1",
+      "napl": "link:napl",
       "@types/express": "^5.0.0",
       "bun-lightningcss": "^0.2.0",
       "bun-types": "^1.2.2",
@@ -670,483 +111,14 @@
       "typescript": "^5.0.0"
     },
     "dependencies": {
-      "aseprite-sheet": "^1.0.5",
       "json-stringify-pretty-compact": "^4.0.0"
     }
   },
-  "/example/random-iso.json": {
-    "frames": {
-      "rando 0.aseprite": {
-        "frame": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 1.aseprite": {
-        "frame": {
-          "x": 512,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 2.aseprite": {
-        "frame": {
-          "x": 1024,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 3.aseprite": {
-        "frame": {
-          "x": 1536,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 4.aseprite": {
-        "frame": {
-          "x": 2048,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 5.aseprite": {
-        "frame": {
-          "x": 2560,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 6.aseprite": {
-        "frame": {
-          "x": 3072,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 7.aseprite": {
-        "frame": {
-          "x": 3584,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 8.aseprite": {
-        "frame": {
-          "x": 4096,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 9.aseprite": {
-        "frame": {
-          "x": 4608,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 10.aseprite": {
-        "frame": {
-          "x": 5120,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 11.aseprite": {
-        "frame": {
-          "x": 5632,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 12.aseprite": {
-        "frame": {
-          "x": 6144,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 13.aseprite": {
-        "frame": {
-          "x": 6656,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 14.aseprite": {
-        "frame": {
-          "x": 7168,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 15.aseprite": {
-        "frame": {
-          "x": 7680,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 16.aseprite": {
-        "frame": {
-          "x": 8192,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      },
-      "rando 17.aseprite": {
-        "frame": {
-          "x": 8704,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "rotated": false,
-        "trimmed": false,
-        "spriteSourceSize": {
-          "x": 0,
-          "y": 0,
-          "w": 512,
-          "h": 512
-        },
-        "sourceSize": {
-          "w": 512,
-          "h": 512
-        },
-        "duration": 100
-      }
-    },
-    "meta": {
-      "app": "https://www.aseprite.org/",
-      "version": "1.3.11-arm64",
-      "image": "random-iso.png",
-      "format": "RGBA8888",
-      "size": {
-        "w": 9216,
-        "h": 512
-      },
-      "scale": "1",
-      "frameTags": [
-        {
-          "name": "Tongue",
-          "from": 14,
-          "to": 17,
-          "direction": "pingpong",
-          "color": "#fe5b59ff"
-        }
-      ],
-      "layers": [
-        {
-          "name": "Layer 1",
-          "opacity": 255,
-          "blendMode": "normal"
-        },
-        {
-          "name": "Layer 2",
-          "opacity": 255,
-          "blendMode": "normal"
-        },
-        {
-          "name": "Layer 3",
-          "opacity": 255,
-          "blendMode": "normal"
-        }
-      ],
-      "slices": []
-    }
-  },
-  "/example/react-test/dir.json": {
-    "index.html": {
-      "sha": "b7b986c76fc8f78204e95498aef051618845d170"
-    },
-    "md5": "46d4361a12893b35ffd7b2543e4c6eda"
-  },
-  "/example/sample/dir.json": {
-    "index.html": {
-      "sha": "082ad0d94e11214521e722e1504a3051ee9a01b1"
-    },
-    "md5": "05177c79c5295a531c500ca16d4d9298"
-  },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "d1159d5cda2890245af330da6d91e42ed1fe4ae5"
+      "sha": "79cd2876cece5b51dd0d739c7b316e7d49f9468b"
     },
-    "iso-test/iso-utils.ts": {
-      "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
-    },
-    "md5": "800ae720341b4b0d0be245a915efd63f",
-    "react/component.tsx": {
-      "sha": "8b6ea4af4538d0b028152362a99c84d6439c15bd"
-    },
-    "react/index.d.ts": {
-      "sha": "7980ec238c4dd00704399f7d8fe89cf26f194398"
-    },
-    "react/socket-client.ts": {
-      "sha": "4aaa1736565b6781a650b9f6a6085ab569f659f4"
-    },
-    "react/style.module.css": {
-      "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
-    }
-  },
-  "/example/src/iso-test/dir.json": {
-    "iso-utils.ts": {
-      "sha": "7c965b9f650465ae310cacd812584611a28e9a7a"
-    },
-    "md5": "87417d18e2f3a9af819fde230bf71263"
-  },
-  "/example/src/react/dir.json": {
-    "component.tsx": {
-      "sha": "8b6ea4af4538d0b028152362a99c84d6439c15bd"
-    },
-    "index.d.ts": {
-      "sha": "7980ec238c4dd00704399f7d8fe89cf26f194398"
-    },
-    "md5": "f1fb85196fc6b17a5bc336bd78988768",
-    "socket-client.ts": {
-      "sha": "4aaa1736565b6781a650b9f6a6085ab569f659f4"
-    },
-    "style.module.css": {
-      "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
-    }
+    "md5": "def5c6504abd606bb1f667fdef105d26"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -1179,14 +151,9 @@
       "**/*.tsx"
     ]
   },
-  "/example/youtube-test/dir.json": {
-    "index.html": {
-      "sha": "e085fb732f23ed3fbefde35ba679ac2fb1408a54"
-    },
-    "md5": "5f452bfaccb528217cbc237b288cd513"
-  },
   "/package.json": {
     "name": "napl",
+    "version": "1.0.16",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -1227,18 +194,80 @@
     "files": [
       "dist"
     ],
-    "version": "1.0.16",
     "author": {
       "name": "Jack Le Hamster",
       "email": "jacklehamster@gmail.com"
     },
-    "description": "Not Another Programming Language"
+    "description": "Not Another Programming Language",
+    "dependencies": {
+      "fixed-framerate-loop": "^1.0.11"
+    }
+  },
+  "/src/core/dir.json": {
+    "Component.ts": {
+      "sha": "fb895aad8766b5d984f165e9ed9536c6f2fd0dad"
+    },
+    "DefaultComponents.ts": {
+      "sha": "e1592729f166fc8de6d9fa6461a67ab846eb5496"
+    },
+    "LoopCycle.ts": {
+      "sha": "e92e664a5b8b575d391a015cf888ea238ef86c7f"
+    },
+    "ProjectLoader.ts": {
+      "sha": "193982999fd45a562c92e939098648b5bd453194"
+    },
+    "ProjectProcessor.ts": {
+      "sha": "7af7ff424a75c8716564b8dca3942bd718a4d279"
+    },
+    "Registry.ts": {
+      "sha": "f2a44331ee13b4a97c028c0423de9bdb5a631a38"
+    },
+    "md5": "454d57e8808dbd2fa0c9a30dcd0b73e8"
   },
   "/src/dir.json": {
-    "index.ts": {
-      "sha": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    "core/Component.ts": {
+      "sha": "fb895aad8766b5d984f165e9ed9536c6f2fd0dad"
     },
-    "md5": "2b67705b6b62517e0d1e77e8e6d79189"
+    "core/DefaultComponents.ts": {
+      "sha": "e1592729f166fc8de6d9fa6461a67ab846eb5496"
+    },
+    "core/LoopCycle.ts": {
+      "sha": "e92e664a5b8b575d391a015cf888ea238ef86c7f"
+    },
+    "core/ProjectLoader.ts": {
+      "sha": "193982999fd45a562c92e939098648b5bd453194"
+    },
+    "core/ProjectProcessor.ts": {
+      "sha": "7af7ff424a75c8716564b8dca3942bd718a4d279"
+    },
+    "core/Registry.ts": {
+      "sha": "f2a44331ee13b4a97c028c0423de9bdb5a631a38"
+    },
+    "index.ts": {
+      "sha": "832b54a35c087ca2ee17361f733a927587599ce9"
+    },
+    "md5": "c5f130f08d60517f31b0e8c062390775",
+    "model/Code.ts": {
+      "sha": "5362a538fb5949108eaf5e3d0c25421bf178a405"
+    },
+    "model/Project.ts": {
+      "sha": "e297addd920e43120c7871252fe2f3ca28b927be"
+    },
+    "model/RegistryConfig.ts": {
+      "sha": "eab8f071bbccf802b2bac313559decb8b103c27b"
+    }
+  },
+  "/src/model/dir.json": {
+    "Code.ts": {
+      "sha": "5362a538fb5949108eaf5e3d0c25421bf178a405"
+    },
+    "Project.ts": {
+      "sha": "e297addd920e43120c7871252fe2f3ca28b927be"
+    },
+    "RegistryConfig.ts": {
+      "sha": "eab8f071bbccf802b2bac313559decb8b103c27b"
+    },
+    "md5": "f635cdc2e9d9712b92f2e2ebe0b87059"
   },
   "/tsconfig.json": {
     "compilerOptions": {
