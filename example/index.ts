@@ -1,8 +1,6 @@
 import { createServer } from "https";
 import express from "express";
-import { WebSocketServer } from "ws";
 import path from "path";
-import { attachSyncSocket } from "@dobuki/syncopath";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -11,19 +9,14 @@ const PORT = 3000;
 
 const server = createServer(app);
 
-const wss = new WebSocketServer({ server });
-
-attachSyncSocket(wss);
-
 app.get("/config.json", (_req, res) => {
   if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "config.json"));
     return;
   }
   res.json({
-    "split": true,
-    "show-tab": true,
-    "websocketHost": "wss://api.dobuki.net",
+    "split": false,
+    "show-tab": true
   });
 });
 
