@@ -1,5 +1,5 @@
-import { Update } from "../types/Update";
-import { Data } from "../types/Data";
+import { Update } from "../../types/Update";
+import { Data } from "../../types/Data";
 
 const KEYS = "~{keys}";
 const VALUES = "~{values}";
@@ -14,6 +14,9 @@ export function commitUpdates(root: Data | undefined, properties: Record<string,
     if (!update.confirmed) {
       return;
     }
+    //  Save blobs from updates
+    saveBlobsFromUpdate(root, update);
+
     const parts = update.path.split("/");
     const leaf: any = getLeafObject(root, parts, 1, true);
     const prop = parts[parts.length - 1];
@@ -137,4 +140,11 @@ export function markUpdateConfirmed(update: Update, now: number) {
   if (!update.confirmed) {
     update.confirmed = now;
   }
+}
+
+function saveBlobsFromUpdate(data: Data, update: Update) {
+  Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
+    const blobs = data.blobs ?? (data.blobs = {});
+    blobs[key] = blob;
+  });
 }

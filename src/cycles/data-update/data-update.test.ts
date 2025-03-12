@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import { commitUpdates } from './data-update';
-import { Update } from '../types/Update';
-import { Data } from '../types/Data';
+import { Update } from '../../types/Update';
+import { Data } from '../../types/Data';
 
 describe('commitUpdates', () => {
   it('should sort updates by confirmed timestamp and apply them', () => {
