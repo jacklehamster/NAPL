@@ -47,6 +47,7 @@
   },
   "description": "Not Another Programming Language",
   "dependencies": {
+    "dok-pool": "^1.0.77",
     "fixed-framerate-loop": "^1.0.11"
   }
 }

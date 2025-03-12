@@ -34,4 +34,10 @@ Update {
 
 <https://napl.dobuki.net>
 
+## Process cycle
 
+1. Apply all updates
+2. Process all observers
+3. Rewrap all objects that changed / new objects
+4. Execute all object code (data-binding, loopers)
+5. Clean out removed wrapped objects

@@ -1,0 +1,15 @@
+{
+  "Action.ts": {
+    "sha": "81594cbe9058b15543d99e96a11fb2d3e37b56ab"
+  },
+  "ClientState.ts": {
+    "sha": "9e6c1fdea2ce7724f9f2488ee9036e8a44129228"
+  },
+  "RoomState.ts": {
+    "sha": "432977192f60b6b89865e588ebaa6897d906ce31"
+  },
+  "Update.ts": {
+    "sha": "f28e6d2cd3849978a4142588dfd2e8c7f79702ec"
+  },
+  "md5": "5af9afd924e1087074d6059a7de5055e"
+}
