@@ -1,15 +1,11 @@
-import { Cycle } from "../Cycle";
+import { CycleData } from "@/cycle/CycleData";
+import { Cycle } from "../../cycle/Cycle";
 
 export class DataBindingManager implements Cycle {
   constructor(
-    readonly root: { [key: string]: any } = {},
-    readonly properties: { [key: string]: any } = {}) {
+    readonly root: { [key: string]: any } = {}) {
   }
 
-  addDataBinding() {
-    
-  }
-
-  performCycle() {
+  performCycle(cyleData: CycleData) {
   }
 }

@@ -5,7 +5,11 @@ const KEYS = "~{keys}";
 const VALUES = "~{values}";
 
 // This function is used to commit updates to the root object
-export function commitUpdates(root: Data | undefined, properties: Record<string, any>) {
+export function commitUpdates(
+  root: Data | undefined,
+  properties: Record<string, any>,
+  updatedPaths?: Set<string>) {
+
   if (!root) {
     return;
   }
@@ -41,6 +45,7 @@ export function commitUpdates(root: Data | undefined, properties: Record<string,
     } else {
       leaf[prop] = value;
     }
+    updatedPaths?.add(update.path);
   });
   if (root.updates) {
     for (let i = root.updates.length - 1; i >= 0; i--) {

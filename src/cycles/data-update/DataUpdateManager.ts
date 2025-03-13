@@ -1,20 +1,17 @@
 import { commitUpdates } from "@/cycles/data-update/data-update";
 import { Update } from "@/types/Update";
-import { Cycle } from "../Cycle";
+import { Cycle } from "../../cycle/Cycle";
+import { CycleData } from "@/cycle/CycleData";
+import { Data } from "@/types/Data";
 
 //  1. Apply all update logs
 export class DataUpdateManager implements Cycle {
-  constructor(
-    readonly root: { [key: string]: any } = {},
-    readonly properties: { [key: string]: any } = {}) {
+  addUpdate(root: Data, update: Update) {
+    root.updates = root.updates ?? [];
+    root.updates.push(update);
   }
 
-  addUpdate(update: Update) {
-    this.root.updates = this.root.updates ?? [];
-    this.root.updates.push(update);
-  }
-
-  performCycle() {
-    commitUpdates(this.root, this.properties);
+  performCycle(cyleData: CycleData) {
+    commitUpdates(cyleData.root, cyleData.properties, cyleData.updatedPaths);
   }
 }

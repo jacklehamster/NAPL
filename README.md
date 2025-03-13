@@ -36,8 +36,9 @@ Update {
 
 ## Process cycle
 
-1. Apply all update logs
-2. Execute data-bindings
-3. Rewrap all objects that changed / new objects
-4. Execute all object code (triggered from observers or loopers)
-5. Clean out removed wrapped objects
+1. Register all data
+2. Apply all update logs
+3. Execute data-bindings
+4. Rewrap all objects that changed / new objects
+5. Execute all object code (triggered from observers or loopers)
+6. Clean out removed wrapped objects
