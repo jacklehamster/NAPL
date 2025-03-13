@@ -1,0 +1,15 @@
+{
+  "CodeParser.ts": {
+    "sha": "dace57e2f1f307ab25cb11d05e25c7c50f02234e"
+  },
+  "Registry.ts": {
+    "sha": "7cbb0f41809577d2172742425f189b5de8404129"
+  },
+  "RegistryEntry.ts": {
+    "sha": "c2456e1381e9c8956a8242383bcdeb3c926efb57"
+  },
+  "code-parser.test.ts": {
+    "sha": "781f10a0a375088ab40aa79cad30aa574e8d5c23"
+  },
+  "md5": "1a35bae9a4033098bb6e113692dbfde5"
+}

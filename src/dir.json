@@ -1,33 +1,45 @@
 {
-  "core/Component.ts": {
-    "sha": "fb895aad8766b5d984f165e9ed9536c6f2fd0dad"
-  },
-  "core/DefaultComponents.ts": {
-    "sha": "e1592729f166fc8de6d9fa6461a67ab846eb5496"
-  },
-  "core/LoopCycle.ts": {
-    "sha": "e92e664a5b8b575d391a015cf888ea238ef86c7f"
-  },
-  "core/ProjectLoader.ts": {
-    "sha": "193982999fd45a562c92e939098648b5bd453194"
-  },
-  "core/ProjectProcessor.ts": {
-    "sha": "7af7ff424a75c8716564b8dca3942bd718a4d279"
+  "core/CodeParser.ts": {
+    "sha": "dace57e2f1f307ab25cb11d05e25c7c50f02234e"
   },
   "core/Registry.ts": {
-    "sha": "f2a44331ee13b4a97c028c0423de9bdb5a631a38"
+    "sha": "7cbb0f41809577d2172742425f189b5de8404129"
+  },
+  "core/RegistryEntry.ts": {
+    "sha": "c2456e1381e9c8956a8242383bcdeb3c926efb57"
+  },
+  "core/code-parser.test.ts": {
+    "sha": "781f10a0a375088ab40aa79cad30aa574e8d5c23"
+  },
+  "cycle/Cycle.ts": {
+    "sha": "c14c85c6089c6c44db69b58d97d74bb91c142425"
+  },
+  "cycle/CycleData.ts": {
+    "sha": "b9f8d47e668edf5e7b3c1282f0ca8591c09a23e1"
+  },
+  "cycles/data-binding/DataBinder.ts": {
+    "sha": "aa242a27223b9d1258ec85f7fb166452947e4ad9"
+  },
+  "cycles/data-binding/DataBindingManager.ts": {
+    "sha": "267214a1dbb8a9ec4c95cd725fcf67099f8d4d45"
+  },
+  "cycles/data-update/DataUpdateManager.ts": {
+    "sha": "6af3eb2b51514a5c852355d5f62820795e63f11f"
+  },
+  "cycles/data-update/data-update.test.ts": {
+    "sha": "9a0c8b88346a5273657d95cd85cee0f4e70d4327"
+  },
+  "cycles/data-update/data-update.ts": {
+    "sha": "59fb56690b6d5062820f548670b2c9a02621a8c4"
   },
   "index.ts": {
-    "sha": "832b54a35c087ca2ee17361f733a927587599ce9"
+    "sha": "b41cdcd181e35b7259fb863804a43ef27a63b734"
   },
-  "md5": "c5f130f08d60517f31b0e8c062390775",
-  "model/Code.ts": {
-    "sha": "5362a538fb5949108eaf5e3d0c25421bf178a405"
+  "md5": "cbad577669b8b17273d4db701402de5a",
+  "types/Data.ts": {
+    "sha": "35c2ae61b649604967ccf5cac750444afdb4e022"
   },
-  "model/Project.ts": {
-    "sha": "e297addd920e43120c7871252fe2f3ca28b927be"
-  },
-  "model/RegistryConfig.ts": {
-    "sha": "eab8f071bbccf802b2bac313559decb8b103c27b"
+  "types/Update.ts": {
+    "sha": "6131f635bb669bab952e75fe062dbb7072b5cf3b"
   }
 }

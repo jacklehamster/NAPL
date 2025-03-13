@@ -1,9 +1,12 @@
 {
+  "DataUpdateManager.ts": {
+    "sha": "6af3eb2b51514a5c852355d5f62820795e63f11f"
+  },
   "data-update.test.ts": {
-    "sha": "020a96b83479d8bc8daf6e9ee9def81482bc7bb0"
+    "sha": "9a0c8b88346a5273657d95cd85cee0f4e70d4327"
   },
   "data-update.ts": {
-    "sha": "542cb396ed1d5059eaf2aaad8868aa576d80a949"
+    "sha": "59fb56690b6d5062820f548670b2c9a02621a8c4"
   },
-  "md5": "a7867b393c30dbf5e4b8e1c592b8492e"
+  "md5": "0425bfba53a53edc434b677f89e3cb75"
 }
