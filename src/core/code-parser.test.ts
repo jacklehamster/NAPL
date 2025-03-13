@@ -11,9 +11,15 @@ describe('CodeParser', () => {
       },
     };
 
-    const parser = new CodeParser(registry)
-    parser.parse([], root);
-    expect(registry.getRecord('testing/data')).toBeDefined();
+    const parser = new CodeParser();
+    parser.performCycle({ root, registry });
     expect(registry.registryKeys()).toEqual(["", "abc", "testing", 'testing/data']);
+    expect(registry.getRecord('testing/data')).toBeDefined();
+    expect(registry.getRecord('testing/data')?.dataBinder).toBeDefined();
+    expect(registry.getRecord('testing/data')?.dataBinder?.code).toEqual('/abc');
+    expect(registry.getRecord('testing/data')?.dataBinder?.root).toEqual(root);
+    expect(registry.getRecord('testing/data')?.dataBinder?.parts).toEqual(['testing', 'data']);
+    expect(registry.getRecord('testing/data')?.parent).toEqual(root.testing);
+    expect(registry.getRecord('testing/data')?.prop).toEqual('data');
   });
 });

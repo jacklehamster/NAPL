@@ -7,23 +7,20 @@ import { Registry } from "./Registry";
 const CODE_REGEX = /^~\{([^}]+)\}$/;
 
 export class CodeParser implements Cycle {
-  constructor(readonly registry: Registry) {
+  constructor() {
   }
 
   performCycle(cycleData: CycleData): void {
-    this.parse([], cycleData.root);
+    this.#parse([], cycleData.root, undefined, cycleData.registry, cycleData.root);
   }
 
-  parse(parts: (string | number)[], obj: Data | any, parent?: Data | any[]) {
-    if (this.registry.recordFromObject(obj)) {
-      return;
-    }
-    const entry = this.registry.register(parts.join("/"), obj, parent);
+  #parse(parts: (string | number)[], obj: Data | any, parent?: Data | any[], registry?: Registry, root?: Data) {
+    const entry = registry?.register(parts.join("/"), parent);
     if (typeof (obj) === "string") {
-      if (obj.startsWith("~{") && obj.endsWith("}") && parent) {
+      if (obj.startsWith("~{") && obj.endsWith("}") && parent && entry) {
         const group = obj.match(CODE_REGEX);  // ~{...}
         if (group) {
-          entry.dataBinder = new DataBinder(group[1], obj, parts);
+          entry.dataBinder = new DataBinder(group[1], root, [...parts]);
         }
       }
       return;
@@ -31,17 +28,16 @@ export class CodeParser implements Cycle {
     if (typeof (obj) !== "object") {
       return;
     }
-    this.registry.register(parts.join("/"), obj, parent);
     if (Array.isArray(obj)) {
       obj.forEach((item, index) => {
         parts.push(index);
-        this.parse(parts, item, obj);
+        this.#parse(parts, item, obj, registry, root);
         parts.pop();
       });
     }
     Object.entries(obj).forEach(([key, value]) => {
       parts.push(key);
-      this.parse(parts, value, obj);
+      this.#parse(parts, value, obj, registry, root);
       parts.pop();
     });
   }
