@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "0058ee40497738eb6c495ab57acf084e23c2e584"
+      "sha": "948a24d5f8eae9ffffed9adec7d52fe4768113ab"
     },
     "dist/index.js.map": {
-      "sha": "e854b51e527d9fed48141f2da374eec845766d46"
+      "sha": "34b12d30d2cb5bc63421f8b0ec825ae73896705b"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -57,12 +57,12 @@
     "index.ts": {
       "sha": "947037d72b1b28885ed440652b2eabb1a93c8b51"
     },
-    "md5": "3e362cf7a712e02c8c44fa466c398927",
+    "md5": "512f3ab492c304c7e998032950c621e1",
     "package.json": {
       "sha": "e8101abb0636eeca113f01f4eb499ae23b4b1de6"
     },
     "src/index.ts": {
-      "sha": "79cd2876cece5b51dd0d739c7b316e7d49f9468b"
+      "sha": "306c2af3940463e6e9b622dc42dbc07a74e31e2c"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -70,12 +70,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "0058ee40497738eb6c495ab57acf084e23c2e584"
+      "sha": "948a24d5f8eae9ffffed9adec7d52fe4768113ab"
     },
     "index.js.map": {
-      "sha": "e854b51e527d9fed48141f2da374eec845766d46"
+      "sha": "34b12d30d2cb5bc63421f8b0ec825ae73896705b"
     },
-    "md5": "f962fee2d19a678653a80895c8a920c5",
+    "md5": "8da8c1d28067f4389dd8056f8066170b",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -116,9 +116,9 @@
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "79cd2876cece5b51dd0d739c7b316e7d49f9468b"
+      "sha": "306c2af3940463e6e9b622dc42dbc07a74e31e2c"
     },
-    "md5": "def5c6504abd606bb1f667fdef105d26"
+    "md5": "16d50ac9edaf9bbb17ed827f7698cbba"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -206,27 +206,27 @@
   },
   "/src/core/dir.json": {
     "CodeParser.ts": {
-      "sha": "dace57e2f1f307ab25cb11d05e25c7c50f02234e"
+      "sha": "582add10bb473e5a6832938a07291281add190ee"
     },
     "Registry.ts": {
-      "sha": "7cbb0f41809577d2172742425f189b5de8404129"
+      "sha": "43bfe8903edab6053c455dc720dcd64876abd67d"
     },
     "RegistryEntry.ts": {
       "sha": "c2456e1381e9c8956a8242383bcdeb3c926efb57"
     },
     "code-parser.test.ts": {
-      "sha": "781f10a0a375088ab40aa79cad30aa574e8d5c23"
+      "sha": "5eeed16ccc0f292b3fa08afdab49ffe7bd827b89"
     },
-    "md5": "1a35bae9a4033098bb6e113692dbfde5"
+    "md5": "16d86b038f88f6e57d2b183d6c8ec94e"
   },
   "/src/cycle/dir.json": {
     "Cycle.ts": {
       "sha": "c14c85c6089c6c44db69b58d97d74bb91c142425"
     },
     "CycleData.ts": {
-      "sha": "b9f8d47e668edf5e7b3c1282f0ca8591c09a23e1"
+      "sha": "0d89fdea761aecae237d8ce233d0baf4da774518"
     },
-    "md5": "141ce882929a5bf65e1b2a5fcc34f941"
+    "md5": "96a28d2fa833e1feb79e7ee7003d47f4"
   },
   "/src/cycles/data-binding/dir.json": {
     "DataBinder.ts": {
@@ -269,22 +269,22 @@
   },
   "/src/dir.json": {
     "core/CodeParser.ts": {
-      "sha": "dace57e2f1f307ab25cb11d05e25c7c50f02234e"
+      "sha": "582add10bb473e5a6832938a07291281add190ee"
     },
     "core/Registry.ts": {
-      "sha": "7cbb0f41809577d2172742425f189b5de8404129"
+      "sha": "43bfe8903edab6053c455dc720dcd64876abd67d"
     },
     "core/RegistryEntry.ts": {
       "sha": "c2456e1381e9c8956a8242383bcdeb3c926efb57"
     },
     "core/code-parser.test.ts": {
-      "sha": "781f10a0a375088ab40aa79cad30aa574e8d5c23"
+      "sha": "5eeed16ccc0f292b3fa08afdab49ffe7bd827b89"
     },
     "cycle/Cycle.ts": {
       "sha": "c14c85c6089c6c44db69b58d97d74bb91c142425"
     },
     "cycle/CycleData.ts": {
-      "sha": "b9f8d47e668edf5e7b3c1282f0ca8591c09a23e1"
+      "sha": "0d89fdea761aecae237d8ce233d0baf4da774518"
     },
     "cycles/data-binding/DataBinder.ts": {
       "sha": "aa242a27223b9d1258ec85f7fb166452947e4ad9"
@@ -304,9 +304,9 @@
     "index.ts": {
       "sha": "b41cdcd181e35b7259fb863804a43ef27a63b734"
     },
-    "md5": "cbad577669b8b17273d4db701402de5a",
+    "md5": "b5958d7efcfb427fbcfc3d6f88921a45",
     "types/Data.ts": {
-      "sha": "35c2ae61b649604967ccf5cac750444afdb4e022"
+      "sha": "c6ecfd7de380c203ca1360499b99f8d16c69727c"
     },
     "types/Update.ts": {
       "sha": "6131f635bb669bab952e75fe062dbb7072b5cf3b"
@@ -314,12 +314,12 @@
   },
   "/src/types/dir.json": {
     "Data.ts": {
-      "sha": "35c2ae61b649604967ccf5cac750444afdb4e022"
+      "sha": "c6ecfd7de380c203ca1360499b99f8d16c69727c"
     },
     "Update.ts": {
       "sha": "6131f635bb669bab952e75fe062dbb7072b5cf3b"
     },
-    "md5": "0865a3ebf133bddfaae69f278cc8fe26"
+    "md5": "5601eebd898eb49bc605c70007c69104"
   },
   "/tsconfig.json": {
     "compilerOptions": {

@@ -1,15 +1,15 @@
 {
   "CodeParser.ts": {
-    "sha": "dace57e2f1f307ab25cb11d05e25c7c50f02234e"
+    "sha": "582add10bb473e5a6832938a07291281add190ee"
   },
   "Registry.ts": {
-    "sha": "7cbb0f41809577d2172742425f189b5de8404129"
+    "sha": "43bfe8903edab6053c455dc720dcd64876abd67d"
   },
   "RegistryEntry.ts": {
     "sha": "c2456e1381e9c8956a8242383bcdeb3c926efb57"
   },
   "code-parser.test.ts": {
-    "sha": "781f10a0a375088ab40aa79cad30aa574e8d5c23"
+    "sha": "5eeed16ccc0f292b3fa08afdab49ffe7bd827b89"
   },
-  "md5": "1a35bae9a4033098bb6e113692dbfde5"
+  "md5": "16d86b038f88f6e57d2b183d6c8ec94e"
 }
