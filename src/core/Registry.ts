@@ -1,4 +1,6 @@
+import { Data } from "@/types/Data";
 import { RegistryEntry } from "./RegistryEntry";
+import { isCode } from "./CodeParser";
 
 export class Registry {
   readonly #record: Record<string, RegistryEntry> = {};
@@ -18,5 +20,12 @@ export class Registry {
 
   getRecord(path: string) {
     return this.#record[path];
+  }
+
+  shouldRegister(obj: Data) {
+    if (obj.type || isCode(obj)) {
+      return true;
+    }
+    return false;
   }
 }

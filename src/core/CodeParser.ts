@@ -15,13 +15,11 @@ export class CodeParser implements Cycle {
   }
 
   #parse(parts: (string | number)[], obj: Data | any, parent?: Data | any[], registry?: Registry, root?: Data) {
-    const entry = registry?.register(parts.join("/"), parent);
+    const entry = registry?.shouldRegister(obj) ? registry?.register(parts.join("/"), parent) : undefined;
     if (typeof (obj) === "string") {
-      if (obj.startsWith("~{") && obj.endsWith("}") && parent && entry) {
-        const group = obj.match(CODE_REGEX);  // ~{...}
-        if (group) {
-          entry.dataBinder = new DataBinder(group[1], root, [...parts]);
-        }
+      const code = getCode(obj);
+      if (code && entry) {
+        entry.dataBinder = new DataBinder(code, root, [...parts]);
       }
       return;
     }
@@ -41,4 +39,22 @@ export class CodeParser implements Cycle {
       parts.pop();
     });
   }
+}
+
+export function isCode(str: string | any) {
+  if (typeof (str) === "string") {
+    return getCode(str) !== undefined;
+  }
+  return false;
+}
+
+
+function getCode(str: string) {
+  if (str.startsWith("~{") && str.endsWith("}")) {
+    const group = str.match(CODE_REGEX);  // ~{...}
+    if (group) {
+      return group[1];
+    }
+  }
+  return undefined;
 }
