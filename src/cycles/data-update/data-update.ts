@@ -8,7 +8,7 @@ const VALUES = "~{values}";
 export function commitUpdates(
   root: Data | undefined,
   properties: Record<string, any>,
-  updatedPaths?: Set<string>) {
+  updatedPaths?: Record<string, any>) {
 
   if (!root) {
     return;
@@ -45,7 +45,9 @@ export function commitUpdates(
     } else {
       leaf[prop] = value;
     }
-    updatedPaths?.add(update.path);
+    if (updatedPaths) {
+      updatedPaths[update.path] = value;
+    }
   });
   if (root.updates) {
     for (let i = root.updates.length - 1; i >= 0; i--) {

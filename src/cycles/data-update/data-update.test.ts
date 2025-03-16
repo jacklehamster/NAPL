@@ -29,13 +29,13 @@ describe('commitUpdates', () => {
       ],
     };
 
-    const set = new Set<string>();
+    const updates: Record<string, any> = {};
     commitUpdates(obj, {
       test: "123",
-    }, set);
+    }, updates);
 
     expect(obj).toEqual({ a: { b: 2 }, test: "123" });
-    expect(set.has("a/b")).toBe(true);
-    expect(set.has("test")).toBe(true);
+    expect(updates["a/b"]).toEqual(2);
+    expect(updates["test"]).toEqual("123");
   });
 });

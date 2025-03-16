@@ -1,5 +1,5 @@
-import { CycleData } from "./CycleData";
+import { Context } from "./context/Context";
 
 export interface Cycle {
-  performCycle(cycleData: CycleData): void;
+  performCycle(cycleData: Context): void;
 }

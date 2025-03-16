@@ -36,9 +36,12 @@ Update {
 
 ## Process cycle
 
-1. Register all data
-2. Apply all update logs
-3. Execute data-bindings
-4. Rewrap all objects that changed / new objects
-5. Execute all object code (triggered from observers or loopers)
-6. Clean out removed wrapped objects
+1. CodeParser: Register all types and data-bindgs. Imports.
+  //  => registry / observers / clear updatedPaths
+2. DataUpdateManager: Apply all update logs
+  //  => updatedPaths
+3. DataBindingManager: Execute data-bindings
+  //  => root data updated
+4. Execute all object code (triggered from observers or loopers)
+  //  
+5. Clean up

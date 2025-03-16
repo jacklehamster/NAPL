@@ -1,7 +1,7 @@
 import { commitUpdates } from "@/cycles/data-update/data-update";
 import { Update } from "@/types/Update";
 import { Cycle } from "../../cycle/Cycle";
-import { CycleData } from "@/cycle/CycleData";
+import { Context } from "@/cycle/context/Context";
 import { Data } from "@/types/Data";
 
 //  1. Apply all update logs
@@ -11,7 +11,7 @@ export class DataUpdateManager implements Cycle {
     root.updates.push(update);
   }
 
-  performCycle(cyleData: CycleData) {
+  performCycle(cyleData: Context) {
     commitUpdates(cyleData.root, cyleData.properties, cyleData.updatedPaths);
   }
 }

@@ -1,8 +1,6 @@
-module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  testMatch: ['**/napl/javascript/**/*.test.ts'],
-  transform: {
-    '^.+\\.ts$': 'ts-jest'
-  }
+export const preset = "ts-jest";
+export const testEnvironment = "node";
+export const testMatch = ["**/*.test.ts"];
+export const transform = {
+  "^.+\\.ts$": "ts-jest",
 };
