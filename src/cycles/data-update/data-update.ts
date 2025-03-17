@@ -109,7 +109,29 @@ export function translateValue(value: any, properties: Record<string, any>) {
   return value;
 }
 
-export function translateProp(obj: any, prop: string | number, properties: Record<string, any>, autoCreate: boolean) {
+export function pathTriggered(path: string, triggers: Set<string>, properties: Record<string, any>) {
+  if (triggers.has(path)) {
+    return true;
+  }
+  const parts = path.split("/");
+  const last = parts[parts.length - 1];
+  if (last === KEYS || last === VALUES) {
+    parts.pop();
+    path = parts.join("/");
+    for (let t of triggers) {
+      if (t.startsWith(path)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  if (triggers.has(parts.map((part) => translateValue(part, properties)).join("/"))) {
+    return true;
+  }
+  return false;
+}
+
+function translateProp(obj: any, prop: string | number, properties: Record<string, any>, autoCreate: boolean) {
   let value;
   if (typeof prop !== "string") {
     value = obj[prop];
@@ -120,12 +142,7 @@ export function translateProp(obj: any, prop: string | number, properties: Recor
       case VALUES:
         return Object.values(obj ?? {});
       default:
-        const group = prop.match(REGEX);
-        if (group) {
-          value = properties[group[1]];
-        } else {
-          value = obj[prop];
-        }
+        return obj[translateValue(prop, properties)];
     }
   } else {
     value = obj[prop];
