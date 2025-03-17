@@ -41,8 +41,8 @@ export function applyUpdates(root: Data, properties: Record<string, any>): Recor
 
 export async function processDataBlob(blob: Blob) {
   const { payload, ...blobs } = await extractPayload(blob);
-  const updates: Update[] = payload.updates;
-  updates.forEach(update => {
+  const updates: Update[] | undefined = payload.updates;
+  updates?.forEach(update => {
     if (update.blobs) {
       for (let key in update.blobs) {
         update.blobs[key] = blobs[key];
