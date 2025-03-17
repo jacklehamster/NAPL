@@ -18,9 +18,9 @@
     "config.json": {
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
-    "md5": "dd552ba8ee1d3a86cec7cba02a32da29",
+    "md5": "bec095971ee2d72ab16ce608f8221597",
     "package.json": {
-      "sha": "e8101abb0636eeca113f01f4eb499ae23b4b1de6"
+      "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -31,7 +31,7 @@
       "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
     },
     "bun.lockb": {
-      "sha": "37abf839857fe16f4624c35ca85af6272df44f98"
+      "sha": "8f1e0f40113b4d4deb1296ed8f76348814eebbb8"
     },
     "bundler/bundler.ts": {
       "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
@@ -40,29 +40,32 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "948a24d5f8eae9ffffed9adec7d52fe4768113ab"
+      "sha": "b4c07e31205eeec7f6a77ef14e116984256c1fb2"
     },
     "dist/index.js.map": {
-      "sha": "34b12d30d2cb5bc63421f8b0ec825ae73896705b"
+      "sha": "41067254fd7c4ef9829a250d54d26de5de07a1cc"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     },
     "game-room/index.html": {
-      "sha": "d5ee8c82218497ac88461bc7ce64d2183279c535"
+      "sha": "ab75d1c4f90c7e6d62b9cd6871672fd0ea4cc2a0"
     },
     "index.html": {
-      "sha": "90b592fe6147341a7bfdb04ee74880260ae11f8f"
+      "sha": "2242f5b286806dcee75f758d2171aea316b8a076"
     },
     "index.ts": {
-      "sha": "947037d72b1b28885ed440652b2eabb1a93c8b51"
+      "sha": "ccb5152139dd200abdab11310fffb8ab87d1c235"
     },
-    "md5": "512f3ab492c304c7e998032950c621e1",
+    "json-test/index.html": {
+      "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
+    },
+    "md5": "e5b69accf689be2ca06c7d5598c085d1",
     "package.json": {
-      "sha": "e8101abb0636eeca113f01f4eb499ae23b4b1de6"
+      "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
     },
     "src/index.ts": {
-      "sha": "306c2af3940463e6e9b622dc42dbc07a74e31e2c"
+      "sha": "76abd491e43cf3f763ac88670cbba7aef6096a3d"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -70,28 +73,34 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "948a24d5f8eae9ffffed9adec7d52fe4768113ab"
+      "sha": "b4c07e31205eeec7f6a77ef14e116984256c1fb2"
     },
     "index.js.map": {
-      "sha": "34b12d30d2cb5bc63421f8b0ec825ae73896705b"
+      "sha": "41067254fd7c4ef9829a250d54d26de5de07a1cc"
     },
-    "md5": "8da8c1d28067f4389dd8056f8066170b",
+    "md5": "39357496125d417bd7585cd6e279cb94",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
   },
   "/example/game-room/dir.json": {
     "index.html": {
-      "sha": "d5ee8c82218497ac88461bc7ce64d2183279c535"
+      "sha": "ab75d1c4f90c7e6d62b9cd6871672fd0ea4cc2a0"
     },
-    "md5": "4ddf8489c486b2f4599789f717da0f33"
+    "md5": "946f8c226fa6f71252a2e8f2d61d391e"
+  },
+  "/example/json-test/dir.json": {
+    "index.html": {
+      "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
+    },
+    "md5": "10800033ff332ec1d8dee313cf16286f"
   },
   "/example/package.json": {
     "name": "example",
     "module": "src/index.ts",
     "type": "module",
     "scripts": {
-      "start": "bun run build && bun run index.ts --watch",
+      "start": "bun run build && bun index.ts --watch",
       "start:prod": "bun run build && NODE_ENV=production bun run index.ts --watch",
       "build": "bun i && bun run build-icon && bun run bundler/bundler.ts",
       "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons"
@@ -111,14 +120,15 @@
       "typescript": "^5.0.0"
     },
     "dependencies": {
+      "@dobuki/syncopath": "^1.0.11",
       "json-stringify-pretty-compact": "^4.0.0"
     }
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "306c2af3940463e6e9b622dc42dbc07a74e31e2c"
+      "sha": "76abd491e43cf3f763ac88670cbba7aef6096a3d"
     },
-    "md5": "16d50ac9edaf9bbb17ed827f7698cbba"
+    "md5": "fc9376a9deaa2b91be3c4cf9e003610c"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -153,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.17",
+    "version": "1.0.18",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -200,126 +210,95 @@
     },
     "description": "Not Another Programming Language",
     "dependencies": {
+      "@dobuki/data-blob": "^1.0.12",
+      "@dobuki/payload-validator": "^1.0.8",
       "dok-pool": "^1.0.77",
       "fixed-framerate-loop": "^1.0.11"
     }
   },
   "/src/core/dir.json": {
-    "CodeParser.ts": {
-      "sha": "582add10bb473e5a6832938a07291281add190ee"
+    "Processor.ts": {
+      "sha": "f616a5102fd34b12335cd8380f56f098611e0f85"
     },
-    "Registry.ts": {
-      "sha": "43bfe8903edab6053c455dc720dcd64876abd67d"
+    "md5": "036b86fa6e269d1d38eb9e1378cd1eb4",
+    "processor.test.ts": {
+      "sha": "6780d425f020259bb8ad9d72559797bddd9b80d9"
+    }
+  },
+  "/src/cycle/context/dir.json": {
+    "Context.ts": {
+      "sha": "154cbe7e16e347e3bea781c86d421bb39838a4d3"
     },
-    "RegistryEntry.ts": {
-      "sha": "c2456e1381e9c8956a8242383bcdeb3c926efb57"
-    },
-    "code-parser.test.ts": {
-      "sha": "5eeed16ccc0f292b3fa08afdab49ffe7bd827b89"
-    },
-    "md5": "16d86b038f88f6e57d2b183d6c8ec94e"
+    "md5": "15cef7e6b60e1e49a45bd053808b4d82"
   },
   "/src/cycle/dir.json": {
-    "Cycle.ts": {
-      "sha": "c14c85c6089c6c44db69b58d97d74bb91c142425"
+    "context/Context.ts": {
+      "sha": "154cbe7e16e347e3bea781c86d421bb39838a4d3"
     },
-    "CycleData.ts": {
-      "sha": "0d89fdea761aecae237d8ce233d0baf4da774518"
-    },
-    "md5": "96a28d2fa833e1feb79e7ee7003d47f4"
-  },
-  "/src/cycles/data-binding/dir.json": {
-    "DataBinder.ts": {
-      "sha": "aa242a27223b9d1258ec85f7fb166452947e4ad9"
-    },
-    "DataBindingManager.ts": {
-      "sha": "267214a1dbb8a9ec4c95cd725fcf67099f8d4d45"
-    },
-    "md5": "b58d8de98781a793984b3142dcbf3e37"
+    "md5": "dd4686b0361f491af9e36a94e4dce5ef"
   },
   "/src/cycles/data-update/dir.json": {
-    "DataUpdateManager.ts": {
-      "sha": "6af3eb2b51514a5c852355d5f62820795e63f11f"
+    "blob-utils.ts": {
+      "sha": "213e7e2b52eed7c69414230c7e32c4829082b411"
     },
     "data-update.test.ts": {
-      "sha": "9a0c8b88346a5273657d95cd85cee0f4e70d4327"
+      "sha": "0dcb9ee62bb1fb5e936a2a3c46b85e6f9f0466f4"
     },
     "data-update.ts": {
-      "sha": "59fb56690b6d5062820f548670b2c9a02621a8c4"
+      "sha": "129639f0471f8aab36d7669a7177db01a97ad93c"
     },
-    "md5": "0425bfba53a53edc434b677f89e3cb75"
+    "md5": "a8b61c0d8a8aff956d9aecddf3203472"
   },
   "/src/cycles/dir.json": {
-    "data-binding/DataBinder.ts": {
-      "sha": "aa242a27223b9d1258ec85f7fb166452947e4ad9"
-    },
-    "data-binding/DataBindingManager.ts": {
-      "sha": "267214a1dbb8a9ec4c95cd725fcf67099f8d4d45"
-    },
-    "data-update/DataUpdateManager.ts": {
-      "sha": "6af3eb2b51514a5c852355d5f62820795e63f11f"
+    "data-update/blob-utils.ts": {
+      "sha": "213e7e2b52eed7c69414230c7e32c4829082b411"
     },
     "data-update/data-update.test.ts": {
-      "sha": "9a0c8b88346a5273657d95cd85cee0f4e70d4327"
+      "sha": "0dcb9ee62bb1fb5e936a2a3c46b85e6f9f0466f4"
     },
     "data-update/data-update.ts": {
-      "sha": "59fb56690b6d5062820f548670b2c9a02621a8c4"
+      "sha": "129639f0471f8aab36d7669a7177db01a97ad93c"
     },
-    "md5": "b615adc7439c15802630c3b3ac3651c3"
+    "md5": "948f29906fca539fd42865d73867d53c"
   },
   "/src/dir.json": {
-    "core/CodeParser.ts": {
-      "sha": "582add10bb473e5a6832938a07291281add190ee"
+    "core/Processor.ts": {
+      "sha": "f616a5102fd34b12335cd8380f56f098611e0f85"
     },
-    "core/Registry.ts": {
-      "sha": "43bfe8903edab6053c455dc720dcd64876abd67d"
+    "core/processor.test.ts": {
+      "sha": "6780d425f020259bb8ad9d72559797bddd9b80d9"
     },
-    "core/RegistryEntry.ts": {
-      "sha": "c2456e1381e9c8956a8242383bcdeb3c926efb57"
+    "cycle/context/Context.ts": {
+      "sha": "154cbe7e16e347e3bea781c86d421bb39838a4d3"
     },
-    "core/code-parser.test.ts": {
-      "sha": "5eeed16ccc0f292b3fa08afdab49ffe7bd827b89"
-    },
-    "cycle/Cycle.ts": {
-      "sha": "c14c85c6089c6c44db69b58d97d74bb91c142425"
-    },
-    "cycle/CycleData.ts": {
-      "sha": "0d89fdea761aecae237d8ce233d0baf4da774518"
-    },
-    "cycles/data-binding/DataBinder.ts": {
-      "sha": "aa242a27223b9d1258ec85f7fb166452947e4ad9"
-    },
-    "cycles/data-binding/DataBindingManager.ts": {
-      "sha": "267214a1dbb8a9ec4c95cd725fcf67099f8d4d45"
-    },
-    "cycles/data-update/DataUpdateManager.ts": {
-      "sha": "6af3eb2b51514a5c852355d5f62820795e63f11f"
+    "cycles/data-update/blob-utils.ts": {
+      "sha": "213e7e2b52eed7c69414230c7e32c4829082b411"
     },
     "cycles/data-update/data-update.test.ts": {
-      "sha": "9a0c8b88346a5273657d95cd85cee0f4e70d4327"
+      "sha": "0dcb9ee62bb1fb5e936a2a3c46b85e6f9f0466f4"
     },
     "cycles/data-update/data-update.ts": {
-      "sha": "59fb56690b6d5062820f548670b2c9a02621a8c4"
+      "sha": "129639f0471f8aab36d7669a7177db01a97ad93c"
     },
     "index.ts": {
-      "sha": "b41cdcd181e35b7259fb863804a43ef27a63b734"
+      "sha": "bf3bb797d1d7ba787679d0705957f203d2865075"
     },
-    "md5": "b5958d7efcfb427fbcfc3d6f88921a45",
+    "md5": "9ad67453deeb0d475a391429711b90eb",
     "types/Data.ts": {
-      "sha": "c6ecfd7de380c203ca1360499b99f8d16c69727c"
+      "sha": "c322ffdaefe4f14cdaa2c16b028af12635bd9445"
     },
     "types/Update.ts": {
-      "sha": "6131f635bb669bab952e75fe062dbb7072b5cf3b"
+      "sha": "54f0df4daa2810ed5e7b392a40b049cf2f19956f"
     }
   },
   "/src/types/dir.json": {
     "Data.ts": {
-      "sha": "c6ecfd7de380c203ca1360499b99f8d16c69727c"
+      "sha": "c322ffdaefe4f14cdaa2c16b028af12635bd9445"
     },
     "Update.ts": {
-      "sha": "6131f635bb669bab952e75fe062dbb7072b5cf3b"
+      "sha": "54f0df4daa2810ed5e7b392a40b049cf2f19956f"
     },
-    "md5": "5601eebd898eb49bc605c70007c69104"
+    "md5": "7ee74256de5f986fce87f20b606e60d1"
   },
   "/tsconfig.json": {
     "compilerOptions": {

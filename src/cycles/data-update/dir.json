@@ -1,12 +1,12 @@
 {
-  "DataUpdateManager.ts": {
-    "sha": "6af3eb2b51514a5c852355d5f62820795e63f11f"
+  "blob-utils.ts": {
+    "sha": "213e7e2b52eed7c69414230c7e32c4829082b411"
   },
   "data-update.test.ts": {
-    "sha": "9a0c8b88346a5273657d95cd85cee0f4e70d4327"
+    "sha": "0dcb9ee62bb1fb5e936a2a3c46b85e6f9f0466f4"
   },
   "data-update.ts": {
-    "sha": "59fb56690b6d5062820f548670b2c9a02621a8c4"
+    "sha": "129639f0471f8aab36d7669a7177db01a97ad93c"
   },
-  "md5": "0425bfba53a53edc434b677f89e3cb75"
+  "md5": "a8b61c0d8a8aff956d9aecddf3203472"
 }
