@@ -2,7 +2,7 @@ import { Data } from "@/types/Data";
 import { Update } from "@/types/Update";
 import { BlobBuilder } from "@dobuki/data-blob";
 import { signedPayload } from "@dobuki/payload-validator";
-import { commitUpdates } from "./data-update";
+import { clearUpdates, commitUpdates } from "./data-update";
 
 export function packageUpdates(updates: Update[], secret?: string): Blob {
   if (secret) {
@@ -30,6 +30,8 @@ export function saveBlobsFromUpdates(updates: Update[] | undefined, blobs: Recor
 export function applyUpdates(root: Data, properties: Record<string, any>) {
   const blobs = root.blobs ?? (root.blobs = {});
   saveBlobsFromUpdates(root.updates, blobs);
-  commitUpdates(root, properties);
+  const updates: Record<string, any> = {};
+  commitUpdates(root, properties, updates);
   // this.triggerObservers();
+  clearUpdates(root, updates)
 }
