@@ -2577,13 +2577,13 @@ class SocketClient {
 // ../src/cycles/data-update/data-update.ts
 var KEYS2 = "~{keys}";
 var VALUES2 = "~{values}";
-function commitUpdates2(root, properties, updatedPaths) {
+function commitUpdates2(root, properties) {
   if (!root) {
     return;
   }
   sortUpdates2(root.updates);
   root.updates?.forEach((update) => {
-    if (!update.confirmed) {
+    if (!update.confirmed || update.processed) {
       return;
     }
     saveBlobsFromUpdate2(root, update);
@@ -2611,21 +2611,8 @@ function commitUpdates2(root, properties, updatedPaths) {
     } else {
       leaf[prop] = value;
     }
-    if (updatedPaths) {
-      updatedPaths[update.path] = value;
-    }
+    update.processed = true;
   });
-  if (root.updates) {
-    for (let i = root.updates.length - 1;i >= 0; i--) {
-      if (root.updates[i].confirmed) {
-        root.updates[i] = root.updates[root.updates.length - 1];
-        root.updates.pop();
-      }
-    }
-    if (!root.updates.length) {
-      delete root.updates;
-    }
-  }
 }
 function cleanupRoot2(root, parts, index) {
   if (!root || typeof root !== "object" || Array.isArray(root)) {
@@ -2635,6 +2622,12 @@ function cleanupRoot2(root, parts, index) {
     delete root[parts[index]];
   }
   return Object.keys(root).length === 0;
+}
+function clearUpdates(root) {
+  root.updates = root.updates?.filter((update) => !update.processed);
+  if (!root.updates?.length) {
+    delete root.updates;
+  }
 }
 function sortUpdates2(updates) {
   updates?.sort((a, b) => {
@@ -2708,152 +2701,18 @@ function saveBlobsFromUpdate2(data, update) {
 }
 // ../src/core/Processor.ts
 class Processor {
-  cycles;
-  constructor(...cycles) {
-    this.cycles = cycles;
-  }
   performCycle(context) {
-    if (context.root.frame !== undefined) {
-      context.root.frame++;
-    }
-    this.cycles.forEach((cycle) => cycle.performCycle(context));
+    context.root.frame = (context.root.frame ?? 0) + 1;
+    commitUpdates2(context.root, context.properties);
+    clearUpdates(context.root);
   }
 }
-// ../src/cycles/data-binding/DataBinder.ts
-function parentPath(path) {
-  const parent = path.substring(0, path.lastIndexOf("/"));
-  return parent === "" ? "" : `${parent}/`;
-}
-
-class DataBinder {
-  code;
-  registryEntry;
-  constructor(code, registryEntry, observers) {
-    this.code = code;
-    this.registryEntry = registryEntry;
-    const fullPath = code.startsWith("/") ? code.substring(1) : `${parentPath(registryEntry.path)}${code}`;
-    observers[fullPath] = observers[fullPath] ?? [];
-    observers[fullPath].push({ registry: registryEntry });
-    registryEntry.dataBinder = this;
-  }
-  update(value) {
-    const prop = this.registryEntry.path.split("/").pop();
-    if (prop !== undefined) {
-      if (Array.isArray(this.registryEntry.parent)) {
-        this.registryEntry.parent[parseInt(prop)] = value;
-      } else {
-        this.registryEntry.parent[prop] = value;
-      }
-    }
-  }
-}
-
-// ../src/cycles/code-parser/CodeParser.ts
-var CODE_REGEX = /^~\{([^}]+)\}$/;
-
-class CodeParser {
-  performCycle(cycleData) {
-    this.#parse([], cycleData.root, cycleData, undefined);
-  }
-  #parse(parts, obj, cycleData, parent) {
-    const entry = cycleData.registry?.shouldRegister(obj) ? cycleData.registry?.register(parts.join("/"), parent) : undefined;
-    if (typeof obj === "string") {
-      const code = getCode(obj);
-      if (code && entry) {
-        entry.dataBinder = new DataBinder(code, entry, cycleData.observers);
-      }
-      return;
-    }
-    if (typeof obj !== "object") {
-      return;
-    }
-    if (Array.isArray(obj)) {
-      obj.forEach((item, index) => {
-        parts.push(index);
-        this.#parse(parts, item, cycleData, obj);
-        parts.pop();
-      });
-    }
-    Object.entries(obj).forEach(([key, value]) => {
-      parts.push(key);
-      this.#parse(parts, value, cycleData, obj);
-      parts.pop();
-    });
-  }
-}
-function isCode(str) {
-  if (typeof str === "string") {
-    return getCode(str) !== undefined;
-  }
-  return false;
-}
-function getCode(str) {
-  if (str.startsWith("~{") && str.endsWith("}")) {
-    const group = str.match(CODE_REGEX);
-    if (group) {
-      return group[1];
-    }
-  }
-  return;
-}
-
-// ../src/cycle/data/registry/Registry.ts
-class Registry {
-  record = {};
-  registryKeys() {
-    return Object.keys(this.record);
-  }
-  register(path, parent) {
-    const entry = this.record[path] = {
-      parent,
-      path
-    };
-    return entry;
-  }
-  shouldRegister(obj) {
-    if (isCode(obj) || obj?.type) {
-      return true;
-    }
-    return false;
-  }
-}
-
 // ../src/cycle/context/Context.ts
 function createContext(root, properties = {}) {
   return {
     root,
-    updatedPaths: {},
-    properties,
-    registry: new Registry,
-    observers: {},
-    cycle: {
-      index: [],
-      steps: 0
-    }
+    properties
   };
-}
-// ../src/cycles/data-binding/DataBindingManager.ts
-class DataBindingManager {
-  performCycle(cyleData) {
-    Object.entries(cyleData.updatedPaths).forEach(([path, value]) => {
-      const observers = cyleData.observers[path];
-      if (observers) {
-        observers.forEach((observer) => {
-          observer.registry.dataBinder?.update(value);
-        });
-      }
-    });
-  }
-}
-// ../src/cycles/data-update/DataUpdateManager.ts
-class DataUpdateManager {
-  addUpdate(root, update) {
-    root.updates = root.updates ?? [];
-    root.updates.push(update);
-  }
-  performCycle(cyleData) {
-    commitUpdates2(cyleData.root, cyleData.properties, cyleData.updatedPaths);
-  }
 }
 // src/index.ts
 var div = document.body.appendChild(document.createElement("div"));
@@ -2874,7 +2733,7 @@ function refreshData() {
 }
 var socketClient = new SocketClient(location.host, undefined, root);
 socketClient.observe().onChange(refreshData);
-var processor = new Processor(new CodeParser, new DataUpdateManager, new DataBindingManager);
+var processor = new Processor;
 function cycle() {
   processor.performCycle(cycleData);
   refreshData();
@@ -2902,4 +2761,4 @@ export {
   root
 };
 
-//# debugId=8D884EB1D2E8E13F64756E2164756E21
+//# debugId=1455AAB74F77DF7264756E2164756E21

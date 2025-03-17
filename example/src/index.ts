@@ -3,7 +3,7 @@
 /// <reference lib="dom.iterable" />
 
 import { SocketClient } from "@dobuki/syncopath";
-import { CodeParser, createContext, Data, DataBindingManager, DataUpdateManager, Processor } from "napl";
+import { createContext, Data, Processor } from "napl";
 
 const div = document.body.appendChild(document.createElement("div"));
 div.style.whiteSpace = "pre";
@@ -28,11 +28,7 @@ const socketClient = new SocketClient(location.host, undefined, root);
 socketClient.observe().onChange(refreshData);
 
 
-const processor = new Processor(
-  new CodeParser(),
-  new DataUpdateManager(),
-  new DataBindingManager(),
-);
+const processor = new Processor();
 
 function cycle() {
   processor.performCycle(cycleData);
