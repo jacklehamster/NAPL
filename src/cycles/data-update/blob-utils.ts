@@ -2,7 +2,7 @@ import { Data } from "@/types/Data";
 import { Update } from "@/types/Update";
 import { BlobBuilder, extractPayload } from "@dobuki/data-blob";
 import { signedPayload } from "@dobuki/payload-validator";
-import { clearUpdates, commitUpdates } from "./data-update";
+import { clearUpdates, commitUpdates, pushUpdate } from "./data-update";
 
 export function packageUpdates(updates: Update[], secret?: string): Blob {
   if (secret) {
@@ -52,7 +52,7 @@ export async function processDataBlob(blob: Blob) {
   return { payload, blobs };
 }
 
-export function findUnusedBlobs(root: Data) {
+function findUnusedBlobs(root: Data) {
   const blobSet = new Set(Object.keys(root.blobs ?? {}));
   findUsedBlobsInSet(root, blobSet);
   return blobSet;
@@ -67,5 +67,21 @@ function findUsedBlobsInSet(root: any, blobSet: Set<string>) {
     root.forEach(value => findUsedBlobsInSet(value, blobSet));
   } else if (root && typeof root === "object") {
     Object.values(root).forEach(value => findUsedBlobsInSet(value, blobSet));
+  }
+}
+
+export function cleanBlobUpdates(root: Data) {
+  const blobSet = findUnusedBlobs(root);
+  if (blobSet.size) {
+    // Remove blobs
+    const updates: Update[] = [];
+    const now = Date.now();
+    blobSet.forEach(key => {
+      pushUpdate(root, {
+        path: `blobs/${key}`,
+        value: undefined,
+        confirmed: now,
+      });
+    });
   }
 }

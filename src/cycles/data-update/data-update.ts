@@ -145,3 +145,8 @@ function saveBlobsFromUpdate(data: Data, update: Update) {
     blobs[key] = blob;
   });
 }
+
+export function pushUpdate(data: Data, ...updates: Update[]) {
+  data.updates ??= [];
+  data.updates.push(...updates);
+}

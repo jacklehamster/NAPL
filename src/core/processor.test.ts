@@ -13,7 +13,7 @@ describe('Processor', () => {
       array: [1, 2, 3],
     };
     const cycleData = createContext(root);
-    root.updates = [
+    pushUpdate(root,
       {
         path: 'abc',
         value: 456,
@@ -24,9 +24,12 @@ describe('Processor', () => {
         value: 5,
         confirmed: 2,
       }
-    ];
+    );
     processor.performCycle(cycleData);
     expect(root.abc).toBe(456);
     expect(root.array).toEqual([1, 5, 3]);
   })
 });
+function pushUpdate(root: Data, arg1: { path: string; value: number; confirmed: number; }, arg2: { path: string; value: number; confirmed: number; }) {
+  throw new Error("Function not implemented.");
+}
