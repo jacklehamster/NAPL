@@ -9,7 +9,7 @@
     "sha": "154cbe7e16e347e3bea781c86d421bb39838a4d3"
   },
   "cycles/data-update/blob-utils.ts": {
-    "sha": "81a839e2cac0224d644a960e0072c8abb3188f47"
+    "sha": "c6f4fe29bbe9711cad98d5624d062cdd7a65293b"
   },
   "cycles/data-update/data-update.test.ts": {
     "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
@@ -20,7 +20,7 @@
   "index.ts": {
     "sha": "8932cbe701fe9df9df4ea809bb34fb518f5d4d60"
   },
-  "md5": "e035e0d8fb45d9486093e73566497ea8",
+  "md5": "9d6c707ea4da0bbd829cf1ff2d0e0834",
   "types/Data.ts": {
     "sha": "c322ffdaefe4f14cdaa2c16b028af12635bd9445"
   },
