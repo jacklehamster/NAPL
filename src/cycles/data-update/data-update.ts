@@ -8,7 +8,7 @@ const VALUES = "~{values}";
 export function commitUpdates(
   root: Data | undefined,
   properties: Record<string, any>,
-  updatedPaths: Set<string>) {
+  updatedPaths: Record<string, any>) {
 
   if (!root) {
     return;
@@ -45,7 +45,7 @@ export function commitUpdates(
     } else {
       leaf[prop] = value;
     }
-    updatedPaths.add(update.path);
+    updatedPaths[update.path] = value;
   });
 }
 
@@ -61,8 +61,8 @@ function cleanupRoot(root: Record<string, any>, parts: (string | number)[], inde
 }
 
 // Removed processed updateds
-export function clearUpdates(root: Data, updatedPaths: Set<string>) {
-  root.updates = root.updates?.filter((update) => !updatedPaths.has(update.path));
+export function clearUpdates(root: Data, updatedPaths: Record<string, any>) {
+  root.updates = root.updates?.filter((update) => updatedPaths[update.path] === undefined);
   if (!root.updates?.length) {
     delete root.updates;
   }
