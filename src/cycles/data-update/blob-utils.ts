@@ -51,3 +51,21 @@ export async function processDataBlob(blob: Blob) {
   });
   return { payload, blobs };
 }
+
+export function findUnusedBlobs(root: Data) {
+  const blobSet = new Set(Object.keys(root.blobs ?? {}));
+  findUsedBlobsInSet(root, blobSet);
+  return blobSet;
+}
+
+function findUsedBlobsInSet(root: any, blobSet: Set<string>) {
+  if (typeof root === "string") {
+    if (blobSet.has(root)) {
+      blobSet.delete(root);
+    }
+  } else if (Array.isArray(root)) {
+    root.forEach(value => findUsedBlobsInSet(value, blobSet));
+  } else if (root && typeof root === "object") {
+    Object.values(root).forEach(value => findUsedBlobsInSet(value, blobSet));
+  }
+}
