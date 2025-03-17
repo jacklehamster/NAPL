@@ -45,7 +45,7 @@ export function commitUpdates(
     } else {
       leaf[prop] = value;
     }
-    updatedPaths[update.path] = value;
+    updatedPaths[update.path] = leaf[prop];
   });
 }
 
@@ -108,28 +108,6 @@ export function translateValue(value: any, properties: Record<string, any>) {
     }
   }
   return value;
-}
-
-export function pathTriggered(path: string, triggers: Set<string>, properties: Record<string, any>) {
-  if (triggers.has(path)) {
-    return true;
-  }
-  const parts = path.split("/");
-  const last = parts[parts.length - 1];
-  if (last === KEYS || last === VALUES) {
-    parts.pop();
-    path = parts.join("/");
-    for (let t of triggers) {
-      if (t.startsWith(path)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  if (triggers.has(parts.map((part) => translateValue(part, properties)).join("/"))) {
-    return true;
-  }
-  return false;
 }
 
 function translateProp(obj: any, prop: string | number, properties: Record<string, any>, autoCreate: boolean) {
