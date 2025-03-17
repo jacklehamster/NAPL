@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.27",
+    "version": "1.0.28",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -239,27 +239,27 @@
   },
   "/src/cycles/data-update/dir.json": {
     "blob-utils.ts": {
-      "sha": "4c8aec765612e0432c9a5eb49736bf37f97fb8cb"
+      "sha": "7f1c9cbbac94e2d8c4ade3789187b86040d2aaa4"
     },
     "data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
     },
     "data-update.ts": {
-      "sha": "d33f6c597cfaf8142e3c80d73a7de92381fb2adb"
+      "sha": "cbf4e31bfda134ee4ca8d9ac844baefb35b9f00f"
     },
-    "md5": "8f92cb37b4151a631361b43576f102ee"
+    "md5": "210d6f3ac2c507413566ac84bf7cc53a"
   },
   "/src/cycles/dir.json": {
     "data-update/blob-utils.ts": {
-      "sha": "4c8aec765612e0432c9a5eb49736bf37f97fb8cb"
+      "sha": "7f1c9cbbac94e2d8c4ade3789187b86040d2aaa4"
     },
     "data-update/data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
     },
     "data-update/data-update.ts": {
-      "sha": "d33f6c597cfaf8142e3c80d73a7de92381fb2adb"
+      "sha": "cbf4e31bfda134ee4ca8d9ac844baefb35b9f00f"
     },
-    "md5": "745a88a4536ee8d7491cdf18c7f245c1"
+    "md5": "95780cd0f51819fc885d1f7e3f610a5b"
   },
   "/src/dir.json": {
     "core/Processor.ts": {
@@ -272,18 +272,18 @@
       "sha": "154cbe7e16e347e3bea781c86d421bb39838a4d3"
     },
     "cycles/data-update/blob-utils.ts": {
-      "sha": "4c8aec765612e0432c9a5eb49736bf37f97fb8cb"
+      "sha": "7f1c9cbbac94e2d8c4ade3789187b86040d2aaa4"
     },
     "cycles/data-update/data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
     },
     "cycles/data-update/data-update.ts": {
-      "sha": "d33f6c597cfaf8142e3c80d73a7de92381fb2adb"
+      "sha": "cbf4e31bfda134ee4ca8d9ac844baefb35b9f00f"
     },
     "index.ts": {
       "sha": "8932cbe701fe9df9df4ea809bb34fb518f5d4d60"
     },
-    "md5": "de989f103635169bcc1b72f7f5440d95",
+    "md5": "b1c37c6a59ea625a4a272c26014f2ad9",
     "types/Data.ts": {
       "sha": "c322ffdaefe4f14cdaa2c16b028af12635bd9445"
     },
