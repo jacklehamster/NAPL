@@ -59,14 +59,16 @@ function findUnusedBlobs(root: Data) {
 }
 
 function findUsedBlobsInSet(root: any, blobSet: Set<string>) {
+  if (!blobSet.size) {
+    return;
+  }
   if (typeof root === "string") {
     if (blobSet.has(root)) {
       blobSet.delete(root);
     }
-  } else if (Array.isArray(root)) {
-    root.forEach(value => findUsedBlobsInSet(value, blobSet));
   } else if (root && typeof root === "object") {
-    Object.values(root).forEach(value => findUsedBlobsInSet(value, blobSet));
+    const values = Array.isArray(root) ? root : Object.values(root);
+    values.forEach(value => findUsedBlobsInSet(value, blobSet));
   }
 }
 

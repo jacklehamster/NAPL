@@ -147,6 +147,8 @@ function saveBlobsFromUpdate(data: Data, update: Update) {
 }
 
 export function pushUpdate(data: Data, ...updates: Update[]) {
-  data.updates ??= [];
-  data.updates.push(...updates);
+  if (updates.length) {
+    data.updates ??= [];
+    data.updates.push(...updates);
+  }
 }
