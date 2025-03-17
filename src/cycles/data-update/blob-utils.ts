@@ -70,18 +70,19 @@ function findUsedBlobsInSet(root: any, blobSet: Set<string>) {
   }
 }
 
-export function cleanBlobUpdates(root: Data) {
+export function generateCleanBlobUpdates(root: Data) {
+  const updates: Update[] = [];
   const blobSet = findUnusedBlobs(root);
   if (blobSet.size) {
     // Remove blobs
-    const updates: Update[] = [];
     const now = Date.now();
     blobSet.forEach(key => {
-      pushUpdate(root, {
+      updates.push({
         path: `blobs/${key}`,
         value: undefined,
         confirmed: now,
       });
     });
   }
+  return updates;
 }
