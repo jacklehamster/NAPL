@@ -7,14 +7,15 @@ const VALUES = "~{values}";
 // This function is used to commit updates to the root object
 export function commitUpdates(
   root: Data | undefined,
-  properties: Record<string, any>) {
+  properties: Record<string, any>,
+  updatedPaths: Set<string>) {
 
   if (!root) {
     return;
   }
   sortUpdates(root.updates);
   root.updates?.forEach((update) => {
-    if (!update.confirmed || update.processed) {
+    if (!update.confirmed) {
       return;
     }
     //  Save blobs from updates
@@ -44,7 +45,7 @@ export function commitUpdates(
     } else {
       leaf[prop] = value;
     }
-    update.processed = true;
+    updatedPaths.add(update.path);
   });
 }
 
@@ -60,8 +61,8 @@ function cleanupRoot(root: Record<string, any>, parts: (string | number)[], inde
 }
 
 // Removed processed updateds
-export function clearUpdates(root: Data) {
-  root.updates = root.updates?.filter((update) => !update.processed);
+export function clearUpdates(root: Data, updatedPaths: Set<string>) {
+  root.updates = root.updates?.filter((update) => !updatedPaths.has(update.path));
   if (!root.updates?.length) {
     delete root.updates;
   }
