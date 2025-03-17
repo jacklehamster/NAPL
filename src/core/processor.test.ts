@@ -1,6 +1,7 @@
 import { createContext } from "../cycle/context/Context";
 import { Data } from "../types/Data";
 import { Processor } from "./Processor";
+import { pushUpdate } from "../cycles/data-update/data-update";
 
 describe('Processor', () => {
 
@@ -30,6 +31,3 @@ describe('Processor', () => {
     expect(root.array).toEqual([1, 5, 3]);
   })
 });
-function pushUpdate(root: Data, arg1: { path: string; value: number; confirmed: number; }, arg2: { path: string; value: number; confirmed: number; }) {
-  throw new Error("Function not implemented.");
-}
