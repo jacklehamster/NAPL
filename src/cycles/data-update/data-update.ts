@@ -62,7 +62,7 @@ function cleanupRoot(root: Record<string, any>, parts: (string | number)[], inde
 
 // Removed processed updateds
 export function clearUpdates(root: Data, updatedPaths: Record<string, any>) {
-  root.updates = root.updates?.filter((update) => updatedPaths[update.path] === undefined);
+  root.updates = root.updates?.filter((update) => !(update.path in updatedPaths));
   if (!root.updates?.length) {
     delete root.updates;
   }

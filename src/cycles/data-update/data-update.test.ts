@@ -33,6 +33,19 @@ describe('commitUpdates', () => {
     expect(obj).toEqual({ abc: { a: 1 } });
   })
 
+  it('should delete element when value is undefined', () => {
+    const obj: Data = {
+      abc: 1,
+      updates: [
+        { path: "abc", value: undefined, confirmed: 1 },
+      ],
+    };
+    const updates: Record<string, any> = {};
+    commitUpdates(obj, {}, updates);
+    clearUpdates(obj, updates);
+    expect(obj).toEqual({});
+  });
+
   it('should sort updates by confirmed timestamp and apply them', () => {
     const obj: Data = {
       updates: [
