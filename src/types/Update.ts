@@ -6,6 +6,7 @@ export interface Update {
   insert?: number;
   delete?: number;
   confirmed?: number;
+  processed?: boolean;
   blobs?: { [key: string]: Blob };
   signature?: string;
 }

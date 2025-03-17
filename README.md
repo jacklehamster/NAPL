@@ -36,7 +36,7 @@ Update {
 
 ## Process cycle
 
-1. CodeParser: Register all types and data-bindgs. Imports.
+1. CodeParser: Register all types and data-bindings.
   //  => registry / observers / clear updatedPaths
 2. DataUpdateManager: Apply all update logs
   //  => updatedPaths

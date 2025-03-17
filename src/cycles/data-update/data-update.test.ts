@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { commitUpdates } from './data-update';
+import { clearUpdates, commitUpdates } from './data-update';
 import { Update } from '../../types/Update';
 import { Data } from '../../types/Data';
 
@@ -16,6 +16,7 @@ describe('commitUpdates', () => {
     commitUpdates(obj, {
       test: "123",
     });
+    clearUpdates(obj);
 
     expect(obj).toEqual({ a: { b: 2 }, test: "123" });
   });
@@ -32,10 +33,14 @@ describe('commitUpdates', () => {
     const updates: Record<string, any> = {};
     commitUpdates(obj, {
       test: "123",
-    }, updates);
+    });
+    clearUpdates(obj);
 
-    expect(obj).toEqual({ a: { b: 2 }, test: "123" });
-    expect(updates["a/b"]).toEqual(2);
-    expect(updates["test"]).toEqual("123");
+    expect(obj).toEqual({
+      a: {
+        b: 2,
+      },
+      test: "123",
+    });
   });
 });

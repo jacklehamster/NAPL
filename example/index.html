@@ -62,7 +62,7 @@
             return subdir;
           })
           .filter((s) => !!s);
-        sites.forEach((site) => {
+        sites.forEach((site, index) => {
           const button = document.createElement("button");
           button.id = `${site}-button`;
           button.textContent = site;
@@ -116,6 +116,9 @@
             contentDiv.style.display = "flex";
           });
           tabsContainer.appendChild(button);
+          if (index === 0) {
+            button.click();
+          }
         });
         if (initialTab) {
           const button = document.querySelector(`#${initialTab}-button`);

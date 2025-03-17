@@ -7,15 +7,14 @@ const VALUES = "~{values}";
 // This function is used to commit updates to the root object
 export function commitUpdates(
   root: Data | undefined,
-  properties: Record<string, any>,
-  updatedPaths?: Record<string, any>) {
+  properties: Record<string, any>) {
 
   if (!root) {
     return;
   }
   sortUpdates(root.updates);
   root.updates?.forEach((update) => {
-    if (!update.confirmed) {
+    if (!update.confirmed || update.processed) {
       return;
     }
     //  Save blobs from updates
@@ -45,21 +44,8 @@ export function commitUpdates(
     } else {
       leaf[prop] = value;
     }
-    if (updatedPaths) {
-      updatedPaths[update.path] = value;
-    }
+    update.processed = true;
   });
-  if (root.updates) {
-    for (let i = root.updates.length - 1; i >= 0; i--) {
-      if (root.updates[i].confirmed) {
-        root.updates[i] = root.updates[root.updates.length - 1];
-        root.updates.pop();
-      }
-    }
-    if (!root.updates.length) {
-      delete root.updates;
-    }
-  }
 }
 
 // This function is used to remove empty objects from the root object
@@ -71,6 +57,14 @@ function cleanupRoot(root: Record<string, any>, parts: (string | number)[], inde
     delete root[parts[index]];
   }
   return Object.keys(root).length === 0;
+}
+
+// Removed processed updateds
+export function clearUpdates(root: Data) {
+  root.updates = root.updates?.filter((update) => !update.processed);
+  if (!root.updates?.length) {
+    delete root.updates;
+  }
 }
 
 function sortUpdates(updates?: Update[]) {
@@ -115,7 +109,7 @@ export function translateValue(value: any, properties: Record<string, any>) {
   return value;
 }
 
-function translateProp(obj: any, prop: string | number, properties: Record<string, any>, autoCreate: boolean) {
+export function translateProp(obj: any, prop: string | number, properties: Record<string, any>, autoCreate: boolean) {
   let value;
   if (typeof prop !== "string") {
     value = obj[prop];

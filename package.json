@@ -47,6 +47,8 @@
   },
   "description": "Not Another Programming Language",
   "dependencies": {
+    "@dobuki/data-blob": "^1.0.12",
+    "@dobuki/payload-validator": "^1.0.8",
     "dok-pool": "^1.0.77",
     "fixed-framerate-loop": "^1.0.11"
   }
