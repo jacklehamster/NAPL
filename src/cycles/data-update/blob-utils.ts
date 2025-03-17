@@ -1,6 +1,6 @@
 import { Data } from "@/types/Data";
 import { Update } from "@/types/Update";
-import { BlobBuilder } from "@dobuki/data-blob";
+import { BlobBuilder, extractPayload } from "@dobuki/data-blob";
 import { signedPayload } from "@dobuki/payload-validator";
 import { clearUpdates, commitUpdates } from "./data-update";
 
@@ -11,7 +11,7 @@ export function packageUpdates(updates: Update[], secret?: string): Blob {
   const blobBuilder = BlobBuilder.payload("payload", { updates });
   const addedBlob = new Set<string>();
   updates.forEach(update => {
-    Object.entries(update?.blobs ?? {}).forEach(([key, blob]) => {
+    Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
       if (!addedBlob.has(key)) {
         blobBuilder.blob(key, blob);
         addedBlob.add(key);
@@ -21,17 +21,33 @@ export function packageUpdates(updates: Update[], secret?: string): Blob {
   return blobBuilder.build();
 }
 
-export function saveBlobsFromUpdates(updates: Update[] | undefined, blobs: Record<string, Blob>) {
-  updates?.forEach(update => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
-    blobs[key] = blob;
+function saveBlobsFromUpdates(root: Data) {
+  root.updates?.forEach(update => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
+    root.blobs ??= {};
+    root.blobs[key] = blob;
   }));
 }
 
-export function applyUpdates(root: Data, properties: Record<string, any>) {
-  const blobs = root.blobs ?? (root.blobs = {});
-  saveBlobsFromUpdates(root.updates, blobs);
+export function applyUpdates(root: Data, properties: Record<string, any>): Record<string, any> | void {
+  if (!root.updates?.length) {
+    return;
+  }
+  saveBlobsFromUpdates(root);
   const updates: Record<string, any> = {};
   commitUpdates(root, properties, updates);
-  // this.triggerObservers();
-  clearUpdates(root, updates)
+  clearUpdates(root, updates);
+  return updates;
+}
+
+export async function processDataBlob(blob: Blob) {
+  const { payload, ...blobs } = await extractPayload(blob);
+  const updates: Update[] = payload.updates;
+  updates.forEach(update => {
+    if (update.blobs) {
+      for (let key in update.blobs) {
+        update.blobs[key] = blobs[key];
+      }
+    }
+  });
+  return { payload, blobs };
 }
