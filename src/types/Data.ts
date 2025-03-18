@@ -6,6 +6,5 @@ export interface Data {
   frame?: number;
   type?: string;
   updates?: Update[];
-  blobs?: Record<string, Blob>;
   [key: string]: any;
 }

@@ -2,7 +2,7 @@ import { Data } from "@/types/Data";
 import { Update } from "@/types/Update";
 import { BlobBuilder, extractPayload } from "@dobuki/data-blob";
 import { signedPayload } from "@dobuki/payload-validator";
-import { clearUpdates, commitUpdates, pushUpdate } from "./data-update";
+import { clearUpdates, commitUpdates } from "./data-update";
 
 export function packageUpdates(updates: Update[], secret?: string): Blob {
   if (secret) {

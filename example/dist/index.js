@@ -2582,11 +2582,10 @@ function commitUpdates2(root, properties, updatedPaths) {
     if (!update.confirmed) {
       return;
     }
-    saveBlobsFromUpdate2(root, update);
     const parts = update.path.split("/");
     const leaf = getLeafObject2(root, parts, 1, true);
     const prop = parts[parts.length - 1];
-    const value = translateValue2(update.value, properties);
+    const value = translateValue2(restoreBlobIntoData(update.value, update.blobs), properties);
     if (update.append) {
       if (!Array.isArray(leaf[prop])) {
         leaf[prop] = [];
@@ -2684,11 +2683,26 @@ function translateProp2(obj, prop, properties, autoCreate) {
   }
   return value;
 }
-function saveBlobsFromUpdate2(data, update) {
-  Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
-    const blobs = data.blobs ?? (data.blobs = {});
-    blobs[key] = blob;
-  });
+function restoreBlobIntoData(value, blobs) {
+  if (!blobs) {
+    return value;
+  }
+  if (typeof value === "string") {
+    if (value in blobs) {
+      return blobs[value];
+    }
+  } else if (value && typeof value === "object") {
+    if (Array.isArray(value)) {
+      for (let i = 0;i < value.length; i++) {
+        value[i] = restoreBlobIntoData(value[i], blobs);
+      }
+    } else {
+      for (let key in value) {
+        value[key] = restoreBlobIntoData(value[key], blobs);
+      }
+    }
+  }
+  return value;
 }
 // ../src/core/Processor.ts
 class Processor {
@@ -3607,4 +3621,4 @@ export {
   root
 };
 
-//# debugId=ED65BB37E4BA17A564756E2164756E21
+//# debugId=D7E03FB5ACD91A8D64756E2164756E21
