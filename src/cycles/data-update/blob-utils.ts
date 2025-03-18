@@ -21,18 +21,10 @@ export function packageUpdates(updates: Update[], secret?: string): Blob {
   return blobBuilder.build();
 }
 
-function saveBlobsFromUpdates(root: Data) {
-  root.updates?.forEach(update => Object.entries(update.blobs ?? {}).forEach(([key, blob]) => {
-    root.blobs ??= {};
-    root.blobs[key] = blob;
-  }));
-}
-
 export function applyUpdates(root: Data, properties: Record<string, any>): Record<string, any> | void {
   if (!root.updates?.length) {
     return;
   }
-  saveBlobsFromUpdates(root);
   const updates: Record<string, any> = {};
   commitUpdates(root, properties, updates);
   clearUpdates(root, updates);

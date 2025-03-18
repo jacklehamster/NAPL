@@ -1,5 +1,6 @@
 import { Update } from "../../types/Update";
 import { Data } from "../../types/Data";
+import { includeBlobsInPayload } from "@dobuki/data-blob";
 
 const KEYS = "~{keys}";
 const VALUES = "~{values}";
@@ -22,7 +23,7 @@ export function commitUpdates(
     const parts = update.path.split("/");
     const leaf: any = getLeafObject(root, parts, 1, true);
     const prop = parts[parts.length - 1];
-    const value = translateValue(restoreBlobIntoData(update.value, update.blobs), properties);
+    const value = translateValue(update.blobs ? includeBlobsInPayload(update.value, update.blobs) : update.value, properties);
     if (update.append) {
       if (!Array.isArray(leaf[prop])) {
         leaf[prop] = [];
@@ -135,28 +136,6 @@ export function markUpdateConfirmed(update: Update, now: number) {
   if (!update.confirmed) {
     update.confirmed = now;
   }
-}
-
-export function restoreBlobIntoData(value: any, blobs?: Record<string, Blob>) {
-  if (!blobs) {
-    return value;
-  }
-  if (typeof value === "string") {
-    if (value in blobs) {
-      return blobs[value];
-    }
-  } else if (value && typeof value === "object") {
-    if (Array.isArray(value)) {
-      for (let i = 0; i < value.length; i++) {
-        value[i] = restoreBlobIntoData(value[i], blobs);
-      }
-    } else {
-      for (let key in value) {
-        value[key] = restoreBlobIntoData(value[key], blobs);
-      }
-    }
-  }
-  return value;
 }
 
 export function pushUpdate(data: Data, ...updates: Update[]) {

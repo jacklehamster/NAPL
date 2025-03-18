@@ -2570,6 +2570,55 @@ class SocketClient {
   }
 }
 
+// ../node_modules/@dobuki/data-blob/dist/index.js
+class J2 {
+  data = [];
+  #n = new TextEncoder;
+  static payload(n, t) {
+    return new J2().payload(n, t);
+  }
+  static blob(n, t) {
+    return new J2().blob(n, t);
+  }
+  #t(n) {
+    let t = this.#n.encode(n), h = new Uint8Array([t.byteLength]);
+    this.data.push(h.buffer), this.data.push(t.buffer);
+  }
+  payload(n, t) {
+    this.#t(n);
+    let h = new Uint8Array([1]);
+    this.data.push(h.buffer);
+    let c2 = JSON.stringify(t), w2 = this.#n.encode(c2), m2 = new Uint32Array([w2.byteLength]);
+    return this.data.push(m2.buffer), this.data.push(w2.buffer), this;
+  }
+  blob(n, t) {
+    this.#t(n);
+    let h = new Uint8Array([2]);
+    this.data.push(h.buffer);
+    let c2 = new Uint32Array([t.size]);
+    return this.data.push(c2.buffer), this.data.push(t), this;
+  }
+  build() {
+    return new Blob(this.data);
+  }
+}
+var K = new TextDecoder;
+function j(n, t) {
+  if (typeof n === "string" && n.startsWith("{blobUrl:"))
+    return URL.createObjectURL(t[n]);
+  if (typeof n === "string" && n.startsWith("{blob:"))
+    return t[n];
+  if (Array.isArray(n))
+    n.forEach((h, c2) => {
+      n[c2] = j(h, t);
+    });
+  else if (typeof n === "object" && n)
+    Object.entries(n).forEach(([h, c2]) => {
+      n[h] = j(c2, t);
+    });
+  return n;
+}
+
 // ../src/cycles/data-update/data-update.ts
 var KEYS2 = "~{keys}";
 var VALUES2 = "~{values}";
@@ -2585,7 +2634,7 @@ function commitUpdates2(root, properties, updatedPaths) {
     const parts = update.path.split("/");
     const leaf = getLeafObject2(root, parts, 1, true);
     const prop = parts[parts.length - 1];
-    const value = translateValue2(restoreBlobIntoData(update.value, update.blobs), properties);
+    const value = translateValue2(update.blobs ? j(update.value, update.blobs) : update.value, properties);
     if (update.append) {
       if (!Array.isArray(leaf[prop])) {
         leaf[prop] = [];
@@ -2683,27 +2732,6 @@ function translateProp2(obj, prop, properties, autoCreate) {
   }
   return value;
 }
-function restoreBlobIntoData(value, blobs) {
-  if (!blobs) {
-    return value;
-  }
-  if (typeof value === "string") {
-    if (value in blobs) {
-      return blobs[value];
-    }
-  } else if (value && typeof value === "object") {
-    if (Array.isArray(value)) {
-      for (let i = 0;i < value.length; i++) {
-        value[i] = restoreBlobIntoData(value[i], blobs);
-      }
-    } else {
-      for (let key in value) {
-        value[key] = restoreBlobIntoData(value[key], blobs);
-      }
-    }
-  }
-  return value;
-}
 // ../src/core/Processor.ts
 class Processor {
   performCycle(context) {
@@ -2720,40 +2748,6 @@ function createContext(root, properties = {}) {
     properties
   };
 }
-// ../node_modules/@dobuki/data-blob/dist/index.js
-class J2 {
-  data = [];
-  #n = new TextEncoder;
-  static payload(n, t) {
-    return new J2().payload(n, t);
-  }
-  static blob(n, t) {
-    return new J2().blob(n, t);
-  }
-  #t(n) {
-    let t = this.#n.encode(n), h = new Uint8Array([t.byteLength]);
-    this.data.push(h.buffer), this.data.push(t.buffer);
-  }
-  payload(n, t) {
-    this.#t(n);
-    let h = new Uint8Array([1]);
-    this.data.push(h.buffer);
-    let c2 = JSON.stringify(t), w2 = this.#n.encode(c2), m2 = new Uint32Array([w2.byteLength]);
-    return this.data.push(m2.buffer), this.data.push(w2.buffer), this;
-  }
-  blob(n, t) {
-    this.#t(n);
-    let h = new Uint8Array([2]);
-    this.data.push(h.buffer);
-    let c2 = new Uint32Array([t.size]);
-    return this.data.push(c2.buffer), this.data.push(t), this;
-  }
-  build() {
-    return new Blob(this.data);
-  }
-}
-var K = new TextDecoder;
-
 // ../node_modules/@dobuki/payload-validator/dist/index.js
 var zJ2 = Object.create;
 var { defineProperty: Q02, getPrototypeOf: QJ2, getOwnPropertyNames: ZJ2 } = Object;
@@ -3555,10 +3549,10 @@ var mq2 = T4((L5, yq) => {
         e1(U, B);
       var N2 = L3(B).sort(V && V(B)), S = [];
       for (var O = 0;O < N2.length; O++) {
-        var F = N2[O], j = K(B, F, B[F], W2 + 1);
-        if (!j)
+        var F = N2[O], j2 = K(B, F, B[F], W2 + 1);
+        if (!j2)
           continue;
-        var P = P1(F) + D + j;
+        var P = P1(F) + D + j2;
         e1(S, L + z + P);
       }
       return U.splice(U.indexOf(B), 1), "{" + Eq(S, ",") + L + "}";
@@ -3621,4 +3615,4 @@ export {
   root
 };
 
-//# debugId=D7E03FB5ACD91A8D64756E2164756E21
+//# debugId=90DA28CC9B5E3C3464756E2164756E21
