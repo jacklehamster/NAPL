@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "7ca5d962b6198e3bcdce42c1e5233c8cc277ab30"
+      "sha": "f62befed6296202ab7ce633c9f144fb9c74c9f95"
     },
     "dist/index.js.map": {
-      "sha": "6083e4f3ca4328ccab01c7e9762259b070e11585"
+      "sha": "a9f9c2d4bc7fc92925ae479b99fbebc676ed192b"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -60,7 +60,7 @@
     "json-test/index.html": {
       "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
     },
-    "md5": "db3e2f6278c956248e1fff559f70fff0",
+    "md5": "c5e5e89ede989363a2166ba7b464c867",
     "package.json": {
       "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
     },
@@ -73,12 +73,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "7ca5d962b6198e3bcdce42c1e5233c8cc277ab30"
+      "sha": "f62befed6296202ab7ce633c9f144fb9c74c9f95"
     },
     "index.js.map": {
-      "sha": "6083e4f3ca4328ccab01c7e9762259b070e11585"
+      "sha": "a9f9c2d4bc7fc92925ae479b99fbebc676ed192b"
     },
-    "md5": "efce7ad07a888276ba51badaaf61b25e",
+    "md5": "76cc09d56f0dda3a0eaa6545dee7c6da",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.30",
+    "version": "1.0.31",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -210,7 +210,7 @@
     },
     "description": "Not Another Programming Language",
     "dependencies": {
-      "@dobuki/data-blob": "^1.0.13",
+      "@dobuki/data-blob": "^1.0.14",
       "@dobuki/payload-validator": "^1.0.8",
       "dok-pool": "^1.0.77",
       "fixed-framerate-loop": "^1.0.11"
@@ -239,27 +239,27 @@
   },
   "/src/cycles/data-update/dir.json": {
     "blob-utils.ts": {
-      "sha": "d130357d319c4b57f3c03043c2dcb4752be74aaf"
+      "sha": "7bebfdb461c406f166b41f8afff9b1263fb14982"
     },
     "data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
     },
     "data-update.ts": {
-      "sha": "b0adb20811deafdd32261c7bcf888a24f1d6dacd"
+      "sha": "97143ccf4995d4bcbae07ebfb54b8d288bdaba5d"
     },
-    "md5": "e3ed832799bfb46a312b156cbfc51a18"
+    "md5": "7f512a5a95cc422751e1e2dfbe4e05e8"
   },
   "/src/cycles/dir.json": {
     "data-update/blob-utils.ts": {
-      "sha": "d130357d319c4b57f3c03043c2dcb4752be74aaf"
+      "sha": "7bebfdb461c406f166b41f8afff9b1263fb14982"
     },
     "data-update/data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
     },
     "data-update/data-update.ts": {
-      "sha": "b0adb20811deafdd32261c7bcf888a24f1d6dacd"
+      "sha": "97143ccf4995d4bcbae07ebfb54b8d288bdaba5d"
     },
-    "md5": "75eac91f16c7c049cd600d13949c1497"
+    "md5": "12fd6b77e9fd1fe2c30e01fdba989053"
   },
   "/src/dir.json": {
     "core/Processor.ts": {
@@ -272,23 +272,23 @@
       "sha": "154cbe7e16e347e3bea781c86d421bb39838a4d3"
     },
     "cycles/data-update/blob-utils.ts": {
-      "sha": "d130357d319c4b57f3c03043c2dcb4752be74aaf"
+      "sha": "7bebfdb461c406f166b41f8afff9b1263fb14982"
     },
     "cycles/data-update/data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
     },
     "cycles/data-update/data-update.ts": {
-      "sha": "b0adb20811deafdd32261c7bcf888a24f1d6dacd"
+      "sha": "97143ccf4995d4bcbae07ebfb54b8d288bdaba5d"
     },
     "index.ts": {
       "sha": "8932cbe701fe9df9df4ea809bb34fb518f5d4d60"
     },
-    "md5": "57786d8eab15bc4d7ffcd408977d4275",
+    "md5": "cb831e49e8d4cfda1c2a200e553451db",
     "types/Data.ts": {
       "sha": "eaabb216b052390f1bf573fb0e207ed264c6f84f"
     },
     "types/Update.ts": {
-      "sha": "6131f635bb669bab952e75fe062dbb7072b5cf3b"
+      "sha": "1fd3d25ccb726860e1416dd7f910ff516b04de4b"
     }
   },
   "/src/types/dir.json": {
@@ -296,9 +296,9 @@
       "sha": "eaabb216b052390f1bf573fb0e207ed264c6f84f"
     },
     "Update.ts": {
-      "sha": "6131f635bb669bab952e75fe062dbb7072b5cf3b"
+      "sha": "1fd3d25ccb726860e1416dd7f910ff516b04de4b"
     },
-    "md5": "be36db5fe345db907a94f28074b3bfa3"
+    "md5": "9a57241754a6ab7c7adacef1c26bcf16"
   },
   "/tsconfig.json": {
     "compilerOptions": {
