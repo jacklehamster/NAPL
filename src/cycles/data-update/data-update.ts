@@ -1,6 +1,5 @@
 import { Update } from "../../types/Update";
 import { Data } from "../../types/Data";
-import { includeBlobsInPayload } from "@dobuki/data-blob";
 
 const KEYS = "~{keys}";
 const VALUES = "~{values}";
@@ -23,7 +22,7 @@ export function commitUpdates(
     const parts = update.path.split("/");
     const leaf: any = getLeafObject(root, parts, 1, true);
     const prop = parts[parts.length - 1];
-    const value = translateValue(update.blobs ? includeBlobsInPayload(update.value, update.blobs) : update.value, properties);
+    const value = translateValue(update.value, properties);
     if (update.append) {
       if (!Array.isArray(leaf[prop])) {
         leaf[prop] = [];
