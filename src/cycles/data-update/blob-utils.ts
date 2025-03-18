@@ -14,12 +14,12 @@ export async function packageUpdates(updates: Update[], secret?: string): Promis
   const blobBuilder = BlobBuilder.payload("payload", { updates });
   const addedBlob = new Set<string>();
 
-  Object.entries(blobs ?? {}).forEach(([key, blob]) => {
+  for (let key in blobs) {
     if (!addedBlob.has(key)) {
-      blobBuilder.blob(key, blob);
+      blobBuilder.blob(key, blobs[key]);
       addedBlob.add(key);
     }
-  });
+  }
   return blobBuilder.build();
 }
 
