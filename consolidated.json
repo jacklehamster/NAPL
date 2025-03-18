@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "780a4b1738421e79bac7242ee3337e7ef0d1715f"
+      "sha": "7ca5d962b6198e3bcdce42c1e5233c8cc277ab30"
     },
     "dist/index.js.map": {
-      "sha": "4f0a27e64ed2b094d6cff8c0d3fa075dbdd4a537"
+      "sha": "6083e4f3ca4328ccab01c7e9762259b070e11585"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -60,7 +60,7 @@
     "json-test/index.html": {
       "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
     },
-    "md5": "c79b679097ba2e8522b4e487279b1c4a",
+    "md5": "db3e2f6278c956248e1fff559f70fff0",
     "package.json": {
       "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
     },
@@ -73,12 +73,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "780a4b1738421e79bac7242ee3337e7ef0d1715f"
+      "sha": "7ca5d962b6198e3bcdce42c1e5233c8cc277ab30"
     },
     "index.js.map": {
-      "sha": "4f0a27e64ed2b094d6cff8c0d3fa075dbdd4a537"
+      "sha": "6083e4f3ca4328ccab01c7e9762259b070e11585"
     },
-    "md5": "29666d6b171974891e4cc0d77a5760ac",
+    "md5": "efce7ad07a888276ba51badaaf61b25e",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.29",
+    "version": "1.0.30",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -239,27 +239,27 @@
   },
   "/src/cycles/data-update/dir.json": {
     "blob-utils.ts": {
-      "sha": "5086bacae4d64c7e21a550d8db0557439f96519a"
+      "sha": "d130357d319c4b57f3c03043c2dcb4752be74aaf"
     },
     "data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
     },
     "data-update.ts": {
-      "sha": "8203bf26a6a29f4928730b4338a65f3891b6305d"
+      "sha": "b0adb20811deafdd32261c7bcf888a24f1d6dacd"
     },
-    "md5": "847af3d2bd7302461848c80239bac120"
+    "md5": "e3ed832799bfb46a312b156cbfc51a18"
   },
   "/src/cycles/dir.json": {
     "data-update/blob-utils.ts": {
-      "sha": "5086bacae4d64c7e21a550d8db0557439f96519a"
+      "sha": "d130357d319c4b57f3c03043c2dcb4752be74aaf"
     },
     "data-update/data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
     },
     "data-update/data-update.ts": {
-      "sha": "8203bf26a6a29f4928730b4338a65f3891b6305d"
+      "sha": "b0adb20811deafdd32261c7bcf888a24f1d6dacd"
     },
-    "md5": "19958b3b05608375c73704a0359afa7b"
+    "md5": "75eac91f16c7c049cd600d13949c1497"
   },
   "/src/dir.json": {
     "core/Processor.ts": {
@@ -272,18 +272,18 @@
       "sha": "154cbe7e16e347e3bea781c86d421bb39838a4d3"
     },
     "cycles/data-update/blob-utils.ts": {
-      "sha": "5086bacae4d64c7e21a550d8db0557439f96519a"
+      "sha": "d130357d319c4b57f3c03043c2dcb4752be74aaf"
     },
     "cycles/data-update/data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
     },
     "cycles/data-update/data-update.ts": {
-      "sha": "8203bf26a6a29f4928730b4338a65f3891b6305d"
+      "sha": "b0adb20811deafdd32261c7bcf888a24f1d6dacd"
     },
     "index.ts": {
       "sha": "8932cbe701fe9df9df4ea809bb34fb518f5d4d60"
     },
-    "md5": "2091230239a501e3d4fe6dc8d4039c68",
+    "md5": "57786d8eab15bc4d7ffcd408977d4275",
     "types/Data.ts": {
       "sha": "eaabb216b052390f1bf573fb0e207ed264c6f84f"
     },
