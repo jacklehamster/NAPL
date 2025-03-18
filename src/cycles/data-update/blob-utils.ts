@@ -1,13 +1,10 @@
 import { Data } from "@/types/Data";
 import { Update } from "@/types/Update";
-import { BlobBuilder, extractBlobsFromPayload } from "@dobuki/data-blob";
+import { BlobBuilder } from "@dobuki/data-blob";
 import { signedPayload } from "@dobuki/payload-validator";
 import { clearUpdates, commitUpdates } from "./data-update";
 
-export async function packageUpdates(updates: Update[], secret?: string): Promise<Blob> {
-  const blobs: Record<string, Blob> = {};
-  updates = await extractBlobsFromPayload(updates, blobs);
-
+export function packageUpdates(updates: Update[], blobs: Record<string, Blob>, secret?: string): Blob {
   if (secret) {
     updates = updates.map(update => signedPayload(update, { secret }));
   }
