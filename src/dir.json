@@ -9,20 +9,20 @@
     "sha": "154cbe7e16e347e3bea781c86d421bb39838a4d3"
   },
   "cycles/data-update/blob-utils.ts": {
-    "sha": "7f1c9cbbac94e2d8c4ade3789187b86040d2aaa4"
+    "sha": "5086bacae4d64c7e21a550d8db0557439f96519a"
   },
   "cycles/data-update/data-update.test.ts": {
     "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
   },
   "cycles/data-update/data-update.ts": {
-    "sha": "cbf4e31bfda134ee4ca8d9ac844baefb35b9f00f"
+    "sha": "8203bf26a6a29f4928730b4338a65f3891b6305d"
   },
   "index.ts": {
     "sha": "8932cbe701fe9df9df4ea809bb34fb518f5d4d60"
   },
-  "md5": "b1c37c6a59ea625a4a272c26014f2ad9",
+  "md5": "2091230239a501e3d4fe6dc8d4039c68",
   "types/Data.ts": {
-    "sha": "c322ffdaefe4f14cdaa2c16b028af12635bd9445"
+    "sha": "eaabb216b052390f1bf573fb0e207ed264c6f84f"
   },
   "types/Update.ts": {
     "sha": "6131f635bb669bab952e75fe062dbb7072b5cf3b"
