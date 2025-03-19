@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "f62befed6296202ab7ce633c9f144fb9c74c9f95"
+      "sha": "c065c9cb05d9fa6efd5c2aedc23bcb3a4a344ada"
     },
     "dist/index.js.map": {
-      "sha": "a9f9c2d4bc7fc92925ae479b99fbebc676ed192b"
+      "sha": "e712e4fac4766da60e3adf6be1129fa4e7e52573"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -60,7 +60,7 @@
     "json-test/index.html": {
       "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
     },
-    "md5": "c5e5e89ede989363a2166ba7b464c867",
+    "md5": "807790050b0744d07fc8c45b20bf41be",
     "package.json": {
       "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
     },
@@ -73,12 +73,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "f62befed6296202ab7ce633c9f144fb9c74c9f95"
+      "sha": "c065c9cb05d9fa6efd5c2aedc23bcb3a4a344ada"
     },
     "index.js.map": {
-      "sha": "a9f9c2d4bc7fc92925ae479b99fbebc676ed192b"
+      "sha": "e712e4fac4766da60e3adf6be1129fa4e7e52573"
     },
-    "md5": "76cc09d56f0dda3a0eaa6545dee7c6da",
+    "md5": "3eee811e0e52d989780d61851d317f61",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.33",
+    "version": "1.0.34",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -210,10 +210,7 @@
     },
     "description": "Not Another Programming Language",
     "dependencies": {
-      "@dobuki/data-blob": "^1.0.15",
-      "@dobuki/payload-validator": "^1.0.8",
-      "dok-pool": "^1.0.77",
-      "fixed-framerate-loop": "^1.0.11"
+      "@dobuki/data-blob": "^1.0.15"
     }
   },
   "/src/core/dir.json": {
