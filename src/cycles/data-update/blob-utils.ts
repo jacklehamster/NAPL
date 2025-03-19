@@ -1,14 +1,10 @@
 import { Data } from "@/types/Data";
 import { Update } from "@/types/Update";
 import { BlobBuilder } from "@dobuki/data-blob";
-import { signedPayload } from "@dobuki/payload-validator";
 import { clearUpdates, commitUpdates } from "./data-update";
 
 export function packageUpdates(updates: Update[], blobs: Record<string, Blob>, secret?: string): Blob {
-  if (secret) {
-    updates = updates.map(update => signedPayload(update, { secret }));
-  }
-  const blobBuilder = BlobBuilder.payload("payload", { updates });
+  const blobBuilder = BlobBuilder.payload("payload", { updates }, secret);
   const addedBlob = new Set<string>();
 
   for (let key in blobs) {
