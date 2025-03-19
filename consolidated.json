@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.32",
+    "version": "1.0.33",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -210,7 +210,7 @@
     },
     "description": "Not Another Programming Language",
     "dependencies": {
-      "@dobuki/data-blob": "^1.0.14",
+      "@dobuki/data-blob": "^1.0.15",
       "@dobuki/payload-validator": "^1.0.8",
       "dok-pool": "^1.0.77",
       "fixed-framerate-loop": "^1.0.11"
@@ -239,7 +239,7 @@
   },
   "/src/cycles/data-update/dir.json": {
     "blob-utils.ts": {
-      "sha": "eed213412afea7b7e1e907be2f2fbfab72bad8b1"
+      "sha": "db5ea4398bec5dbacc178a90812be8e0a358893d"
     },
     "data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
@@ -247,11 +247,11 @@
     "data-update.ts": {
       "sha": "97143ccf4995d4bcbae07ebfb54b8d288bdaba5d"
     },
-    "md5": "a2fd19aa6732da6e16abcb47f66fc3b3"
+    "md5": "61a5f8a6fed955511bd4b7bf30b7f9bd"
   },
   "/src/cycles/dir.json": {
     "data-update/blob-utils.ts": {
-      "sha": "eed213412afea7b7e1e907be2f2fbfab72bad8b1"
+      "sha": "db5ea4398bec5dbacc178a90812be8e0a358893d"
     },
     "data-update/data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
@@ -259,7 +259,7 @@
     "data-update/data-update.ts": {
       "sha": "97143ccf4995d4bcbae07ebfb54b8d288bdaba5d"
     },
-    "md5": "03359aff30be73840e22a8dc076540af"
+    "md5": "ba3becc937d2d38544cc0b9671ecf258"
   },
   "/src/dir.json": {
     "core/Processor.ts": {
@@ -272,7 +272,7 @@
       "sha": "154cbe7e16e347e3bea781c86d421bb39838a4d3"
     },
     "cycles/data-update/blob-utils.ts": {
-      "sha": "eed213412afea7b7e1e907be2f2fbfab72bad8b1"
+      "sha": "db5ea4398bec5dbacc178a90812be8e0a358893d"
     },
     "cycles/data-update/data-update.test.ts": {
       "sha": "11e15110da3c7f8a236f76beb22fbca0acf263c1"
@@ -283,7 +283,7 @@
     "index.ts": {
       "sha": "8932cbe701fe9df9df4ea809bb34fb518f5d4d60"
     },
-    "md5": "ccee4e6cfa859cb5821cbd972f644253",
+    "md5": "ab3b03eb77010ed37a3a173e674a3362",
     "types/Data.ts": {
       "sha": "eaabb216b052390f1bf573fb0e207ed264c6f84f"
     },
