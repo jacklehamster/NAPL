@@ -1,12 +1,12 @@
 {
   "core/Processor.ts": {
-    "sha": "95aeabf7035fc0a44841783a09b2b63b40df0f08"
+    "sha": "8a811e0246d039cc88221dbe03c1b02bc71b1b8c"
   },
   "core/processor.test.ts": {
     "sha": "4a1f7337683ef37ad859bb57f14a3cb01993b6be"
   },
   "cycle/context/Context.ts": {
-    "sha": "10279f21fc6b299d9af87c855736bda05992c4cc"
+    "sha": "ccc4ec87a1f406ac7fd4cc3fe2df33246010638e"
   },
   "cycles/data-update/blob-utils.ts": {
     "sha": "452472c710a3297e9e16f972b3a301124990f661"
@@ -20,7 +20,7 @@
   "index.ts": {
     "sha": "8932cbe701fe9df9df4ea809bb34fb518f5d4d60"
   },
-  "md5": "87dcf4023533f742b999343cb75a95b6",
+  "md5": "9372831a9a5fed11081a57a59c84a837",
   "types/Data.ts": {
     "sha": "9440243d07902e36004b08124a2db3984aa95771"
   },
