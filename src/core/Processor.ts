@@ -3,7 +3,7 @@
 
 import { Context } from "@/cycle/context/Context";
 import { packageUpdates, receiveBlob } from "@/cycles/data-update/blob-utils";
-import { commitUpdates, translateValue } from "@/cycles/data-update/data-update";
+import { commitUpdates, getLeafObject, translateValue } from "@/cycles/data-update/data-update";
 import { Update } from "@/types/Update";
 import { extractBlobsFromPayload, includeBlobsInPayload } from "@dobuki/data-blob";
 import { validatePayload } from "@dobuki/payload-validator";
@@ -22,14 +22,24 @@ export class Processor {
     const outgoingUpdates = context.root.outgoingUpdates;
     delete context.root.outgoingUpdates;
     if (outgoingUpdates) {
+      //  Apply function to value
       for (let update of outgoingUpdates) {
-        if (update) {
-          update.path = this.#fixPath(update.path, context);
-          const value = typeof update.value === "function" ? update.value(context.root) : update.value;
-          update.value = await extractBlobsFromPayload(value, blobs);
-        }
+        update.path = this.#fixPath(update.path, context);
+        const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
+        const value = typeof update.value === "function" ? update.value(previous) : update.value;
+        update.value = value;
       }
-      const blob = packageUpdates(outgoingUpdates, blobs, context.secret, context.clientId);
+
+      //  Apply incoming updates
+      const confirmedUpdates = outgoingUpdates.filter(update => update.value !== undefined)
+        .map(update => ({ ...update }));
+      this.#addIncomingUpdates(confirmedUpdates, context);
+
+      //  send outgoing updates
+      for (let update of outgoingUpdates) {
+        update.value = await extractBlobsFromPayload(update.value, blobs);
+      }
+      const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
       this.sendUpdate(blob, context);
     }
   }
@@ -67,9 +77,13 @@ export class Processor {
           update.value = includeBlobsInPayload(update.value, blobs);
         });
       }
-      context.root.updates = context.root.updates ?? [];
-      context.root.updates.push(...payload.updates);
+      this.#addIncomingUpdates(payload.updates, context);
     }
+  }
+
+  #addIncomingUpdates(updates: Update[], context: Context) {
+    context.root.updates = context.root.updates ?? [];
+    context.root.updates.push(...updates);
   }
 
   #fixPath(path: string, context: Context) {
