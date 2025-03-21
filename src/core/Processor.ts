@@ -82,6 +82,7 @@ export class Processor {
   }
 
   #addIncomingUpdates(updates: Update[], context: Context) {
+    console.log("Adding incoming updates", updates);
     context.root.updates = context.root.updates ?? [];
     context.root.updates.push(...updates);
   }
