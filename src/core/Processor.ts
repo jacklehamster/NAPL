@@ -26,8 +26,7 @@ export class Processor {
       for (let update of outgoingUpdates) {
         update.path = this.#fixPath(update.path, context);
         const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
-        const value = typeof update.value === "function" ? update.value(previous) : update.value;
-        update.value = value;
+        update.value = typeof update.value === "function" ? update.value(previous) : update.value;
       }
 
       //  Apply incoming updates
