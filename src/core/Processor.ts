@@ -65,12 +65,6 @@ export class Processor {
       // client ID confirmed
       context.clientId = payload.myClientId;
     }
-    if (payload?.state) {
-      delete payload.state.signature;
-      for (const key in payload.state) {
-        context.root[key] = hasBlobs ? includeBlobsInPayload(payload.state[key], blobs) : payload.state[key];
-      }
-    }
     if (payload?.updates) {
       if (hasBlobs) {
         payload.updates.forEach((update: Update) => {
@@ -82,7 +76,6 @@ export class Processor {
   }
 
   #addIncomingUpdates(updates: Update[], context: Context) {
-    console.log("Adding incoming updates", updates);
     context.root.updates = context.root.updates ?? [];
     context.root.updates.push(...updates);
   }
