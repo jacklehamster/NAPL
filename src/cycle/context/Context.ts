@@ -2,6 +2,7 @@ import { Data } from "@/types/Data";
 
 export interface Context {
   secret?: string;
+  skipValidation?: boolean;
   localTimeOffset?: number;
   clientId?: string;
   root: Data;

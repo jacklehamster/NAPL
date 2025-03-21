@@ -38,7 +38,7 @@ export class Processor {
     const { payload, blobs } = data instanceof Blob ? await receiveBlob(data) : { payload: typeof (data) === "string" ? JSON.parse(data) : data, blobs: {} };
     const secret = context.secret ?? payload.secret;
     if (secret) {
-      if (!validatePayload(payload, { secret })) {
+      if (!context.skipValidation && !validatePayload(payload, { secret })) {
         console.error("Invalid signature");
         return;
       }
