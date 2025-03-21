@@ -18,12 +18,7 @@ export function packageUpdates(updates: Update[], blobs: Record<string, Blob>, s
 
 type BlobContent = { payload: Payload } & Record<string, Blob>;
 
-export async function receiveBlob(blob: Blob, secret?: string) {
+export async function receiveBlob(blob: Blob) {
   const { payload, ...blobs } = await extractPayload<BlobContent>(blob);
-  const thisSecret = secret ?? payload?.secret;
-  if (thisSecret && !validatePayload(payload, { secret: thisSecret })) {
-    console.error("Failed payload validation.");
-    return { payload: undefined, blobs: {} };
-  }
-  return { payload, blobs, secret: thisSecret };
+  return { payload, blobs };
 }

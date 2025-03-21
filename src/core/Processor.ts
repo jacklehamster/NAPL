@@ -1,8 +1,12 @@
+/// <reference lib="dom" />
+/// <reference lib="dom.iterable" />
+
 import { Context } from "@/cycle/context/Context";
 import { packageUpdates, receiveBlob } from "@/cycles/data-update/blob-utils";
 import { commitUpdates, translateValue } from "@/cycles/data-update/data-update";
 import { Update } from "@/types/Update";
 import { extractBlobsFromPayload, includeBlobsInPayload } from "@dobuki/data-blob";
+import { validatePayload } from "@dobuki/payload-validator";
 
 export class Processor {
   constructor(private sendUpdate: (blob: Blob, context: Context) => void) {
@@ -30,9 +34,14 @@ export class Processor {
     }
   }
 
-  async processBlob(blob: Blob, context: Context) {
-    const { payload, blobs, secret } = await receiveBlob(blob, context.secret);
+  async processBlob(data: any | Blob, context: Context) {
+    const { payload, blobs } = data instanceof Blob ? await receiveBlob(data) : { payload: typeof (data) === "string" ? JSON.parse(data) : data, blobs: {} };
+    const secret = context.secret ?? payload.secret;
     if (secret) {
+      if (!validatePayload(payload, { secret })) {
+        console.error("Invalid signature");
+        return;
+      }
       context.secret = secret;
     }
 
