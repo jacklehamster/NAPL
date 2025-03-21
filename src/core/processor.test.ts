@@ -15,8 +15,7 @@ describe('Processor', () => {
       array: [1, 2, 3],
     };
     const context = createContext(root);
-    root.outgoingUpdates = root.outgoingUpdates ?? [];
-    root.outgoingUpdates.push(
+    context.outgoingUpdates = [
       {
         path: 'abc',
         value: 456,
@@ -27,7 +26,7 @@ describe('Processor', () => {
         value: 5,
         confirmed: 2,
       }
-    );
+    ];
     processor.performCycle(context);
     await new Promise((resolve) => setTimeout(resolve, 100));
     processor.performCycle(context);

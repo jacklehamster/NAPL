@@ -17,7 +17,7 @@ export class Processor {
     return commitUpdates(context.root, context.properties);
   }
 
-  private async sendUpdateBlob(context: Context) {
+  async sendUpdateBlob(context: Context) {
     const blobs: Record<string, Blob> = {};
     const outgoingUpdates = context.outgoingUpdates;
     context.outgoingUpdates = [];

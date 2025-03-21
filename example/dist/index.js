@@ -5788,8 +5788,8 @@ class Processor {
   }
   async sendUpdateBlob(context) {
     const blobs = {};
-    const outgoingUpdates = context.root.outgoingUpdates;
-    delete context.root.outgoingUpdates;
+    const outgoingUpdates = context.outgoingUpdates;
+    context.outgoingUpdates = [];
     if (outgoingUpdates) {
       for (let update of outgoingUpdates) {
         update.path = this.#fixPath(update.path, context);
@@ -5846,7 +5846,8 @@ class Processor {
 function createContext(root, properties = {}) {
   return {
     root,
-    properties
+    properties,
+    outgoingUpdates: []
   };
 }
 // src/index.ts
@@ -5899,4 +5900,4 @@ export {
   root
 };
 
-//# debugId=BAF92AFF42F6D35E64756E2164756E21
+//# debugId=0089AFE1EF64CC2564756E2164756E21
