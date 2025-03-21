@@ -10,7 +10,6 @@ export class Processor {
 
   performCycle(context: Context) {
     this.sendUpdateBlob(context);
-    context.root.frame = (context.root.frame ?? 0) + 1;
     return commitUpdates(context.root, context.properties);
   }
 
@@ -62,7 +61,6 @@ export class Processor {
       context.root.updates = context.root.updates ?? [];
       context.root.updates.push(...payload.updates);
     }
-    console.log("payload", payload);
   }
 
   #fixPath(path: string, context: Context) {

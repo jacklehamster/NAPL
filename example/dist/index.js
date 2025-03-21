@@ -5789,8 +5789,7 @@ class Processor {
   }
   performCycle(context) {
     this.sendUpdateBlob(context);
-    context.root.frame = (context.root.frame ?? 0) + 1;
-    commitUpdates2(context.root, context.properties);
+    return commitUpdates2(context.root, context.properties);
   }
   async sendUpdateBlob(context) {
     const blobs = {};
@@ -5877,7 +5876,6 @@ var processor = new Processor((blob) => {
 function cycle() {
   processor.performCycle(cycleData);
   refreshData();
-  console.log("cycle", cycleData);
 }
 function setupGamePlayer() {
   {
@@ -5901,4 +5899,4 @@ export {
   root
 };
 
-//# debugId=3AF90095D2018BE264756E2164756E21
+//# debugId=28250CD2670EBFF764756E2164756E21

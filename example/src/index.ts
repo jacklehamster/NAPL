@@ -37,7 +37,6 @@ const processor = new Processor(blob => {
 function cycle() {
   processor.performCycle(cycleData);
   refreshData();
-  console.log("cycle", cycleData);
 }
 
 function setupGamePlayer() {
