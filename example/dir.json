@@ -12,10 +12,10 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/index.js": {
-    "sha": "c2edf93f489ba56de4c63d4b1c00772110cc172e"
+    "sha": "552f3ae4caa5a4fe784f8902de9ea30c2bc41cf7"
   },
   "dist/index.js.map": {
-    "sha": "253854466ec81b94105fd8524e78e641524371c1"
+    "sha": "0f06b37353c4a247f6e03e989353281712ba38ea"
   },
   "dist/styles-da87zv4s.css": {
     "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -32,12 +32,12 @@
   "json-test/index.html": {
     "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
   },
-  "md5": "e782f3de7a69e5fb738194d1992b48a7",
+  "md5": "4d5655ccb9250a8466ec1245049d36c1",
   "package.json": {
     "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
   },
   "src/index.ts": {
-    "sha": "3d4ac1154aabeab4e52adaea6f8f7dd0c42cdbab"
+    "sha": "971993f89062db556eb852406e4362dea4c1eafd"
   },
   "tsconfig.json": {
     "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"

@@ -1,6 +1,6 @@
 {
   "core/Processor.ts": {
-    "sha": "f1bc04b90cc185f5a6da13fd0a241a318b81adf1"
+    "sha": "ef9e0e6145ce297370fdec905d52f0a7cf939e65"
   },
   "core/processor.test.ts": {
     "sha": "4a1f7337683ef37ad859bb57f14a3cb01993b6be"
@@ -20,9 +20,9 @@
   "index.ts": {
     "sha": "8932cbe701fe9df9df4ea809bb34fb518f5d4d60"
   },
-  "md5": "b685e163a925916e64b1fdabd84021e2",
+  "md5": "eb012a85bebd391d61ce252cbbcf7c7a",
   "types/Data.ts": {
-    "sha": "891c549fcfed0faf252c6eb13f19de84c906155b"
+    "sha": "9440243d07902e36004b08124a2db3984aa95771"
   },
   "types/Payload.ts": {
     "sha": "fb19090ae313f86ca841a96b20e394de77238214"
