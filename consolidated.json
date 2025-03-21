@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.43",
+    "version": "1.0.44",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -215,9 +215,9 @@
   },
   "/src/core/dir.json": {
     "Processor.ts": {
-      "sha": "4988be0ad4b1aaa8410f8445e2db1add285af42d"
+      "sha": "9f0cc05fb50285e5cc63528859b1e06f0948202f"
     },
-    "md5": "1fbe9483b16d07cc316603d24ead1b02",
+    "md5": "3c5a5fbddc6ceb8a0e916cbb6f92d211",
     "processor.test.ts": {
       "sha": "4a1f7337683ef37ad859bb57f14a3cb01993b6be"
     }
@@ -260,7 +260,7 @@
   },
   "/src/dir.json": {
     "core/Processor.ts": {
-      "sha": "4988be0ad4b1aaa8410f8445e2db1add285af42d"
+      "sha": "9f0cc05fb50285e5cc63528859b1e06f0948202f"
     },
     "core/processor.test.ts": {
       "sha": "4a1f7337683ef37ad859bb57f14a3cb01993b6be"
@@ -278,14 +278,14 @@
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
     "index.ts": {
-      "sha": "8932cbe701fe9df9df4ea809bb34fb518f5d4d60"
+      "sha": "7150aa4836cbb9ff0b5dd526d8a530f8795d5bea"
     },
-    "md5": "1547273dcc6ba90b416587bc1b72c93f",
+    "md5": "b7e8df9bb8571ed7d4820be02fbcc681",
     "types/Data.ts": {
       "sha": "9440243d07902e36004b08124a2db3984aa95771"
     },
     "types/Payload.ts": {
-      "sha": "2efd203e74530b6f3fe7db1ccb7165561036178a"
+      "sha": "cb85d5a25c6e59fd946b136abafa5ed4c8df8cc5"
     },
     "types/Update.ts": {
       "sha": "00730a6ae9aa0aa3aa24d79a4f7b793568c5ae87"
@@ -296,12 +296,12 @@
       "sha": "9440243d07902e36004b08124a2db3984aa95771"
     },
     "Payload.ts": {
-      "sha": "2efd203e74530b6f3fe7db1ccb7165561036178a"
+      "sha": "cb85d5a25c6e59fd946b136abafa5ed4c8df8cc5"
     },
     "Update.ts": {
       "sha": "00730a6ae9aa0aa3aa24d79a4f7b793568c5ae87"
     },
-    "md5": "8d133b70d6f0402eb127255528e2abbe"
+    "md5": "2e97427ac19d97c4aaca7f6c10645c85"
   },
   "/tsconfig.json": {
     "compilerOptions": {
