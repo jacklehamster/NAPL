@@ -6,5 +6,6 @@ export interface Data {
   frame?: number;
   type?: string;
   updates?: Update[];
+  outgoingUpdates?: Update[];
   [key: string]: any;
 }

@@ -138,10 +138,3 @@ export function markUpdateConfirmed(update: Update, now: number) {
     update.confirmed = now;
   }
 }
-
-export function pushUpdate(data: Data, ...updates: Update[]) {
-  if (updates.length) {
-    data.updates ??= [];
-    data.updates.push(...updates);
-  }
-}

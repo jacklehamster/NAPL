@@ -1,20 +1,22 @@
 import { createContext } from "../cycle/context/Context";
 import { Data } from "../types/Data";
 import { Processor } from "./Processor";
-import { pushUpdate } from "../cycles/data-update/data-update";
 
 describe('Processor', () => {
 
-  it('test update and databinding cycle', () => {
-    const processor = new Processor();
+  it('test update and databinding cycle', async () => {
+    const processor = new Processor((blob, context) => {
+      processor.processBlob(blob, context);
+    });
 
     const root: Data = {
       type: 'test',
       abc: 123,
       array: [1, 2, 3],
     };
-    const cycleData = createContext(root);
-    pushUpdate(root,
+    const context = createContext(root);
+    root.outgoingUpdates = root.outgoingUpdates ?? [];
+    root.outgoingUpdates.push(
       {
         path: 'abc',
         value: 456,
@@ -26,7 +28,9 @@ describe('Processor', () => {
         confirmed: 2,
       }
     );
-    processor.performCycle(cycleData);
+    processor.performCycle(context);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    processor.performCycle(context);
     expect(root.abc).toBe(456);
     expect(root.array).toEqual([1, 5, 3]);
   })

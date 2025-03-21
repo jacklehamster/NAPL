@@ -28,7 +28,11 @@ const socketClient = new SocketClient(location.host, undefined, root);
 socketClient.observe().onChange(refreshData);
 
 
-const processor = new Processor();
+const processor = new Processor(blob => {
+  processor.processBlob(blob, cycleData).then(() => {
+    refreshData();
+  });
+});
 
 function cycle() {
   processor.performCycle(cycleData);
@@ -46,8 +50,8 @@ function setupGamePlayer() {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "🔄";
     button.addEventListener("click", () => {
-      root.updates = root.updates ?? [];
-      root.updates.push({ path: "abc", value: Math.random(), confirmed: true });
+      root.outgoingUpdates = root.outgoingUpdates ?? [];
+      root.outgoingUpdates.push({ path: "abc", value: Math.random(), confirmed: 1 });
       refreshData();
     });
   }
