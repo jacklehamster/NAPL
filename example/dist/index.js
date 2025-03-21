@@ -4279,6 +4279,23 @@ function ht(t, n) {
   return t;
 }
 
+// ../src/cycles/data-update/blob-utils.ts
+function packageUpdates(updates, blobs, secret) {
+  const blobBuilder = un.payload("payload", { updates }, secret);
+  const addedBlob = new Set;
+  for (let key in blobs) {
+    if (!addedBlob.has(key)) {
+      blobBuilder.blob(key, blobs[key]);
+      addedBlob.add(key);
+    }
+  }
+  return blobBuilder.build();
+}
+async function receiveBlob(blob) {
+  const { payload, ...blobs } = await I8(blob);
+  return { payload, blobs };
+}
+
 // ../node_modules/@dobuki/payload-validator/dist/index.js
 var zJ2 = Object.create;
 var { defineProperty: Q02, getPrototypeOf: QJ2, getOwnPropertyNames: ZJ2 } = Object;
@@ -5759,28 +5776,6 @@ function x52(J3, q2) {
 }
 var JJ2 = 5000;
 
-// ../src/cycles/data-update/blob-utils.ts
-function packageUpdates(updates, blobs, secret, sender) {
-  const blobBuilder = un.payload("payload", { updates, sender }, secret);
-  const addedBlob = new Set;
-  for (let key in blobs) {
-    if (!addedBlob.has(key)) {
-      blobBuilder.blob(key, blobs[key]);
-      addedBlob.add(key);
-    }
-  }
-  return blobBuilder.build();
-}
-async function receiveBlob(blob, secret) {
-  const { payload, ...blobs } = await I8(blob);
-  const thisSecret = secret ?? payload?.secret;
-  if (thisSecret && !x52(payload, { secret: thisSecret })) {
-    console.error("Failed payload validation.");
-    return { payload: undefined, blobs: {} };
-  }
-  return { payload, blobs, secret: thisSecret };
-}
-
 // ../src/core/Processor.ts
 class Processor {
   sendUpdate;
@@ -5797,19 +5792,28 @@ class Processor {
     delete context.root.outgoingUpdates;
     if (outgoingUpdates) {
       for (let update of outgoingUpdates) {
-        if (update) {
-          update.path = this.#fixPath(update.path, context);
-          const value = typeof update.value === "function" ? update.value(context.root) : update.value;
-          update.value = await tt(value, blobs);
-        }
+        update.path = this.#fixPath(update.path, context);
+        const previous = getLeafObject2(context.root, update.path.split("/"), 0, false);
+        const value = typeof update.value === "function" ? update.value(previous) : update.value;
+        update.value = value;
       }
-      const blob = packageUpdates(outgoingUpdates, blobs, context.secret, context.clientId);
+      const confirmedUpdates = outgoingUpdates.filter((update) => update.confirmed).map((update) => ({ ...update }));
+      this.#addIncomingUpdates(confirmedUpdates, context);
+      for (let update of outgoingUpdates) {
+        update.value = await tt(update.value, blobs);
+      }
+      const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
       this.sendUpdate(blob, context);
     }
   }
-  async processBlob(blob, context) {
-    const { payload, blobs, secret } = await receiveBlob(blob, context.secret);
+  async processBlob(data, context) {
+    const { payload, blobs } = data instanceof Blob ? await receiveBlob(data) : { payload: typeof data === "string" ? JSON.parse(data) : data, blobs: {} };
+    const secret = context.secret ?? payload.secret;
     if (secret) {
+      if (!context.skipValidation && !x52(payload, { secret })) {
+        console.error("Invalid signature");
+        return;
+      }
       context.secret = secret;
     }
     const hasBlobs = blobs && Object.keys(blobs).length > 0;
@@ -5819,21 +5823,18 @@ class Processor {
     if (payload?.myClientId) {
       context.clientId = payload.myClientId;
     }
-    if (payload?.state) {
-      delete payload.state.signature;
-      for (const key in payload.state) {
-        context.root[key] = hasBlobs ? ht(payload.state[key], blobs) : payload.state[key];
-      }
-    }
     if (payload?.updates) {
       if (hasBlobs) {
         payload.updates.forEach((update) => {
           update.value = ht(update.value, blobs);
         });
       }
-      context.root.updates = context.root.updates ?? [];
-      context.root.updates.push(...payload.updates);
+      this.#addIncomingUpdates(payload.updates, context);
     }
+  }
+  #addIncomingUpdates(updates, context) {
+    context.root.updates = context.root.updates ?? [];
+    context.root.updates.push(...updates);
   }
   #fixPath(path, context) {
     const split = path.split("/");
@@ -5899,4 +5900,4 @@ export {
   root
 };
 
-//# debugId=28250CD2670EBFF764756E2164756E21
+//# debugId=380B9FB7430EA9B064756E2164756E21

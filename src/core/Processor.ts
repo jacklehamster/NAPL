@@ -31,7 +31,7 @@ export class Processor {
       }
 
       //  Apply incoming updates
-      const confirmedUpdates = outgoingUpdates.filter(update => update.value !== undefined)
+      const confirmedUpdates = outgoingUpdates.filter(update => update.confirmed)
         .map(update => ({ ...update }));
       this.#addIncomingUpdates(confirmedUpdates, context);
 
