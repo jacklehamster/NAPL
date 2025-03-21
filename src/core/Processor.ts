@@ -8,10 +8,10 @@ export class Processor {
   constructor(private sendUpdate: (blob: Blob, context: Context) => void) {
   }
 
-  performCycle(context: Context): void {
+  performCycle(context: Context) {
     this.sendUpdateBlob(context);
     context.root.frame = (context.root.frame ?? 0) + 1;
-    commitUpdates(context.root, context.properties);
+    return commitUpdates(context.root, context.properties);
   }
 
   private async sendUpdateBlob(context: Context) {
@@ -62,6 +62,7 @@ export class Processor {
       context.root.updates = context.root.updates ?? [];
       context.root.updates.push(...payload.updates);
     }
+    console.log("payload", payload);
   }
 
   #fixPath(path: string, context: Context) {
