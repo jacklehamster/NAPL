@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { clearUpdates, commitUpdates } from './data-update';
+import { commitUpdates } from './data-update';
 import { Data } from '../../types/Data';
 
 describe('commitUpdates', () => {
@@ -12,11 +12,9 @@ describe('commitUpdates', () => {
       ],
     };
 
-    const updates: Record<string, any> = {};
     commitUpdates(obj, {
       test: "123",
-    }, updates);
-    clearUpdates(obj, updates);
+    });
 
     expect(obj).toEqual({ a: { b: 2 }, test: "123" });
   });
@@ -27,9 +25,7 @@ describe('commitUpdates', () => {
         { path: "abc", value: { a: 1 }, confirmed: 1 },
       ],
     };
-    const updates: Record<string, any> = {};
-    commitUpdates(obj, {}, updates);
-    clearUpdates(obj, updates);
+    commitUpdates(obj, {});
     expect(obj).toEqual({ abc: { a: 1 } });
   })
 
@@ -40,9 +36,7 @@ describe('commitUpdates', () => {
         { path: "abc", value: undefined, confirmed: 1 },
       ],
     };
-    const updates: Record<string, any> = {};
-    commitUpdates(obj, {}, updates);
-    clearUpdates(obj, updates);
+    commitUpdates(obj, {});
     expect(obj).toEqual({});
   });
 
@@ -55,11 +49,9 @@ describe('commitUpdates', () => {
       ],
     };
 
-    const updates: Record<string, any> = {};
     commitUpdates(obj, {
       test: "123",
-    }, updates);
-    clearUpdates(obj, updates);
+    });
 
     expect(obj).toEqual({
       a: {

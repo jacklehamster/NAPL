@@ -3,15 +3,16 @@ import { Data } from "../../types/Data";
 
 const KEYS = "~{keys}";
 const VALUES = "~{values}";
+const REGEX = /~\{([^}]+)\}/;
 
 // This function is used to commit updates to the root object
 export function commitUpdates(
   root: Data | undefined,
   properties: Record<string, any>,
-  updatedPaths: Record<string, any>) {
+  updatedPaths: Record<string, any> = {}) {
 
-  if (!root) {
-    return;
+  if (!root || !root.updates?.length) {
+    return updatedPaths;
   }
   sortUpdates(root.updates);
   root.updates?.forEach((update) => {
@@ -45,6 +46,8 @@ export function commitUpdates(
     }
     updatedPaths[update.path] = leaf[prop];
   });
+  clearUpdates(root, updatedPaths);
+  return updatedPaths;
 }
 
 // This function is used to remove empty objects from the root object
@@ -59,7 +62,7 @@ function cleanupRoot(root: Record<string, any>, parts: (string | number)[], inde
 }
 
 // Removed processed updateds
-export function clearUpdates(root: Data, updatedPaths: Record<string, any>) {
+function clearUpdates(root: Data, updatedPaths: Record<string, any>) {
   root.updates = root.updates?.filter((update) => !(update.path in updatedPaths));
   if (!root.updates?.length) {
     delete root.updates;
@@ -91,7 +94,6 @@ export function getLeafObject(obj: Record<string, any>, parts: (string | number)
   return current;
 }
 
-const REGEX = /~\{([^}]+)\}/;
 export function translateValue(value: any, properties: Record<string, any>) {
   if (typeof value !== "string") {
     return value;

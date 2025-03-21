@@ -1,10 +1,9 @@
 
 export interface Update {
   path: string;
-  value?: any | undefined;
+  value?: any;
   append?: boolean;
   insert?: number;
   delete?: number;
   confirmed?: number;
-  signature?: string;
 }
