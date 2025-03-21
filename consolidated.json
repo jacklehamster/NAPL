@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "dab4769cb58c16fb9d5731d8a66d7550ff609e58"
+      "sha": "08f19b3bc5ff056fcc729ac6e43ad97ef97190f3"
     },
     "dist/index.js.map": {
-      "sha": "aecdc51512519631bb7d601bc8c24ed21143441e"
+      "sha": "00cad346fbb9c031b0809139276a393acf5283e8"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -60,7 +60,7 @@
     "json-test/index.html": {
       "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
     },
-    "md5": "48350f959908d5f6a21d2c23d50a186e",
+    "md5": "5e5308f07fa83b85658d8ece9994f9e3",
     "package.json": {
       "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
     },
@@ -73,12 +73,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "dab4769cb58c16fb9d5731d8a66d7550ff609e58"
+      "sha": "08f19b3bc5ff056fcc729ac6e43ad97ef97190f3"
     },
     "index.js.map": {
-      "sha": "aecdc51512519631bb7d601bc8c24ed21143441e"
+      "sha": "00cad346fbb9c031b0809139276a393acf5283e8"
     },
-    "md5": "08d9ad7e251a186a4b699582032473bc",
+    "md5": "49b88290b2a9d85209af83e4afc911e3",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.46",
+    "version": "1.0.47",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -215,24 +215,24 @@
   },
   "/src/core/dir.json": {
     "Processor.ts": {
-      "sha": "7ab807fb6c680c6edd90abea6ffb81194c821fa0"
+      "sha": "b89330894fbe97d0f7f29eb6c1f5d3bde5932926"
     },
-    "md5": "7635ace26c74605fec9c5ce320444103",
+    "md5": "8bad66d714bb798b9ee93946993ff144",
     "processor.test.ts": {
-      "sha": "4a1f7337683ef37ad859bb57f14a3cb01993b6be"
+      "sha": "d7485d3aa44d97c039cbf0962b47e22607159e1e"
     }
   },
   "/src/cycle/context/dir.json": {
     "Context.ts": {
-      "sha": "ccc4ec87a1f406ac7fd4cc3fe2df33246010638e"
+      "sha": "830be155b07e1f39719cdd93727dd8f34613f934"
     },
-    "md5": "5ccbf7b7299fb5a848a0456c68f09dae"
+    "md5": "df5849de1ec202abd35e58b9c771c833"
   },
   "/src/cycle/dir.json": {
     "context/Context.ts": {
-      "sha": "ccc4ec87a1f406ac7fd4cc3fe2df33246010638e"
+      "sha": "830be155b07e1f39719cdd93727dd8f34613f934"
     },
-    "md5": "3afe3a5c5d7682d009614af19d528783"
+    "md5": "d92e3f10b2363c2f09469c44a7a9a4ee"
   },
   "/src/cycles/data-update/dir.json": {
     "blob-utils.ts": {
@@ -260,13 +260,13 @@
   },
   "/src/dir.json": {
     "core/Processor.ts": {
-      "sha": "7ab807fb6c680c6edd90abea6ffb81194c821fa0"
+      "sha": "b89330894fbe97d0f7f29eb6c1f5d3bde5932926"
     },
     "core/processor.test.ts": {
-      "sha": "4a1f7337683ef37ad859bb57f14a3cb01993b6be"
+      "sha": "d7485d3aa44d97c039cbf0962b47e22607159e1e"
     },
     "cycle/context/Context.ts": {
-      "sha": "ccc4ec87a1f406ac7fd4cc3fe2df33246010638e"
+      "sha": "830be155b07e1f39719cdd93727dd8f34613f934"
     },
     "cycles/data-update/blob-utils.ts": {
       "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
@@ -280,9 +280,9 @@
     "index.ts": {
       "sha": "7150aa4836cbb9ff0b5dd526d8a530f8795d5bea"
     },
-    "md5": "4979ed8e041a71c63d6968338043b277",
+    "md5": "5a37a67eb7202ad42a721411977188a4",
     "types/Data.ts": {
-      "sha": "9440243d07902e36004b08124a2db3984aa95771"
+      "sha": "66cd2ef71082f0f7da00641a26e3b6bc08db3107"
     },
     "types/Payload.ts": {
       "sha": "cb85d5a25c6e59fd946b136abafa5ed4c8df8cc5"
@@ -293,7 +293,7 @@
   },
   "/src/types/dir.json": {
     "Data.ts": {
-      "sha": "9440243d07902e36004b08124a2db3984aa95771"
+      "sha": "66cd2ef71082f0f7da00641a26e3b6bc08db3107"
     },
     "Payload.ts": {
       "sha": "cb85d5a25c6e59fd946b136abafa5ed4c8df8cc5"
@@ -301,7 +301,7 @@
     "Update.ts": {
       "sha": "00730a6ae9aa0aa3aa24d79a4f7b793568c5ae87"
     },
-    "md5": "2e97427ac19d97c4aaca7f6c10645c85"
+    "md5": "496a8e50565c88106b0d976ce6a2dcc7"
   },
   "/tsconfig.json": {
     "compilerOptions": {
