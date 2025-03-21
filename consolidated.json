@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.37",
+    "version": "1.0.38",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -215,24 +215,24 @@
   },
   "/src/core/dir.json": {
     "Processor.ts": {
-      "sha": "ab418c19ec969dbe412e99fd3902c8499a6b11a3"
+      "sha": "f1bc04b90cc185f5a6da13fd0a241a318b81adf1"
     },
-    "md5": "9412c10b6f29a4a953b4aa5ebb7002db",
+    "md5": "1ef95bc38952308bba67a69ebdbf0325",
     "processor.test.ts": {
       "sha": "4a1f7337683ef37ad859bb57f14a3cb01993b6be"
     }
   },
   "/src/cycle/context/dir.json": {
     "Context.ts": {
-      "sha": "57902810378aaf6afd2ed13478ad5a18a6c92c38"
+      "sha": "10279f21fc6b299d9af87c855736bda05992c4cc"
     },
-    "md5": "9e42b30d991abe973f2c63352f349839"
+    "md5": "39d3460384b5ed2631f4fad2eb7b58ff"
   },
   "/src/cycle/dir.json": {
     "context/Context.ts": {
-      "sha": "57902810378aaf6afd2ed13478ad5a18a6c92c38"
+      "sha": "10279f21fc6b299d9af87c855736bda05992c4cc"
     },
-    "md5": "62b5eb9f652931ffaf05782003e2753d"
+    "md5": "45731711e160a91e662faf7f93929895"
   },
   "/src/cycles/data-update/dir.json": {
     "blob-utils.ts": {
@@ -260,13 +260,13 @@
   },
   "/src/dir.json": {
     "core/Processor.ts": {
-      "sha": "ab418c19ec969dbe412e99fd3902c8499a6b11a3"
+      "sha": "f1bc04b90cc185f5a6da13fd0a241a318b81adf1"
     },
     "core/processor.test.ts": {
       "sha": "4a1f7337683ef37ad859bb57f14a3cb01993b6be"
     },
     "cycle/context/Context.ts": {
-      "sha": "57902810378aaf6afd2ed13478ad5a18a6c92c38"
+      "sha": "10279f21fc6b299d9af87c855736bda05992c4cc"
     },
     "cycles/data-update/blob-utils.ts": {
       "sha": "dd1a63f5a6412325e7a1ded9a14f0aedb47b8cbe"
@@ -280,7 +280,7 @@
     "index.ts": {
       "sha": "8932cbe701fe9df9df4ea809bb34fb518f5d4d60"
     },
-    "md5": "9d753fa5b156a6f504dbb704f1b30997",
+    "md5": "b685e163a925916e64b1fdabd84021e2",
     "types/Data.ts": {
       "sha": "891c549fcfed0faf252c6eb13f19de84c906155b"
     },
