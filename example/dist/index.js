@@ -5794,8 +5794,7 @@ class Processor {
       for (let update of outgoingUpdates) {
         update.path = this.#fixPath(update.path, context);
         const previous = getLeafObject2(context.root, update.path.split("/"), 0, false);
-        const value = typeof update.value === "function" ? update.value(previous) : update.value;
-        update.value = value;
+        update.value = typeof update.value === "function" ? update.value(previous) : update.value;
       }
       const confirmedUpdates = outgoingUpdates.filter((update) => update.confirmed).map((update) => ({ ...update }));
       this.#addIncomingUpdates(confirmedUpdates, context);
@@ -5900,4 +5899,4 @@ export {
   root
 };
 
-//# debugId=380B9FB7430EA9B064756E2164756E21
+//# debugId=BAF92AFF42F6D35E64756E2164756E21
