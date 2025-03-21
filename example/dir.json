@@ -12,10 +12,10 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/index.js": {
-    "sha": "c065c9cb05d9fa6efd5c2aedc23bcb3a4a344ada"
+    "sha": "88286bfcb1442503a02cb0d5b0bb9595a49daa47"
   },
   "dist/index.js.map": {
-    "sha": "e712e4fac4766da60e3adf6be1129fa4e7e52573"
+    "sha": "eb04ceea1b551a310c77220fbb5ab2255eeabdfc"
   },
   "dist/styles-da87zv4s.css": {
     "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -32,7 +32,7 @@
   "json-test/index.html": {
     "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
   },
-  "md5": "807790050b0744d07fc8c45b20bf41be",
+  "md5": "e9cdfdc11ff49878ae20fa16e7ddfbd9",
   "package.json": {
     "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
   },
