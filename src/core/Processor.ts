@@ -19,8 +19,8 @@ export class Processor {
 
   private async sendUpdateBlob(context: Context) {
     const blobs: Record<string, Blob> = {};
-    const outgoingUpdates = context.root.outgoingUpdates;
-    delete context.root.outgoingUpdates;
+    const outgoingUpdates = context.outgoingUpdates;
+    context.outgoingUpdates = [];
     if (outgoingUpdates) {
       //  Apply function to value
       for (let update of outgoingUpdates) {
@@ -30,7 +30,8 @@ export class Processor {
       }
 
       //  Apply incoming updates
-      const confirmedUpdates = outgoingUpdates.filter(update => update.confirmed)
+      const confirmedUpdates = outgoingUpdates
+        .filter(update => update.confirmed)
         .map(update => ({ ...update }));
       this.#addIncomingUpdates(confirmedUpdates, context);
 

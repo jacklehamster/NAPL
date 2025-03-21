@@ -4,6 +4,5 @@ import { Update } from "@/types/Update";
 // ~<>  coded variable. Causes data binding to the variable
 export interface Data {
   updates?: Update[];
-  outgoingUpdates?: Update[];
   [key: string]: any;
 }
