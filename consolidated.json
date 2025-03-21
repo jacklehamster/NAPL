@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "30d86085aba561f6c5a6e5f4c5a28235d1da89dd"
+      "sha": "dab4769cb58c16fb9d5731d8a66d7550ff609e58"
     },
     "dist/index.js.map": {
-      "sha": "8d0cee17a8dffad24b07c6c1f69d067ba23ab12b"
+      "sha": "aecdc51512519631bb7d601bc8c24ed21143441e"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -60,7 +60,7 @@
     "json-test/index.html": {
       "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
     },
-    "md5": "e267556d84715dd4155e0b971bf5694d",
+    "md5": "48350f959908d5f6a21d2c23d50a186e",
     "package.json": {
       "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
     },
@@ -73,12 +73,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "30d86085aba561f6c5a6e5f4c5a28235d1da89dd"
+      "sha": "dab4769cb58c16fb9d5731d8a66d7550ff609e58"
     },
     "index.js.map": {
-      "sha": "8d0cee17a8dffad24b07c6c1f69d067ba23ab12b"
+      "sha": "aecdc51512519631bb7d601bc8c24ed21143441e"
     },
-    "md5": "54810e9ab83a333f93630e378ab29a84",
+    "md5": "08d9ad7e251a186a4b699582032473bc",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.45",
+    "version": "1.0.46",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
