@@ -1,6 +1,6 @@
 {
   "data-update/blob-utils.ts": {
-    "sha": "452472c710a3297e9e16f972b3a301124990f661"
+    "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
   },
   "data-update/data-update.test.ts": {
     "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -8,5 +8,5 @@
   "data-update/data-update.ts": {
     "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
   },
-  "md5": "53285c8fb56383f6c879d30ac805fadf"
+  "md5": "d487996e06e2018e236e3c33335ef52c"
 }
