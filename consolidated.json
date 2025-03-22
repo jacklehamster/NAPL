@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "5033c069fa3af5fa00e97fe3fb073fe85d3f3100"
+      "sha": "ae583febf7d6fefc7e6378cc2f71bbdcbfcfdf23"
     },
     "dist/index.js.map": {
-      "sha": "3ea4553dffdd3894703d479a43c175b0725047ab"
+      "sha": "3f6498049706c8adec79a70565ac5ec7c18106b0"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -60,7 +60,7 @@
     "json-test/index.html": {
       "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
     },
-    "md5": "0b3a5b09b60c325bc2940c9ad6f04c8e",
+    "md5": "06dd8a7d2dab8f592c72bab9048349a4",
     "package.json": {
       "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
     },
@@ -73,12 +73,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "5033c069fa3af5fa00e97fe3fb073fe85d3f3100"
+      "sha": "ae583febf7d6fefc7e6378cc2f71bbdcbfcfdf23"
     },
     "index.js.map": {
-      "sha": "3ea4553dffdd3894703d479a43c175b0725047ab"
+      "sha": "3f6498049706c8adec79a70565ac5ec7c18106b0"
     },
-    "md5": "56e08d8d2d882ddf3ec7bdb22fcdbe5b",
+    "md5": "74e94898735913340a6cfb5544ff45cc",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.48",
+    "version": "1.0.49",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -215,9 +215,9 @@
   },
   "/src/core/dir.json": {
     "Processor.ts": {
-      "sha": "2e54d4c0b5c5abe67b479a1684edc2268e326326"
+      "sha": "6c1361aaee843443ee60d25e9fc71e5a0cc21492"
     },
-    "md5": "ce00f829f98d125576220adfc25cde5d",
+    "md5": "8b6f0fd532c42e9635e7fd77bbcc061c",
     "processor.test.ts": {
       "sha": "d7485d3aa44d97c039cbf0962b47e22607159e1e"
     }
@@ -260,7 +260,7 @@
   },
   "/src/dir.json": {
     "core/Processor.ts": {
-      "sha": "2e54d4c0b5c5abe67b479a1684edc2268e326326"
+      "sha": "6c1361aaee843443ee60d25e9fc71e5a0cc21492"
     },
     "core/processor.test.ts": {
       "sha": "d7485d3aa44d97c039cbf0962b47e22607159e1e"
@@ -280,7 +280,7 @@
     "index.ts": {
       "sha": "7150aa4836cbb9ff0b5dd526d8a530f8795d5bea"
     },
-    "md5": "b9842b004bca52491e36157e6594ce6c",
+    "md5": "5c4989fbd97ea42b9c465412ee5aa509",
     "types/Data.ts": {
       "sha": "66cd2ef71082f0f7da00641a26e3b6bc08db3107"
     },
