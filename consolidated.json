@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.49",
+    "version": "1.0.50",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -210,7 +210,8 @@
     },
     "description": "Not Another Programming Language",
     "dependencies": {
-      "@dobuki/data-blob": "^1.0.16"
+      "@dobuki/data-blob": "^1.0.16",
+      "@dobuki/syncopath": "^1.0.19"
     }
   },
   "/src/core/dir.json": {
