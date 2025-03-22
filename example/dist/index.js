@@ -5801,8 +5801,10 @@ class Processor {
       for (let update of outgoingUpdates) {
         update.value = await tt(update.value, blobs);
       }
-      const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
-      this.sendUpdate(blob, context);
+      if (outgoingUpdates) {
+        const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
+        this.sendUpdate(blob, context);
+      }
     }
   }
   async processBlob(data, context) {
@@ -5900,4 +5902,4 @@ export {
   root
 };
 
-//# debugId=0089AFE1EF64CC2564756E2164756E21
+//# debugId=448FED69D7A0D8B864756E2164756E21

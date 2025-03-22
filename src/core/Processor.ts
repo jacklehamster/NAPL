@@ -39,8 +39,10 @@ export class Processor {
       for (let update of outgoingUpdates) {
         update.value = await extractBlobsFromPayload(update.value, blobs);
       }
-      const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
-      this.sendUpdate(blob, context);
+      if (outgoingUpdates) {
+        const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
+        this.sendUpdate(blob, context);
+      }
     }
   }
 
