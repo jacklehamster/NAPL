@@ -5790,7 +5790,7 @@ class Processor {
     const blobs = {};
     const outgoingUpdates = context.outgoingUpdates;
     context.outgoingUpdates = [];
-    if (outgoingUpdates) {
+    if (outgoingUpdates?.length) {
       for (let update of outgoingUpdates) {
         update.path = this.#fixPath(update.path, context);
         const previous = getLeafObject2(context.root, update.path.split("/"), 0, false);
@@ -5801,7 +5801,7 @@ class Processor {
       for (let update of outgoingUpdates) {
         update.value = await tt(update.value, blobs);
       }
-      if (outgoingUpdates) {
+      if (outgoingUpdates.length) {
         const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
         this.sendUpdate(blob, context);
       }
@@ -5902,4 +5902,4 @@ export {
   root
 };
 
-//# debugId=448FED69D7A0D8B864756E2164756E21
+//# debugId=32109158CDE52D3464756E2164756E21

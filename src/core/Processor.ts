@@ -21,7 +21,7 @@ export class Processor {
     const blobs: Record<string, Blob> = {};
     const outgoingUpdates = context.outgoingUpdates;
     context.outgoingUpdates = [];
-    if (outgoingUpdates) {
+    if (outgoingUpdates?.length) {
       //  Apply function to value
       for (let update of outgoingUpdates) {
         update.path = this.#fixPath(update.path, context);
@@ -39,7 +39,7 @@ export class Processor {
       for (let update of outgoingUpdates) {
         update.value = await extractBlobsFromPayload(update.value, blobs);
       }
-      if (outgoingUpdates) {
+      if (outgoingUpdates.length) {
         const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
         this.sendUpdate(blob, context);
       }
