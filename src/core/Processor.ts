@@ -51,7 +51,7 @@ export class Processor {
     const secret = context.secret ?? payload.secret;
     if (secret) {
       if (!context.skipValidation && !validatePayload(payload, { secret })) {
-        console.error("Invalid signature");
+        console.error("Invalid signature", payload);
         return;
       }
       context.secret = secret;
