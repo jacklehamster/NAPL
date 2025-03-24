@@ -5812,7 +5812,7 @@ class Processor {
     const secret = context.secret ?? payload.secret;
     if (secret) {
       if (!context.skipValidation && !x52(payload, { secret })) {
-        console.error("Invalid signature");
+        console.error("Invalid signature", payload);
         return;
       }
       context.secret = secret;
@@ -5890,8 +5890,9 @@ function setupGamePlayer() {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "\uD83D\uDD04";
     button.addEventListener("click", () => {
-      root.outgoingUpdates = root.outgoingUpdates ?? [];
-      root.outgoingUpdates.push({ path: "abc", value: Math.random(), confirmed: 1 });
+      cycleData.outgoingUpdates = cycleData.outgoingUpdates ?? [];
+      cycleData.outgoingUpdates.push({ path: "abc", value: Math.random(), confirmed: 1 });
+      processor.performCycle(cycleData);
       refreshData();
     });
   }
@@ -5902,4 +5903,4 @@ export {
   root
 };
 
-//# debugId=32109158CDE52D3464756E2164756E21
+//# debugId=CD7726DF12B0D3A964756E2164756E21

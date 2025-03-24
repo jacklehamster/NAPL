@@ -49,8 +49,9 @@ function setupGamePlayer() {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "🔄";
     button.addEventListener("click", () => {
-      root.outgoingUpdates = root.outgoingUpdates ?? [];
-      root.outgoingUpdates.push({ path: "abc", value: Math.random(), confirmed: 1 });
+      cycleData.outgoingUpdates = cycleData.outgoingUpdates ?? [];
+      cycleData.outgoingUpdates.push({ path: "abc", value: Math.random(), confirmed: 1 });
+      processor.performCycle(cycleData);
       refreshData();
     });
   }
