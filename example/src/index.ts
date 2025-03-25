@@ -31,16 +31,15 @@ function refreshData() {
 }
 
 const socketClient = new SocketClient(location.host, undefined, root);
-socketClient.observe().onChange(refreshData);
 
 
 const processor = new Processor(blob => {
   console.log("Updates sent out", blob);
 });
+processor.observe(cycleData).onChange(refreshData);
 
 function cycle() {
   processor.performCycle(cycleData);
-  refreshData();
 }
 
 function setupGamePlayer() {

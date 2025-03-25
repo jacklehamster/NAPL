@@ -4,17 +4,29 @@
 import { Context } from "@/cycle/context/Context";
 import { packageUpdates, receiveBlob } from "@/cycles/data-update/blob-utils";
 import { commitUpdates, getLeafObject, translateValue } from "@/cycles/data-update/data-update";
+import { Observer } from "@/observer/Observer";
+import { ObserverManager } from "@/observer/ObserverManager";
 import { Update } from "@/types/Update";
 import { extractBlobsFromPayload, includeBlobsInPayload } from "@dobuki/data-blob";
 import { validatePayload } from "@dobuki/payload-validator";
 
 export class Processor {
+  readonly #observerManager = new ObserverManager();
+
   constructor(private sendUpdate: (blob: Blob, context: Context) => void) {
+  }
+
+  observe(context: Context, paths?: (string[] | string)): Observer {
+    const multi = Array.isArray(paths);
+    const pathArray = paths === undefined ? [] : multi ? paths : [paths];
+    return this.#observerManager.observe(context, pathArray, multi);
   }
 
   performCycle(context: Context) {
     this.sendUpdateBlob(context);
-    return commitUpdates(context.root, context.properties);
+    const updates = commitUpdates(context.root, context.properties);
+    this.#observerManager.triggerObservers(context, updates);
+    return updates;
   }
 
   sendUpdateBlob(context: Context) {
