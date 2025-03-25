@@ -17,7 +17,7 @@ export class Processor {
     return commitUpdates(context.root, context.properties);
   }
 
-  async sendUpdateBlob(context: Context) {
+  sendUpdateBlob(context: Context) {
     const blobs: Record<string, Blob> = {};
     const outgoingUpdates = context.outgoingUpdates;
     context.outgoingUpdates = [];
@@ -37,7 +37,7 @@ export class Processor {
 
       //  send outgoing updates
       for (let update of outgoingUpdates) {
-        update.value = await extractBlobsFromPayload(update.value, blobs);
+        update.value = extractBlobsFromPayload(update.value, blobs);
       }
       if (outgoingUpdates.length) {
         const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
@@ -46,7 +46,7 @@ export class Processor {
     }
   }
 
-  async processBlob(data: any | Blob, context: Context) {
+  async receivedBlob(data: any | Blob, context: Context) {
     const { payload, blobs } = data instanceof Blob ? await receiveBlob(data) : { payload: typeof (data) === "string" ? JSON.parse(data) : data, blobs: {} };
     const secret = context.secret ?? payload.secret;
     if (secret) {

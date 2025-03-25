@@ -11,7 +11,6 @@ div.style.fontFamily = "monospace";
 div.style.fontSize = "12px";
 
 const root: Data = {
-  "binding": "~{abc}",
 };
 const cycleData = createContext(root)
 
@@ -20,8 +19,15 @@ function refreshData() {
   div.id = "log-div";
   div.style.whiteSpace = "pre";
   div.style.fontFamily = "monospace";
-  div.style.fontSize = "12px";
+  div.style.fontSize = "20px";
   div.textContent = JSON.stringify(root, null, 2);
+
+  const div2: HTMLDivElement = document.querySelector("#log-div2") ?? document.body.appendChild(document.createElement("div"));
+  div2.id = "log-div2";
+  div2.style.whiteSpace = "pre";
+  div2.style.fontFamily = "monospace";
+  div2.style.fontSize = "12px";
+  div2.textContent = JSON.stringify(cycleData.outgoingUpdates, null, 2);
 }
 
 const socketClient = new SocketClient(location.host, undefined, root);
@@ -29,9 +35,7 @@ socketClient.observe().onChange(refreshData);
 
 
 const processor = new Processor(blob => {
-  processor.processBlob(blob, cycleData).then(() => {
-    refreshData();
-  });
+  console.log("Updates sent out", blob);
 });
 
 function cycle() {
@@ -51,7 +55,6 @@ function setupGamePlayer() {
     button.addEventListener("click", () => {
       cycleData.outgoingUpdates = cycleData.outgoingUpdates ?? [];
       cycleData.outgoingUpdates.push({ path: "abc", value: Math.random(), confirmed: 1 });
-      processor.performCycle(cycleData);
       refreshData();
     });
   }
