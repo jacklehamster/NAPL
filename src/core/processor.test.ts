@@ -6,7 +6,7 @@ describe('Processor', () => {
 
   it('test update and databinding cycle', async () => {
     const processor = new Processor((blob, context) => {
-      processor.processBlob(blob, context);
+      processor.receivedBlob(blob, context);
     });
 
     const root: Data = {
