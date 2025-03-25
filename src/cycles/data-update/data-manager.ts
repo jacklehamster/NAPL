@@ -1,6 +1,7 @@
 import { Update } from "@/types/Update";
 import { getLeafObject, markUpdateConfirmed } from "./data-update";
 import { Context } from "@/cycle/context/Context";
+import { Data } from "@/types/Data";
 
 export interface UpdateOptions {
   active?: boolean;
@@ -16,16 +17,16 @@ export function getData(context: Context, path: string = "") {
   return getLeafObject(context.root, parts, 0, false, context.properties) as any;
 }
 
-export function pushData(context: Context, path: string, value: any, options: UpdateOptions = {}) {
-  processDataUpdate(context, {
+export function pushData(root: Data, now: number, outgoingUpdates: Update[], path: string, value: any, options: UpdateOptions = {}) {
+  processDataUpdate(root, now, outgoingUpdates, {
     path,
     value,
     append: true,
   }, options);
 }
 
-export function setData(context: Context, path: string, value: any, options: SetDataOptions = {}) {
-  processDataUpdate(context, {
+export function setData(root: Data, now: number, outgoingUpdates: Update[], path: string, value: any, options: SetDataOptions = {}) {
+  processDataUpdate(root, now, outgoingUpdates, {
     path,
     value,
     append: options.append,
@@ -33,9 +34,9 @@ export function setData(context: Context, path: string, value: any, options: Set
   }, options);
 }
 
-function processDataUpdate(context: Context, update: Update, options: UpdateOptions = {}) {
-  if (options.active ?? context.root.config?.activeUpdates) {
-    markUpdateConfirmed(update, (context.localTimeOffset ?? 0) + Date.now());
+function processDataUpdate(root: Data, now: number, outgoingUpdates: Update[], update: Update, options: UpdateOptions = {}) {
+  if (options.active ?? root.config?.activeUpdates) {
+    markUpdateConfirmed(update, now);
   }
-  context.outgoingUpdates.push(update);
+  outgoingUpdates.push(update);
 }
