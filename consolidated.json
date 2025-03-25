@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "13f09c6a8634bdb6de313a280ee976fb4b724b62"
+      "sha": "4a04cf60970f61a1a1359ce88bc4b8607c19a2d1"
     },
     "dist/index.js.map": {
-      "sha": "5ffaa1e78842ee8ad274ee9d6e5f0dd88ce00975"
+      "sha": "bcb07dbac20a8d0c6b66ecca830fce3aaf03d6a2"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -60,12 +60,12 @@
     "json-test/index.html": {
       "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
     },
-    "md5": "b861bfbcc88b49080bb1a581d6a452f7",
+    "md5": "83cd3a6ca50f55a3722246d84893d208",
     "package.json": {
       "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
     },
     "src/index.ts": {
-      "sha": "b41a95679225700ce6448128330ae05bdac35dfa"
+      "sha": "c17863c4582bb367a860183f17171c3ed92b4afc"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -73,12 +73,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "13f09c6a8634bdb6de313a280ee976fb4b724b62"
+      "sha": "4a04cf60970f61a1a1359ce88bc4b8607c19a2d1"
     },
     "index.js.map": {
-      "sha": "5ffaa1e78842ee8ad274ee9d6e5f0dd88ce00975"
+      "sha": "bcb07dbac20a8d0c6b66ecca830fce3aaf03d6a2"
     },
-    "md5": "b3f0cc035707a1308d9555dcffd2cb78",
+    "md5": "f6c21ae7f49a5cac0d8ff3463595ee01",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -126,9 +126,9 @@
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "b41a95679225700ce6448128330ae05bdac35dfa"
+      "sha": "c17863c4582bb367a860183f17171c3ed92b4afc"
     },
-    "md5": "3e44937fb823ed82abe657ddc36274d8"
+    "md5": "d2843668239ce06074bc7cf0ee02f354"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.55",
+    "version": "1.0.56",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -215,9 +215,9 @@
   },
   "/src/core/dir.json": {
     "Processor.ts": {
-      "sha": "b33af15ca4c9a440e3d857c2c08a4e2fa82b4dae"
+      "sha": "8bc957217d1890d04a04445a3c05367ff558d294"
     },
-    "md5": "7cb52009241a4b47035b3c0459b4dba3",
+    "md5": "c0c5a1e3e77cbd95dd9a0d5d1e64f582",
     "processor.test.ts": {
       "sha": "7a82be506fbf71d6bf3c6a4067554c183c821636"
     }
@@ -266,7 +266,7 @@
   },
   "/src/dir.json": {
     "core/Processor.ts": {
-      "sha": "b33af15ca4c9a440e3d857c2c08a4e2fa82b4dae"
+      "sha": "8bc957217d1890d04a04445a3c05367ff558d294"
     },
     "core/processor.test.ts": {
       "sha": "7a82be506fbf71d6bf3c6a4067554c183c821636"
@@ -289,7 +289,16 @@
     "index.ts": {
       "sha": "e341f813c35bd389bab8da8e08ff3cb719bf4945"
     },
-    "md5": "5e0b427722e55831c3f8973c9163f4ec",
+    "md5": "fd7a5a733b591112964139e0061e9b82",
+    "observer/IObservable.ts": {
+      "sha": "07d37b869fb7f461b5cf85032863395cc174cd06"
+    },
+    "observer/Observer.ts": {
+      "sha": "6732ac62bf0e427d466cc5dbaea92bf00a592d3d"
+    },
+    "observer/ObserverManager.ts": {
+      "sha": "37aab7ca23befc1e4dfcd26904b9b2aa0310279e"
+    },
     "types/Data.ts": {
       "sha": "66cd2ef71082f0f7da00641a26e3b6bc08db3107"
     },
@@ -299,6 +308,18 @@
     "types/Update.ts": {
       "sha": "00730a6ae9aa0aa3aa24d79a4f7b793568c5ae87"
     }
+  },
+  "/src/observer/dir.json": {
+    "IObservable.ts": {
+      "sha": "07d37b869fb7f461b5cf85032863395cc174cd06"
+    },
+    "Observer.ts": {
+      "sha": "6732ac62bf0e427d466cc5dbaea92bf00a592d3d"
+    },
+    "ObserverManager.ts": {
+      "sha": "37aab7ca23befc1e4dfcd26904b9b2aa0310279e"
+    },
+    "md5": "4273ac79d2e1dc7469e5052047d5499e"
   },
   "/src/types/dir.json": {
     "Data.ts": {
