@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "c974e40ccf99204808dfb1afc3336a1f8aadb81b"
+      "sha": "13f09c6a8634bdb6de313a280ee976fb4b724b62"
     },
     "dist/index.js.map": {
-      "sha": "2d061266fd53e3b11715340380af6e2942341ea8"
+      "sha": "5ffaa1e78842ee8ad274ee9d6e5f0dd88ce00975"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -60,12 +60,12 @@
     "json-test/index.html": {
       "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
     },
-    "md5": "44e08bbb5bcddfa54025585b7c80ca8c",
+    "md5": "b861bfbcc88b49080bb1a581d6a452f7",
     "package.json": {
       "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
     },
     "src/index.ts": {
-      "sha": "72ee7aaa47be81d0f21209bb63aa650735faf324"
+      "sha": "b41a95679225700ce6448128330ae05bdac35dfa"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -73,12 +73,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "c974e40ccf99204808dfb1afc3336a1f8aadb81b"
+      "sha": "13f09c6a8634bdb6de313a280ee976fb4b724b62"
     },
     "index.js.map": {
-      "sha": "2d061266fd53e3b11715340380af6e2942341ea8"
+      "sha": "5ffaa1e78842ee8ad274ee9d6e5f0dd88ce00975"
     },
-    "md5": "b57a7c541d39e65c34442b178405e0a5",
+    "md5": "b3f0cc035707a1308d9555dcffd2cb78",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -126,9 +126,9 @@
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "72ee7aaa47be81d0f21209bb63aa650735faf324"
+      "sha": "b41a95679225700ce6448128330ae05bdac35dfa"
     },
-    "md5": "f758a26e48adffa2233a7863047d8aaf"
+    "md5": "3e44937fb823ed82abe657ddc36274d8"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -163,7 +163,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.53",
+    "version": "1.0.54",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -210,16 +210,16 @@
     },
     "description": "Not Another Programming Language",
     "dependencies": {
-      "@dobuki/data-blob": "^1.0.16"
+      "@dobuki/data-blob": "^1.0.17"
     }
   },
   "/src/core/dir.json": {
     "Processor.ts": {
-      "sha": "88acfaa8190f7dec69e0bcb51fd107c497416205"
+      "sha": "b33af15ca4c9a440e3d857c2c08a4e2fa82b4dae"
     },
-    "md5": "6a256601173f7939793e65b5c85b8ba5",
+    "md5": "7cb52009241a4b47035b3c0459b4dba3",
     "processor.test.ts": {
-      "sha": "d7485d3aa44d97c039cbf0962b47e22607159e1e"
+      "sha": "7a82be506fbf71d6bf3c6a4067554c183c821636"
     }
   },
   "/src/cycle/context/dir.json": {
@@ -238,17 +238,23 @@
     "blob-utils.ts": {
       "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
     },
+    "data-manager.ts": {
+      "sha": "2165d2565be468d11fb658a4f750608a98727949"
+    },
     "data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
     },
     "data-update.ts": {
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
-    "md5": "1ce8a8a00bc14052ef714f48fefed203"
+    "md5": "9225167e0ac81ff69bb1397418ae8cea"
   },
   "/src/cycles/dir.json": {
     "data-update/blob-utils.ts": {
       "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
+    },
+    "data-update/data-manager.ts": {
+      "sha": "2165d2565be468d11fb658a4f750608a98727949"
     },
     "data-update/data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -256,20 +262,23 @@
     "data-update/data-update.ts": {
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
-    "md5": "d487996e06e2018e236e3c33335ef52c"
+    "md5": "ebed52d1901a15081f08c84eca44c9fe"
   },
   "/src/dir.json": {
     "core/Processor.ts": {
-      "sha": "88acfaa8190f7dec69e0bcb51fd107c497416205"
+      "sha": "b33af15ca4c9a440e3d857c2c08a4e2fa82b4dae"
     },
     "core/processor.test.ts": {
-      "sha": "d7485d3aa44d97c039cbf0962b47e22607159e1e"
+      "sha": "7a82be506fbf71d6bf3c6a4067554c183c821636"
     },
     "cycle/context/Context.ts": {
       "sha": "830be155b07e1f39719cdd93727dd8f34613f934"
     },
     "cycles/data-update/blob-utils.ts": {
       "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
+    },
+    "cycles/data-update/data-manager.ts": {
+      "sha": "2165d2565be468d11fb658a4f750608a98727949"
     },
     "cycles/data-update/data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -278,9 +287,9 @@
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
     "index.ts": {
-      "sha": "7150aa4836cbb9ff0b5dd526d8a530f8795d5bea"
+      "sha": "e341f813c35bd389bab8da8e08ff3cb719bf4945"
     },
-    "md5": "a1180b28f7121389aa3d5c3978ac0a1b",
+    "md5": "a691fff6bc5f34a1428a01112b7a9f76",
     "types/Data.ts": {
       "sha": "66cd2ef71082f0f7da00641a26e3b6bc08db3107"
     },

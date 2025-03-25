@@ -2,11 +2,14 @@
   "blob-utils.ts": {
     "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
   },
+  "data-manager.ts": {
+    "sha": "2165d2565be468d11fb658a4f750608a98727949"
+  },
   "data-update.test.ts": {
     "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
   },
   "data-update.ts": {
     "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
   },
-  "md5": "1ce8a8a00bc14052ef714f48fefed203"
+  "md5": "9225167e0ac81ff69bb1397418ae8cea"
 }

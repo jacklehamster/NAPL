@@ -1,15 +1,18 @@
 {
   "core/Processor.ts": {
-    "sha": "88acfaa8190f7dec69e0bcb51fd107c497416205"
+    "sha": "b33af15ca4c9a440e3d857c2c08a4e2fa82b4dae"
   },
   "core/processor.test.ts": {
-    "sha": "d7485d3aa44d97c039cbf0962b47e22607159e1e"
+    "sha": "7a82be506fbf71d6bf3c6a4067554c183c821636"
   },
   "cycle/context/Context.ts": {
     "sha": "830be155b07e1f39719cdd93727dd8f34613f934"
   },
   "cycles/data-update/blob-utils.ts": {
     "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
+  },
+  "cycles/data-update/data-manager.ts": {
+    "sha": "2165d2565be468d11fb658a4f750608a98727949"
   },
   "cycles/data-update/data-update.test.ts": {
     "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -18,9 +21,9 @@
     "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
   },
   "index.ts": {
-    "sha": "7150aa4836cbb9ff0b5dd526d8a530f8795d5bea"
+    "sha": "e341f813c35bd389bab8da8e08ff3cb719bf4945"
   },
-  "md5": "a1180b28f7121389aa3d5c3978ac0a1b",
+  "md5": "a691fff6bc5f34a1428a01112b7a9f76",
   "types/Data.ts": {
     "sha": "66cd2ef71082f0f7da00641a26e3b6bc08db3107"
   },
