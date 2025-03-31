@@ -22,6 +22,10 @@ export class Processor {
     return this.#observerManager.observe(context, pathArray, multi);
   }
 
+  removeObserver(observer: Observer): void {
+    this.#observerManager.removeObserver(observer);
+  }
+
   performCycle(context: Context) {
     this.sendUpdateBlob(context);
     const updates = commitUpdates(context.root, context.properties);
