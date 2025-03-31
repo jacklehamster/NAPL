@@ -1,6 +1,6 @@
 {
   "IObservable.ts": {
-    "sha": "07d37b869fb7f461b5cf85032863395cc174cd06"
+    "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
   },
   "Observer.ts": {
     "sha": "6732ac62bf0e427d466cc5dbaea92bf00a592d3d"
@@ -8,5 +8,5 @@
   "ObserverManager.ts": {
     "sha": "37aab7ca23befc1e4dfcd26904b9b2aa0310279e"
   },
-  "md5": "4273ac79d2e1dc7469e5052047d5499e"
+  "md5": "5e3cce49d96dd346036830f149ce2096"
 }
