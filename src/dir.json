@@ -1,6 +1,6 @@
 {
   "core/Processor.ts": {
-    "sha": "c4f254f4dc751973c9c48de09083a1b75ca9aa5d"
+    "sha": "7d00405fd2d437ab6bbd12fdae91e3fbc67eb2bb"
   },
   "core/processor.test.ts": {
     "sha": "7a82be506fbf71d6bf3c6a4067554c183c821636"
@@ -23,15 +23,15 @@
   "index.ts": {
     "sha": "b49cc745b35eace719cd97cc53f6406fbabed712"
   },
-  "md5": "bc7c0d55e17af22d0ba340657dbc591e",
+  "md5": "3d26e8d157784b2c909963c21f532f73",
   "observer/IObservable.ts": {
     "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
   },
   "observer/Observer.ts": {
-    "sha": "6732ac62bf0e427d466cc5dbaea92bf00a592d3d"
+    "sha": "4adf164e2ffd10e99acf6c89f0585e0ea2870dcc"
   },
   "observer/ObserverManager.ts": {
-    "sha": "37aab7ca23befc1e4dfcd26904b9b2aa0310279e"
+    "sha": "dc2c5d0842a6e5ef1b3281d81ab185593fe9b41d"
   },
   "types/Data.ts": {
     "sha": "66cd2ef71082f0f7da00641a26e3b6bc08db3107"
