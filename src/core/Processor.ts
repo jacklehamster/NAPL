@@ -34,32 +34,25 @@ export class Processor {
   }
 
   sendUpdateBlob(context: Context) {
-    const blobs: Record<string, Blob> = {};
-    const outgoingUpdates = context.outgoingUpdates;
-    context.outgoingUpdates = [];
-    if (outgoingUpdates?.length) {
+    if (context.outgoingUpdates?.length) {
       //  Apply function to value
-      for (let update of outgoingUpdates) {
+      context.outgoingUpdates.forEach(update => {
         update.path = this.#fixPath(update.path, context);
         const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
         update.value = typeof update.value === "function" ? update.value(previous) : update.value;
-      }
+      });
 
       //  Apply incoming updates
-      const confirmedUpdates = outgoingUpdates
-        .filter(update => update.confirmed)
+      const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed)
         .map(update => ({ ...update }));
       this.#addIncomingUpdates(confirmedUpdates, context);
 
       //  send outgoing updates
-      for (let update of outgoingUpdates) {
-        update.value = extractBlobsFromPayload(update.value, blobs);
-      }
-      if (outgoingUpdates.length) {
-        const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
-        this.sendUpdate(blob, context);
-      }
+      const blobs: Record<string, Blob> = {};
+      context.outgoingUpdates.forEach(update => update.value = extractBlobsFromPayload(update.value, blobs));
+      this.sendUpdate(packageUpdates(context.outgoingUpdates, blobs, context.secret), context);
     }
+    context.outgoingUpdates.length = 0;
   }
 
   async receivedBlob(data: any | Blob, context: Context) {

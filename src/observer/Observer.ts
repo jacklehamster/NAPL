@@ -100,7 +100,7 @@ export class Observer {
         this.#deletedElementsCallback.forEach(callback => callback(this.multiValues ? deletedElementsArray : deletedElementsArray[0]));
       }
     }
-    // this.initialized = true;
+    this.initialized = true;
   }
 
   close(): void {

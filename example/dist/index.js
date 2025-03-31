@@ -7674,6 +7674,7 @@ class Observer2 {
         this.#deletedElementsCallback.forEach((callback) => callback(this.multiValues ? deletedElementsArray : deletedElementsArray[0]));
       }
     }
+    this.initialized = true;
   }
   close() {
     this.observerManagger.removeObserver(this);
@@ -9201,25 +9202,19 @@ class Processor2 {
     return updates;
   }
   sendUpdateBlob(context) {
-    const blobs = {};
-    const outgoingUpdates = context.outgoingUpdates;
-    context.outgoingUpdates = [];
-    if (outgoingUpdates?.length) {
-      for (let update of outgoingUpdates) {
+    if (context.outgoingUpdates?.length) {
+      context.outgoingUpdates.forEach((update) => {
         update.path = this.#fixPath(update.path, context);
         const previous = getLeafObject2(context.root, update.path.split("/"), 0, false);
         update.value = typeof update.value === "function" ? update.value(previous) : update.value;
-      }
-      const confirmedUpdates = outgoingUpdates.filter((update) => update.confirmed).map((update) => ({ ...update }));
+      });
+      const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed).map((update) => ({ ...update }));
       this.#addIncomingUpdates(confirmedUpdates, context);
-      for (let update of outgoingUpdates) {
-        update.value = gn(update.value, blobs);
-      }
-      if (outgoingUpdates.length) {
-        const blob = packageUpdates(outgoingUpdates, blobs, context.secret);
-        this.sendUpdate(blob, context);
-      }
+      const blobs = {};
+      context.outgoingUpdates.forEach((update) => update.value = gn(update.value, blobs));
+      this.sendUpdate(packageUpdates(context.outgoingUpdates, blobs, context.secret), context);
     }
+    context.outgoingUpdates.length = 0;
   }
   async receivedBlob(data, context) {
     const { payload, blobs } = data instanceof Blob ? await receiveBlob(data) : { payload: typeof data === "string" ? JSON.parse(data) : data, blobs: {} };
@@ -9317,4 +9312,4 @@ export {
   root
 };
 
-//# debugId=C0FD9895C6D9CE9464756E2164756E21
+//# debugId=A5092C78C8524DAC64756E2164756E21
