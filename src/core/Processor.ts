@@ -16,10 +16,10 @@ export class Processor {
   constructor(private sendUpdate: (blob: Blob, context: Context) => void) {
   }
 
-  observe(context: Context, paths?: (string[] | string)): Observer {
+  observe(paths?: (string[] | string)): Observer {
     const multi = Array.isArray(paths);
     const pathArray = paths === undefined ? [] : multi ? paths : [paths];
-    return this.#observerManager.observe(context, pathArray, multi);
+    return this.#observerManager.observe(pathArray, multi);
   }
 
   removeObserver(observer: Observer): void {

@@ -4,9 +4,8 @@ import { Observer } from "./Observer";
 export class ObserverManager {
   readonly #observers = new Set<Observer>();
 
-  observe(context: Context, paths: string[], multi: boolean): Observer {
+  observe(paths: string[], multi: boolean): Observer {
     const observer = new Observer(paths, this, multi);
-    observer.triggerIfChanged(context, {});
     this.#observers.add(observer);
     return observer;
   }

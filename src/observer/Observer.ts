@@ -7,6 +7,8 @@ export class Observer {
   readonly #changeCallbacks: Set<(values: any | any[], previous: any | any[]) => void> = new Set();
   readonly #addedElementsCallback: Set<(keys: any | (any[] | undefined)[]) => void> = new Set();
   readonly #deletedElementsCallback: Set<(keys: any | (any[] | undefined)[]) => void> = new Set();
+  initialized = false;
+
   constructor(
     readonly paths: string[],
     readonly observerManagger: ObserverManager,
@@ -56,7 +58,7 @@ export class Observer {
   }
 
   triggerIfChanged(context: Context, updates: Record<string, any>) {
-    const newValues = !this.paths.length ? [] : this.#valuesChanged(context, updates);
+    const newValues = !this.paths.length ? [] : this.#valuesChanged(context, this.initialized ? updates : {});
     if (!newValues) {
       return;
     }
@@ -87,7 +89,7 @@ export class Observer {
       const deletedElementsArray = previousValues.map((prev, index) => {
         if (Array.isArray(prev)) {
           const currentSet = new Set(Array.isArray(newValues[index]) ? newValues[index] : []);
-          const deletedElements = prev.filter((clientId) => !currentSet.has(clientId));
+          const deletedElements = prev.filter(clientId => !currentSet.has(clientId));
           if (deletedElements.length) {
             hasDeletedElements = true;
           }
@@ -98,6 +100,7 @@ export class Observer {
         this.#deletedElementsCallback.forEach(callback => callback(this.multiValues ? deletedElementsArray : deletedElementsArray[0]));
       }
     }
+    // this.initialized = true;
   }
 
   close(): void {

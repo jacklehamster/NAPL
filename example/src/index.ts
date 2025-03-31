@@ -36,7 +36,7 @@ const socketClient = new SocketClient(location.host, undefined, root);
 const processor = new Processor(blob => {
   console.log("Updates sent out", blob);
 });
-processor.observe(cycleData).onChange(refreshData);
+processor.observe().onChange(refreshData);
 
 function cycle() {
   processor.performCycle(cycleData);
