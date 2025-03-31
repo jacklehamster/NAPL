@@ -6,3 +6,6 @@ export * from "./core/Processor";
 export * from "./cycle/context/Context";
 export * from "./cycles/data-update/blob-utils";
 export * from "./cycles/data-update/data-manager";
+export * from "./observer/IObservable";
+export * from "./observer/Observer";
+export * from "./observer/ObserverManager";
