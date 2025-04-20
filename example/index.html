@@ -41,16 +41,12 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         const configJson = await fetch("config.json").then((res) => res.json());
+        const searchParams = new URLSearchParams(location.search);
 
-        const shouldSplit =
-          new URLSearchParams(location.search).get("split") ?? configJson.split;
-        const initialTab =
-          new URLSearchParams(location.search).get("tab") ?? configJson.tab;
-        const showTab =
-          new URLSearchParams(location.search).get("show-tab") ??
-          configJson["show-tab"];
-        const room =
-          new URLSearchParams(location.search).get("room") ?? configJson.room;
+        const shouldSplit = searchParams.get("split") ?? configJson.split;
+        const initialTab = searchParams.get("tab") ?? configJson.tab;
+        const showTab = searchParams.get("show-tab") ?? configJson["show-tab"];
+        const room = searchParams.get("room") ?? configJson.room;
 
         const tabsContainer = document.querySelector(".tabs");
         const container = document.querySelector(".container");

@@ -2,17 +2,13 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { SocketClient } from "@dobuki/syncopath";
+import { displayUsers, provideSocketClient } from "@dobuki/syncopath";
 import { createContext, Data, Processor } from "napl";
-
-const div = document.body.appendChild(document.createElement("div"));
-div.style.whiteSpace = "pre";
-div.style.fontFamily = "monospace";
-div.style.fontSize = "12px";
 
 const root: Data = {
 };
-const cycleData = createContext(root)
+const context = createContext(root)
+
 
 function refreshData() {
   const div: HTMLDivElement = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
@@ -27,11 +23,12 @@ function refreshData() {
   div2.style.whiteSpace = "pre";
   div2.style.fontFamily = "monospace";
   div2.style.fontSize = "12px";
-  div2.textContent = JSON.stringify(cycleData.outgoingUpdates, null, 2);
+  div2.textContent = JSON.stringify(context.outgoingUpdates, null, 2);
 }
 
-const socketClient = new SocketClient(location.host, undefined, root);
+const socketClient = provideSocketClient({ host: location.host }, root);
 
+displayUsers(socketClient);
 
 const processor = new Processor(blob => {
   console.log("Updates sent out", blob);
@@ -39,7 +36,7 @@ const processor = new Processor(blob => {
 processor.observe().onChange(refreshData);
 
 function cycle() {
-  processor.performCycle(cycleData);
+  processor.performCycle(context);
 }
 
 function setupGamePlayer() {
@@ -52,8 +49,8 @@ function setupGamePlayer() {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "🔄";
     button.addEventListener("click", () => {
-      cycleData.outgoingUpdates = cycleData.outgoingUpdates ?? [];
-      cycleData.outgoingUpdates.push({ path: "abc", value: Math.random(), confirmed: 1 });
+      context.outgoingUpdates = context.outgoingUpdates ?? [];
+      context.outgoingUpdates.push({ path: "abc", value: Math.random(), confirmed: 1 });
       refreshData();
     });
   }
