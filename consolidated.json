@@ -18,9 +18,9 @@
     "config.json": {
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
-    "md5": "bec095971ee2d72ab16ce608f8221597",
+    "md5": "91119a2420d31b51683d96a53cd7ff03",
     "package.json": {
-      "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
+      "sha": "b961585c7cadaf8c7704532c92cb24d2851d33a9"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -31,7 +31,7 @@
       "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
     },
     "bun.lockb": {
-      "sha": "8f1e0f40113b4d4deb1296ed8f76348814eebbb8"
+      "sha": "86690bd8176092e2135c032ae1fd6a2a61177652"
     },
     "bundler/bundler.ts": {
       "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
@@ -40,32 +40,35 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "3f7de54734234021525d2e71b82521262980d70e"
+      "sha": "a19c8da8bc704537bd69a23b8010d0c39cfe03a8"
     },
     "dist/index.js.map": {
-      "sha": "01222066b831cccd4410ab651374858c151e134f"
+      "sha": "a75958ab46ec2051af5cb669dbb9c48a505988e0"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     },
-    "game-room/index.html": {
-      "sha": "ab75d1c4f90c7e6d62b9cd6871672fd0ea4cc2a0"
-    },
     "index.html": {
-      "sha": "2242f5b286806dcee75f758d2171aea316b8a076"
+      "sha": "b4080ddbb6b3adfa6799c5d87dd674e2c9459b2c"
     },
     "index.ts": {
       "sha": "ccb5152139dd200abdab11310fffb8ab87d1c235"
     },
     "json-test/index.html": {
-      "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
+      "sha": "38610c11284f0579994495f76bd3c7412bd74461"
     },
-    "md5": "4aef2c7fa48896af3dd4b414a1420f50",
+    "md5": "e6891ebf4d53f682fd11155512414169",
+    "mega-room/index.html": {
+      "sha": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
     "package.json": {
-      "sha": "b49eb9c78054d6ab25286d461a093fbdac8ff3fa"
+      "sha": "b961585c7cadaf8c7704532c92cb24d2851d33a9"
     },
     "src/index.ts": {
-      "sha": "ca6e91ba2a5841067783fe2cd563043fb7f10dcc"
+      "sha": "16abff416232a36b7dd82e80d029ea0cc181b727"
+    },
+    "test-room/index.html": {
+      "sha": "ecb910fb80c68211077681e4dbfd3311d839cafd"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -73,27 +76,27 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "3f7de54734234021525d2e71b82521262980d70e"
+      "sha": "a19c8da8bc704537bd69a23b8010d0c39cfe03a8"
     },
     "index.js.map": {
-      "sha": "01222066b831cccd4410ab651374858c151e134f"
+      "sha": "a75958ab46ec2051af5cb669dbb9c48a505988e0"
     },
-    "md5": "91c968ca78bb4ed49fb0b551346274cb",
+    "md5": "47ce0b784ba59a43f1a4e357a3bf2489",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
   },
-  "/example/game-room/dir.json": {
-    "index.html": {
-      "sha": "ab75d1c4f90c7e6d62b9cd6871672fd0ea4cc2a0"
-    },
-    "md5": "946f8c226fa6f71252a2e8f2d61d391e"
-  },
   "/example/json-test/dir.json": {
     "index.html": {
-      "sha": "9ec0f95dcdc56365093036252745434e014fdd8a"
+      "sha": "38610c11284f0579994495f76bd3c7412bd74461"
     },
-    "md5": "10800033ff332ec1d8dee313cf16286f"
+    "md5": "095a17b546732a10ee57df864975b578"
+  },
+  "/example/mega-room/dir.json": {
+    "index.html": {
+      "sha": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    },
+    "md5": "949785e3a434218c15bbd95829534b42"
   },
   "/example/package.json": {
     "name": "example",
@@ -120,15 +123,21 @@
       "typescript": "^5.0.0"
     },
     "dependencies": {
-      "@dobuki/syncopath": "^1.0.11",
+      "@dobuki/syncopath": "^1.0.29",
       "json-stringify-pretty-compact": "^4.0.0"
     }
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "ca6e91ba2a5841067783fe2cd563043fb7f10dcc"
+      "sha": "16abff416232a36b7dd82e80d029ea0cc181b727"
     },
-    "md5": "dda667de5bf69bb95cb901268b768a3e"
+    "md5": "49f430c5d8b2c42246f8f0eb55baaf8b"
+  },
+  "/example/test-room/dir.json": {
+    "index.html": {
+      "sha": "ecb910fb80c68211077681e4dbfd3311d839cafd"
+    },
+    "md5": "ed467cbd25419da96e8fcd697f16b92d"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -163,7 +172,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.61",
+    "version": "1.0.62",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -287,9 +296,9 @@
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
     "index.ts": {
-      "sha": "b49cc745b35eace719cd97cc53f6406fbabed712"
+      "sha": "f4a2f7ae227c1647b7b24fd56b12046eecbbc228"
     },
-    "md5": "28f8ccdca0c4d64bdf4acd10a7a38fae",
+    "md5": "9d59f339152dd8ea1808b69e4bea0bd8",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
