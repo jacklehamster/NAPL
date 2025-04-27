@@ -1,6 +1,5 @@
 import { Update } from "@/types/Update";
 import { getLeafObject, markUpdateConfirmed } from "./data-update";
-import { Context } from "@/cycle/context/Context";
 import { Data } from "@/types/Data";
 
 export interface UpdateOptions {
@@ -12,9 +11,9 @@ export interface SetDataOptions extends UpdateOptions {
   insert?: number;
 }
 
-export function getData(context: Context, path: string = "") {
+export function getData(root: Data, path: string = "", properties: { [key: string]: any }) {
   const parts = path.split("/");
-  return getLeafObject(context.root, parts, 0, false, context.properties) as any;
+  return getLeafObject(root, parts, 0, false, properties) as any;
 }
 
 export function pushData(root: Data, now: number, outgoingUpdates: Update[], path: string, value: any, options: UpdateOptions = {}) {
