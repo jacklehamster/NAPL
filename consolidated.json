@@ -172,7 +172,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.62",
+    "version": "1.0.63",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -183,10 +183,10 @@
     "devDependencies": {
       "@dobuki/dev-dependencies": "^1.0.20",
       "@types/jest": "^29.5.14",
-      "@types/ws": "^8.18.0",
+      "@types/ws": "^8.18.1",
       "fetch-blob": "^4.0.0",
       "jest": "^29.7.0",
-      "ts-jest": "^29.2.5"
+      "ts-jest": "^29.3.2"
     },
     "peerDependencies": {
       "typescript": "latest"
@@ -248,7 +248,7 @@
       "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
     },
     "data-manager.ts": {
-      "sha": "35ed288d4c23bdfcf1f2561475374fe37be83e37"
+      "sha": "10eca948072d67bffa3c27326b2c96f06bfdca3e"
     },
     "data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -256,14 +256,14 @@
     "data-update.ts": {
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
-    "md5": "cb00a6d7bd892da4c749862708a7f091"
+    "md5": "4c88a2095dad502c4181de57b84f6777"
   },
   "/src/cycles/dir.json": {
     "data-update/blob-utils.ts": {
       "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
     },
     "data-update/data-manager.ts": {
-      "sha": "35ed288d4c23bdfcf1f2561475374fe37be83e37"
+      "sha": "10eca948072d67bffa3c27326b2c96f06bfdca3e"
     },
     "data-update/data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -271,7 +271,7 @@
     "data-update/data-update.ts": {
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
-    "md5": "183f721e324b1f1a6eef285501f7fef7"
+    "md5": "895d08a132816c7cf146dbc5231cd729"
   },
   "/src/dir.json": {
     "core/Processor.ts": {
@@ -287,7 +287,7 @@
       "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
     },
     "cycles/data-update/data-manager.ts": {
-      "sha": "35ed288d4c23bdfcf1f2561475374fe37be83e37"
+      "sha": "10eca948072d67bffa3c27326b2c96f06bfdca3e"
     },
     "cycles/data-update/data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -298,7 +298,7 @@
     "index.ts": {
       "sha": "f4a2f7ae227c1647b7b24fd56b12046eecbbc228"
     },
-    "md5": "9d59f339152dd8ea1808b69e4bea0bd8",
+    "md5": "96b069ef2f20d1ea2fc912bfc0692be8",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
