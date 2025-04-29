@@ -181,7 +181,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
     this.#nextFrameInProcess = true;
     requestAnimationFrame(() => {
       this.#nextFrameInProcess = false;
-      this.#processNextFrame();
+      this.processNextFrame();
     });
   }
 
@@ -196,7 +196,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
     this.#outgoingUpdates.length = j;
   }
 
-  async #processNextFrame() {
+  protected async processNextFrame() {
     this.#removeEmptyUpdates();
 
     if (this.#outgoingUpdates.length) {
