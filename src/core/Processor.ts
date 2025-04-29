@@ -1,12 +1,12 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { Context } from "@/cycle/context/Context";
-import { packageUpdates, receiveBlob } from "@/cycles/data-update/blob-utils";
-import { commitUpdates, getLeafObject, translateValue } from "@/cycles/data-update/data-update";
-import { Observer } from "@/observer/Observer";
-import { ObserverManager } from "@/observer/ObserverManager";
-import { Update } from "@/types/Update";
+import { Context } from "../cycle/context/Context";
+import { packageUpdates, receiveBlob } from "../cycles/data-update/blob-utils";
+import { commitUpdates, getLeafObject, translateValue } from "../cycles/data-update/data-update";
+import { Observer } from "../observer/Observer";
+import { ObserverManager } from "../observer/ObserverManager";
+import { Update } from "../types/Update";
 import { extractBlobsFromPayload, includeBlobsInPayload } from "@dobuki/data-blob";
 import { validatePayload } from "@dobuki/payload-validator";
 

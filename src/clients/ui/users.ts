@@ -1,4 +1,4 @@
-import { Observer } from "@/observer/Observer";
+import { Observer } from "../../observer/Observer";
 import { ISyncClient } from "../ISyncClient";
 
 const EMOJIS = [

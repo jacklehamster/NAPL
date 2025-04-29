@@ -1,5 +1,5 @@
-import { Data } from "@/types/Data";
-import { Update } from "@/types/Update";
+import { Data } from "../../types/Data";
+import { Update } from "../../types/Update";
 
 export interface Context {
   secret?: string;

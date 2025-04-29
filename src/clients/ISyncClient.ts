@@ -1,4 +1,4 @@
-import { IObservable } from "@/observer/IObservable";
+import { IObservable } from "../observer/IObservable";
 import { ISharedData } from "./ISharedData";
 
 export interface ISyncClient extends ISharedData, IObservable {

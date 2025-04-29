@@ -1,4 +1,4 @@
-import { ClientState } from "@/types/ClientState";
+import { ClientState } from "../types/ClientState";
 import { Config } from "./Config";
 import { Data } from "./Data";
 

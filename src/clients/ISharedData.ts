@@ -1,5 +1,5 @@
-import { SetDataOptions } from "@/cycles/data-update/SetDataOptions";
-import { UpdateOptions } from "@/cycles/data-update/UpdateOptions";
+import { SetDataOptions } from "../cycles/data-update/SetDataOptions";
+import { UpdateOptions } from "../cycles/data-update/UpdateOptions";
 
 export interface ISharedData {
   clientId: string;

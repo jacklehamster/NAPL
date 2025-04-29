@@ -1,9 +1,9 @@
-import { IObservable } from "@/observer/IObservable";
+import { IObservable } from "../observer/IObservable";
 import { ISharedData } from "./ISharedData";
 import { ISyncClient } from "./ISyncClient";
-import { Observer } from "@/observer/Observer";
-import { SetDataOptions } from "@/cycles/data-update/SetDataOptions";
-import { UpdateOptions } from "@/cycles/data-update/UpdateOptions";
+import { Observer } from "../observer/Observer";
+import { SetDataOptions } from "../cycles/data-update/SetDataOptions";
+import { UpdateOptions } from "../cycles/data-update/UpdateOptions";
 
 export class ClientData implements ISharedData, IObservable {
   clientId: string = "";

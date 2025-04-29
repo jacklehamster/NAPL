@@ -1,5 +1,5 @@
-import { Payload } from "@/types/Payload";
-import { Update } from "@/types/Update";
+import { Payload } from "../../types/Payload";
+import { Update } from "../../types/Update";
 import { BlobBuilder, extractPayload } from "@dobuki/data-blob";
 
 export function packageUpdates(updates: Update[], blobs: Record<string, Blob>, secret?: string): Blob {

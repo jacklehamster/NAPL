@@ -1,6 +1,6 @@
-import { Update } from "@/types/Update";
+import { Update } from "../../types/Update";
 import { getLeafObject, markUpdateConfirmed } from "./data-update";
-import { Data } from "@/types/Data";
+import { Data } from "../../types/Data";
 import { UpdateOptions } from "./UpdateOptions";
 import { SetDataOptions } from "./SetDataOptions";
 
