@@ -1,12 +1,21 @@
 {
+  "ClientState.ts": {
+    "sha": "9e6c1fdea2ce7724f9f2488ee9036e8a44129228"
+  },
+  "Config.ts": {
+    "sha": "ec1f6f0d14bab4910499a855f2f0449fef9a11c5"
+  },
   "Data.ts": {
     "sha": "66cd2ef71082f0f7da00641a26e3b6bc08db3107"
   },
   "Payload.ts": {
     "sha": "cb85d5a25c6e59fd946b136abafa5ed4c8df8cc5"
   },
+  "RoomState.ts": {
+    "sha": "e9ec16af117b2e0d6ff14e62bad9923ce135d846"
+  },
   "Update.ts": {
     "sha": "00730a6ae9aa0aa3aa24d79a4f7b793568c5ae87"
   },
-  "md5": "496a8e50565c88106b0d976ce6a2dcc7"
+  "md5": "0a91bd80dfe7c1246c41b3d8c2f27064"
 }

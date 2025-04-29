@@ -172,7 +172,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.63",
+    "version": "1.0.64",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -180,14 +180,6 @@
       "url": "https://github.com/jacklehamster/NAPL.git"
     },
     "homepage": "https://jacklehamster.github.io/NAPL/",
-    "devDependencies": {
-      "@dobuki/dev-dependencies": "^1.0.20",
-      "@types/jest": "^29.5.14",
-      "@types/ws": "^8.18.1",
-      "fetch-blob": "^4.0.0",
-      "jest": "^29.7.0",
-      "ts-jest": "^29.3.2"
-    },
     "peerDependencies": {
       "typescript": "latest"
     },
@@ -218,8 +210,46 @@
       "email": "jacklehamster@gmail.com"
     },
     "description": "Not Another Programming Language",
+    "devDependencies": {
+      "@dobuki/dev-dependencies": "^1.0.20",
+      "@types/jest": "^29.5.14",
+      "@types/ws": "^8.18.1",
+      "fetch-blob": "^4.0.0",
+      "jest": "^29.7.0",
+      "ts-jest": "^29.3.2"
+    },
     "dependencies": {
       "@dobuki/data-blob": "^1.0.18"
+    }
+  },
+  "/src/clients/dir.json": {
+    "ClientData.ts": {
+      "sha": "9473cae04c82ba5cb93beecff8f82e05774f36a7"
+    },
+    "CommInterface.ts": {
+      "sha": "5933ac2e959c7abde5a28666d1a31c1e3093ce06"
+    },
+    "ISharedData.ts": {
+      "sha": "977104c57a4b865ad9acc03440f0c62c72e33db4"
+    },
+    "ISyncClient.ts": {
+      "sha": "7bcba1efa52ae64a51786dd2d9f92af1b9fa445c"
+    },
+    "SubData.ts": {
+      "sha": "6c9d0d5050a317c09efa9779315fbc0aa42e0d53"
+    },
+    "SyncClient.ts": {
+      "sha": "77bf8f72831eb52465a703775bf2bf76f2666b27"
+    },
+    "md5": "d51a118856c3feb848c3230a5c15af15",
+    "ui/users.ts": {
+      "sha": "e125869986f00da59985720e465519a42057385a"
+    }
+  },
+  "/src/clients/ui/dir.json": {
+    "md5": "d007ad57d5c5f0d1a065e850a8040b50",
+    "users.ts": {
+      "sha": "e125869986f00da59985720e465519a42057385a"
     }
   },
   "/src/core/dir.json": {
@@ -274,6 +304,27 @@
     "md5": "895d08a132816c7cf146dbc5231cd729"
   },
   "/src/dir.json": {
+    "clients/ClientData.ts": {
+      "sha": "9473cae04c82ba5cb93beecff8f82e05774f36a7"
+    },
+    "clients/CommInterface.ts": {
+      "sha": "5933ac2e959c7abde5a28666d1a31c1e3093ce06"
+    },
+    "clients/ISharedData.ts": {
+      "sha": "977104c57a4b865ad9acc03440f0c62c72e33db4"
+    },
+    "clients/ISyncClient.ts": {
+      "sha": "7bcba1efa52ae64a51786dd2d9f92af1b9fa445c"
+    },
+    "clients/SubData.ts": {
+      "sha": "6c9d0d5050a317c09efa9779315fbc0aa42e0d53"
+    },
+    "clients/SyncClient.ts": {
+      "sha": "77bf8f72831eb52465a703775bf2bf76f2666b27"
+    },
+    "clients/ui/users.ts": {
+      "sha": "e125869986f00da59985720e465519a42057385a"
+    },
     "core/Processor.ts": {
       "sha": "1c2936f9495c566b407027f97b3f3c1bc33c7b64"
     },
@@ -298,21 +349,30 @@
     "index.ts": {
       "sha": "f4a2f7ae227c1647b7b24fd56b12046eecbbc228"
     },
-    "md5": "96b069ef2f20d1ea2fc912bfc0692be8",
+    "md5": "1b78765c6626b7339c276e07b2f45a43",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
     "observer/Observer.ts": {
-      "sha": "e1ef1f9deef32cec680b6ae5d7ea805215577938"
+      "sha": "f70ca15384694b185b193a4f60280e40246ac555"
     },
     "observer/ObserverManager.ts": {
       "sha": "dc2c5d0842a6e5ef1b3281d81ab185593fe9b41d"
+    },
+    "types/ClientState.ts": {
+      "sha": "9e6c1fdea2ce7724f9f2488ee9036e8a44129228"
+    },
+    "types/Config.ts": {
+      "sha": "ec1f6f0d14bab4910499a855f2f0449fef9a11c5"
     },
     "types/Data.ts": {
       "sha": "66cd2ef71082f0f7da00641a26e3b6bc08db3107"
     },
     "types/Payload.ts": {
       "sha": "cb85d5a25c6e59fd946b136abafa5ed4c8df8cc5"
+    },
+    "types/RoomState.ts": {
+      "sha": "e9ec16af117b2e0d6ff14e62bad9923ce135d846"
     },
     "types/Update.ts": {
       "sha": "00730a6ae9aa0aa3aa24d79a4f7b793568c5ae87"
@@ -323,24 +383,33 @@
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
     "Observer.ts": {
-      "sha": "e1ef1f9deef32cec680b6ae5d7ea805215577938"
+      "sha": "f70ca15384694b185b193a4f60280e40246ac555"
     },
     "ObserverManager.ts": {
       "sha": "dc2c5d0842a6e5ef1b3281d81ab185593fe9b41d"
     },
-    "md5": "0559e13d60d486d79856bc6ac5818c62"
+    "md5": "aa9a264edea7a3a3f758fa2077f94fb5"
   },
   "/src/types/dir.json": {
+    "ClientState.ts": {
+      "sha": "9e6c1fdea2ce7724f9f2488ee9036e8a44129228"
+    },
+    "Config.ts": {
+      "sha": "ec1f6f0d14bab4910499a855f2f0449fef9a11c5"
+    },
     "Data.ts": {
       "sha": "66cd2ef71082f0f7da00641a26e3b6bc08db3107"
     },
     "Payload.ts": {
       "sha": "cb85d5a25c6e59fd946b136abafa5ed4c8df8cc5"
     },
+    "RoomState.ts": {
+      "sha": "e9ec16af117b2e0d6ff14e62bad9923ce135d846"
+    },
     "Update.ts": {
       "sha": "00730a6ae9aa0aa3aa24d79a4f7b793568c5ae87"
     },
-    "md5": "496a8e50565c88106b0d976ce6a2dcc7"
+    "md5": "0a91bd80dfe7c1246c41b3d8c2f27064"
   },
   "/tsconfig.json": {
     "compilerOptions": {
