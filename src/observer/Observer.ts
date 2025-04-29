@@ -1,5 +1,5 @@
+import { Context, getLeafObject } from "..";
 import { ObserverManager } from "./ObserverManager";
-import { Context, getLeafObject } from "napl";
 
 export class Observer {
   readonly #partsArrays: (string | number)[][];
