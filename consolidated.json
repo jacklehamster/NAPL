@@ -172,7 +172,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.64",
+    "version": "1.0.65",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -224,24 +224,24 @@
   },
   "/src/clients/dir.json": {
     "ClientData.ts": {
-      "sha": "9473cae04c82ba5cb93beecff8f82e05774f36a7"
+      "sha": "2b752cea33a29a23cb22e1714185c6a3aac9d9c1"
     },
     "CommInterface.ts": {
       "sha": "5933ac2e959c7abde5a28666d1a31c1e3093ce06"
     },
     "ISharedData.ts": {
-      "sha": "977104c57a4b865ad9acc03440f0c62c72e33db4"
+      "sha": "c684d7a3514ae3a7de0c858d090b0402c9925a43"
     },
     "ISyncClient.ts": {
       "sha": "7bcba1efa52ae64a51786dd2d9f92af1b9fa445c"
     },
     "SubData.ts": {
-      "sha": "6c9d0d5050a317c09efa9779315fbc0aa42e0d53"
+      "sha": "be25ae535dc111079faa7252f137af49929c47dc"
     },
     "SyncClient.ts": {
-      "sha": "77bf8f72831eb52465a703775bf2bf76f2666b27"
+      "sha": "cfbb7b817f8c24f8913b4b3f8c8334ca4dc4b87d"
     },
-    "md5": "d51a118856c3feb848c3230a5c15af15",
+    "md5": "d7149155633cffca5bb8ccc8ce8c74e9",
     "ui/users.ts": {
       "sha": "e125869986f00da59985720e465519a42057385a"
     }
@@ -274,11 +274,17 @@
     "md5": "d92e3f10b2363c2f09469c44a7a9a4ee"
   },
   "/src/cycles/data-update/dir.json": {
+    "SetDataOptions.ts": {
+      "sha": "545d6bd5f16219adbf03579a67d19842a6441a2a"
+    },
+    "UpdateOptions.ts": {
+      "sha": "2147fb692baa3f345e90595ea2cb6091e7581e3a"
+    },
     "blob-utils.ts": {
       "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
     },
     "data-manager.ts": {
-      "sha": "10eca948072d67bffa3c27326b2c96f06bfdca3e"
+      "sha": "dd5781e8b7135d9b290a524c201fc55758c0b128"
     },
     "data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -286,14 +292,20 @@
     "data-update.ts": {
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
-    "md5": "4c88a2095dad502c4181de57b84f6777"
+    "md5": "360ff4ab1543986fc6854b72656bcdfe"
   },
   "/src/cycles/dir.json": {
+    "data-update/SetDataOptions.ts": {
+      "sha": "545d6bd5f16219adbf03579a67d19842a6441a2a"
+    },
+    "data-update/UpdateOptions.ts": {
+      "sha": "2147fb692baa3f345e90595ea2cb6091e7581e3a"
+    },
     "data-update/blob-utils.ts": {
       "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
     },
     "data-update/data-manager.ts": {
-      "sha": "10eca948072d67bffa3c27326b2c96f06bfdca3e"
+      "sha": "dd5781e8b7135d9b290a524c201fc55758c0b128"
     },
     "data-update/data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -301,26 +313,26 @@
     "data-update/data-update.ts": {
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
-    "md5": "895d08a132816c7cf146dbc5231cd729"
+    "md5": "3bfe206cc744f000c2d2727fa22adb29"
   },
   "/src/dir.json": {
     "clients/ClientData.ts": {
-      "sha": "9473cae04c82ba5cb93beecff8f82e05774f36a7"
+      "sha": "2b752cea33a29a23cb22e1714185c6a3aac9d9c1"
     },
     "clients/CommInterface.ts": {
       "sha": "5933ac2e959c7abde5a28666d1a31c1e3093ce06"
     },
     "clients/ISharedData.ts": {
-      "sha": "977104c57a4b865ad9acc03440f0c62c72e33db4"
+      "sha": "c684d7a3514ae3a7de0c858d090b0402c9925a43"
     },
     "clients/ISyncClient.ts": {
       "sha": "7bcba1efa52ae64a51786dd2d9f92af1b9fa445c"
     },
     "clients/SubData.ts": {
-      "sha": "6c9d0d5050a317c09efa9779315fbc0aa42e0d53"
+      "sha": "be25ae535dc111079faa7252f137af49929c47dc"
     },
     "clients/SyncClient.ts": {
-      "sha": "77bf8f72831eb52465a703775bf2bf76f2666b27"
+      "sha": "cfbb7b817f8c24f8913b4b3f8c8334ca4dc4b87d"
     },
     "clients/ui/users.ts": {
       "sha": "e125869986f00da59985720e465519a42057385a"
@@ -334,11 +346,17 @@
     "cycle/context/Context.ts": {
       "sha": "830be155b07e1f39719cdd93727dd8f34613f934"
     },
+    "cycles/data-update/SetDataOptions.ts": {
+      "sha": "545d6bd5f16219adbf03579a67d19842a6441a2a"
+    },
+    "cycles/data-update/UpdateOptions.ts": {
+      "sha": "2147fb692baa3f345e90595ea2cb6091e7581e3a"
+    },
     "cycles/data-update/blob-utils.ts": {
       "sha": "8adfad3e1e326e293a336fc3566b9954711528f0"
     },
     "cycles/data-update/data-manager.ts": {
-      "sha": "10eca948072d67bffa3c27326b2c96f06bfdca3e"
+      "sha": "dd5781e8b7135d9b290a524c201fc55758c0b128"
     },
     "cycles/data-update/data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -347,9 +365,9 @@
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
     "index.ts": {
-      "sha": "f4a2f7ae227c1647b7b24fd56b12046eecbbc228"
+      "sha": "b5b20b8cc2e7a0d5501b43bab0672c4cc5a02a34"
     },
-    "md5": "1b78765c6626b7339c276e07b2f45a43",
+    "md5": "227e687776e80881e87cd30fa3ed921d",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
