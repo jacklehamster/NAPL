@@ -185,20 +185,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
     });
   }
 
-  #removeEmptyUpdates() {
-    let j = 0;
-    for (let i = 0; i < this.outgoingUpdates.length; i++) {
-      this.outgoingUpdates[j] = this.outgoingUpdates[i];
-      if (this.outgoingUpdates[j]) {
-        j++;
-      }
-    }
-    this.outgoingUpdates.length = j;
-  }
-
   protected async processNextFrame() {
-    this.#removeEmptyUpdates();
-
     if (this.outgoingUpdates.length) {
       await this.#waitForConnection();
     }
