@@ -35,7 +35,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
     }
     this.#comm?.send(blob);
   });
-  readonly #outgoingUpdates: Update[] = [];
+  protected readonly outgoingUpdates: Update[] = [];
   #closeListener = () => { };
 
   constructor(private commProvider: CommProvider, initialState: RoomState = {}) {
@@ -68,12 +68,12 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
   }
 
   pushData(path: string, value: any, options: UpdateOptions = {}) {
-    pushData(this.state, this.now, this.#outgoingUpdates, path, value, options);
+    pushData(this.state, this.now, this.outgoingUpdates, path, value, options);
     this.#prepareNextFrame();
   }
 
   setData(path: string, value: any, options: SetDataOptions = {}) {
-    setData(this.state, this.now, this.#outgoingUpdates, path, value, options);
+    setData(this.state, this.now, this.outgoingUpdates, path, value, options);
     this.#prepareNextFrame();
   }
 
@@ -155,7 +155,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
         now: this.now,
       },
       skipValidation: skipValidation || this.state.config?.signPayloads === false,
-      outgoingUpdates: this.#outgoingUpdates,
+      outgoingUpdates: this.outgoingUpdates,
     };
     await this.#processor.receivedBlob(blob, context);
 
@@ -187,19 +187,19 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
 
   #removeEmptyUpdates() {
     let j = 0;
-    for (let i = 0; i < this.#outgoingUpdates.length; i++) {
-      this.#outgoingUpdates[j] = this.#outgoingUpdates[i];
-      if (this.#outgoingUpdates[j]) {
+    for (let i = 0; i < this.outgoingUpdates.length; i++) {
+      this.outgoingUpdates[j] = this.outgoingUpdates[i];
+      if (this.outgoingUpdates[j]) {
         j++;
       }
     }
-    this.#outgoingUpdates.length = j;
+    this.outgoingUpdates.length = j;
   }
 
   protected async processNextFrame() {
     this.#removeEmptyUpdates();
 
-    if (this.#outgoingUpdates.length) {
+    if (this.outgoingUpdates.length) {
       await this.#waitForConnection();
     }
 
@@ -212,7 +212,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
         self: this.clientId,
         now: this.now,
       },
-      outgoingUpdates: this.#outgoingUpdates,
+      outgoingUpdates: this.outgoingUpdates,
       skipValidation: this.state.config?.signPayloads === false,
     };
 
