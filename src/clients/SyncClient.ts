@@ -2,7 +2,7 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { ISharedData, SetDataOptions, UpdateOptions } from "./ISharedData";
+import { ISharedData } from "./ISharedData";
 import { ClientData } from "./ClientData";
 import { SubData } from "./SubData";
 import { CommInterface } from "./CommInterface";
@@ -12,6 +12,8 @@ import { RoomState } from "@/types/RoomState";
 import { Processor } from "@/core/Processor";
 import { Update } from "@/types/Update";
 import { getData, pushData, setData } from "@/cycles/data-update/data-manager";
+import { SetDataOptions } from "@/cycles/data-update/SetDataOptions";
+import { UpdateOptions } from "@/cycles/data-update/UpdateOptions";
 import { Observer } from "@/observer/Observer";
 import { Context } from "@/cycle/context/Context";
 

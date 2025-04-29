@@ -1,11 +1,5 @@
-export interface UpdateOptions {
-  active?: boolean;
-}
-
-export interface SetDataOptions extends UpdateOptions {
-  append?: boolean;
-  insert?: number;
-}
+import { SetDataOptions } from "@/cycles/data-update/SetDataOptions";
+import { UpdateOptions } from "@/cycles/data-update/UpdateOptions";
 
 export interface ISharedData {
   clientId: string;

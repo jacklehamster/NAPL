@@ -1,8 +1,9 @@
 import { IObservable } from "@/observer/IObservable";
-import { ISharedData, SetDataOptions } from "./ISharedData";
+import { ISharedData } from "./ISharedData";
 import { ISyncClient } from "./ISyncClient";
 import { Observer } from "@/observer/Observer";
 import { getLeafObject } from "@/cycles/data-update/data-update";
+import { SetDataOptions } from "@/cycles/data-update/SetDataOptions";
 
 export class SubData implements ISharedData, IObservable {
   readonly #parts: (string | number)[] = [];

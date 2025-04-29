@@ -1,15 +1,8 @@
 import { Update } from "@/types/Update";
 import { getLeafObject, markUpdateConfirmed } from "./data-update";
 import { Data } from "@/types/Data";
-
-export interface UpdateOptions {
-  active?: boolean;
-}
-
-export interface SetDataOptions extends UpdateOptions {
-  append?: boolean;
-  insert?: number;
-}
+import { UpdateOptions } from "./UpdateOptions";
+import { SetDataOptions } from "./SetDataOptions";
 
 export function getData(root: Data, path: string = "", properties: { [key: string]: any }) {
   const parts = path.split("/");
