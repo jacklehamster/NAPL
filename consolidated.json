@@ -172,7 +172,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.69",
+    "version": "1.0.70",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -239,9 +239,9 @@
       "sha": "75c54e93d7713342d4dc92f23baac1fd3f367dd4"
     },
     "SyncClient.ts": {
-      "sha": "785522eb9bd0b129ccb481e282652064228c06b3"
+      "sha": "aac4130e8eb7e9d5db0c158e1b4736ba38cdfa4f"
     },
-    "md5": "46dfcfdea5a99e635da526773792ef57",
+    "md5": "cd0732ccb83a83af4305784715d4639b",
     "ui/users.ts": {
       "sha": "ba0917e890081bb8ba3507f463e0404e8f3bc65e"
     }
@@ -332,7 +332,7 @@
       "sha": "75c54e93d7713342d4dc92f23baac1fd3f367dd4"
     },
     "clients/SyncClient.ts": {
-      "sha": "785522eb9bd0b129ccb481e282652064228c06b3"
+      "sha": "aac4130e8eb7e9d5db0c158e1b4736ba38cdfa4f"
     },
     "clients/ui/users.ts": {
       "sha": "ba0917e890081bb8ba3507f463e0404e8f3bc65e"
@@ -367,7 +367,7 @@
     "index.ts": {
       "sha": "b5b20b8cc2e7a0d5501b43bab0672c4cc5a02a34"
     },
-    "md5": "aa5578a0b0dbc179c4c99ae3053f85ce",
+    "md5": "78bdfcd8eefc970a83055762276c91a0",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
