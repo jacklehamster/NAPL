@@ -15,7 +15,7 @@
     "sha": "75c54e93d7713342d4dc92f23baac1fd3f367dd4"
   },
   "clients/SyncClient.ts": {
-    "sha": "8423fad4840ad2cd1d1a73a572820da3817510be"
+    "sha": "785522eb9bd0b129ccb481e282652064228c06b3"
   },
   "clients/ui/users.ts": {
     "sha": "ba0917e890081bb8ba3507f463e0404e8f3bc65e"
@@ -50,7 +50,7 @@
   "index.ts": {
     "sha": "b5b20b8cc2e7a0d5501b43bab0672c4cc5a02a34"
   },
-  "md5": "8103175769c1d1fa605804bd5b0e88bd",
+  "md5": "aa5578a0b0dbc179c4c99ae3053f85ce",
   "observer/IObservable.ts": {
     "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
   },
