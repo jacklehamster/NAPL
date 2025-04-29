@@ -25,9 +25,9 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
   #comm: CommInterface | undefined;
   #connectionPromise: Promise<void> | undefined;
   readonly #selfData: ClientData = new ClientData(this);
-  #localTimeOffset = 0;
+  protected localTimeOffset = 0;
   #nextFrameInProcess = false;
-  #secret?: string;
+  protected secret?: string;
   readonly #processor: Processor = new Processor((blob) => {
     if (blob.size > 1024 * 1024 * 10) {
       console.error(`Blob too large: ${blob.size / 1024 / 1024} MB`,);
@@ -147,9 +147,9 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
   async onMessageBlob(blob: any, skipValidation: boolean = false) {
     const context: Context = {
       root: this.state,
-      secret: this.#secret,
+      secret: this.secret,
       clientId: this.clientId,
-      localTimeOffset: this.#localTimeOffset,
+      localTimeOffset: this.localTimeOffset,
       properties: {
         self: this.clientId,
         now: this.now,
@@ -160,9 +160,9 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
     await this.#processor.receivedBlob(blob, context);
 
     if (context.localTimeOffset) {
-      this.#localTimeOffset = context.localTimeOffset;
+      this.localTimeOffset = context.localTimeOffset;
     }
-    this.#secret = context.secret;
+    this.secret = context.secret;
     if (context.clientId) {
       this.#selfData.clientId = context.clientId;
     }
@@ -171,7 +171,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
   }
 
   get now() {
-    return Date.now() + this.#localTimeOffset;
+    return Date.now() + this.localTimeOffset;
   }
 
   #prepareNextFrame() {
@@ -205,9 +205,9 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
 
     const context: Context = {
       root: this.state,
-      secret: this.#secret,
+      secret: this.secret,
       clientId: this.clientId,
-      localTimeOffset: this.#localTimeOffset,
+      localTimeOffset: this.localTimeOffset,
       properties: {
         self: this.clientId,
         now: this.now,
@@ -221,8 +221,8 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
       this.#selfData.clientId = context.clientId;
     }
     if (context.localTimeOffset) {
-      this.#localTimeOffset = context.localTimeOffset;
+      this.localTimeOffset = context.localTimeOffset;
     }
-    this.#secret = context.secret;
+    this.secret = context.secret;
   }
 }
