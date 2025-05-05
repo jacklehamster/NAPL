@@ -26,13 +26,13 @@ export class Processor {
   }
 
   performCycle(context: Context) {
-    this.#sendUpdateBlob(context);
+    this.sendUpdateBlob(context);
     const updates = commitUpdates(context.root, context.properties);
     this.#observerManager.triggerObservers(context, updates);
     return updates;
   }
 
-  #sendUpdateBlob(context: Context) {
+  sendUpdateBlob(context: Context) {
     if (context.outgoingUpdates?.length) {
       //  Apply function to value
       context.outgoingUpdates.forEach(update => {
