@@ -128,9 +128,6 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
 
   async #connect() {
     const comm = this.#comm = await this.commProvider();
-    if (comm.clientId) {
-      this.#selfData.clientId = comm.clientId;
-    }
 
     return this.#connectionPromise = new Promise<void>((resolve, reject) => {
       comm.onError((event) => {
