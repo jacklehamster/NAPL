@@ -172,7 +172,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.71",
+    "version": "1.0.72",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -227,7 +227,7 @@
       "sha": "3e397df80e274a66b98385721c3b5d1a3e425778"
     },
     "CommInterface.ts": {
-      "sha": "a9d27972d342476ceca69255852b13fdc4613724"
+      "sha": "35a41931674f2ec886f673dc3dcca67cec382164"
     },
     "ISharedData.ts": {
       "sha": "225a27c6e71b71b82b03fc02911b4d453f68987f"
@@ -239,9 +239,9 @@
       "sha": "75c54e93d7713342d4dc92f23baac1fd3f367dd4"
     },
     "SyncClient.ts": {
-      "sha": "5aea261ac68698eb00ae92e5deca95a62e04c112"
+      "sha": "841e27cb7c2bfe8a3468ea2b8ee8604d38e929ea"
     },
-    "md5": "ab1977e3904eeb726894cc84472052aa",
+    "md5": "ff54e0383c2e59f537073f76479726b2",
     "ui/users.ts": {
       "sha": "ba0917e890081bb8ba3507f463e0404e8f3bc65e"
     }
@@ -320,7 +320,7 @@
       "sha": "3e397df80e274a66b98385721c3b5d1a3e425778"
     },
     "clients/CommInterface.ts": {
-      "sha": "a9d27972d342476ceca69255852b13fdc4613724"
+      "sha": "35a41931674f2ec886f673dc3dcca67cec382164"
     },
     "clients/ISharedData.ts": {
       "sha": "225a27c6e71b71b82b03fc02911b4d453f68987f"
@@ -332,7 +332,7 @@
       "sha": "75c54e93d7713342d4dc92f23baac1fd3f367dd4"
     },
     "clients/SyncClient.ts": {
-      "sha": "5aea261ac68698eb00ae92e5deca95a62e04c112"
+      "sha": "841e27cb7c2bfe8a3468ea2b8ee8604d38e929ea"
     },
     "clients/ui/users.ts": {
       "sha": "ba0917e890081bb8ba3507f463e0404e8f3bc65e"
@@ -367,7 +367,7 @@
     "index.ts": {
       "sha": "b5b20b8cc2e7a0d5501b43bab0672c4cc5a02a34"
     },
-    "md5": "3cefcfa833e987ca7669d98de33eae74",
+    "md5": "b3c0f1f408d031bab89df0d2d512d4e6",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
