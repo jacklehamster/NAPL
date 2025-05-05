@@ -86,14 +86,14 @@ export function displayUsers(syncClient: ISyncClient, userDiv?: HTMLDivElement) 
   introduceName(syncClient);
 }
 
-export function introduceName(syncClient: ISyncClient) {
-  syncClient.self.setData("name", randomName());
-  syncClient.self.setData("emoji", randomEmoji());
+export function introduceName(syncClient: ISyncClient, name?: string, emoji?: string) {
+  syncClient.self.setData("name", name ?? randomName());
+  syncClient.self.setData("emoji", emoji ?? randomEmoji());
 }
 
 let name: string;
 export function randomName() {
-  return name ?? (name = "guest-" + Math.random().toString(36).substring(8));
+  return name ?? (name = "user-" + Math.random().toString(36).substring(8));
 }
 
 let emoji: string;
