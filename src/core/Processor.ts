@@ -8,7 +8,6 @@ import { Observer } from "../observer/Observer";
 import { ObserverManager } from "../observer/ObserverManager";
 import { Update } from "../types/Update";
 import { extractBlobsFromPayload, includeBlobsInPayload } from "@dobuki/data-blob";
-import { validatePayload } from "@dobuki/payload-validator";
 
 export class Processor {
   readonly #observerManager = new ObserverManager();
@@ -50,27 +49,14 @@ export class Processor {
       //  send outgoing updates
       const blobs: Record<string, Blob> = {};
       context.outgoingUpdates.forEach(update => update.value = extractBlobsFromPayload(update.value, blobs));
-      this.sendUpdate(packageUpdates(context.outgoingUpdates, blobs, context.secret), context);
+      this.sendUpdate(packageUpdates(context.outgoingUpdates, blobs), context);
     }
     context.outgoingUpdates.length = 0;
   }
 
   async receivedBlob(data: any | Blob, context: Context) {
     const { payload, blobs } = data instanceof Blob ? await receiveBlob(data) : { payload: typeof (data) === "string" ? JSON.parse(data) : data, blobs: {} };
-    const secret = context.secret ?? payload.secret;
-    if (secret) {
-      if (!context.skipValidation && !validatePayload(payload, { secret })) {
-        console.error("Invalid signature", payload);
-        return;
-      }
-      context.secret = secret;
-    }
-
     const hasBlobs = blobs && Object.keys(blobs).length > 0;
-
-    if (payload?.globalTime) {
-      context.localTimeOffset = payload.globalTime - Date.now();
-    }
 
     if (payload?.myClientId) {
       // client ID confirmed
