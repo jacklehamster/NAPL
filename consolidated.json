@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "abb5882cc161e4471673f5dd9872c54a5af71978"
+      "sha": "d48a367530e4ee34cfca946614a72f2183292299"
     },
     "dist/index.js.map": {
-      "sha": "455f34e79984f425411e876db3ea1d2362cf50fb"
+      "sha": "955fc1fbe1721110cd5707c91077b68a2af8ee1f"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -57,7 +57,7 @@
     "json-test/index.html": {
       "sha": "38610c11284f0579994495f76bd3c7412bd74461"
     },
-    "md5": "b3104daa07252534e1e896a5c1a5629e",
+    "md5": "14a5e4a90d4c06fa6f02b28a955e568f",
     "mega-room/index.html": {
       "sha": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
@@ -76,12 +76,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "abb5882cc161e4471673f5dd9872c54a5af71978"
+      "sha": "d48a367530e4ee34cfca946614a72f2183292299"
     },
     "index.js.map": {
-      "sha": "455f34e79984f425411e876db3ea1d2362cf50fb"
+      "sha": "955fc1fbe1721110cd5707c91077b68a2af8ee1f"
     },
-    "md5": "0d1aadd3f00cc55632cdbbabd6a7500b",
+    "md5": "38061e8e5fca8ba573c52db2d2864050",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -172,7 +172,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.75",
+    "version": "1.0.76",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -239,9 +239,9 @@
       "sha": "75c54e93d7713342d4dc92f23baac1fd3f367dd4"
     },
     "SyncClient.ts": {
-      "sha": "792f8c238b64b12c7490eadcd261e5b8e3e6d3a1"
+      "sha": "192b60a8032745ddbe7b01c9049982a5f5e665ad"
     },
-    "md5": "791a2d609c75173485b979f6a856dda6",
+    "md5": "32bb06911386c383501b9bc6c27e5a2d",
     "ui/users.ts": {
       "sha": "021727f98f6ad09d20d7b82f9eef5eab73720bb8"
     }
@@ -332,7 +332,7 @@
       "sha": "75c54e93d7713342d4dc92f23baac1fd3f367dd4"
     },
     "clients/SyncClient.ts": {
-      "sha": "792f8c238b64b12c7490eadcd261e5b8e3e6d3a1"
+      "sha": "192b60a8032745ddbe7b01c9049982a5f5e665ad"
     },
     "clients/ui/users.ts": {
       "sha": "021727f98f6ad09d20d7b82f9eef5eab73720bb8"
@@ -367,7 +367,7 @@
     "index.ts": {
       "sha": "b5b20b8cc2e7a0d5501b43bab0672c4cc5a02a34"
     },
-    "md5": "5970f44d2aafcffb302c051647d309de",
+    "md5": "51ca64b734f4eba854cc7b5e9cdf2464",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
