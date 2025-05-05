@@ -3,7 +3,7 @@
     "sha": "3e397df80e274a66b98385721c3b5d1a3e425778"
   },
   "CommInterface.ts": {
-    "sha": "5933ac2e959c7abde5a28666d1a31c1e3093ce06"
+    "sha": "a9d27972d342476ceca69255852b13fdc4613724"
   },
   "ISharedData.ts": {
     "sha": "225a27c6e71b71b82b03fc02911b4d453f68987f"
@@ -15,9 +15,9 @@
     "sha": "75c54e93d7713342d4dc92f23baac1fd3f367dd4"
   },
   "SyncClient.ts": {
-    "sha": "aac4130e8eb7e9d5db0c158e1b4736ba38cdfa4f"
+    "sha": "5aea261ac68698eb00ae92e5deca95a62e04c112"
   },
-  "md5": "cd0732ccb83a83af4305784715d4639b",
+  "md5": "ab1977e3904eeb726894cc84472052aa",
   "ui/users.ts": {
     "sha": "ba0917e890081bb8ba3507f463e0404e8f3bc65e"
   }

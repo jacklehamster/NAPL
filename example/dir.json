@@ -12,10 +12,10 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/index.js": {
-    "sha": "a19c8da8bc704537bd69a23b8010d0c39cfe03a8"
+    "sha": "b86da16960e28a032194783a4318c059b39caba2"
   },
   "dist/index.js.map": {
-    "sha": "a75958ab46ec2051af5cb669dbb9c48a505988e0"
+    "sha": "520df6593305079d1d07f118858dc797d0d463b3"
   },
   "dist/styles-da87zv4s.css": {
     "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -29,7 +29,7 @@
   "json-test/index.html": {
     "sha": "38610c11284f0579994495f76bd3c7412bd74461"
   },
-  "md5": "e6891ebf4d53f682fd11155512414169",
+  "md5": "4b44c988d5b53574feb3efa03bc6f8ff",
   "mega-room/index.html": {
     "sha": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
   },
