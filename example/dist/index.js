@@ -11192,12 +11192,12 @@ class Processor3 {
     this.#observerManager.removeObserver(observer);
   }
   performCycle(context) {
-    this.#sendUpdateBlob(context);
+    this.sendUpdateBlob(context);
     const updates = commitUpdates3(context.root, context.properties);
     this.#observerManager.triggerObservers(context, updates);
     return updates;
   }
-  #sendUpdateBlob(context) {
+  sendUpdateBlob(context) {
     if (context.outgoingUpdates?.length) {
       context.outgoingUpdates.forEach((update) => {
         update.path = this.#fixPath(update.path, context);
@@ -11471,7 +11471,7 @@ class SyncClient2 {
       });
       comm.onMessage(async (data) => {
         await this.onMessageBlob(data);
-        if (this.#connectionPromise) {
+        if (this.#connectionPromise && this.clientId) {
           this.#connectionPromise = undefined;
           resolve();
         }
@@ -11503,7 +11503,7 @@ class SyncClient2 {
     if (context.clientId) {
       this.#selfData.clientId = context.clientId;
     }
-    prepareNextFrame(this.processNextFrame);
+    executeFrame(this.processNextFrame);
   }
   get now() {
     return Date.now();
@@ -11575,4 +11575,4 @@ export {
   root
 };
 
-//# debugId=1240A92643DA32C564756E2164756E21
+//# debugId=67F0A1CCE29C2BD564756E2164756E21

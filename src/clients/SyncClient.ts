@@ -136,7 +136,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
       });
       comm.onMessage(async (data) => {
         await this.onMessageBlob(data);
-        if (this.#connectionPromise) {
+        if (this.#connectionPromise && this.clientId) {
           this.#connectionPromise = undefined;
           resolve();
         }
@@ -171,7 +171,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
     if (context.clientId) {
       this.#selfData.clientId = context.clientId;
     }
-    prepareNextFrame(this.processNextFrame);
+    executeFrame(this.processNextFrame);
   }
 
   get now() {
