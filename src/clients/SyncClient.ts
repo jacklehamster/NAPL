@@ -18,7 +18,7 @@ import { Observer } from "../observer/Observer";
 import { Context } from "../cycle/context/Context";
 import { executeFrame, prepareNextFrame } from "@/utils/execution-utils";
 
-export type CommProvider = () => Promise<CommInterface>;
+export type CommProvider = () => CommInterface;
 
 export class SyncClient implements ISharedData, ISyncClient, IObservable {
   readonly state: RoomState;
@@ -127,7 +127,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
   }
 
   async #connect() {
-    const comm = this.#comm = await this.commProvider();
+    const comm = this.#comm = this.commProvider();
 
     return this.#connectionPromise = new Promise<void>((resolve, reject) => {
       comm.onError((event) => {
@@ -135,9 +135,9 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
         reject(event);
       });
       comm.onMessage(async (data) => {
-        const preClientId = this.clientId;
         await this.onMessageBlob(data);
-        if (!preClientId && this.clientId) {
+        if (this.#connectionPromise) {
+          this.#connectionPromise = undefined;
           resolve();
         }
       });
@@ -149,9 +149,6 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
           flush: true,
         });
       });
-      if (this.clientId) {
-        resolve();
-      }
     });
   }
 

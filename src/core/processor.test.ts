@@ -5,7 +5,7 @@ import { Processor } from "./Processor";
 describe('Processor', () => {
 
   it('test update and databinding cycle', async () => {
-    const processor = new Processor((blob, context) => {
+    const processor = new Processor((blob) => {
       processor.receivedBlob(blob, context);
     });
 

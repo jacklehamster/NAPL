@@ -11192,12 +11192,12 @@ class Processor3 {
     this.#observerManager.removeObserver(observer);
   }
   performCycle(context) {
-    this.sendUpdateBlob(context);
+    this.#sendUpdateBlob(context);
     const updates = commitUpdates3(context.root, context.properties);
     this.#observerManager.triggerObservers(context, updates);
     return updates;
   }
-  sendUpdateBlob(context) {
+  #sendUpdateBlob(context) {
     if (context.outgoingUpdates?.length) {
       context.outgoingUpdates.forEach((update) => {
         update.path = this.#fixPath(update.path, context);
@@ -11208,7 +11208,7 @@ class Processor3 {
       this.#addIncomingUpdates(confirmedUpdates, context);
       const blobs = {};
       context.outgoingUpdates.forEach((update) => update.value = gn3(update.value, blobs));
-      this.sendUpdate(packageUpdates3(context.outgoingUpdates, blobs), context);
+      this.sendUpdate(packageUpdates3(context.outgoingUpdates, blobs));
     }
     context.outgoingUpdates.length = 0;
   }
@@ -11463,19 +11463,16 @@ class SyncClient2 {
     return this.#connectionPromise;
   }
   async#connect() {
-    const comm = this.#comm = await this.commProvider();
-    if (comm.clientId) {
-      this.#selfData.clientId = comm.clientId;
-    }
+    const comm = this.#comm = this.commProvider();
     return this.#connectionPromise = new Promise((resolve, reject) => {
       comm.onError((event) => {
         console.error("SyncClient connection error", event);
         reject(event);
       });
       comm.onMessage(async (data) => {
-        const preClientId = this.clientId;
         await this.onMessageBlob(data);
-        if (!preClientId && this.clientId) {
+        if (this.#connectionPromise) {
+          this.#connectionPromise = undefined;
           resolve();
         }
       });
@@ -11487,9 +11484,6 @@ class SyncClient2 {
           flush: true
         });
       });
-      if (this.clientId) {
-        resolve();
-      }
     });
   }
   close() {
@@ -11581,4 +11575,4 @@ export {
   root
 };
 
-//# debugId=37993A6533BCBBB464756E2164756E21
+//# debugId=1240A92643DA32C564756E2164756E21

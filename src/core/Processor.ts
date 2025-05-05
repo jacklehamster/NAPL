@@ -12,7 +12,7 @@ import { extractBlobsFromPayload, includeBlobsInPayload } from "@dobuki/data-blo
 export class Processor {
   readonly #observerManager = new ObserverManager();
 
-  constructor(private sendUpdate: (blob: Blob, context: Context) => void) {
+  constructor(private sendUpdate: (blob: Blob) => void) {
   }
 
   observe(paths?: (string[] | string)): Observer {
@@ -26,13 +26,13 @@ export class Processor {
   }
 
   performCycle(context: Context) {
-    this.sendUpdateBlob(context);
+    this.#sendUpdateBlob(context);
     const updates = commitUpdates(context.root, context.properties);
     this.#observerManager.triggerObservers(context, updates);
     return updates;
   }
 
-  sendUpdateBlob(context: Context) {
+  #sendUpdateBlob(context: Context) {
     if (context.outgoingUpdates?.length) {
       //  Apply function to value
       context.outgoingUpdates.forEach(update => {
@@ -49,7 +49,7 @@ export class Processor {
       //  send outgoing updates
       const blobs: Record<string, Blob> = {};
       context.outgoingUpdates.forEach(update => update.value = extractBlobsFromPayload(update.value, blobs));
-      this.sendUpdate(packageUpdates(context.outgoingUpdates, blobs), context);
+      this.sendUpdate(packageUpdates(context.outgoingUpdates, blobs));
     }
     context.outgoingUpdates.length = 0;
   }
