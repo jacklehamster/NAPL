@@ -12,7 +12,7 @@ import { extractBlobsFromPayload, includeBlobsInPayload } from "@dobuki/data-blo
 export class Processor {
   readonly #observerManager = new ObserverManager();
 
-  constructor(private sendUpdate: (blob: Blob) => void) {
+  constructor(private sendUpdate: (blob: Blob, peer?: string) => void) {
   }
 
   observe(paths?: (string[] | string)): Observer {
@@ -33,7 +33,7 @@ export class Processor {
   }
 
   sendUpdateBlob(context: Context) {
-    if (context.outgoingUpdates?.length) {
+    if (context.outgoingUpdates.length) {
       //  Apply function to value
       context.outgoingUpdates.forEach(update => {
         update.path = this.#fixPath(update.path, context);
@@ -47,11 +47,19 @@ export class Processor {
       this.#addIncomingUpdates(confirmedUpdates, context);
 
       //  send outgoing updates
-      const blobs: Record<string, Blob> = {};
-      context.outgoingUpdates.forEach(update => update.value = extractBlobsFromPayload(update.value, blobs));
-      this.sendUpdate(packageUpdates(context.outgoingUpdates, blobs));
+      const peerSet = new Set<string | undefined>();
+      context.outgoingUpdates.forEach(update => {
+        peerSet.add(update.peer);
+      });
+
+      peerSet.forEach((peer) => {
+        const outgoingUpdates: Update[] = context.outgoingUpdates.filter(update => update.peer === peer);
+        const blobs: Record<string, Blob> = {};
+        outgoingUpdates.forEach(update => update.value = extractBlobsFromPayload(update.value, blobs));
+        this.sendUpdate(packageUpdates(outgoingUpdates, blobs), peer);
+      });
+      context.outgoingUpdates.length = 0;
     }
-    context.outgoingUpdates.length = 0;
   }
 
   async receivedBlob(data: any | Blob, context: Context) {

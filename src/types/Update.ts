@@ -5,4 +5,5 @@ export interface Update {
   insert?: number;
   delete?: number;
   confirmed?: number;
+  peer?: string;
 }

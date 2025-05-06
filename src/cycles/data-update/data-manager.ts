@@ -27,6 +27,7 @@ export function setData(root: Data, now: number, outgoingUpdates: Update[], path
 }
 
 function processDataUpdate(root: Data, now: number, outgoingUpdates: Update[], update: Update, options: UpdateOptions = {}) {
+  update.peer = options.peer;
   if (options.active ?? root.config?.activeUpdates) {
     markUpdateConfirmed(update, now);
   }
