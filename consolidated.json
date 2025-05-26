@@ -172,7 +172,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.78",
+    "version": "1.0.79",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -371,9 +371,9 @@
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
     "index.ts": {
-      "sha": "b5b20b8cc2e7a0d5501b43bab0672c4cc5a02a34"
+      "sha": "f8449c265f2728fdcf6cf63004fddd0c2de2afff"
     },
-    "md5": "75e6b57d8df83c28554d2bef1c05dac5",
+    "md5": "35cf57ae3ec3334016e2cd832345fb28",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
