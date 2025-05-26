@@ -130,7 +130,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
     const comm = this.#comm = this.commProvider();
 
     return this.#connectionPromise = new Promise<void>((resolve, reject) => {
-      comm.onError((event) => {
+      comm.onError?.((event) => {
         console.error("SyncClient connection error", event);
         reject(event);
       });
@@ -141,7 +141,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
           resolve();
         }
       });
-      comm.onClose(() => {
+      comm.onClose?.(() => {
         this.#comm = undefined;
         this.#closeListener();
         this.setData(`/clients/${this.clientId}`, undefined, {
@@ -153,7 +153,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
   }
 
   close() {
-    this.#comm?.close();
+    this.#comm?.close?.();
   }
 
   async onMessageBlob(blob: any) {
