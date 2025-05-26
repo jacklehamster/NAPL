@@ -17,3 +17,4 @@ export * from "./clients/ClientData";
 export * from "./clients/CommInterface";
 export * from "./clients/ISharedData";
 export * from "./clients/ISyncClient";
+export * from "./core/create-processor";
