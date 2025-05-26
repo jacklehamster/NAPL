@@ -1,8 +1,11 @@
 {
   "Processor.ts": {
-    "sha": "552a2a10a346212872e4fc104bf06c56e74c6c47"
+    "sha": "8e2f081ace4eafae2cecb17979120e8606c25c74"
   },
-  "md5": "e9a536ad93937953932b21e22683355b",
+  "create-processor.ts": {
+    "sha": "2004c40f16d8c3c376c0e255a0f1820a0a1e010b"
+  },
+  "md5": "2156f5e6d03c90234ff198146f82f421",
   "processor.test.ts": {
     "sha": "3e961171298dc79698c0f23658f4b1ca8e36f7d8"
   }
