@@ -172,7 +172,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.79",
+    "version": "1.0.80",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -216,7 +216,7 @@
       "@types/ws": "^8.18.1",
       "fetch-blob": "^4.0.0",
       "jest": "^29.7.0",
-      "ts-jest": "^29.3.2"
+      "ts-jest": "^29.3.4"
     },
     "dependencies": {
       "@dobuki/data-blob": "^1.0.18"
@@ -227,7 +227,7 @@
       "sha": "3e397df80e274a66b98385721c3b5d1a3e425778"
     },
     "CommInterface.ts": {
-      "sha": "da14050874bd23b3c3d63a627839458a1d8fe884"
+      "sha": "e816f0a20866317b05076cd97139cfcac844e38a"
     },
     "ISharedData.ts": {
       "sha": "225a27c6e71b71b82b03fc02911b4d453f68987f"
@@ -239,9 +239,9 @@
       "sha": "75c54e93d7713342d4dc92f23baac1fd3f367dd4"
     },
     "SyncClient.ts": {
-      "sha": "e6c297c677a3cbfd670430de753bd49504546127"
+      "sha": "495567b157a7fe89c6e56973a6367493dd77b4c9"
     },
-    "md5": "7bc231096ad62f40d451e4522c93ce6c",
+    "md5": "39384384a3ffd0bf34bc06e04be7e074",
     "ui/users.ts": {
       "sha": "021727f98f6ad09d20d7b82f9eef5eab73720bb8"
     }
@@ -323,7 +323,7 @@
       "sha": "3e397df80e274a66b98385721c3b5d1a3e425778"
     },
     "clients/CommInterface.ts": {
-      "sha": "da14050874bd23b3c3d63a627839458a1d8fe884"
+      "sha": "e816f0a20866317b05076cd97139cfcac844e38a"
     },
     "clients/ISharedData.ts": {
       "sha": "225a27c6e71b71b82b03fc02911b4d453f68987f"
@@ -335,7 +335,7 @@
       "sha": "75c54e93d7713342d4dc92f23baac1fd3f367dd4"
     },
     "clients/SyncClient.ts": {
-      "sha": "e6c297c677a3cbfd670430de753bd49504546127"
+      "sha": "495567b157a7fe89c6e56973a6367493dd77b4c9"
     },
     "clients/ui/users.ts": {
       "sha": "021727f98f6ad09d20d7b82f9eef5eab73720bb8"
@@ -373,7 +373,7 @@
     "index.ts": {
       "sha": "f8449c265f2728fdcf6cf63004fddd0c2de2afff"
     },
-    "md5": "35cf57ae3ec3334016e2cd832345fb28",
+    "md5": "e3d568b29cc85908fe4d8f558246e115",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
