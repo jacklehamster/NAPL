@@ -3,7 +3,7 @@
     "sha": "3e397df80e274a66b98385721c3b5d1a3e425778"
   },
   "clients/CommInterface.ts": {
-    "sha": "e816f0a20866317b05076cd97139cfcac844e38a"
+    "sha": "b25702352c611b8dde3b9ff44d136ed1a8de2e3d"
   },
   "clients/ISharedData.ts": {
     "sha": "225a27c6e71b71b82b03fc02911b4d453f68987f"
@@ -24,7 +24,7 @@
     "sha": "8e2f081ace4eafae2cecb17979120e8606c25c74"
   },
   "core/create-processor.ts": {
-    "sha": "2004c40f16d8c3c376c0e255a0f1820a0a1e010b"
+    "sha": "7564ee5605c9615c9f699f05227a726b7bc1b98d"
   },
   "core/processor.test.ts": {
     "sha": "3e961171298dc79698c0f23658f4b1ca8e36f7d8"
@@ -53,7 +53,7 @@
   "index.ts": {
     "sha": "f8449c265f2728fdcf6cf63004fddd0c2de2afff"
   },
-  "md5": "e3d568b29cc85908fe4d8f558246e115",
+  "md5": "a937758dfa1101c4de4e9100827a95ce",
   "observer/IObservable.ts": {
     "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
   },
