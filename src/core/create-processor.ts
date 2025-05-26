@@ -35,5 +35,6 @@ export function createProcessor(
   return {
     observe: (path: string | string[] | undefined) => processor.observe(path),
     setData: setDataCall,
+    close: () => com.close(),
   };
 }
