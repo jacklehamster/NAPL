@@ -42,15 +42,14 @@ export class Processor {
       });
 
       //  Apply incoming updates
-      const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed)
+      const confirmedUpdates = context.outgoingUpdates
+        .filter(({ confirmed }) => confirmed)
         .map(update => ({ ...update }));
       this.#addIncomingUpdates(confirmedUpdates, context);
 
       //  send outgoing updates
       const peerSet = new Set<string | undefined>();
-      context.outgoingUpdates.forEach(update => {
-        peerSet.add(update.peer);
-      });
+      context.outgoingUpdates.forEach(update => peerSet.add(update.peer));
 
       peerSet.forEach((peer) => {
         const outgoingUpdates: Update[] = context.outgoingUpdates.filter(update => update.peer === peer);

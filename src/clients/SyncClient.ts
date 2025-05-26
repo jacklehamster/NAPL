@@ -26,12 +26,12 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
   #comm: CommInterface | undefined;
   #connectionPromise: Promise<void> | undefined;
   readonly #selfData: ClientData = new ClientData(this);
-  readonly #processor: Processor = new Processor((blob) => {
+  readonly #processor: Processor = new Processor((blob, peer) => {
     if (blob.size > 1024 * 1024 * 10) {
       console.error(`Blob too large: ${blob.size / 1024 / 1024} MB`,);
       return;
     }
-    this.#comm?.send(blob);
+    this.#comm?.send(blob, peer);
   });
   protected readonly outgoingUpdates: Update[] = [];
   #closeListener = () => { };

@@ -11198,7 +11198,7 @@ class Processor3 {
     return updates;
   }
   sendUpdateBlob(context) {
-    if (context.outgoingUpdates?.length) {
+    if (context.outgoingUpdates.length) {
       context.outgoingUpdates.forEach((update) => {
         update.path = this.#fixPath(update.path, context);
         const previous = getLeafObject3(context.root, update.path.split("/"), 0, false);
@@ -11206,11 +11206,16 @@ class Processor3 {
       });
       const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed).map((update) => ({ ...update }));
       this.#addIncomingUpdates(confirmedUpdates, context);
-      const blobs = {};
-      context.outgoingUpdates.forEach((update) => update.value = gn3(update.value, blobs));
-      this.sendUpdate(packageUpdates3(context.outgoingUpdates, blobs));
+      const peerSet = new Set;
+      context.outgoingUpdates.forEach((update) => peerSet.add(update.peer));
+      peerSet.forEach((peer) => {
+        const outgoingUpdates = context.outgoingUpdates.filter((update) => update.peer === peer);
+        const blobs = {};
+        outgoingUpdates.forEach((update) => update.value = gn3(update.value, blobs));
+        this.sendUpdate(packageUpdates3(outgoingUpdates, blobs), peer);
+      });
+      context.outgoingUpdates.length = 0;
     }
-    context.outgoingUpdates.length = 0;
   }
   async receivedBlob(data, context) {
     const { payload, blobs } = data instanceof Blob ? await receiveBlob3(data) : { payload: typeof data === "string" ? JSON.parse(data) : data, blobs: {} };
@@ -11267,6 +11272,7 @@ function setData2(root, now, outgoingUpdates, path, value, options = {}) {
   }, options);
 }
 function processDataUpdate2(root, now, outgoingUpdates, update, options = {}) {
+  update.peer = options.peer;
   if (options.active ?? root.config?.activeUpdates) {
     markUpdateConfirmed2(update, now);
   }
@@ -11375,12 +11381,12 @@ class SyncClient2 {
   #comm;
   #connectionPromise;
   #selfData = new ClientData2(this);
-  #processor = new Processor3((blob) => {
+  #processor = new Processor3((blob, peer) => {
     if (blob.size > 1024 * 1024 * 10) {
       console.error(`Blob too large: ${blob.size / 1024 / 1024} MB`);
       return;
     }
-    this.#comm?.send(blob);
+    this.#comm?.send(blob, peer);
   });
   outgoingUpdates = [];
   #closeListener = () => {};
@@ -11575,4 +11581,4 @@ export {
   root
 };
 
-//# debugId=67F0A1CCE29C2BD564756E2164756E21
+//# debugId=98EC2D9CE385558564756E2164756E21
