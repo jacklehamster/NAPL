@@ -19,7 +19,7 @@ export function createProcessor(
     await processor.receivedBlob(blob, context);
     processor.performCycle(context);
   });
-  com.addOnNewClient(peer => {
+  com.onNewClient(peer => {
     Object.entries(root).forEach(([key, value]) => setDataCall(key, value, peer));
     processor.performCycle(context);
   });
