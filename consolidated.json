@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "e0af05a0caa0e67c9647c0ffe1fbc00a769327b6"
+      "sha": "8ac2d0d060cd4ae01c7c6fcbd987e59e0d82cdd3"
     },
     "dist/index.js.map": {
-      "sha": "eecbbd2d8bbadb81b9d06ddc0e66fc4410a96f46"
+      "sha": "b33fcd542543ef70e43497dbd6c9bf32ad1591e1"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -57,7 +57,7 @@
     "json-test/index.html": {
       "sha": "38610c11284f0579994495f76bd3c7412bd74461"
     },
-    "md5": "f18a1e2ccc42bc4fe494889b443e70ad",
+    "md5": "8f5a374129d9abbf7ccc5b198dcefa37",
     "mega-room/index.html": {
       "sha": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     },
@@ -76,12 +76,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "e0af05a0caa0e67c9647c0ffe1fbc00a769327b6"
+      "sha": "8ac2d0d060cd4ae01c7c6fcbd987e59e0d82cdd3"
     },
     "index.js.map": {
-      "sha": "eecbbd2d8bbadb81b9d06ddc0e66fc4410a96f46"
+      "sha": "b33fcd542543ef70e43497dbd6c9bf32ad1591e1"
     },
-    "md5": "90f0f8a7f0d5e38ac5dd00bc57d9f52e",
+    "md5": "14c9c314884a12bbf629720030a0a440",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -172,7 +172,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.82",
+    "version": "1.0.83",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -254,12 +254,12 @@
   },
   "/src/core/dir.json": {
     "Processor.ts": {
-      "sha": "8e2f081ace4eafae2cecb17979120e8606c25c74"
+      "sha": "09c075829c40494c7240bc455e943527ab4f5a68"
     },
     "create-processor.ts": {
-      "sha": "7564ee5605c9615c9f699f05227a726b7bc1b98d"
+      "sha": "b04f252dd30ccb3099d9d97c341adcd804b0f338"
     },
-    "md5": "7324140c221cf8f964c6a55cd21db2dd",
+    "md5": "3ec9c9ca9166c0e8ac5a79457974266e",
     "processor.test.ts": {
       "sha": "3e961171298dc79698c0f23658f4b1ca8e36f7d8"
     }
@@ -287,7 +287,7 @@
       "sha": "1795cb3cae230d283055453eb6dbd62c3198c6f6"
     },
     "data-manager.ts": {
-      "sha": "9eb81cabab258a76e3f55e9aa3da56412013f0f8"
+      "sha": "31e8f7e5d22e23317606deaf87f9f717722351ca"
     },
     "data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -295,7 +295,7 @@
     "data-update.ts": {
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
-    "md5": "9e18d2f5da8a4bd23f4728e9ea15b02b"
+    "md5": "5b84718a3d5bd14455ae10985ebd29cb"
   },
   "/src/cycles/dir.json": {
     "data-update/SetDataOptions.ts": {
@@ -308,7 +308,7 @@
       "sha": "1795cb3cae230d283055453eb6dbd62c3198c6f6"
     },
     "data-update/data-manager.ts": {
-      "sha": "9eb81cabab258a76e3f55e9aa3da56412013f0f8"
+      "sha": "31e8f7e5d22e23317606deaf87f9f717722351ca"
     },
     "data-update/data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -316,7 +316,7 @@
     "data-update/data-update.ts": {
       "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
     },
-    "md5": "e72e4ca7d3e13a66b7ba9aef3c321bea"
+    "md5": "a979295c2a2f78d86c513771cb936e1d"
   },
   "/src/dir.json": {
     "clients/ClientData.ts": {
@@ -341,10 +341,10 @@
       "sha": "021727f98f6ad09d20d7b82f9eef5eab73720bb8"
     },
     "core/Processor.ts": {
-      "sha": "8e2f081ace4eafae2cecb17979120e8606c25c74"
+      "sha": "09c075829c40494c7240bc455e943527ab4f5a68"
     },
     "core/create-processor.ts": {
-      "sha": "7564ee5605c9615c9f699f05227a726b7bc1b98d"
+      "sha": "b04f252dd30ccb3099d9d97c341adcd804b0f338"
     },
     "core/processor.test.ts": {
       "sha": "3e961171298dc79698c0f23658f4b1ca8e36f7d8"
@@ -362,7 +362,7 @@
       "sha": "1795cb3cae230d283055453eb6dbd62c3198c6f6"
     },
     "cycles/data-update/data-manager.ts": {
-      "sha": "9eb81cabab258a76e3f55e9aa3da56412013f0f8"
+      "sha": "31e8f7e5d22e23317606deaf87f9f717722351ca"
     },
     "cycles/data-update/data-update.test.ts": {
       "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -373,7 +373,7 @@
     "index.ts": {
       "sha": "f8449c265f2728fdcf6cf63004fddd0c2de2afff"
     },
-    "md5": "a937758dfa1101c4de4e9100827a95ce",
+    "md5": "a912e3f84e234f65346fed725d23b87a",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },

@@ -9,7 +9,7 @@
     "sha": "1795cb3cae230d283055453eb6dbd62c3198c6f6"
   },
   "data-manager.ts": {
-    "sha": "9eb81cabab258a76e3f55e9aa3da56412013f0f8"
+    "sha": "31e8f7e5d22e23317606deaf87f9f717722351ca"
   },
   "data-update.test.ts": {
     "sha": "a1997bbdb33184f8c775afb5197eb6dd702ff290"
@@ -17,5 +17,5 @@
   "data-update.ts": {
     "sha": "b5ac6bac0d856ae6822f49efc8f8b16f8e2b66ce"
   },
-  "md5": "9e18d2f5da8a4bd23f4728e9ea15b02b"
+  "md5": "5b84718a3d5bd14455ae10985ebd29cb"
 }
