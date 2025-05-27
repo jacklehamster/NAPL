@@ -11257,14 +11257,14 @@ function getData2(root, path = "", properties) {
   return getLeafObject3(root, parts, 0, false, properties);
 }
 function pushData2(root, now, outgoingUpdates, path, value, options = {}) {
-  processDataUpdate2(root, now, outgoingUpdates, {
+  return processDataUpdate2(root, now, outgoingUpdates, {
     path,
     value,
     append: true
   }, options);
 }
 function setData2(root, now, outgoingUpdates, path, value, options = {}) {
-  processDataUpdate2(root, now, outgoingUpdates, {
+  return processDataUpdate2(root, now, outgoingUpdates, {
     path,
     value,
     append: options.append,
@@ -11277,6 +11277,7 @@ function processDataUpdate2(root, now, outgoingUpdates, update, options = {}) {
     markUpdateConfirmed2(update, now);
   }
   outgoingUpdates.push(update);
+  return update;
 }
 // ../src/clients/ClientData.ts
 class ClientData2 {
@@ -11471,7 +11472,7 @@ class SyncClient2 {
   async#connect() {
     const comm = this.#comm = this.commProvider();
     return this.#connectionPromise = new Promise((resolve, reject) => {
-      comm.onError((event) => {
+      comm.onError?.((event) => {
         console.error("SyncClient connection error", event);
         reject(event);
       });
@@ -11482,7 +11483,7 @@ class SyncClient2 {
           resolve();
         }
       });
-      comm.onClose(() => {
+      comm.onClose?.(() => {
         this.#comm = undefined;
         this.#closeListener();
         this.setData(`/clients/${this.clientId}`, undefined, {
@@ -11493,7 +11494,7 @@ class SyncClient2 {
     });
   }
   close() {
-    this.#comm?.close();
+    this.#comm?.close?.();
   }
   async onMessageBlob(blob) {
     const context = {
@@ -11581,4 +11582,4 @@ export {
   root
 };
 
-//# debugId=98EC2D9CE385558564756E2164756E21
+//# debugId=B7DFBE559B92A36564756E2164756E21

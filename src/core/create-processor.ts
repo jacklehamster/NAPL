@@ -17,11 +17,11 @@ export function createProcessor(
   const processor = new Processor((blob, peer) => com.send(blob, peer));
   com.onMessage(async (blob) => {
     await processor.receivedBlob(blob, context);
-    processor.performCycle(context);
+    prepareCycle();
   });
   com.onNewClient(peer => {
     Object.entries(root).forEach(([key, value]) => setDataCall(key, value, peer));
-    processor.performCycle(context);
+    prepareCycle();
   });
 
   const setDataCall = (path: string, value: any, peer?: string) => {
@@ -29,12 +29,46 @@ export function createProcessor(
       active: true,
       peer,
     });
-    processor.performCycle(context);
   };
 
+  let looping = false;
+  let preparingCycle = false;
+  let animationFrame = 0;
+  function prepareCycle() {
+    if (!preparingCycle) {
+      preparingCycle = true;
+      const loop = () => {
+        if (looping) {
+          animationFrame = requestAnimationFrame(loop);
+        } else {
+          preparingCycle = false;
+        }
+        processor.performCycle(context);
+      };
+      animationFrame = requestAnimationFrame(loop);
+    }
+  }
+
   return {
-    observe: (path: string | string[] | undefined) => processor.observe(path),
-    setData: setDataCall,
-    close: () => com.close(),
+    processor,
+    observe: (path: string | string[] | undefined) => {
+      return processor.observe(path);
+    },
+    setData: (path: string, value: any, peer?: string) => {
+      setDataCall(path, value, peer);
+      prepareCycle();
+    },
+    close: () => {
+      com.close();
+    },
+    startLoop() {
+      looping = true;
+      prepareCycle();
+    },
+    stopLoop() {
+      cancelAnimationFrame(animationFrame);
+      looping = false;
+      preparingCycle = false;
+    },
   };
 }

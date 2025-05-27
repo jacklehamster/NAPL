@@ -61,7 +61,7 @@ export class Processor {
     }
   }
 
-  async receivedBlob(data: any | Blob, context: Context) {
+  async receivedBlob(data: Blob, context: Context) {
     const { payload, blobs } = data instanceof Blob ? await receiveBlob(data) : { payload: typeof (data) === "string" ? JSON.parse(data) : data, blobs: {} };
     const hasBlobs = blobs && Object.keys(blobs).length > 0;
 

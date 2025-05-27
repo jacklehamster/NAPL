@@ -10,7 +10,7 @@ export function getData(root: Data, path: string = "", properties: { [key: strin
 }
 
 export function pushData(root: Data, now: number, outgoingUpdates: Update[], path: string, value: any, options: UpdateOptions = {}) {
-  processDataUpdate(root, now, outgoingUpdates, {
+  return processDataUpdate(root, now, outgoingUpdates, {
     path,
     value,
     append: true,
@@ -18,7 +18,7 @@ export function pushData(root: Data, now: number, outgoingUpdates: Update[], pat
 }
 
 export function setData(root: Data, now: number, outgoingUpdates: Update[], path: string, value: any, options: SetDataOptions = {}) {
-  processDataUpdate(root, now, outgoingUpdates, {
+  return processDataUpdate(root, now, outgoingUpdates, {
     path,
     value,
     append: options.append,
@@ -32,4 +32,5 @@ function processDataUpdate(root: Data, now: number, outgoingUpdates: Update[], u
     markUpdateConfirmed(update, now);
   }
   outgoingUpdates.push(update);
+  return update;
 }
