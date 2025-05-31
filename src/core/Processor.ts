@@ -88,6 +88,7 @@ export class Processor {
     const split = path.split("/");
     return split.map(part => translateValue(part, {
       self: context.clientId,
+      ...context.properties,
     })).join("/");
   }
 }
