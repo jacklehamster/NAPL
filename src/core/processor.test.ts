@@ -5,8 +5,9 @@ import { Processor } from "./Processor";
 describe('Processor', () => {
 
   it('test update and databinding cycle', async () => {
-    const processor = new Processor((blob) => {
-      processor.receivedBlob(blob, context);
+    const processor = new Processor((u8) => {
+      const data = u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength);
+      processor.receivedData(data, context);
     });
 
     const root: Data = {

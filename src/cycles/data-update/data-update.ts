@@ -7,15 +7,16 @@ const REGEX = /~\{([^}]+)\}/;
 
 // This function is used to commit updates to the root object
 export function commitUpdates(
-  root: Data | undefined,
+  root: Data,
+  updates: Update[],
   properties: Record<string, any>,
   updatedPaths: Record<string, any> = {}) {
 
-  if (!root || !root.updates?.length) {
+  if (!updates.length) {
     return updatedPaths;
   }
-  sortUpdates(root.updates);
-  root.updates?.forEach((update) => {
+  sortUpdates(updates);
+  updates?.forEach((update) => {
     if (!update.confirmed) {
       return;
     }
@@ -46,7 +47,14 @@ export function commitUpdates(
     }
     updatedPaths[update.path] = leaf[prop];
   });
-  clearUpdates(root, updatedPaths);
+  let size = 0;
+  for (let i = 0; i < updates.length; i++) {
+    updates[size] = updates[i];
+    if (updates[i].path in updatedPaths) {
+      size++;
+    }
+  }
+  updates.length = size;
   return updatedPaths;
 }
 
@@ -59,14 +67,6 @@ function cleanupRoot(root: Record<string, any>, parts: (string | number)[], inde
     delete root[parts[index]];
   }
   return Object.keys(root).length === 0;
-}
-
-// Removed processed updateds
-function clearUpdates(root: Data, updatedPaths: Record<string, any>) {
-  root.updates = root.updates?.filter((update) => !(update.path in updatedPaths));
-  if (!root.updates?.length) {
-    delete root.updates;
-  }
 }
 
 function sortUpdates(updates?: Update[]) {

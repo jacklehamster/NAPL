@@ -26,14 +26,15 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
   #comm: CommInterface | undefined;
   #connectionPromise: Promise<void> | undefined;
   readonly #selfData: ClientData = new ClientData(this);
-  readonly #processor: Processor = new Processor((blob, peer) => {
-    if (blob.size > 1024 * 1024 * 10) {
-      console.error(`Blob too large: ${blob.size / 1024 / 1024} MB`,);
+  readonly #processor: Processor = new Processor((data, peer) => {
+    if (data.length > 1024 * 1024 * 10) {
+      console.error(`Data too large: ${data.length / 1024 / 1024} MB`,);
       return;
     }
-    this.#comm?.send(blob, peer);
+    this.#comm?.send(data, peer);
   });
   protected readonly outgoingUpdates: Update[] = [];
+  protected readonly incomingUpdates: Update[] = [];
   #closeListener = () => { };
 
   constructor(private commProvider: CommProvider, initialState: RoomState = {}) {
@@ -164,9 +165,10 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
         self: this.clientId,
         now: this.now,
       },
+      incomingUpdates: this.incomingUpdates,
       outgoingUpdates: this.outgoingUpdates,
     };
-    await this.#processor.receivedBlob(blob, context);
+    await this.#processor.receivedData(blob, context);
 
     if (context.clientId) {
       this.#selfData.clientId = context.clientId;
@@ -191,6 +193,7 @@ export class SyncClient implements ISharedData, ISyncClient, IObservable {
         now: this.now,
       },
       outgoingUpdates: this.outgoingUpdates,
+      incomingUpdates: this.incomingUpdates,
     };
 
     this.#processor.performCycle(context);

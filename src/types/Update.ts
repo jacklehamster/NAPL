@@ -1,6 +1,6 @@
 export interface Update {
   path: string;
-  value?: any | Blob;
+  value?: any | ArrayBuffer;
   append?: boolean;
   insert?: number;
   delete?: number;

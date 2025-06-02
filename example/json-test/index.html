@@ -53,9 +53,7 @@
         try {
           const obj = JSON.parse(json);
           for (let k in obj) {
-            socketClient.setData(k, obj[k], {
-              active: true,
-            });
+            socketClient.setData(k, obj[k], { active: true });
           }
           document.querySelector("#error").style.display = "none";
         } catch (error) {

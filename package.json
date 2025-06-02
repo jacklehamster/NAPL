@@ -47,6 +47,7 @@
     "ts-jest": "^29.3.4"
   },
   "dependencies": {
-    "@dobuki/data-blob": "^1.0.18"
+    "@dobuki/data-blob": "^1.0.18",
+    "@msgpack/msgpack": "^3.1.2"
   }
 }

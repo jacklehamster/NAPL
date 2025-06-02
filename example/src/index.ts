@@ -5,8 +5,7 @@
 import { displayUsers, provideSocketClient } from "@dobuki/syncopath";
 import { createContext, Data, Processor } from "napl";
 
-const root: Data = {
-};
+const root: Data = {};
 const context = createContext(root)
 
 
@@ -30,8 +29,8 @@ const socketClient = provideSocketClient({ host: location.host }, root);
 
 displayUsers(socketClient);
 
-const processor = new Processor(blob => {
-  console.log("Updates sent out", blob);
+const processor = new Processor(data => {
+  console.log("Updates sent out", data);
 });
 processor.observe().onChange(refreshData);
 
@@ -49,7 +48,6 @@ function setupGamePlayer() {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "🔄";
     button.addEventListener("click", () => {
-      context.outgoingUpdates = context.outgoingUpdates ?? [];
       context.outgoingUpdates.push({ path: "abc", value: Math.random(), confirmed: 1 });
       refreshData();
     });

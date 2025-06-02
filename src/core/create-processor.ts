@@ -11,12 +11,13 @@ export function createProcessor(
 ) {
   const context: Context = {
     root,
+    incomingUpdates: [],
     outgoingUpdates: [],
     properties,
   };
-  const processor = new Processor((blob, peer) => com.send(blob, peer));
-  com.onMessage(async (blob) => {
-    await processor.receivedBlob(blob, context);
+  const processor = new Processor((data, peer) => com.send(data, peer));
+  com.onMessage(async (buffer) => {
+    await processor.receivedData(buffer, context);
     prepareCycle();
   });
   com.onNewClient(peer => {

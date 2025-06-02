@@ -1,18 +1,18 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
+import { decode, encode } from "@msgpack/msgpack";
 import { Context } from "../cycle/context/Context";
-import { packageUpdates, receiveBlob } from "../cycles/data-update/blob-utils";
 import { commitUpdates, getLeafObject, translateValue } from "../cycles/data-update/data-update";
 import { Observer } from "../observer/Observer";
 import { ObserverManager } from "../observer/ObserverManager";
 import { Update } from "../types/Update";
-import { extractBlobsFromPayload, includeBlobsInPayload } from "@dobuki/data-blob";
+import { Payload } from "@/types/Payload";
 
 export class Processor {
   readonly #observerManager = new ObserverManager();
 
-  constructor(private sendUpdate: (blob: Blob, peer?: string) => void) {
+  constructor(private sendBytes: (data: Uint8Array, peer?: string) => void) {
   }
 
   observe(paths?: (string[] | string)): Observer {
@@ -26,13 +26,13 @@ export class Processor {
   }
 
   performCycle(context: Context) {
-    this.sendUpdateBlob(context);
-    const updates = commitUpdates(context.root, context.properties);
+    this.sendUpdate(context);
+    const updates = commitUpdates(context.root, context.incomingUpdates, context.properties);
     this.#observerManager.triggerObservers(context, updates);
     return updates;
   }
 
-  sendUpdateBlob(context: Context) {
+  sendUpdate(context: Context) {
     if (context.outgoingUpdates.length) {
       //  Apply function to value
       context.outgoingUpdates.forEach(update => {
@@ -42,9 +42,7 @@ export class Processor {
       });
 
       //  Apply incoming updates
-      const confirmedUpdates = context.outgoingUpdates
-        .filter(({ confirmed }) => confirmed)
-        .map(update => ({ ...update }));
+      const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
       this.#addIncomingUpdates(confirmedUpdates, context);
 
       //  send outgoing updates
@@ -52,36 +50,29 @@ export class Processor {
       context.outgoingUpdates.forEach(update => peerSet.add(update.peer));
 
       peerSet.forEach((peer) => {
-        const outgoingUpdates: Update[] = context.outgoingUpdates.filter(update => update.peer === peer);
-        const blobs: Record<string, Blob> = {};
-        outgoingUpdates.forEach(update => update.value = extractBlobsFromPayload(update.value, blobs));
-        this.sendUpdate(packageUpdates(outgoingUpdates, blobs), peer);
+        this.sendBytes(encode({
+          updates: context.outgoingUpdates
+            .filter(update => !update.peer || update.peer === peer)
+        }), peer);
       });
       context.outgoingUpdates.length = 0;
     }
   }
 
-  async receivedBlob(data: Blob, context: Context) {
-    const { payload, blobs } = data instanceof Blob ? await receiveBlob(data) : { payload: typeof (data) === "string" ? JSON.parse(data) : data, blobs: {} };
-    const hasBlobs = blobs && Object.keys(blobs).length > 0;
+  async receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
+    const payload = decode(data) as Payload;
 
     if (payload?.myClientId) {
       // client ID confirmed
       context.clientId = payload.myClientId;
     }
     if (payload?.updates) {
-      if (hasBlobs) {
-        payload.updates.forEach((update: Update) => {
-          update.value = includeBlobsInPayload(update.value, blobs);
-        });
-      }
       this.#addIncomingUpdates(payload.updates, context);
     }
   }
 
   #addIncomingUpdates(updates: Update[], context: Context) {
-    context.root.updates = context.root.updates ?? [];
-    context.root.updates.push(...updates);
+    context.incomingUpdates.push(...updates);
   }
 
   #fixPath(path: string, context: Context) {
