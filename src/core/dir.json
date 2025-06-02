@@ -1,12 +1,12 @@
 {
   "Processor.ts": {
-    "sha": "09c075829c40494c7240bc455e943527ab4f5a68"
+    "sha": "8d5c2372ad53a727a0aef30857e78d715610a6e4"
   },
   "create-processor.ts": {
-    "sha": "b04f252dd30ccb3099d9d97c341adcd804b0f338"
+    "sha": "3fd94f8a673488d23f246ea5ecf78ae9bc1aff2f"
   },
-  "md5": "3ec9c9ca9166c0e8ac5a79457974266e",
+  "md5": "07c63af9d40d8f091ad7b088f0a8b4bc",
   "processor.test.ts": {
-    "sha": "3e961171298dc79698c0f23658f4b1ca8e36f7d8"
+    "sha": "6e162f478ee64347b96227201be1ff1ce6326a50"
   }
 }
