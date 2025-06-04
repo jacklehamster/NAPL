@@ -9319,7 +9319,7 @@ function commitUpdates3(root, updates, properties, updatedPaths = {}) {
     return updatedPaths;
   }
   sortUpdates3(updates);
-  updates?.forEach((update) => {
+  updates.forEach((update) => {
     if (!update.confirmed) {
       return;
     }
@@ -9369,7 +9369,7 @@ function cleanupRoot3(root, parts, index) {
   return Object.keys(root).length === 0;
 }
 function sortUpdates3(updates) {
-  updates?.sort((a, b4) => {
+  updates.sort((a, b4) => {
     const confirmedA = a.confirmed ?? 0;
     const confirmedB = b4.confirmed ?? 0;
     if (confirmedA !== confirmedB) {
@@ -9425,11 +9425,6 @@ function translateProp3(obj, prop, properties, autoCreate) {
     value = obj[prop] = {};
   }
   return value;
-}
-function markUpdateConfirmed2(update, now) {
-  if (!update.confirmed) {
-    update.confirmed = now;
-  }
 }
 // ../node_modules/@msgpack/msgpack/dist.esm/utils/utf8.mjs
 function utf8Count(str) {
@@ -10958,7 +10953,17 @@ class Processor3 {
     this.sendUpdate(context);
     const updates = commitUpdates3(context.root, context.incomingUpdates, context.properties);
     this.#observerManager.triggerObservers(context, updates);
-    return updates;
+  }
+  startCycle(context) {
+    let animationFrame = 0;
+    const loop = () => {
+      animationFrame = requestAnimationFrame(loop);
+      this.performCycle(context);
+    };
+    animationFrame = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
   }
   sendUpdate(context) {
     if (context.outgoingUpdates.length) {
@@ -10979,7 +10984,7 @@ class Processor3 {
       context.outgoingUpdates.length = 0;
     }
   }
-  async receivedData(data, context) {
+  receivedData(data, context) {
     const payload = decode(data);
     if (payload?.myClientId) {
       context.clientId = payload.myClientId;
@@ -11007,292 +11012,6 @@ function createContext(root, properties = {}) {
     incomingUpdates: [],
     outgoingUpdates: []
   };
-}
-// ../src/cycles/data-update/data-manager.ts
-function getData2(root, path = "", properties) {
-  const parts = path.split("/");
-  return getLeafObject3(root, parts, 0, false, properties);
-}
-function pushData2(root, now, outgoingUpdates, path, value, options = {}) {
-  return processDataUpdate2(root, now, outgoingUpdates, {
-    path,
-    value,
-    append: true
-  }, options);
-}
-function setData2(root, now, outgoingUpdates, path, value, options = {}) {
-  return processDataUpdate2(root, now, outgoingUpdates, {
-    path,
-    value,
-    append: options.append,
-    insert: options.insert
-  }, options);
-}
-function processDataUpdate2(root, now, outgoingUpdates, update, options = {}) {
-  update.peer = options.peer;
-  if (options.active ?? root.config?.activeUpdates) {
-    markUpdateConfirmed2(update, now);
-  }
-  outgoingUpdates.push(update);
-  return update;
-}
-// ../src/clients/ClientData.ts
-class ClientData2 {
-  syncClient;
-  clientId = "";
-  constructor(syncClient) {
-    this.syncClient = syncClient;
-  }
-  #getAbsolutePath(path) {
-    return path.length ? `clients/~{self}/${path}` : "clients/~{self}";
-  }
-  getData(path) {
-    return this.syncClient.getData(this.#getAbsolutePath(path));
-  }
-  observe(paths) {
-    return this.syncClient.observe(paths === undefined ? undefined : Array.isArray(paths) ? paths.map((p) => this.#getAbsolutePath(p)) : this.#getAbsolutePath(paths));
-  }
-  removeObserver(observer) {
-    this.syncClient.removeObserver(observer);
-  }
-  setData(path, value, options) {
-    return this.syncClient.setData(this.#getAbsolutePath(path), value, options);
-  }
-  pushData(path, value, options) {
-    return this.syncClient.pushData(this.#getAbsolutePath(path), value, options);
-  }
-  get state() {
-    return this.syncClient.state.clients?.[this.clientId] ?? {};
-  }
-}
-
-// ../src/clients/SubData.ts
-class SubData2 {
-  path;
-  syncClient;
-  #parts = [];
-  #observers = new Set;
-  constructor(path, syncClient) {
-    this.path = path;
-    this.syncClient = syncClient;
-    this.#parts = path.split("/").map((v) => {
-      return isNaN(Number(v)) ? v : Number(v);
-    });
-  }
-  getData(path) {
-    return this.syncClient.getData(this.#getAbsolutePath(path));
-  }
-  get clientId() {
-    return this.syncClient.clientId;
-  }
-  #getAbsolutePath(path) {
-    return path.length ? `${this.path}/${path}` : this.path;
-  }
-  observe(paths) {
-    const observer = this.syncClient.observe(paths === undefined ? undefined : Array.isArray(paths) ? paths.map((p) => this.#getAbsolutePath(p)) : this.#getAbsolutePath(paths));
-    this.#observers.add(observer);
-    return observer;
-  }
-  removeObserver(observer) {
-    this.#observers.delete(observer);
-    this.syncClient.removeObserver(observer);
-  }
-  setData(path, value, options) {
-    return this.syncClient.setData(this.#getAbsolutePath(path), value, options);
-  }
-  pushData(path, value, options) {
-    return this.syncClient.pushData(this.#getAbsolutePath(path), value, options);
-  }
-  get state() {
-    return getLeafObject3(this.syncClient.state, this.#parts, 0, false, {
-      self: this.syncClient.clientId
-    }) ?? {};
-  }
-  close() {
-    this.#observers.forEach((o) => this.removeObserver(o));
-    this.syncClient.removeChildData(this.path);
-  }
-}
-
-// ../src/utils/execution-utils.ts
-var nextFrameInProgress = new Set;
-function prepareNextFrame(callback, ...params) {
-  if (nextFrameInProgress.has(callback)) {
-    return;
-  }
-  nextFrameInProgress.add(callback);
-  requestAnimationFrame(() => {
-    nextFrameInProgress.delete(callback);
-    callback(...params);
-  });
-}
-function executeFrame(callback, ...params) {
-  nextFrameInProgress.delete(callback);
-  callback(...params);
-}
-
-// ../src/clients/SyncClient.ts
-class SyncClient2 {
-  commProvider;
-  state;
-  #children = new Map;
-  #comm;
-  #connectionPromise;
-  #selfData = new ClientData2(this);
-  #processor = new Processor3((data, peer) => {
-    if (data.length > 1024 * 1024 * 10) {
-      console.error(`Data too large: ${data.length / 1024 / 1024} MB`);
-      return;
-    }
-    this.#comm?.send(data, peer);
-  });
-  outgoingUpdates = [];
-  incomingUpdates = [];
-  #closeListener = () => {};
-  constructor(commProvider, initialState = {}) {
-    this.commProvider = commProvider;
-    this.state = initialState;
-    this.#connect();
-    globalThis.addEventListener("focus", () => {
-      if (!this.#comm) {
-        const autoReconnect = this.state.config?.autoReconnect ?? true;
-        if (autoReconnect) {
-          this.#connect().catch((e) => {
-            console.warn("Failed to reconnect");
-          });
-        }
-      }
-    });
-    this.#children.set(`clients/~{self}`, this.#selfData);
-    this.processNextFrame = this.processNextFrame.bind(this);
-  }
-  onClose(listener) {
-    this.#closeListener = listener;
-    return this;
-  }
-  getData(path) {
-    const properties = {
-      self: this.clientId,
-      now: this.now
-    };
-    return getData2(this.state, path, properties);
-  }
-  pushData(path, value, options = {}) {
-    pushData2(this.state, this.now, this.outgoingUpdates, path, value, options);
-    if (options.flush) {
-      executeFrame(this.processNextFrame);
-    } else {
-      prepareNextFrame(this.processNextFrame);
-    }
-  }
-  setData(path, value, options = {}) {
-    setData2(this.state, this.now, this.outgoingUpdates, path, value, options);
-    if (options.flush) {
-      executeFrame(this.processNextFrame);
-    } else {
-      prepareNextFrame(this.processNextFrame);
-    }
-  }
-  get clientId() {
-    return this.#selfData.clientId;
-  }
-  get self() {
-    return this.#selfData;
-  }
-  access(path) {
-    const childData = this.#children.get(path);
-    if (childData) {
-      return childData;
-    }
-    const subData = new SubData2(path, this);
-    this.#children.set(path, subData);
-    return subData;
-  }
-  peerData(peerId) {
-    const peerTag = [this.clientId, peerId].sort().join(":");
-    return this.access(`peer/${peerTag}`);
-  }
-  removeChildData(path) {
-    this.#children.delete(path);
-  }
-  observe(paths) {
-    return this.#processor.observe(paths);
-  }
-  removeObserver(observer) {
-    this.#processor.removeObserver(observer);
-  }
-  async#waitForConnection() {
-    if (!this.#comm) {
-      this.#connect();
-    }
-    return this.#connectionPromise;
-  }
-  async#connect() {
-    const comm = this.#comm = this.commProvider();
-    return this.#connectionPromise = new Promise((resolve, reject) => {
-      comm.onError?.((event) => {
-        console.error("SyncClient connection error", event);
-        reject(event);
-      });
-      comm.onMessage(async (data) => {
-        await this.onMessageBlob(data);
-        if (this.#connectionPromise && this.clientId) {
-          this.#connectionPromise = undefined;
-          resolve();
-        }
-      });
-      comm.onClose?.(() => {
-        this.#comm = undefined;
-        this.#closeListener();
-        this.setData(`/clients/${this.clientId}`, undefined, {
-          active: true,
-          flush: true
-        });
-      });
-    });
-  }
-  close() {
-    this.#comm?.close?.();
-  }
-  async onMessageBlob(blob) {
-    const context = {
-      root: this.state,
-      clientId: this.clientId,
-      properties: {
-        self: this.clientId,
-        now: this.now
-      },
-      incomingUpdates: this.incomingUpdates,
-      outgoingUpdates: this.outgoingUpdates
-    };
-    await this.#processor.receivedData(blob, context);
-    if (context.clientId) {
-      this.#selfData.clientId = context.clientId;
-    }
-    executeFrame(this.processNextFrame);
-  }
-  get now() {
-    return Date.now();
-  }
-  async processNextFrame() {
-    if (this.outgoingUpdates.length) {
-      await this.#waitForConnection();
-    }
-    const context = {
-      root: this.state,
-      clientId: this.clientId,
-      properties: {
-        self: this.clientId,
-        now: this.now
-      },
-      outgoingUpdates: this.outgoingUpdates,
-      incomingUpdates: this.incomingUpdates
-    };
-    this.#processor.performCycle(context);
-    if (context.clientId) {
-      this.#selfData.clientId = context.clientId;
-    }
-  }
 }
 // src/index.ts
 var root = {};
@@ -11341,4 +11060,4 @@ export {
   root
 };
 
-//# debugId=467A221296304F6B64756E2164756E21
+//# debugId=C36CD22B86C3733A64756E2164756E21

@@ -16,7 +16,7 @@ export function commitUpdates(
     return updatedPaths;
   }
   sortUpdates(updates);
-  updates?.forEach((update) => {
+  updates.forEach((update) => {
     if (!update.confirmed) {
       return;
     }
@@ -69,8 +69,8 @@ function cleanupRoot(root: Record<string, any>, parts: (string | number)[], inde
   return Object.keys(root).length === 0;
 }
 
-function sortUpdates(updates?: Update[]) {
-  updates?.sort((a, b) => {
+function sortUpdates(updates: Update[]) {
+  updates.sort((a, b) => {
     const confirmedA = a.confirmed ?? 0;
     const confirmedB = b.confirmed ?? 0;
     if (confirmedA !== confirmedB) {

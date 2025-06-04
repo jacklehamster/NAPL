@@ -1,4 +1,4 @@
-import { Context } from "@/cycle/context/Context";
+import { Context, createContext } from "@/cycle/context/Context";
 import { Data } from "@/types/Data";
 import { Processor } from "./Processor";
 import { CommInterface } from "@/clients/CommInterface";
@@ -9,15 +9,10 @@ export function createProcessor(
   root: Data = {},
   properties: Record<string, any> = {},
 ) {
-  const context: Context = {
-    root,
-    incomingUpdates: [],
-    outgoingUpdates: [],
-    properties,
-  };
   const processor = new Processor((data, peer) => com.send(data, peer));
-  com.onMessage(async (buffer) => {
-    await processor.receivedData(buffer, context);
+  const context: Context = createContext(root, properties);
+  com.onMessage(buffer => {
+    processor.receivedData(buffer, context);
     prepareCycle();
   });
   com.onNewClient(peer => {

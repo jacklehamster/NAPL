@@ -29,7 +29,18 @@ export class Processor {
     this.sendUpdate(context);
     const updates = commitUpdates(context.root, context.incomingUpdates, context.properties);
     this.#observerManager.triggerObservers(context, updates);
-    return updates;
+  }
+
+  startCycle(context: Context): () => void {
+    let animationFrame = 0;
+    const loop = () => {
+      animationFrame = requestAnimationFrame(loop);
+      this.performCycle(context);
+    };
+    animationFrame = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
   }
 
   sendUpdate(context: Context) {
@@ -59,7 +70,7 @@ export class Processor {
     }
   }
 
-  async receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
+  receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
     const payload = decode(data) as Payload;
 
     if (payload?.myClientId) {
