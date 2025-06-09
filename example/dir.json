@@ -12,10 +12,10 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/index.js": {
-    "sha": "503fa91930649304b388979b949c0a69992e0c57"
+    "sha": "47b00637779d4215e34bc670418ff8e48f9f1894"
   },
   "dist/index.js.map": {
-    "sha": "3e36f066b686cda152f74c88e60a8d1f32b50624"
+    "sha": "deb455ec158375bde170730d0a0b91d698c8ef1d"
   },
   "dist/styles-da87zv4s.css": {
     "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -26,12 +26,12 @@
   "index.ts": {
     "sha": "ccb5152139dd200abdab11310fffb8ab87d1c235"
   },
-  "md5": "25fe25b4a8b810004f909648b55df745",
+  "md5": "7f9057ab8cf595975063bcd0328a525e",
   "package.json": {
     "sha": "b961585c7cadaf8c7704532c92cb24d2851d33a9"
   },
   "src/index.ts": {
-    "sha": "a1f1c69368946d719e90b6ac6adb0820b1deda0a"
+    "sha": "41c255d863b9eb4d1ad2cb4c551e47ffa22eb10b"
   },
   "test-room/index.html": {
     "sha": "ecb910fb80c68211077681e4dbfd3311d839cafd"
