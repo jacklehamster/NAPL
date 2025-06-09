@@ -1,12 +1,15 @@
-import { Data } from "../../types/Data";
-import { Update } from "../../types/Update";
+import { Data } from "../types/Data";
+import { Update } from "../types/Update";
 
-export interface Context {
+export interface Context<T = Data> {
   clientId?: string;
-  root: Data;
+  root: T;
   incomingUpdates: Update[];
   outgoingUpdates: Update[];
   properties: { [key: string]: any };
+  refresh?(): void;
+  setData?(path: string, value: any | ((value: any) => any)): void;
+  pushData?(path: string, value: any | ((value: any) => any)): void;
 }
 
 export function createContext(root: Data, properties: Record<string, any> = {}): Context {

@@ -2,17 +2,24 @@
 /// <reference lib="dom.iterable" />
 
 import { decode, encode } from "@msgpack/msgpack";
-import { Context } from "../cycle/context/Context";
+import { Context } from "../context/Context";
 import { commitUpdates, getLeafObject, translateValue } from "../cycles/data-update/data-update";
 import { Observer } from "../observer/Observer";
 import { ObserverManager } from "../observer/ObserverManager";
 import { Update } from "../types/Update";
 import { Payload } from "@/types/Payload";
+import { OutgoingCom } from "@/clients/CommInterface";
+import { Connection } from "@/connections/Connection";
 
 export class Processor {
   readonly #observerManager = new ObserverManager();
+  readonly #outingCom = new Set<OutgoingCom>();
 
-  constructor(private sendBytes: (data: Uint8Array, peer?: string) => void) {
+  connectComm(comm: OutgoingCom) {
+    this.#outingCom.add(comm);
+    return () => {
+      this.#outingCom.delete(comm);
+    };
   }
 
   observe(paths?: (string[] | string)): Observer {
@@ -26,24 +33,27 @@ export class Processor {
   }
 
   performCycle(context: Context) {
-    this.sendUpdate(context);
+    this.#sendUpdate(context);
     const updates = commitUpdates(context.root, context.incomingUpdates, context.properties);
     this.#observerManager.triggerObservers(context, updates);
   }
 
-  startCycle(context: Context): () => void {
+  startCycle(context: Context): Connection {
     let animationFrame = 0;
     const loop = () => {
       animationFrame = requestAnimationFrame(loop);
       this.performCycle(context);
+      context.refresh?.();
     };
     animationFrame = requestAnimationFrame(loop);
-    return () => {
-      cancelAnimationFrame(animationFrame);
+    return {
+      disconnect() {
+        cancelAnimationFrame(animationFrame);
+      },
     };
   }
 
-  sendUpdate(context: Context) {
+  #sendUpdate(context: Context) {
     if (context.outgoingUpdates.length) {
       //  Apply function to value
       context.outgoingUpdates.forEach(update => {
@@ -61,10 +71,12 @@ export class Processor {
       context.outgoingUpdates.forEach(update => peerSet.add(update.peer));
 
       peerSet.forEach((peer) => {
-        this.sendBytes(encode({
-          updates: context.outgoingUpdates
-            .filter(update => !update.peer || update.peer === peer)
-        }), peer);
+        this.#outingCom.forEach(comm => {
+          comm.send(encode({
+            updates: context.outgoingUpdates
+              .filter(update => !update.peer || update.peer === peer)
+          }), peer);
+        });
       });
       context.outgoingUpdates.length = 0;
     }
@@ -74,7 +86,6 @@ export class Processor {
     const payload = decode(data) as Payload;
 
     if (payload?.myClientId) {
-      // client ID confirmed
       context.clientId = payload.myClientId;
     }
     if (payload?.updates) {

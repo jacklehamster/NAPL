@@ -9426,6 +9426,11 @@ function translateProp3(obj, prop, properties, autoCreate) {
   }
   return value;
 }
+function markUpdateConfirmed2(update, now) {
+  if (!update.confirmed) {
+    update.confirmed = now;
+  }
+}
 // ../node_modules/@msgpack/msgpack/dist.esm/utils/utf8.mjs
 function utf8Count(str) {
   const strLength = str.length;
@@ -10936,10 +10941,13 @@ class ObserverManager2 {
 
 // ../src/core/Processor.ts
 class Processor3 {
-  sendBytes;
   #observerManager = new ObserverManager2;
-  constructor(sendBytes) {
-    this.sendBytes = sendBytes;
+  #outingCom = new Set;
+  connectComm(comm) {
+    this.#outingCom.add(comm);
+    return () => {
+      this.#outingCom.delete(comm);
+    };
   }
   observe(paths) {
     const multi = Array.isArray(paths);
@@ -10950,7 +10958,7 @@ class Processor3 {
     this.#observerManager.removeObserver(observer);
   }
   performCycle(context) {
-    this.sendUpdate(context);
+    this.#sendUpdate(context);
     const updates = commitUpdates3(context.root, context.incomingUpdates, context.properties);
     this.#observerManager.triggerObservers(context, updates);
   }
@@ -10959,13 +10967,16 @@ class Processor3 {
     const loop = () => {
       animationFrame = requestAnimationFrame(loop);
       this.performCycle(context);
+      context.refresh?.();
     };
     animationFrame = requestAnimationFrame(loop);
-    return () => {
-      cancelAnimationFrame(animationFrame);
+    return {
+      disconnect() {
+        cancelAnimationFrame(animationFrame);
+      }
     };
   }
-  sendUpdate(context) {
+  #sendUpdate(context) {
     if (context.outgoingUpdates.length) {
       context.outgoingUpdates.forEach((update) => {
         update.path = this.#fixPath(update.path, context);
@@ -10977,9 +10988,11 @@ class Processor3 {
       const peerSet = new Set;
       context.outgoingUpdates.forEach((update) => peerSet.add(update.peer));
       peerSet.forEach((peer) => {
-        this.sendBytes(encode({
-          updates: context.outgoingUpdates.filter((update) => !update.peer || update.peer === peer)
-        }), peer);
+        this.#outingCom.forEach((comm) => {
+          comm.send(encode({
+            updates: context.outgoingUpdates.filter((update) => !update.peer || update.peer === peer)
+          }), peer);
+        });
       });
       context.outgoingUpdates.length = 0;
     }
@@ -11004,7 +11017,7 @@ class Processor3 {
     })).join("/");
   }
 }
-// ../src/cycle/context/Context.ts
+// ../src/context/Context.ts
 function createContext(root, properties = {}) {
   return {
     root,
@@ -11012,6 +11025,360 @@ function createContext(root, properties = {}) {
     incomingUpdates: [],
     outgoingUpdates: []
   };
+}
+// ../src/cycles/data-update/data-manager.ts
+function getData2(root, path = "", properties) {
+  const parts = path.split("/");
+  return getLeafObject3(root, parts, 0, false, properties);
+}
+function pushData2(root, now, outgoingUpdates, path, value, options = {}) {
+  return processDataUpdate2(root, now, outgoingUpdates, {
+    path,
+    value,
+    append: true
+  }, options);
+}
+function setData2(root, now, outgoingUpdates, path, value, options = {}) {
+  return processDataUpdate2(root, now, outgoingUpdates, {
+    path,
+    value,
+    append: options.append,
+    insert: options.insert
+  }, options);
+}
+function processDataUpdate2(root, now, outgoingUpdates, update, options = {}) {
+  update.peer = options.peer;
+  if (options.active ?? root.config?.activeUpdates) {
+    markUpdateConfirmed2(update, now);
+  }
+  outgoingUpdates.push(update);
+  return update;
+}
+// ../src/clients/CommInterfaceHook.ts
+function hookCommInterface(context, comm, processor) {
+  const removeOnMessage = comm.onMessage((buffer) => {
+    processor.receivedData(buffer, context);
+  });
+  const removeOnNewClient = comm.onNewClient((peer) => {
+    Object.entries(context.root).forEach(([key, value]) => {
+      setData2(context.root, Date.now(), context.outgoingUpdates, key, value, {
+        active: true,
+        peer
+      });
+    });
+  });
+  const commConnection = processor.connectComm(comm);
+  return {
+    disconnect: () => {
+      removeOnMessage();
+      removeOnNewClient();
+      commConnection();
+    }
+  };
+}
+
+// ../src/core/Program.ts
+var ACTIVE = {
+  active: true
+};
+
+class Program {
+  clientId;
+  incomingUpdates = [];
+  outgoingUpdates = [];
+  root;
+  properties;
+  processor = new Processor3;
+  refresher = new Set;
+  constructor({ clientId, root, properties } = {}) {
+    this.clientId = clientId;
+    this.root = root ?? {};
+    this.properties = properties ?? {};
+  }
+  connectComm(comm) {
+    return hookCommInterface(this, comm, this.processor);
+  }
+  start() {
+    return this.processor.startCycle(this);
+  }
+  observe(path) {
+    return this.processor.observe(path);
+  }
+  get now() {
+    return Date.now();
+  }
+  setData(path, value) {
+    if (typeof value === "function") {
+      const oldValue = getData2(this, path, this.properties);
+      value = value(oldValue);
+      if (oldValue === value) {
+        return;
+      }
+    }
+    setData2(this.root, this.now, this.outgoingUpdates, path, value, ACTIVE);
+  }
+  pushData(path, value) {
+    if (typeof value === "function") {
+      const oldValue = getData2(this, path, this.properties);
+      value = value(oldValue);
+    }
+    pushData2(this.root, this.now, this.outgoingUpdates, path, value, ACTIVE);
+  }
+  attach(attachment) {
+    const detach = attachment.onAttach?.(this);
+    if (attachment.refresh) {
+      this.refresher.add(attachment);
+    }
+    return {
+      disconnect: () => {
+        detach?.();
+        this.refresher.delete(attachment);
+      }
+    };
+  }
+  refresh() {
+    this.refresher.forEach((r) => r.refresh?.(this));
+  }
+}
+// ../src/attachments/KeyboardAttachment.ts
+class KeyboardAttachment {
+  config;
+  constructor(config) {
+    this.config = config;
+  }
+  setupListeners(program, path) {
+    const keys = this.config.keymapping;
+    const onPress = (e) => {
+      if (keys[e.code]) {
+        program.setData(`${path}/${keys[e.code]}`, (val) => !val ? program.now : val);
+      }
+    };
+    const onRelease = (e) => {
+      if (keys[e.code]) {
+        program.setData(`${path}/${keys[e.code]}`, undefined);
+      }
+    };
+    document.addEventListener("keydown", onPress);
+    document.addEventListener("keyup", onRelease);
+    return () => {
+      document.removeEventListener("keydown", onPress);
+      document.removeEventListener("keyup", onRelease);
+    };
+  }
+  onAttach(program) {
+    return this.setupListeners(program, this.config.path ?? "keys");
+  }
+}
+
+// ../src/attachments/VizAttachments.ts
+class VizAttachment {
+  config;
+  canvas = document.createElement("canvas");
+  constructor(config) {
+    this.config = config;
+  }
+  refresh(context) {
+    const ctx = this.canvas.getContext("2d");
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    const now = Date.now();
+    context.root.world?.elements.forEach((elem) => {
+      if (elem.type === "hero") {
+        ctx.moveTo(elem.x + 40, elem.y);
+        ctx.arc(elem.x, elem.y, 40, 0, Math.PI * 2);
+        const dx = elem.dx * 2;
+        const dy = elem.dy * 2;
+        ctx.moveTo(elem.x + dx + 20, elem.y + dy);
+        ctx.arc(elem.x + dx, elem.y + dy, 20, 0, Math.PI * 2);
+      } else if (elem.type === "chain" && now < elem.expiration) {
+        ctx.moveTo(elem.x + 5, elem.y);
+        ctx.arc(elem.x, elem.y, 5, 0, Math.PI * 2);
+      } else if (elem.type === "foe" && now < elem.expiration) {
+        if (elem.ko && Math.random() < 0.7) {
+          return;
+        }
+        ctx.strokeRect(elem.x - 10, elem.y - 10, 20, 20);
+        ctx.strokeRect(elem.x - 15, elem.y - 15, 30, 30);
+        ctx.moveTo(elem.x - 10 * 4, elem.y + 5 * 4);
+        ctx.lineTo(elem.x, elem.y - 15 * 4);
+        ctx.lineTo(elem.x + 10 * 4, elem.y + 5 * 4);
+        ctx.lineTo(elem.x - 10 * 4, elem.y + 5 * 4);
+      }
+    });
+    ctx.stroke();
+  }
+  onAttach(program) {
+    document.body.appendChild(this.canvas);
+    this.canvas.width = 1600;
+    this.canvas.height = 1200;
+    this.canvas.style.width = `${this.canvas.width / 2}px`;
+    this.canvas.style.height = `${this.canvas.height / 2}px`;
+    return () => {
+      document.body.removeChild(this.canvas);
+    };
+  }
+}
+
+// ../src/core/Sample.ts
+class Sample {
+  program = new Program;
+  findFreeChain(elements, type) {
+    const now = Date.now();
+    for (let i = 0;i < elements.length; i++) {
+      if (elements[i].type === type && now > elements[i].expiration) {
+        return i;
+      }
+    }
+    elements.push({
+      type,
+      x: 0,
+      y: 0,
+      dx: 0,
+      dy: 0,
+      expiration: Date.now() + 300
+    });
+    return elements.length - 1;
+  }
+  main() {
+    let score = 0;
+    const cycle = this.program.start();
+    const observer = this.program.observe("keys/Action").onChange((value) => {
+      const elements = this.program.root.world?.elements;
+      console.log(elements);
+      const hero = elements?.[0];
+      if (hero && (!hero.fired || this.program.now - hero.fired > 200)) {
+        hero.fired = value;
+        for (let i = 0;i < 5; i++) {
+          const index = this.findFreeChain(elements, "chain");
+          elements[index] = {
+            type: "chain",
+            x: hero.x + hero.dx * i,
+            y: hero.y + hero.dy * i,
+            dx: hero.dx,
+            dy: hero.dy,
+            expiration: Date.now() + 2000
+          };
+        }
+      }
+    });
+    this.program.attach(new KeyboardAttachment({
+      keymapping: {
+        KeyA: "Left",
+        ArrowLeft: "Left",
+        KeyW: "Up",
+        KeyD: "Right",
+        KeyS: "Down",
+        ArrowRight: "Right",
+        ArrowUp: "Up",
+        ArrowDown: "Down",
+        Space: "Action"
+      }
+    }));
+    this.program.attach(new VizAttachment({}));
+    const wc = this.program.root;
+    wc.world = {
+      lastFoe: 0,
+      elements: [
+        {
+          type: "hero",
+          x: 100,
+          y: 100,
+          dx: 0,
+          dy: 0,
+          dirX: 0,
+          dirY: 0
+        }
+      ]
+    };
+    let nextFoes = 2000;
+    let gameOver = false;
+    this.program.attach({
+      refresh: (context) => {
+        if (gameOver) {
+          return;
+        }
+        const now = Date.now();
+        if (!context.root.world?.lastFoe || Date.now() - context.root.world.lastFoe > nextFoes) {
+          const elements = context.root.world?.elements;
+          const hero = elements?.[0];
+          if (hero) {
+            const index = this.findFreeChain(elements, "foe");
+            const randomAngle = Math.random() * Math.PI * 2;
+            const px = hero.x + 500 * Math.cos(randomAngle);
+            const py = hero.y + 500 * Math.sin(randomAngle);
+            elements[index] = {
+              type: "foe",
+              x: px,
+              y: py,
+              dx: (hero.x - px) / 100,
+              dy: (hero.y - py) / 100,
+              expiration: Date.now() + 5000
+            };
+            context.root.world.lastFoe = Date.now() + nextFoes;
+            nextFoes = Math.max(300, nextFoes - 100);
+          }
+        }
+        context.root.world?.elements.forEach((elem, index) => {
+          if (elem.type === "hero") {
+            const keys = context.root.keys;
+            const kx = (keys?.Left ? -1 : 0) + (keys?.Right ? 1 : 0);
+            const ky = (keys?.Up ? -1 : 0) + (keys?.Down ? 1 : 0);
+            const mul = kx || ky ? 1 / Math.sqrt(kx * kx + ky * ky) : 0;
+            const newDx = (elem.dx + kx * mul) * 0.9;
+            const newDy = (elem.dy + ky * mul) * 0.9;
+            elem.x += newDx;
+            elem.y += newDy;
+            elem.dx = newDx;
+            elem.dy = newDy;
+            context.root.world?.elements.forEach((e, idx) => {
+              if (e.type === "foe" && now < e.expiration && !e.ko) {
+                const diffX = elem.x - e.x;
+                const diffY = elem.y - e.y;
+                if (diffX * diffX + diffY * diffY < 1000 && !e.ko) {
+                  alert("Game over");
+                  gameOver = true;
+                  e.ko = Date.now();
+                  location.reload();
+                }
+              }
+            });
+          } else if (elem.type === "chain" && now < elem.expiration) {
+            const speed = 4;
+            elem.x += elem.dx * speed;
+            elem.y += elem.dy * speed;
+            context.root.world?.elements.forEach((e, idx) => {
+              if (e.type === "foe" && now < e.expiration && !e.ko) {
+                const diffX = elem.x - e.x;
+                const diffY = elem.y - e.y;
+                if (diffX * diffX + diffY * diffY < 3000 && !e.ko) {
+                  e.ko = Date.now();
+                  score++;
+                  let d = document.querySelector("#score");
+                  if (!d) {
+                    d = document.body.appendChild(document.createElement("div"));
+                    d.id = "score";
+                    d.style.fontSize = "40pt";
+                  }
+                  d.textContent = `${score}`;
+                }
+              }
+            });
+          } else if (elem.type === "foe" && now < elem.expiration && !elem.ko) {
+            elem.x += elem.dx;
+            elem.y += elem.dy;
+          }
+        });
+      }
+    });
+    return {
+      disconnect() {
+        cycle.disconnect();
+        observer.close();
+      }
+    };
+  }
 }
 // src/index.ts
 var root = {};
@@ -11032,8 +11399,11 @@ function refreshData() {
 }
 var socketClient = provideSocketClient({ host: location.host }, root);
 displayUsers(socketClient);
-var processor = new Processor3((data) => {
-  console.log("Updates sent out", data);
+var processor = new Processor3;
+processor.connectComm({
+  send(data) {
+    console.log("Updates sent out", data);
+  }
 });
 processor.observe().onChange(refreshData);
 function cycle() {
@@ -11055,9 +11425,11 @@ function setupGamePlayer() {
   }
 }
 setupGamePlayer();
+var sample = new Sample;
+sample.main();
 export {
   socketClient,
   root
 };
 
-//# debugId=C36CD22B86C3733A64756E2164756E21
+//# debugId=A3C5117825EE59B264756E2164756E21

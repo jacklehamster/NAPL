@@ -1,4 +1,4 @@
-import { Context } from "../cycle/context/Context";
+import { Context } from "../context/Context";
 import { Observer } from "./Observer";
 
 export class ObserverManager {

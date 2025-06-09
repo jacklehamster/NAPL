@@ -3,7 +3,7 @@
 /// <reference lib="dom.iterable" />
 
 import { displayUsers, provideSocketClient } from "@dobuki/syncopath";
-import { createContext, Data, Processor } from "napl";
+import { createContext, Data, Processor, Sample } from "napl";
 
 const root: Data = {};
 const context = createContext(root)
@@ -29,8 +29,13 @@ const socketClient = provideSocketClient({ host: location.host }, root);
 
 displayUsers(socketClient);
 
-const processor = new Processor(data => {
-  console.log("Updates sent out", data);
+
+
+const processor = new Processor();
+processor.connectComm({
+  send(data: Uint8Array) {
+    console.log("Updates sent out", data);
+  }
 });
 processor.observe().onChange(refreshData);
 
@@ -57,3 +62,7 @@ function setupGamePlayer() {
 setupGamePlayer();
 
 export { root, socketClient };
+
+
+const sample = new Sample();
+sample.main();
