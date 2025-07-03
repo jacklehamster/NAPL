@@ -3,10 +3,11 @@
   "module": "src/index.ts",
   "type": "module",
   "scripts": {
-    "start": "bun run build && bun index.ts --watch",
-    "start:prod": "bun run build && NODE_ENV=production bun run index.ts --watch",
+    "start": "bun run build && bun --watch index.ts",
+    "start:prod": "bun run build && NODE_ENV=production bun --watch index.ts",
     "build": "bun i && bun run build-icon && bun run bundler/bundler.ts",
-    "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons"
+    "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons",
+    "dev": "bun run build && bun --watch index.ts"
   },
   "devDependencies": {
     "napl": "link:napl",

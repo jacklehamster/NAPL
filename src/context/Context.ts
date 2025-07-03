@@ -10,6 +10,7 @@ export interface Context<T = Data> {
   refresh?(): void;
   setData?(path: string, value: any | ((value: any) => any)): void;
   pushData?(path: string, value: any | ((value: any) => any)): void;
+  readonly now: number;
 }
 
 export function createContext(root: Data, properties: Record<string, any> = {}): Context {
@@ -18,5 +19,6 @@ export function createContext(root: Data, properties: Record<string, any> = {}):
     properties,
     incomingUpdates: [],
     outgoingUpdates: [],
+    now: 0,
   };
 }

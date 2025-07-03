@@ -25,7 +25,7 @@ function refreshData() {
   div2.textContent = JSON.stringify(context.outgoingUpdates, null, 2);
 }
 
-const socketClient = provideSocketClient({ host: location.host }, root);
+const socketClient = provideSocketClient({ host: window.location.host }, root);
 
 displayUsers(socketClient);
 

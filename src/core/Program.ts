@@ -26,6 +26,7 @@ export class Program<T extends Data = Data> implements Context<T> {
   readonly root: T;
   readonly properties: Record<string, any>;
   readonly processor: Processor = new Processor();
+  readonly aux: Record<string, Attachment> = {};
   readonly refresher: Set<Attachment> = new Set();
 
   constructor({ clientId, root, properties }: Props<T> = {}) {
@@ -69,14 +70,20 @@ export class Program<T extends Data = Data> implements Context<T> {
     pushData(this.root, this.now, this.outgoingUpdates, path, value, ACTIVE);
   }
 
+  getName(attachment: Attachment) {
+    return attachment.constructor.name;
+  }
+
   attach(attachment: Attachment): Connection {
-    const detach = attachment.onAttach?.(this);
+    attachment.onAttach?.(this);
     if (attachment.refresh) {
       this.refresher.add(attachment);
     }
+    this.aux[this.getName(attachment)] = attachment;
     return {
       disconnect: () => {
-        detach?.();
+        attachment.onDetach?.(this);
+        delete this.aux[this.getName(attachment)];
         this.refresher.delete(attachment);
       },
     };

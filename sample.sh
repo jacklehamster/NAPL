@@ -1,3 +1,3 @@
 ./build.sh
 
-bun run example
+bun run dev

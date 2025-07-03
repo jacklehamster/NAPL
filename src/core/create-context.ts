@@ -7,5 +7,6 @@ export function createContext(root: Data = {}, properties: Record<string, any> =
     incomingUpdates: [],
     outgoingUpdates: [],
     properties,
+    now: 0,
   };
 }

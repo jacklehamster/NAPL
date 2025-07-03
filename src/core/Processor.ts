@@ -40,7 +40,7 @@ export class Processor {
 
   startCycle(context: Context): Connection {
     let animationFrame = 0;
-    const loop = () => {
+    const loop = (t: number) => {
       animationFrame = requestAnimationFrame(loop);
       this.performCycle(context);
       context.refresh?.();

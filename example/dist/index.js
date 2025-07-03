@@ -10964,7 +10964,7 @@ class Processor3 {
   }
   startCycle(context) {
     let animationFrame = 0;
-    const loop = () => {
+    const loop = (t) => {
       animationFrame = requestAnimationFrame(loop);
       this.performCycle(context);
       context.refresh?.();
@@ -11023,7 +11023,8 @@ function createContext(root, properties = {}) {
     root,
     properties,
     incomingUpdates: [],
-    outgoingUpdates: []
+    outgoingUpdates: [],
+    now: 0
   };
 }
 // ../src/cycles/data-update/data-manager.ts
@@ -11089,6 +11090,7 @@ class Program {
   root;
   properties;
   processor = new Processor3;
+  aux = {};
   refresher = new Set;
   constructor({ clientId, root, properties } = {}) {
     this.clientId = clientId;
@@ -11124,14 +11126,19 @@ class Program {
     }
     pushData2(this.root, this.now, this.outgoingUpdates, path, value, ACTIVE);
   }
+  getName(attachment) {
+    return attachment.constructor.name;
+  }
   attach(attachment) {
-    const detach = attachment.onAttach?.(this);
+    attachment.onAttach?.(this);
     if (attachment.refresh) {
       this.refresher.add(attachment);
     }
+    this.aux[this.getName(attachment)] = attachment;
     return {
       disconnect: () => {
-        detach?.();
+        attachment.onDetach?.(this);
+        delete this.aux[this.getName(attachment)];
         this.refresher.delete(attachment);
       }
     };
@@ -11140,23 +11147,30 @@ class Program {
     this.refresher.forEach((r) => r.refresh?.(this));
   }
 }
-// ../src/attachments/KeyboardAttachment.ts
-class KeyboardAttachment {
+// ../src/attachments/Keyboard.ts
+class Keyboard {
   config;
+  keymapping = {};
+  onDetach;
   constructor(config) {
     this.config = config;
+    config.keys.forEach(([ks, as]) => {
+      ks.forEach((k) => {
+        this.keymapping[k] = as;
+      });
+    });
   }
   setupListeners(program, path) {
-    const keys = this.config.keymapping;
+    const keys = this.keymapping;
     const onPress = (e) => {
-      if (keys[e.code]) {
-        program.setData(`${path}/${keys[e.code]}`, (val) => !val ? program.now : val);
-      }
+      keys[e.code]?.forEach((a) => {
+        program.setData(`${path}/${a}`, (val) => !val ? program.now : val);
+      });
     };
     const onRelease = (e) => {
-      if (keys[e.code]) {
-        program.setData(`${path}/${keys[e.code]}`, undefined);
-      }
+      keys[e.code]?.forEach((a) => {
+        program.setData(`${path}/${a}`, undefined);
+      });
     };
     document.addEventListener("keydown", onPress);
     document.addEventListener("keyup", onRelease);
@@ -11166,17 +11180,13 @@ class KeyboardAttachment {
     };
   }
   onAttach(program) {
-    return this.setupListeners(program, this.config.path ?? "keys");
+    this.onDetach = this.setupListeners(program, this.config.path ?? "keys");
   }
 }
 
 // ../src/attachments/VizAttachments.ts
 class VizAttachment {
-  config;
   canvas = document.createElement("canvas");
-  constructor(config) {
-    this.config = config;
-  }
   refresh(context) {
     const ctx = this.canvas.getContext("2d");
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -11195,29 +11205,259 @@ class VizAttachment {
       } else if (elem.type === "chain" && now < elem.expiration) {
         ctx.moveTo(elem.x + 5, elem.y);
         ctx.arc(elem.x, elem.y, 5, 0, Math.PI * 2);
+      } else if (elem.type === "ball") {
+        ctx.moveTo(elem.x + 20, elem.y);
+        ctx.arc(elem.x, elem.y, 20, 0, Math.PI * 2);
       } else if (elem.type === "foe" && now < elem.expiration) {
         if (elem.ko && Math.random() < 0.7) {
           return;
         }
+        const topOffset = elem.ko ? 50 : 0;
         ctx.strokeRect(elem.x - 10, elem.y - 10, 20, 20);
         ctx.strokeRect(elem.x - 15, elem.y - 15, 30, 30);
         ctx.moveTo(elem.x - 10 * 4, elem.y + 5 * 4);
-        ctx.lineTo(elem.x, elem.y - 15 * 4);
+        ctx.lineTo(elem.x, elem.y - 15 * 4 + topOffset);
         ctx.lineTo(elem.x + 10 * 4, elem.y + 5 * 4);
         ctx.lineTo(elem.x - 10 * 4, elem.y + 5 * 4);
       }
     });
     ctx.stroke();
+    this.renderChain(context);
+  }
+  renderChain(context) {
+    const ctx = this.canvas.getContext("2d");
+    const segments = context.root.world?.elements.filter((e) => e.type === "chainSegment") || [];
+    if (segments.length === 0)
+      return;
+    segments.sort((a, b4) => a.segmentIndex - b4.segmentIndex);
+    ctx.beginPath();
+    ctx.strokeStyle = "#8B4513";
+    ctx.lineWidth = 3;
+    for (let i = 0;i < segments.length - 1; i++) {
+      const current = segments[i];
+      const next = segments[i + 1];
+      if (current.tension > 0.5) {
+        ctx.strokeStyle = "#FF4500";
+        ctx.lineWidth = 4;
+      } else if (current.tension > 0.1) {
+        ctx.strokeStyle = "#FF8C00";
+        ctx.lineWidth = 3;
+      } else {
+        ctx.strokeStyle = "#8B4513";
+        ctx.lineWidth = 2;
+      }
+      ctx.beginPath();
+      ctx.moveTo(current.x, current.y);
+      ctx.lineTo(next.x, next.y);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#654321";
+    segments.forEach((segment) => {
+      ctx.beginPath();
+      ctx.arc(segment.x, segment.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    });
   }
   onAttach(program) {
     document.body.appendChild(this.canvas);
-    this.canvas.width = 1600;
-    this.canvas.height = 1200;
+    this.canvas.width = program.root?.world?.size.width ?? 1600;
+    this.canvas.height = program.root?.world?.size.width ?? 1200;
     this.canvas.style.width = `${this.canvas.width / 2}px`;
     this.canvas.style.height = `${this.canvas.height / 2}px`;
-    return () => {
+    this.onDetach = () => {
       document.body.removeChild(this.canvas);
     };
+  }
+}
+
+// ../src/attachments/Momentum.ts
+class MomentumAttachment {
+  constructor() {}
+  refresh(context) {
+    const now = context.now;
+    context.root.world?.elements.forEach((elem) => {
+      if ((!elem.expiration || now < elem.expiration) && !elem.ko) {
+        elem.x += elem.dx * elem.speed;
+        elem.y += elem.dy * elem.speed;
+      }
+    });
+  }
+}
+
+// ../src/attachments/Controlled.ts
+class Controlled {
+  refresh(context) {
+    const keys = context.root.keys;
+    const kx = (keys?.Left ? -1 : 0) + (keys?.Right ? 1 : 0);
+    const ky = (keys?.Up ? -1 : 0) + (keys?.Down ? 1 : 0);
+    const mul = kx || ky ? 1 / Math.sqrt(kx * kx + ky * ky) : 0;
+    context.root.world?.elements.forEach((elem) => {
+      if (elem.behavior === "control" /* CONTROL */) {
+        const newDx = elem.dx + kx * mul * 2;
+        const newDy = elem.dy + ky * mul * 2;
+        elem.dx = newDx;
+        elem.dy = newDy;
+      }
+    });
+  }
+}
+
+// ../src/attachments/WallBounds.ts
+class WallBounds {
+  refresh(context) {
+    context.root.world?.elements?.forEach((element) => {
+      if (element.x < 0) {
+        element.x = 0;
+        element.dx = 0;
+      }
+      if (element.y < 0) {
+        element.y = 0;
+        element.dy = 0;
+      }
+      const width = context.root?.world?.size.width ?? 1600;
+      const height = context.root?.world?.size.height ?? 1200;
+      if (element.x > width) {
+        element.x = width;
+        element.dx = 0;
+      }
+      if (element.y > height) {
+        element.y = height;
+        element.dy = 0;
+      }
+    });
+  }
+}
+
+// ../src/attachments/SlowDown.ts
+class Slowdown {
+  value;
+  constructor(value = 0.8) {
+    this.value = value;
+  }
+  refresh(context) {
+    context.root.world?.elements.forEach((elem) => {
+      if (elem.slowdown) {
+        elem.dx *= elem.slowdown * this.value;
+        elem.dy *= elem.slowdown * this.value;
+      }
+    });
+  }
+}
+
+// ../src/attachments/BallChain.ts
+class BallChainAttachment {
+  chainLength;
+  maxTensionDistance;
+  ballMass;
+  pullStrength;
+  slowFactor;
+  maxTensionPullStrength;
+  chainSegments;
+  constructor(config = {}) {
+    this.chainLength = config.chainLength ?? 100;
+    this.maxTensionDistance = config.maxTensionDistance ?? 150;
+    this.ballMass = config.ballMass ?? 5;
+    this.pullStrength = config.pullStrength ?? 0.5;
+    this.slowFactor = config.slowFactor ?? 0.5;
+    this.maxTensionPullStrength = config.maxTensionPullStrength ?? 0.3;
+    this.chainSegments = config.chainSegments ?? 10;
+  }
+  onAttach(program) {
+    this.initializeChainSegments(program);
+  }
+  initializeChainSegments(program) {
+    const elements = program.root.world?.elements;
+    if (!elements)
+      return;
+    const hero = elements.find((e) => e.type === "hero");
+    const ball = elements.find((e) => e.type === "ball");
+    if (!hero || !ball)
+      return;
+    const existingSegments = elements.filter((e) => e.type === "chainSegment");
+    existingSegments.forEach((segment) => {
+      const index = elements.indexOf(segment);
+      if (index > -1)
+        elements.splice(index, 1);
+    });
+    for (let i = 0;i < this.chainSegments; i++) {
+      const t = i / (this.chainSegments - 1);
+      const segment = {
+        type: "chainSegment",
+        x: ball.x + (hero.x - ball.x) * t,
+        y: ball.y + (hero.y - ball.y) * t,
+        dx: 0,
+        dy: 0,
+        speed: 0,
+        expiration: 0,
+        segmentIndex: i,
+        targetX: ball.x + (hero.x - ball.x) * t,
+        targetY: ball.y + (hero.y - ball.y) * t,
+        tension: 0
+      };
+      elements.push(segment);
+    }
+  }
+  refresh(context) {
+    const elements = context.root.world?.elements;
+    if (!elements)
+      return;
+    const hero = elements.find((e) => e.type === "hero");
+    const ball = elements.find((e) => e.type === "ball");
+    if (!hero || !ball)
+      return;
+    const dx = hero.x - ball.x;
+    const dy = hero.y - ball.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    this.updateChainSegments(elements, hero, ball, dist);
+    if (dist > this.maxTensionDistance) {
+      const angle = Math.atan2(dy, dx);
+      const heroSpeed = Math.sqrt(hero.dx * hero.dx + hero.dy * hero.dy);
+      if (heroSpeed > 0) {
+        const heroAngle = Math.atan2(hero.dy, hero.dx);
+        const angleDiff = Math.abs(heroAngle - angle);
+        if (angleDiff < Math.PI / 2) {
+          const awayComponent = Math.cos(angleDiff) * heroSpeed;
+          const ballPullForce = awayComponent * this.maxTensionPullStrength;
+          ball.dx += Math.cos(heroAngle) * ballPullForce / this.ballMass;
+          ball.dy += Math.sin(heroAngle) * ballPullForce / this.ballMass;
+          hero.dx *= 0.1;
+          hero.dy *= 0.1;
+        }
+      }
+      if (dist > this.maxTensionDistance) {
+        hero.x = ball.x + Math.cos(angle) * this.maxTensionDistance;
+        hero.y = ball.y + Math.sin(angle) * this.maxTensionDistance;
+      }
+    } else if (dist > this.chainLength) {
+      const pull = (dist - this.chainLength) / this.chainLength * this.pullStrength;
+      const fx = dx / dist * pull;
+      const fy = dy / dist * pull;
+      ball.dx += fx / this.ballMass;
+      ball.dy += fy / this.ballMass;
+      hero.dx *= this.slowFactor;
+      hero.dy *= this.slowFactor;
+    }
+  }
+  updateChainSegments(elements, hero, ball, dist) {
+    const segments = elements.filter((e) => e.type === "chainSegment");
+    if (segments.length === 0)
+      return;
+    const tension = dist > this.chainLength ? Math.min(1, (dist - this.chainLength) / (this.maxTensionDistance - this.chainLength)) : 0;
+    segments.forEach((segment, index) => {
+      const t = index / (segments.length - 1);
+      if (tension > 0.1) {
+        segment.x = ball.x + (hero.x - ball.x) * t;
+        segment.y = ball.y + (hero.y - ball.y) * t;
+        segment.tension = tension;
+      } else {
+        const slackOffset = Math.sin(t * Math.PI) * 20 * (1 - tension);
+        segment.x = ball.x + (hero.x - ball.x) * t;
+        segment.y = ball.y + (hero.y - ball.y) * t + slackOffset;
+        segment.tension = tension;
+      }
+      segment.targetX = segment.x;
+      segment.targetY = segment.y;
+    });
   }
 }
 
@@ -11225,7 +11465,7 @@ class VizAttachment {
 class Sample {
   program = new Program;
   findFreeChain(elements, type) {
-    const now = Date.now();
+    const now = this.program.now;
     for (let i = 0;i < elements.length; i++) {
       if (elements[i].type === type && now > elements[i].expiration) {
         return i;
@@ -11237,7 +11477,8 @@ class Sample {
       y: 0,
       dx: 0,
       dy: 0,
-      expiration: Date.now() + 300
+      speed: 1,
+      expiration: now + 300
     });
     return elements.length - 1;
   }
@@ -11246,7 +11487,6 @@ class Sample {
     const cycle = this.program.start();
     const observer = this.program.observe("keys/Action").onChange((value) => {
       const elements = this.program.root.world?.elements;
-      console.log(elements);
       const hero = elements?.[0];
       if (hero && (!hero.fired || this.program.now - hero.fired > 200)) {
         hero.fired = value;
@@ -11258,49 +11498,68 @@ class Sample {
             y: hero.y + hero.dy * i,
             dx: hero.dx,
             dy: hero.dy,
-            expiration: Date.now() + 2000
+            speed: 4 * hero.speed,
+            expiration: this.program.now + 2000
           };
         }
       }
     });
-    this.program.attach(new KeyboardAttachment({
-      keymapping: {
-        KeyA: "Left",
-        ArrowLeft: "Left",
-        KeyW: "Up",
-        KeyD: "Right",
-        KeyS: "Down",
-        ArrowRight: "Right",
-        ArrowUp: "Up",
-        ArrowDown: "Down",
-        Space: "Action"
-      }
+    this.program.attach(new Keyboard({
+      keys: [
+        [["KeyA", "ArrowLeft"], ["Left"]],
+        [["KeyW", "ArrowUp"], ["Up"]],
+        [["KeyS", "ArrowDown"], ["Down"]],
+        [["KeyD", "ArrowRight"], ["Right"]],
+        [["Space"], ["Action"]]
+      ]
     }));
-    this.program.attach(new VizAttachment({}));
+    this.program.attach(new MomentumAttachment);
+    this.program.attach(new VizAttachment);
+    this.program.attach(new Controlled);
+    this.program.attach(new Slowdown);
+    this.program.attach(new WallBounds);
     const wc = this.program.root;
     wc.world = {
       lastFoe: 0,
       elements: [
         {
           type: "hero",
-          x: 100,
-          y: 100,
+          x: 500,
+          y: 300,
           dx: 0,
           dy: 0,
           dirX: 0,
-          dirY: 0
+          dirY: 0,
+          speed: 2,
+          expiration: 0,
+          behavior: "control" /* CONTROL */,
+          slowdown: 1
+        },
+        {
+          type: "ball",
+          x: 500,
+          y: 400,
+          dx: 0,
+          dy: 0,
+          speed: 3,
+          expiration: 0,
+          slowdown: 0.5
         }
-      ]
+      ],
+      size: {
+        width: 1600,
+        height: 1200
+      }
     };
+    this.program.attach(new BallChainAttachment);
     let nextFoes = 2000;
-    let gameOver = false;
     this.program.attach({
       refresh: (context) => {
-        if (gameOver) {
+        if (context.root.world?.gameOver) {
           return;
         }
-        const now = Date.now();
-        if (!context.root.world?.lastFoe || Date.now() - context.root.world.lastFoe > nextFoes) {
+        const now = context.now;
+        if (!context.root.world?.lastFoe || now - context.root.world.lastFoe > nextFoes) {
           const elements = context.root.world?.elements;
           const hero = elements?.[0];
           if (hero) {
@@ -11314,46 +11573,33 @@ class Sample {
               y: py,
               dx: (hero.x - px) / 100,
               dy: (hero.y - py) / 100,
-              expiration: Date.now() + 5000
+              expiration: now + 5000,
+              speed: 1
             };
-            context.root.world.lastFoe = Date.now() + nextFoes;
+            context.root.world.lastFoe = now + nextFoes;
             nextFoes = Math.max(300, nextFoes - 100);
           }
         }
-        context.root.world?.elements.forEach((elem, index) => {
+        context.root.world?.elements.forEach((elem) => {
           if (elem.type === "hero") {
-            const keys = context.root.keys;
-            const kx = (keys?.Left ? -1 : 0) + (keys?.Right ? 1 : 0);
-            const ky = (keys?.Up ? -1 : 0) + (keys?.Down ? 1 : 0);
-            const mul = kx || ky ? 1 / Math.sqrt(kx * kx + ky * ky) : 0;
-            const newDx = (elem.dx + kx * mul) * 0.9;
-            const newDy = (elem.dy + ky * mul) * 0.9;
-            elem.x += newDx;
-            elem.y += newDy;
-            elem.dx = newDx;
-            elem.dy = newDy;
-            context.root.world?.elements.forEach((e, idx) => {
+            context.root.world?.elements.forEach((e) => {
               if (e.type === "foe" && now < e.expiration && !e.ko) {
                 const diffX = elem.x - e.x;
                 const diffY = elem.y - e.y;
-                if (diffX * diffX + diffY * diffY < 1000 && !e.ko) {
-                  alert("Game over");
-                  gameOver = true;
-                  e.ko = Date.now();
-                  location.reload();
+                if (diffX * diffX + diffY * diffY < 1000) {
+                  context.root.world.gameOver = true;
+                  e.ko = now;
+                  elem.ko = now;
                 }
               }
             });
           } else if (elem.type === "chain" && now < elem.expiration) {
-            const speed = 4;
-            elem.x += elem.dx * speed;
-            elem.y += elem.dy * speed;
-            context.root.world?.elements.forEach((e, idx) => {
+            context.root.world?.elements.forEach((e) => {
               if (e.type === "foe" && now < e.expiration && !e.ko) {
                 const diffX = elem.x - e.x;
                 const diffY = elem.y - e.y;
-                if (diffX * diffX + diffY * diffY < 3000 && !e.ko) {
-                  e.ko = Date.now();
+                if (diffX * diffX + diffY * diffY < 3000) {
+                  e.ko = now;
                   score++;
                   let d = document.querySelector("#score");
                   if (!d) {
@@ -11365,9 +11611,6 @@ class Sample {
                 }
               }
             });
-          } else if (elem.type === "foe" && now < elem.expiration && !elem.ko) {
-            elem.x += elem.dx;
-            elem.y += elem.dy;
           }
         });
       }
@@ -11397,7 +11640,7 @@ function refreshData() {
   div2.style.fontSize = "12px";
   div2.textContent = JSON.stringify(context.outgoingUpdates, null, 2);
 }
-var socketClient = provideSocketClient({ host: location.host }, root);
+var socketClient = provideSocketClient({ host: window.location.host }, root);
 displayUsers(socketClient);
 var processor = new Processor3;
 processor.connectComm({
@@ -11432,4 +11675,4 @@ export {
   root
 };
 
-//# debugId=A3C5117825EE59B264756E2164756E21
+//# debugId=2188B4AB47ED712264756E2164756E21
