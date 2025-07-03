@@ -10,6 +10,10 @@ export class Controlled implements Attachment {
     const mul = (kx || ky) ? 1 / Math.sqrt(kx * kx + ky * ky) : 0;
     context.root.world?.elements.forEach(elem => {
       if (elem.behavior === Behavior.CONTROL) {
+        // Block input during pull cooldown
+        if ((elem as any).pullCooldownUntil && context.now < (elem as any).pullCooldownUntil) {
+          return;
+        }
         const newDx = elem.dx + (kx * mul) * 2;
         const newDy = elem.dy + (ky * mul) * 2;
         elem.dx = newDx;

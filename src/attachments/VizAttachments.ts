@@ -10,6 +10,10 @@ export class VizAttachment implements Attachment {
   refresh(context: Context<WorldContext>) {
     const ctx = this.canvas.getContext("2d")!;
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    // Render shadows first (so they appear behind elements)
+    this.renderShadows(context);
+
     ctx.strokeStyle = "red";
     ctx.lineWidth = 5;
     ctx.beginPath();
@@ -25,9 +29,6 @@ export class VizAttachment implements Attachment {
       } else if (elem.type === "chain" && now < elem.expiration) {
         ctx.moveTo(elem.x + 5, elem.y);
         ctx.arc(elem.x, elem.y, 5, 0, Math.PI * 2);
-      } else if (elem.type === "ball") {
-        ctx.moveTo(elem.x + 20, elem.y);
-        ctx.arc(elem.x, elem.y, 20, 0, Math.PI * 2);
       } else if (elem.type === "foe" && now < elem.expiration) {
         if (elem.ko && Math.random() < .7) {
           return;
@@ -45,6 +46,63 @@ export class VizAttachment implements Attachment {
 
     // Render chain segments
     this.renderChain(context);
+
+    // Render ball at height
+    this.renderBall(context);
+  }
+
+  private renderShadows(context: Context<WorldContext>) {
+    const ctx = this.canvas.getContext("2d")!;
+    const now = Date.now();
+
+    // Set shadow style
+    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.lineWidth = 1;
+
+    context.root.world?.elements.forEach(elem => {
+      if (elem.type === "hero") {
+        // Hero shadow (flattened ellipse for 45-degree angle)
+        ctx.beginPath();
+        ctx.ellipse(elem.x, elem.y + 50, 35, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Direction indicator shadow (flattened ellipse)
+        const dx = elem.dx * 2;
+        const dy = elem.dy * 2;
+        ctx.beginPath();
+        ctx.ellipse(elem.x + dx, elem.y + dy + 50, 15, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (elem.type === "ball") {
+        // Ball shadow (flattened ellipse for 45-degree angle)
+        const ballHeight = (elem as any).height || 0;
+        const shadowSize = Math.max(5, 15 - ballHeight * 2); // Shadow gets smaller as ball rises
+        ctx.beginPath();
+        ctx.ellipse(elem.x, elem.y + 30, shadowSize, shadowSize * 0.4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (elem.type === "foe" && now < elem.expiration && !elem.ko) {
+        // Foe shadow (flattened ellipse for 45-degree angle)
+        ctx.beginPath();
+        ctx.ellipse(elem.x, elem.y + 20, 12, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (elem.type === "chain" && now < elem.expiration) {
+        // Chain projectile shadow (flattened ellipse)
+        ctx.beginPath();
+        ctx.ellipse(elem.x, elem.y + 15, 3, 1, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+
+    // Chain segment shadows (flattened dots for 45-degree angle)
+    const segments = context.root.world?.elements.filter(e => e.type === "chainSegment") || [];
+    segments.forEach((segment: any) => {
+      ctx.beginPath();
+      ctx.ellipse(segment.x, segment.y + 10, 1, 0.3, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
   }
 
   private renderChain(context: Context<WorldContext>) {
@@ -91,6 +149,23 @@ export class VizAttachment implements Attachment {
       ctx.arc(segment.x, segment.y, 2, 0, Math.PI * 2);
       ctx.fill();
     });
+  }
+
+  private renderBall(context: Context<WorldContext>) {
+    const ctx = this.canvas.getContext("2d")!;
+    const ball = context.root.world?.elements.find(e => e.type === "ball");
+
+    if (ball) {
+      const ballHeight = (ball as any).height || 0;
+      const isThrown = (ball as any).isThrown || false;
+
+      // Ball (rendered at height)
+      ctx.strokeStyle = isThrown ? "#FF6B35" : "red"; // Orange when thrown, red when normal
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y - ballHeight, 20, 0, Math.PI * 2);
+      ctx.stroke();
+    }
   }
 
   onAttach(program: Program<WorldContext>): void {

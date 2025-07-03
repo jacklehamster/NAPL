@@ -11190,6 +11190,7 @@ class VizAttachment {
   refresh(context) {
     const ctx = this.canvas.getContext("2d");
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    this.renderShadows(context);
     ctx.strokeStyle = "red";
     ctx.lineWidth = 5;
     ctx.beginPath();
@@ -11205,9 +11206,6 @@ class VizAttachment {
       } else if (elem.type === "chain" && now < elem.expiration) {
         ctx.moveTo(elem.x + 5, elem.y);
         ctx.arc(elem.x, elem.y, 5, 0, Math.PI * 2);
-      } else if (elem.type === "ball") {
-        ctx.moveTo(elem.x + 20, elem.y);
-        ctx.arc(elem.x, elem.y, 20, 0, Math.PI * 2);
       } else if (elem.type === "foe" && now < elem.expiration) {
         if (elem.ko && Math.random() < 0.7) {
           return;
@@ -11223,6 +11221,46 @@ class VizAttachment {
     });
     ctx.stroke();
     this.renderChain(context);
+    this.renderBall(context);
+  }
+  renderShadows(context) {
+    const ctx = this.canvas.getContext("2d");
+    const now = Date.now();
+    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.lineWidth = 1;
+    context.root.world?.elements.forEach((elem) => {
+      if (elem.type === "hero") {
+        ctx.beginPath();
+        ctx.ellipse(elem.x, elem.y + 50, 35, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
+        const dx = elem.dx * 2;
+        const dy = elem.dy * 2;
+        ctx.beginPath();
+        ctx.ellipse(elem.x + dx, elem.y + dy + 50, 15, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (elem.type === "ball") {
+        const ballHeight = elem.height || 0;
+        const shadowSize = Math.max(5, 15 - ballHeight * 2);
+        ctx.beginPath();
+        ctx.ellipse(elem.x, elem.y + 30, shadowSize, shadowSize * 0.4, 0, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (elem.type === "foe" && now < elem.expiration && !elem.ko) {
+        ctx.beginPath();
+        ctx.ellipse(elem.x, elem.y + 20, 12, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (elem.type === "chain" && now < elem.expiration) {
+        ctx.beginPath();
+        ctx.ellipse(elem.x, elem.y + 15, 3, 1, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+    const segments = context.root.world?.elements.filter((e) => e.type === "chainSegment") || [];
+    segments.forEach((segment) => {
+      ctx.beginPath();
+      ctx.ellipse(segment.x, segment.y + 10, 1, 0.3, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
   }
   renderChain(context) {
     const ctx = this.canvas.getContext("2d");
@@ -11257,6 +11295,19 @@ class VizAttachment {
       ctx.arc(segment.x, segment.y, 2, 0, Math.PI * 2);
       ctx.fill();
     });
+  }
+  renderBall(context) {
+    const ctx = this.canvas.getContext("2d");
+    const ball = context.root.world?.elements.find((e) => e.type === "ball");
+    if (ball) {
+      const ballHeight = ball.height || 0;
+      const isThrown = ball.isThrown || false;
+      ctx.strokeStyle = isThrown ? "#FF6B35" : "red";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y - ballHeight, 20, 0, Math.PI * 2);
+      ctx.stroke();
+    }
   }
   onAttach(program) {
     document.body.appendChild(this.canvas);
@@ -11293,6 +11344,9 @@ class Controlled {
     const mul = kx || ky ? 1 / Math.sqrt(kx * kx + ky * ky) : 0;
     context.root.world?.elements.forEach((elem) => {
       if (elem.behavior === "control" /* CONTROL */) {
+        if (elem.pullCooldownUntil && context.now < elem.pullCooldownUntil) {
+          return;
+        }
         const newDx = elem.dx + kx * mul * 2;
         const newDy = elem.dy + ky * mul * 2;
         elem.dx = newDx;
@@ -11337,6 +11391,9 @@ class Slowdown {
   refresh(context) {
     context.root.world?.elements.forEach((elem) => {
       if (elem.slowdown) {
+        if (elem.type === "ball" && elem.isThrown) {
+          return;
+        }
         elem.dx *= elem.slowdown * this.value;
         elem.dy *= elem.slowdown * this.value;
       }
@@ -11353,14 +11410,20 @@ class BallChainAttachment {
   slowFactor;
   maxTensionPullStrength;
   chainSegments;
+  throwForce;
+  bounceDamping;
+  gravity;
   constructor(config = {}) {
     this.chainLength = config.chainLength ?? 100;
     this.maxTensionDistance = config.maxTensionDistance ?? 150;
     this.ballMass = config.ballMass ?? 5;
-    this.pullStrength = config.pullStrength ?? 0.5;
+    this.pullStrength = config.pullStrength ?? 2;
     this.slowFactor = config.slowFactor ?? 0.5;
     this.maxTensionPullStrength = config.maxTensionPullStrength ?? 0.3;
     this.chainSegments = config.chainSegments ?? 10;
+    this.throwForce = config.throwForce ?? 8;
+    this.bounceDamping = config.bounceDamping ?? 0.7;
+    this.gravity = config.gravity ?? 0.5;
   }
   onAttach(program) {
     this.initializeChainSegments(program);
@@ -11397,6 +11460,45 @@ class BallChainAttachment {
       elements.push(segment);
     }
   }
+  handleBallThrowing(context, hero, ball) {
+    const keys = context.root.keys;
+    const now = context.now;
+    if (keys?.Action && !ball.isThrown && ball.height === 0) {
+      ball.isThrown = true;
+      ball.throwStartTime = now;
+      ball.height = 5;
+      ball.velocityY = 2;
+      const dx = hero.x - ball.x;
+      const dy = hero.y - ball.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > 0) {
+        ball.dx = dx / dist * this.throwForce;
+        ball.dy = dy / dist * this.throwForce;
+      }
+    }
+  }
+  updateBallPhysics(context, ball) {
+    const now = context.now;
+    if (ball.isThrown && ball.velocityY !== undefined && ball.height !== undefined && ball.throwStartTime !== undefined) {
+      ball.velocityY -= this.gravity;
+      ball.height += ball.velocityY;
+      if (ball.height <= 0) {
+        ball.height = 0;
+        if (Math.abs(ball.velocityY) > 0.5) {
+          ball.velocityY = -ball.velocityY * this.bounceDamping;
+          ball.lastBounceTime = now;
+          ball.dx *= 0.8;
+          ball.dy *= 0.8;
+        } else {
+          ball.velocityY = 0;
+          ball.isThrown = false;
+        }
+      }
+      if (now - ball.throwStartTime > 3000 || !ball.isThrown && ball.height === 0) {
+        ball.isThrown = false;
+      }
+    }
+  }
   refresh(context) {
     const elements = context.root.world?.elements;
     if (!elements)
@@ -11405,37 +11507,108 @@ class BallChainAttachment {
     const ball = elements.find((e) => e.type === "ball");
     if (!hero || !ball)
       return;
+    if (ball.height === undefined)
+      ball.height = 0;
+    if (ball.velocityY === undefined)
+      ball.velocityY = 0;
+    if (ball.isThrown === undefined)
+      ball.isThrown = false;
+    if (ball.throwStartTime === undefined)
+      ball.throwStartTime = 0;
+    if (ball.lastBounceTime === undefined)
+      ball.lastBounceTime = 0;
+    this.handleBallThrowing(context, hero, ball);
+    this.updateBallPhysics(context, ball);
     const dx = hero.x - ball.x;
     const dy = hero.y - ball.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
     this.updateChainSegments(elements, hero, ball, dist);
-    if (dist > this.maxTensionDistance) {
-      const angle = Math.atan2(dy, dx);
-      const heroSpeed = Math.sqrt(hero.dx * hero.dx + hero.dy * hero.dy);
-      if (heroSpeed > 0) {
-        const heroAngle = Math.atan2(hero.dy, hero.dx);
-        const angleDiff = Math.abs(heroAngle - angle);
-        if (angleDiff < Math.PI / 2) {
-          const awayComponent = Math.cos(angleDiff) * heroSpeed;
-          const ballPullForce = awayComponent * this.maxTensionPullStrength;
-          ball.dx += Math.cos(heroAngle) * ballPullForce / this.ballMass;
-          ball.dy += Math.sin(heroAngle) * ballPullForce / this.ballMass;
-          hero.dx *= 0.1;
-          hero.dy *= 0.1;
+    if (!ball.isThrown) {
+      if (ball.height === 0) {
+        if (hero.pullCooldownUntil === undefined)
+          hero.pullCooldownUntil = 0;
+        if (hero._lastBallSpeed === undefined)
+          hero._lastBallSpeed = 0;
+        const prevSpeed = hero._lastBallSpeed;
+        const currSpeed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+        if (prevSpeed < 0.2 && currSpeed >= 0.5 && context.now > hero.pullCooldownUntil) {
+          hero.pullCooldownUntil = context.now + 300;
+        }
+        hero._lastBallSpeed = currSpeed;
+        if (context.now < hero.pullCooldownUntil) {
+          hero.dx = 0;
+          hero.dy = 0;
+          return;
         }
       }
       if (dist > this.maxTensionDistance) {
-        hero.x = ball.x + Math.cos(angle) * this.maxTensionDistance;
-        hero.y = ball.y + Math.sin(angle) * this.maxTensionDistance;
+        const angle = Math.atan2(dy, dx);
+        const heroSpeed = Math.sqrt(hero.dx * hero.dx + hero.dy * hero.dy);
+        if (heroSpeed > 0) {
+          const heroAngle = Math.atan2(hero.dy, hero.dx);
+          const angleDiff = Math.abs(heroAngle - angle);
+          if (angleDiff < Math.PI / 2) {
+            const awayComponent = Math.cos(angleDiff) * heroSpeed;
+            ball.dx += Math.cos(heroAngle) * awayComponent * this.maxTensionPullStrength / this.ballMass;
+            ball.dy += Math.sin(heroAngle) * awayComponent * this.maxTensionPullStrength / this.ballMass;
+            hero.dx *= 0.1;
+            hero.dy *= 0.1;
+          }
+        }
+        if (dist > this.maxTensionDistance) {
+          hero.x = ball.x + Math.cos(angle) * this.maxTensionDistance;
+          hero.y = ball.y + Math.sin(angle) * this.maxTensionDistance;
+        }
+      } else if (dist > this.chainLength) {
+        const pull = (dist - this.chainLength) / this.chainLength * this.pullStrength;
+        const fx = dx / dist * pull;
+        const fy = dy / dist * pull;
+        if (typeof window !== "undefined" && window.DEBUG_BALL_CHAIN) {
+          console.log("[BallChain] Pulling ball:", { dx, dy, dist, fx, fy, ballX: ball.x, ballY: ball.y, heroX: hero.x, heroY: hero.y });
+        }
+        ball.dx += fx / this.ballMass;
+        ball.dy += fy / this.ballMass;
+        if (ball.slowdown !== 1)
+          ball.slowdown = 1;
+        const ballSpeed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
+        if (ball.height === 0 && ballSpeed < 0.5) {
+          if (hero.pullCooldownUntil && context.now < hero.pullCooldownUntil) {
+            return;
+          }
+          const chainAngle = Math.atan2(dy, dx);
+          const heroSpeed = Math.sqrt(hero.dx * hero.dx + hero.dy * hero.dy);
+          if (heroSpeed > 0) {
+            const heroAngle = Math.atan2(hero.dy, hero.dx);
+            const angleDiff = heroAngle - chainAngle;
+            const radial = Math.cos(angleDiff) * heroSpeed;
+            const tangential = Math.sin(angleDiff) * heroSpeed;
+            const keys = context.root.keys;
+            const isPullingAction = keys && keys.Action;
+            if (isPullingAction && radial > 0.1 && context.now > hero.pullCooldownUntil) {
+              hero.pullCooldownUntil = context.now + 500;
+            }
+            const newRadial = radial > 0 ? 0 : radial;
+            const perpAngle = chainAngle + Math.PI / 2;
+            hero.dx = Math.cos(chainAngle) * newRadial + Math.cos(perpAngle) * tangential;
+            hero.dy = Math.sin(chainAngle) * newRadial + Math.sin(perpAngle) * tangential;
+          }
+        } else {
+          hero.dx *= this.slowFactor;
+          hero.dy *= this.slowFactor;
+        }
       }
-    } else if (dist > this.chainLength) {
-      const pull = (dist - this.chainLength) / this.chainLength * this.pullStrength;
-      const fx = dx / dist * pull;
-      const fy = dy / dist * pull;
-      ball.dx += fx / this.ballMass;
-      ball.dy += fy / this.ballMass;
-      hero.dx *= this.slowFactor;
-      hero.dy *= this.slowFactor;
+    }
+    if (ball.isThrown) {
+      const dx2 = ball.x - hero.x;
+      const dy2 = ball.y - hero.y;
+      const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+      if (dist2 > this.maxTensionDistance) {
+        const pull = (dist2 - this.maxTensionDistance) / this.maxTensionDistance * this.pullStrength;
+        const fx = dx2 / dist2 * pull;
+        const fy = dy2 / dist2 * pull;
+        hero.dx += fx / (this.ballMass * 0.7);
+        hero.dy += fy / (this.ballMass * 0.7);
+      }
     }
   }
   updateChainSegments(elements, hero, ball, dist) {
@@ -11675,4 +11848,4 @@ export {
   root
 };
 
-//# debugId=2188B4AB47ED712264756E2164756E21
+//# debugId=6B5713889367CE8764756E2164756E21

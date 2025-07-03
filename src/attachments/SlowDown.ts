@@ -9,6 +9,10 @@ export class Slowdown implements Attachment {
   refresh(context: Context<WorldContext>): void {
     context.root.world?.elements.forEach(elem => {
       if (elem.slowdown) {
+        // Don't apply slowdown to ball if it's being thrown
+        if (elem.type === "ball" && (elem as any).isThrown) {
+          return; // Skip slowdown for thrown ball
+        }
         elem.dx *= elem.slowdown * this.value;
         elem.dy *= elem.slowdown * this.value;
       }
