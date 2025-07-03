@@ -143,9 +143,9 @@ export class Sample {
                 const diffX = elem.x - e.x;
                 const diffY = elem.y - e.y;
                 if (diffX * diffX + diffY * diffY < 1000) {
-                  context.root.world!.gameOver = true;
-                  e.ko = now;
-                  elem.ko = now;
+                  // context.root.world!.gameOver = true;
+                  // e.ko = now;
+                  // elem.ko = now;
                 }
               }
             });
@@ -166,6 +166,7 @@ export class Sample {
     });
 
     this.program.attach(new ScoreAttachment());
+    this.program.attach(new HeartsAttachment());
 
     return {
       disconnect() {
@@ -197,6 +198,46 @@ class ScoreAttachment {
         d.style.fontSize = "40pt";
       }
       d.textContent = `${this.score}`;
+    }
+  }
+}
+
+class HeartsAttachment {
+  private hearts = 3;
+  refresh(context: Context<WorldContext>) {
+    const now = context.now;
+    const elements = context.root.world?.elements || [];
+    const hero = elements.find(e => e.type === "hero");
+    if (!hero) return;
+    let heartLost = false;
+    elements.forEach(e => {
+      if (e.type === "foe" && !e.ko && now < e.expiration && !e._hitHero) {
+        const diffX = hero.x - e.x;
+        const diffY = hero.y - e.y;
+        if (diffX * diffX + diffY * diffY < 1000) {
+          e._hitHero = true;
+          this.hearts--;
+          heartLost = true;
+          e.ko = now;
+          if (this.hearts <= 0) {
+            context.root.world!.gameOver = true;
+            hero.ko = now;
+          }
+        }
+      }
+    });
+    if (heartLost || !document.querySelector("#hearts")) {
+      let d: HTMLDivElement = document.querySelector("#hearts")!;
+      if (!d) {
+        d = document.body.appendChild(document.createElement("div"));
+        d.id = "hearts";
+        d.style.fontSize = "32pt";
+        d.style.color = "#e33";
+        d.style.position = "absolute";
+        d.style.top = "0";
+        d.style.left = "0";
+      }
+      d.textContent = "♥ ".repeat(this.hearts > 0 ? this.hearts : 0);
     }
   }
 }
