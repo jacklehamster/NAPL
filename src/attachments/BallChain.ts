@@ -97,6 +97,55 @@ export class BallChainAttachment implements Attachment {
     }
   }
 
+  private handleBallSpinning(context: Context<WorldContext & { keys: Record<string, string> }>, hero: Element, ball: Ball) {
+    const keys = context.root.keys;
+    const chainLength = this.chainLength;
+    const angularSpeed = 2 * Math.PI / 0.5; // 2 full circles per second (faster)
+    const dt = 1 / 60; // Assume 60 FPS for smoothness
+    if (!('isSpinning' in ball)) (ball as any).isSpinning = false;
+    if (!('spinAngle' in ball)) (ball as any).spinAngle = 0;
+
+    if (keys?.Action) {
+      if (!(ball as any).isSpinning) {
+        // Start spinning: calculate initial angle
+        (ball as any).isSpinning = true;
+        const dx0 = ball.x - hero.x;
+        const dy0 = ball.y - hero.y;
+        (ball as any).spinAngle = Math.atan2(dy0, dx0);
+      } else {
+        // While spinning: increment angle and set position
+        (ball as any).spinAngle += angularSpeed * dt;
+        ball.x = hero.x + Math.cos((ball as any).spinAngle) * chainLength;
+        ball.y = hero.y + Math.sin((ball as any).spinAngle) * chainLength;
+        // Ignore all physics while spinning
+        ball.dx = 0;
+        ball.dy = 0;
+
+        // --- Kill enemies on collision ---
+        const elements = context.root.world?.elements || [];
+        const now = context.now;
+        elements.forEach(e => {
+          if (e.type === "foe" && !e.ko && now < e.expiration) {
+            const diffX = ball.x - e.x;
+            const diffY = ball.y - e.y;
+            if (diffX * diffX + diffY * diffY < 900) { // collision radius (30px)
+              e.ko = now;
+              e._scoreCounted = false; // ensure ScoreAttachment will count this
+            }
+          }
+        });
+        // --- End kill enemies ---
+
+        // --- Slow down hero while spinning ---
+        hero.dx *= 0.4;
+        hero.dy *= 0.4;
+        // --- End slow down hero ---
+      }
+    } else {
+      (ball as any).isSpinning = false;
+    }
+  }
+
   private handleBallThrowing(context: Context<WorldContext & { keys: Record<string, string> }>, hero: Element, ball: Ball) {
     const keys = context.root.keys;
     const now = context.now;
@@ -171,134 +220,51 @@ export class BallChainAttachment implements Attachment {
     if (ball.throwStartTime === undefined) ball.throwStartTime = 0;
     if (ball.lastBounceTime === undefined) ball.lastBounceTime = 0;
 
-    // Handle ball throwing when space is pressed
-    this.handleBallThrowing(context, hero, ball);
+    // Handle ball spinning when space is pressed
+    this.handleBallSpinning(context, hero, ball);
 
-    // Update ball physics (gravity, bounce, etc.)
-    this.updateBallPhysics(context, ball);
+    // Only update ball physics if not spinning
+    if (!(ball as any).isSpinning) {
+      this.updateBallPhysics(context, ball);
+    }
 
-    const dx = hero.x - ball.x;
-    const dy = hero.y - ball.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-
-    // Update chain segments
-    this.updateChainSegments(elements, hero, ball, dist);
-
-    // Only apply chain physics if ball is not being thrown
-    if (!ball.isThrown) {
-      // --- Pull cooldown logic ---
-      // If the ball was at rest and now starts moving, set a cooldown on the hero
-      if ((ball as any).height === 0) {
-        if ((hero as any).pullCooldownUntil === undefined) (hero as any).pullCooldownUntil = 0;
-        if ((hero as any)._lastBallSpeed === undefined) (hero as any)._lastBallSpeed = 0;
-        const prevSpeed = (hero as any)._lastBallSpeed;
-        const currSpeed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-        // If the ball was nearly stopped and now is moving, trigger cooldown
-        if (prevSpeed < 0.2 && currSpeed >= 0.5 && context.now > (hero as any).pullCooldownUntil) {
-          (hero as any).pullCooldownUntil = context.now + 300; // 300ms cooldown
-        }
-        (hero as any)._lastBallSpeed = currSpeed;
-        // If in cooldown, freeze hero's movement
-        if (context.now < (hero as any).pullCooldownUntil) {
-          hero.dx = 0;
-          hero.dy = 0;
-          return; // skip further movement logic for hero
-        }
-      }
-      // --- End pull cooldown logic ---
-
-      if (dist > this.maxTensionDistance) {
-        // Chain is at maximum tension: hero can slowly pull the ball
-        const angle = Math.atan2(dy, dx);
+    // Only apply chain constraint if not spinning
+    let dx = hero.x - ball.x;
+    let dy = hero.y - ball.y;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+    if (!(ball as any).isSpinning) {
+      if (dist > this.chainLength) {
+        // --- Chain constraint: allow tangential, block radial (away) movement ---
+        const chainAngle = Math.atan2(dy, dx);
         const heroSpeed = Math.sqrt(hero.dx * hero.dx + hero.dy * hero.dy);
-
         if (heroSpeed > 0) {
           const heroAngle = Math.atan2(hero.dy, hero.dx);
-          const angleDiff = Math.abs(heroAngle - angle);
-
-          // If hero is trying to move away from ball, transfer some of that force to the ball
-          if (angleDiff < Math.PI / 2) {
-            const awayComponent = Math.cos(angleDiff) * heroSpeed;
-            // Apply a small force to the ball in the direction the hero is trying to move
-            ball.dx += Math.cos(heroAngle) * awayComponent * this.maxTensionPullStrength / this.ballMass;
-            ball.dy += Math.sin(heroAngle) * awayComponent * this.maxTensionPullStrength / this.ballMass;
-
-            // Significantly slow down the hero's movement away from the ball
-            hero.dx *= 0.1;
-            hero.dy *= 0.1;
-          }
+          const angleDiff = heroAngle - chainAngle;
+          // Radial (away) component
+          const radial = Math.cos(angleDiff) * heroSpeed;
+          // Tangential component
+          const tangential = Math.sin(angleDiff) * heroSpeed;
+          // Block only the radial (away) component
+          const newRadial = radial > 0 ? 0 : radial;
+          const perpAngle = chainAngle + Math.PI / 2;
+          hero.dx = Math.cos(chainAngle) * newRadial + Math.cos(perpAngle) * tangential;
+          hero.dy = Math.sin(chainAngle) * newRadial + Math.sin(perpAngle) * tangential;
         }
-
-        // Keep hero within max distance
-        if (dist > this.maxTensionDistance) {
-          hero.x = ball.x + Math.cos(angle) * this.maxTensionDistance;
-          hero.y = ball.y + Math.sin(angle) * this.maxTensionDistance;
-        }
-      } else if (dist > this.chainLength) {
-        // Chain is taut: apply force to ball, slow hero
+        // Ball gets pulled toward hero (heavy, so slow acceleration)
         const pull = ((dist - this.chainLength) / this.chainLength) * this.pullStrength;
         const fx = (dx / dist) * pull;
         const fy = (dy / dist) * pull;
-        // Debug log for force direction
-        if (typeof window !== 'undefined' && (window as any).DEBUG_BALL_CHAIN) {
-          console.log('[BallChain] Pulling ball:', { dx, dy, dist, fx, fy, ballX: ball.x, ballY: ball.y, heroX: hero.x, heroY: hero.y });
-        }
-        // Ball gets pulled toward hero (heavy, so slow acceleration)
         ball.dx += fx / this.ballMass;
         ball.dy += fy / this.ballMass;
-        // For testing: ensure ball's slowdown is 1 when being pulled
-        if ((ball as any).slowdown !== 1) (ball as any).slowdown = 1;
-
-        // --- Resistance logic ---
-        // If the ball is on the ground and barely moving, apply strong slowdown to the hero
-        const ballSpeed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-        if ((ball as any).height === 0 && ballSpeed < 0.5) {
-          // If hero is in cooldown, do not modify dx/dy at all
-          if ((hero as any).pullCooldownUntil && context.now < (hero as any).pullCooldownUntil) {
-            return;
-          }
-          const chainAngle = Math.atan2(dy, dx);
-          const heroSpeed = Math.sqrt(hero.dx * hero.dx + hero.dy * hero.dy);
-          if (heroSpeed > 0) {
-            const heroAngle = Math.atan2(hero.dy, hero.dx);
-            const angleDiff = heroAngle - chainAngle;
-            const radial = Math.cos(angleDiff) * heroSpeed;
-            const tangential = Math.sin(angleDiff) * heroSpeed;
-            const keys = (context.root as any).keys;
-            const isPullingAction = keys && keys.Action;
-            if (isPullingAction && radial > 0.1 && context.now > (hero as any).pullCooldownUntil) {
-              (hero as any).pullCooldownUntil = context.now + 500; // 500ms stun
-            }
-            // Only block the radial (away) component, allow tangential movement
-            const newRadial = radial > 0 ? 0 : radial;
-            const perpAngle = chainAngle + Math.PI / 2;
-            hero.dx = Math.cos(chainAngle) * newRadial + Math.cos(perpAngle) * tangential;
-            hero.dy = Math.sin(chainAngle) * newRadial + Math.sin(perpAngle) * tangential;
-          }
-        } else {
-          // Normal slowdown when chain is taut and ball is rolling
-          hero.dx *= this.slowFactor;
-          hero.dy *= this.slowFactor;
-        }
-        // --- End resistance logic ---
+        // Optionally, slow the hero a bit when chain is taut
+        hero.dx *= this.slowFactor;
+        hero.dy *= this.slowFactor;
       }
+      // else: chain is slack, do nothing
     }
-    // When ball is thrown, no chain physics are applied - ball maintains momentum
 
-    // Pull the hero toward the ball if the ball is being thrown and the chain is taut
-    if (ball.isThrown) {
-      const dx = ball.x - hero.x;
-      const dy = ball.y - hero.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist > this.maxTensionDistance) {
-        const pull = ((dist - this.maxTensionDistance) / this.maxTensionDistance) * this.pullStrength;
-        const fx = (dx / dist) * pull;
-        const fy = (dy / dist) * pull;
-        // Hero gets pulled toward the ball
-        hero.dx += fx / (this.ballMass * 0.7); // slightly less mass for hero for more effect
-        hero.dy += fy / (this.ballMass * 0.7);
-      }
-    }
+    // Update chain segments
+    this.updateChainSegments(elements, hero, ball, dist);
   }
 
   private updateChainSegments(elements: Element[], hero: Element, ball: Element, dist: number) {

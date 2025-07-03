@@ -35,25 +35,25 @@ export class Sample {
   main(): Connection {
     let score = 0;
     const cycle = this.program.start();
-    const observer = this.program.observe("keys/Action").onChange(value => {
-      const elements = this.program.root.world?.elements;
-      const hero = elements?.[0];
-      if (hero && (!hero.fired || this.program.now - hero.fired > 200)) {
-        hero.fired = value;
-        for (let i = 0; i < 5; i++) {
-          const index = this.findFreeChain(elements, "chain");
-          elements[index] = {
-            type: "chain",
-            x: hero.x + hero.dx * i,
-            y: hero.y + hero.dy * i,
-            dx: hero.dx,
-            dy: hero.dy,
-            speed: 4 * hero.speed,
-            expiration: this.program.now + 2000,
-          };
-        }
-      }
-    });
+    // const observer = this.program.observe("keys/Action").onChange(value => {
+    //   const elements = this.program.root.world?.elements;
+    //   const hero = elements?.[0];
+    //   if (hero && (!hero.fired || this.program.now - hero.fired > 200)) {
+    //     hero.fired = value;
+    //     for (let i = 0; i < 5; i++) {
+    //       const index = this.findFreeChain(elements, "chain");
+    //       elements[index] = {
+    //         type: "chain",
+    //         x: hero.x + hero.dx * i,
+    //         y: hero.y + hero.dy * i,
+    //         dx: hero.dx,
+    //         dy: hero.dy,
+    //         speed: 4 * hero.speed,
+    //         expiration: this.program.now + 2000,
+    //       };
+    //     }
+    //   }
+    // });
     this.program.attach(new Keyboard({
       keys: [
         [["KeyA", "ArrowLeft"], ["Left"]],
@@ -157,14 +157,6 @@ export class Sample {
                 const diffY = elem.y - e.y;
                 if (diffX * diffX + diffY * diffY < 3000) {
                   e.ko = now;
-                  score++;
-                  let d: HTMLDivElement = document.querySelector("#score")!;
-                  if (!d) {
-                    d = document.body.appendChild(document.createElement("div"));
-                    d.id = "score";
-                    d.style.fontSize = "40pt";
-                  }
-                  d.textContent = `${score}`;
                 }
               }
             });
@@ -173,11 +165,38 @@ export class Sample {
       }
     });
 
+    this.program.attach(new ScoreAttachment());
+
     return {
       disconnect() {
         cycle.disconnect();
-        observer.close();
+        // observer.close();
       }
+    }
+  }
+}
+
+class ScoreAttachment {
+  private score = 0;
+  refresh(context: Context<WorldContext>) {
+    const now = context.now;
+    const elements = context.root.world?.elements || [];
+    let scoreChanged = false;
+    elements.forEach(e => {
+      if (e.type === "foe" && e.ko && !e._scoreCounted) {
+        this.score++;
+        e._scoreCounted = true;
+        scoreChanged = true;
+      }
+    });
+    if (scoreChanged) {
+      let d: HTMLDivElement = document.querySelector("#score")!;
+      if (!d) {
+        d = document.body.appendChild(document.createElement("div"));
+        d.id = "score";
+        d.style.fontSize = "40pt";
+      }
+      d.textContent = `${this.score}`;
     }
   }
 }

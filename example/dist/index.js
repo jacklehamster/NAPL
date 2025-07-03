@@ -11339,6 +11339,12 @@ class MomentumAttachment {
 class Controlled {
   refresh(context) {
     const keys = context.root.keys;
+    const elements = context.root.world?.elements || [];
+    const ball = elements.find((e) => e.type === "ball");
+    const isSpinning = ball && ball.isSpinning;
+    if (keys?.Action && !isSpinning) {
+      return;
+    }
     const kx = (keys?.Left ? -1 : 0) + (keys?.Right ? 1 : 0);
     const ky = (keys?.Up ? -1 : 0) + (keys?.Down ? 1 : 0);
     const mul = kx || ky ? 1 / Math.sqrt(kx * kx + ky * ky) : 0;
@@ -11460,6 +11466,46 @@ class BallChainAttachment {
       elements.push(segment);
     }
   }
+  handleBallSpinning(context, hero, ball) {
+    const keys = context.root.keys;
+    const chainLength = this.chainLength;
+    const angularSpeed = 2 * Math.PI / 0.5;
+    const dt4 = 1 / 60;
+    if (!("isSpinning" in ball))
+      ball.isSpinning = false;
+    if (!("spinAngle" in ball))
+      ball.spinAngle = 0;
+    if (keys?.Action) {
+      if (!ball.isSpinning) {
+        ball.isSpinning = true;
+        const dx0 = ball.x - hero.x;
+        const dy0 = ball.y - hero.y;
+        ball.spinAngle = Math.atan2(dy0, dx0);
+      } else {
+        ball.spinAngle += angularSpeed * dt4;
+        ball.x = hero.x + Math.cos(ball.spinAngle) * chainLength;
+        ball.y = hero.y + Math.sin(ball.spinAngle) * chainLength;
+        ball.dx = 0;
+        ball.dy = 0;
+        const elements = context.root.world?.elements || [];
+        const now = context.now;
+        elements.forEach((e) => {
+          if (e.type === "foe" && !e.ko && now < e.expiration) {
+            const diffX = ball.x - e.x;
+            const diffY = ball.y - e.y;
+            if (diffX * diffX + diffY * diffY < 900) {
+              e.ko = now;
+              e._scoreCounted = false;
+            }
+          }
+        });
+        hero.dx *= 0.4;
+        hero.dy *= 0.4;
+      }
+    } else {
+      ball.isSpinning = false;
+    }
+  }
   handleBallThrowing(context, hero, ball) {
     const keys = context.root.keys;
     const now = context.now;
@@ -11517,99 +11563,37 @@ class BallChainAttachment {
       ball.throwStartTime = 0;
     if (ball.lastBounceTime === undefined)
       ball.lastBounceTime = 0;
-    this.handleBallThrowing(context, hero, ball);
-    this.updateBallPhysics(context, ball);
-    const dx = hero.x - ball.x;
-    const dy = hero.y - ball.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    this.updateChainSegments(elements, hero, ball, dist);
-    if (!ball.isThrown) {
-      if (ball.height === 0) {
-        if (hero.pullCooldownUntil === undefined)
-          hero.pullCooldownUntil = 0;
-        if (hero._lastBallSpeed === undefined)
-          hero._lastBallSpeed = 0;
-        const prevSpeed = hero._lastBallSpeed;
-        const currSpeed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-        if (prevSpeed < 0.2 && currSpeed >= 0.5 && context.now > hero.pullCooldownUntil) {
-          hero.pullCooldownUntil = context.now + 300;
-        }
-        hero._lastBallSpeed = currSpeed;
-        if (context.now < hero.pullCooldownUntil) {
-          hero.dx = 0;
-          hero.dy = 0;
-          return;
-        }
-      }
-      if (dist > this.maxTensionDistance) {
-        const angle = Math.atan2(dy, dx);
+    this.handleBallSpinning(context, hero, ball);
+    if (!ball.isSpinning) {
+      this.updateBallPhysics(context, ball);
+    }
+    let dx = hero.x - ball.x;
+    let dy = hero.y - ball.y;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+    if (!ball.isSpinning) {
+      if (dist > this.chainLength) {
+        const chainAngle = Math.atan2(dy, dx);
         const heroSpeed = Math.sqrt(hero.dx * hero.dx + hero.dy * hero.dy);
         if (heroSpeed > 0) {
           const heroAngle = Math.atan2(hero.dy, hero.dx);
-          const angleDiff = Math.abs(heroAngle - angle);
-          if (angleDiff < Math.PI / 2) {
-            const awayComponent = Math.cos(angleDiff) * heroSpeed;
-            ball.dx += Math.cos(heroAngle) * awayComponent * this.maxTensionPullStrength / this.ballMass;
-            ball.dy += Math.sin(heroAngle) * awayComponent * this.maxTensionPullStrength / this.ballMass;
-            hero.dx *= 0.1;
-            hero.dy *= 0.1;
-          }
+          const angleDiff = heroAngle - chainAngle;
+          const radial = Math.cos(angleDiff) * heroSpeed;
+          const tangential = Math.sin(angleDiff) * heroSpeed;
+          const newRadial = radial > 0 ? 0 : radial;
+          const perpAngle = chainAngle + Math.PI / 2;
+          hero.dx = Math.cos(chainAngle) * newRadial + Math.cos(perpAngle) * tangential;
+          hero.dy = Math.sin(chainAngle) * newRadial + Math.sin(perpAngle) * tangential;
         }
-        if (dist > this.maxTensionDistance) {
-          hero.x = ball.x + Math.cos(angle) * this.maxTensionDistance;
-          hero.y = ball.y + Math.sin(angle) * this.maxTensionDistance;
-        }
-      } else if (dist > this.chainLength) {
         const pull = (dist - this.chainLength) / this.chainLength * this.pullStrength;
         const fx = dx / dist * pull;
         const fy = dy / dist * pull;
-        if (typeof window !== "undefined" && window.DEBUG_BALL_CHAIN) {
-          console.log("[BallChain] Pulling ball:", { dx, dy, dist, fx, fy, ballX: ball.x, ballY: ball.y, heroX: hero.x, heroY: hero.y });
-        }
         ball.dx += fx / this.ballMass;
         ball.dy += fy / this.ballMass;
-        if (ball.slowdown !== 1)
-          ball.slowdown = 1;
-        const ballSpeed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-        if (ball.height === 0 && ballSpeed < 0.5) {
-          if (hero.pullCooldownUntil && context.now < hero.pullCooldownUntil) {
-            return;
-          }
-          const chainAngle = Math.atan2(dy, dx);
-          const heroSpeed = Math.sqrt(hero.dx * hero.dx + hero.dy * hero.dy);
-          if (heroSpeed > 0) {
-            const heroAngle = Math.atan2(hero.dy, hero.dx);
-            const angleDiff = heroAngle - chainAngle;
-            const radial = Math.cos(angleDiff) * heroSpeed;
-            const tangential = Math.sin(angleDiff) * heroSpeed;
-            const keys = context.root.keys;
-            const isPullingAction = keys && keys.Action;
-            if (isPullingAction && radial > 0.1 && context.now > hero.pullCooldownUntil) {
-              hero.pullCooldownUntil = context.now + 500;
-            }
-            const newRadial = radial > 0 ? 0 : radial;
-            const perpAngle = chainAngle + Math.PI / 2;
-            hero.dx = Math.cos(chainAngle) * newRadial + Math.cos(perpAngle) * tangential;
-            hero.dy = Math.sin(chainAngle) * newRadial + Math.sin(perpAngle) * tangential;
-          }
-        } else {
-          hero.dx *= this.slowFactor;
-          hero.dy *= this.slowFactor;
-        }
+        hero.dx *= this.slowFactor;
+        hero.dy *= this.slowFactor;
       }
     }
-    if (ball.isThrown) {
-      const dx2 = ball.x - hero.x;
-      const dy2 = ball.y - hero.y;
-      const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-      if (dist2 > this.maxTensionDistance) {
-        const pull = (dist2 - this.maxTensionDistance) / this.maxTensionDistance * this.pullStrength;
-        const fx = dx2 / dist2 * pull;
-        const fy = dy2 / dist2 * pull;
-        hero.dx += fx / (this.ballMass * 0.7);
-        hero.dy += fy / (this.ballMass * 0.7);
-      }
-    }
+    this.updateChainSegments(elements, hero, ball, dist);
   }
   updateChainSegments(elements, hero, ball, dist) {
     const segments = elements.filter((e) => e.type === "chainSegment");
@@ -11658,25 +11642,6 @@ class Sample {
   main() {
     let score = 0;
     const cycle = this.program.start();
-    const observer = this.program.observe("keys/Action").onChange((value) => {
-      const elements = this.program.root.world?.elements;
-      const hero = elements?.[0];
-      if (hero && (!hero.fired || this.program.now - hero.fired > 200)) {
-        hero.fired = value;
-        for (let i = 0;i < 5; i++) {
-          const index = this.findFreeChain(elements, "chain");
-          elements[index] = {
-            type: "chain",
-            x: hero.x + hero.dx * i,
-            y: hero.y + hero.dy * i,
-            dx: hero.dx,
-            dy: hero.dy,
-            speed: 4 * hero.speed,
-            expiration: this.program.now + 2000
-          };
-        }
-      }
-    });
     this.program.attach(new Keyboard({
       keys: [
         [["KeyA", "ArrowLeft"], ["Left"]],
@@ -11773,14 +11738,6 @@ class Sample {
                 const diffY = elem.y - e.y;
                 if (diffX * diffX + diffY * diffY < 3000) {
                   e.ko = now;
-                  score++;
-                  let d = document.querySelector("#score");
-                  if (!d) {
-                    d = document.body.appendChild(document.createElement("div"));
-                    d.id = "score";
-                    d.style.fontSize = "40pt";
-                  }
-                  d.textContent = `${score}`;
                 }
               }
             });
@@ -11788,12 +11745,37 @@ class Sample {
         });
       }
     });
+    this.program.attach(new ScoreAttachment);
     return {
       disconnect() {
         cycle.disconnect();
-        observer.close();
       }
     };
+  }
+}
+
+class ScoreAttachment {
+  score = 0;
+  refresh(context) {
+    const now = context.now;
+    const elements = context.root.world?.elements || [];
+    let scoreChanged = false;
+    elements.forEach((e) => {
+      if (e.type === "foe" && e.ko && !e._scoreCounted) {
+        this.score++;
+        e._scoreCounted = true;
+        scoreChanged = true;
+      }
+    });
+    if (scoreChanged) {
+      let d = document.querySelector("#score");
+      if (!d) {
+        d = document.body.appendChild(document.createElement("div"));
+        d.id = "score";
+        d.style.fontSize = "40pt";
+      }
+      d.textContent = `${this.score}`;
+    }
   }
 }
 // src/index.ts
@@ -11848,4 +11830,4 @@ export {
   root
 };
 
-//# debugId=6B5713889367CE8764756E2164756E21
+//# debugId=205EA89633A4D46664756E2164756E21

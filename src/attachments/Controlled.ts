@@ -5,6 +5,14 @@ import { Behavior, WorldContext } from "@/context/World";
 export class Controlled implements Attachment {
   refresh(context: Context<WorldContext & { keys: Record<string, string> }>): void {
     const keys = context.root.keys;
+    // Find the ball to check if it's spinning
+    const elements = context.root.world?.elements || [];
+    const ball = elements.find(e => e.type === "ball");
+    const isSpinning = ball && (ball as any).isSpinning;
+
+    if (keys?.Action && !isSpinning) {
+      return;
+    }
     const kx = (keys?.Left ? -1 : 0) + (keys?.Right ? 1 : 0);
     const ky = (keys?.Up ? -1 : 0) + (keys?.Down ? 1 : 0);
     const mul = (kx || ky) ? 1 / Math.sqrt(kx * kx + ky * ky) : 0;
