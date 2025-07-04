@@ -11741,8 +11741,11 @@ class Sample {
         });
       }
     });
-    this.program.attach(new ScoreAttachment);
-    this.program.attach(new HeartsAttachment);
+    const scoreAttachment = new ScoreAttachment;
+    const heartsAttachment = new HeartsAttachment;
+    this.program.attach(scoreAttachment);
+    this.program.attach(heartsAttachment);
+    this.program.attach(new GameOverDialogAttachment(scoreAttachment, heartsAttachment));
     return {
       disconnect() {
         cycle.disconnect();
@@ -11753,6 +11756,11 @@ class Sample {
 
 class ScoreAttachment {
   score = 0;
+  forceUpdate = false;
+  reset() {
+    this.score = 0;
+    this.forceUpdate = true;
+  }
   refresh(context) {
     const now = context.now;
     const elements = context.root.world?.elements || [];
@@ -11764,7 +11772,7 @@ class ScoreAttachment {
         scoreChanged = true;
       }
     });
-    if (scoreChanged) {
+    if (scoreChanged || this.forceUpdate) {
       let d = document.querySelector("#score");
       if (!d) {
         d = document.body.appendChild(document.createElement("div"));
@@ -11772,12 +11780,18 @@ class ScoreAttachment {
         d.style.fontSize = "40pt";
       }
       d.textContent = `${this.score}`;
+      this.forceUpdate = false;
     }
   }
 }
 
 class HeartsAttachment {
   hearts = 3;
+  forceUpdate = false;
+  reset() {
+    this.hearts = 3;
+    this.forceUpdate = true;
+  }
   refresh(context) {
     const now = context.now;
     const elements = context.root.world?.elements || [];
@@ -11801,7 +11815,7 @@ class HeartsAttachment {
         }
       }
     });
-    if (heartLost || !document.querySelector("#hearts")) {
+    if (heartLost || this.forceUpdate || !document.querySelector("#hearts")) {
       let d = document.querySelector("#hearts");
       if (!d) {
         d = document.body.appendChild(document.createElement("div"));
@@ -11813,7 +11827,91 @@ class HeartsAttachment {
         d.style.left = "0";
       }
       d.textContent = "♥ ".repeat(this.hearts > 0 ? this.hearts : 0);
+      this.forceUpdate = false;
     }
+  }
+}
+
+class GameOverDialogAttachment {
+  scoreAttachment;
+  heartsAttachment;
+  dialog = null;
+  lastGameOver = false;
+  constructor(scoreAttachment, heartsAttachment) {
+    this.scoreAttachment = scoreAttachment;
+    this.heartsAttachment = heartsAttachment;
+  }
+  refresh(context) {
+    const world = context.root.world;
+    if (!world)
+      return;
+    const isGameOver = !!world.gameOver;
+    if (isGameOver && !this.lastGameOver) {
+      if (!this.dialog) {
+        this.dialog = document.createElement("div");
+        this.dialog.id = "gameover-dialog";
+        Object.assign(this.dialog.style, {
+          position: "fixed",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          background: "rgba(255,255,255,0.95)",
+          border: "2px solid #e33",
+          borderRadius: "16px",
+          padding: "40px 60px",
+          fontSize: "32pt",
+          color: "#222",
+          zIndex: 1e4,
+          textAlign: "center",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.2)"
+        });
+        this.dialog.innerHTML = `<div style='font-size:48pt;color:#e33;margin-bottom:20px;'>Game Over</div>`;
+        const restartBtn = document.createElement("button");
+        restartBtn.textContent = "Restart";
+        Object.assign(restartBtn.style, {
+          fontSize: "28pt",
+          padding: "12px 40px",
+          borderRadius: "8px",
+          border: "none",
+          background: "#e33",
+          color: "#fff",
+          cursor: "pointer",
+          marginTop: "20px"
+        });
+        restartBtn.onclick = () => {
+          world.gameOver = false;
+          this.heartsAttachment.reset();
+          this.scoreAttachment.reset();
+          world.elements = world.elements.filter((e) => e.type !== "foe");
+          const hero = world.elements.find((e) => e.type === "hero");
+          if (hero) {
+            hero.x = 500;
+            hero.y = 300;
+            hero.dx = 0;
+            hero.dy = 0;
+            hero.ko = undefined;
+          }
+          const ball = world.elements.find((e) => e.type === "ball");
+          if (ball) {
+            ball.x = 500;
+            ball.y = 400;
+            ball.dx = 0;
+            ball.dy = 0;
+            ball.ko = undefined;
+          }
+          if (this.dialog && this.dialog.parentNode)
+            this.dialog.parentNode.removeChild(this.dialog);
+          this.dialog = null;
+        };
+        this.dialog.appendChild(restartBtn);
+        document.body.appendChild(this.dialog);
+      }
+    } else if (!isGameOver && this.dialog) {
+      if (this.dialog.parentNode)
+        this.dialog.parentNode.removeChild(this.dialog);
+      this.dialog = null;
+    }
+    this.lastGameOver = isGameOver;
   }
 }
 // src/index.ts
@@ -11868,4 +11966,4 @@ export {
   root
 };
 
-//# debugId=2E2E0D3913DE5C6564756E2164756E21
+//# debugId=1540E8692D9E574164756E2164756E21
