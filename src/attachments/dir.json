@@ -1,12 +1,30 @@
 {
   "Attachment.ts": {
-    "sha": "df8c03103e12fc0aa1e5c3cb585a2a1f963abf87"
+    "sha": "a3179774969decfd805c479cea885fe3e3829a85"
   },
-  "KeyboardAttachment.ts": {
-    "sha": "43fdf24dff61b54d1121ae919e00edb2b070392e"
+  "BallChain.ts": {
+    "sha": "4a4b6fcf91edf4dfe536cd42e21502890872f0a2"
+  },
+  "Controlled.ts": {
+    "sha": "a2d73fcfaf35485bfe8e1370e14496d1e2b28f8c"
+  },
+  "Keyboard.ts": {
+    "sha": "2ab27ccf746dfc2a44ee4b4216451036d5d21c8d"
+  },
+  "Momentum.ts": {
+    "sha": "3b8764585e1654757c1eee7ed461e969d36c4d9a"
+  },
+  "SlowDown.ts": {
+    "sha": "f7247eeb3cb28844340281abceeb4a9bc51ed294"
   },
   "VizAttachments.ts": {
-    "sha": "210e3224eb4182574db49aea0c94d9cae86aa2d2"
+    "sha": "734e7f9d159a5efca515ff7a4fbf6fcec9f6995b"
   },
-  "md5": "ad9ac5e66032b8a6a4c80f8c0c7aa13c"
+  "WallBounds.ts": {
+    "sha": "08e80e83bf4dd4d66dca97931cfc8ee1e628bc8f"
+  },
+  "md5": "842eb29b5a8e1df73f8346ca4ee47a6b",
+  "registry.ts": {
+    "sha": "4321070ed247cd2108896ca8cc46d672a9614783"
+  }
 }

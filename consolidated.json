@@ -18,9 +18,9 @@
     "config.json": {
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
-    "md5": "91119a2420d31b51683d96a53cd7ff03",
+    "md5": "23e6136390be18349a6e7de4e6cd8921",
     "package.json": {
-      "sha": "b961585c7cadaf8c7704532c92cb24d2851d33a9"
+      "sha": "4ce36c108f1ea5f4fb210cc9276ca1b712eea0cc"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "47b00637779d4215e34bc670418ff8e48f9f1894"
+      "sha": "b999cc43bd7d0ffd035a3c2253b0291580a9b348"
     },
     "dist/index.js.map": {
-      "sha": "deb455ec158375bde170730d0a0b91d698c8ef1d"
+      "sha": "7569148aed69445f7993a5155e2fc12969c47262"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -54,12 +54,12 @@
     "index.ts": {
       "sha": "ccb5152139dd200abdab11310fffb8ab87d1c235"
     },
-    "md5": "7f9057ab8cf595975063bcd0328a525e",
+    "md5": "946d04574eedd4550f9277c928011f9b",
     "package.json": {
-      "sha": "b961585c7cadaf8c7704532c92cb24d2851d33a9"
+      "sha": "4ce36c108f1ea5f4fb210cc9276ca1b712eea0cc"
     },
     "src/index.ts": {
-      "sha": "41c255d863b9eb4d1ad2cb4c551e47ffa22eb10b"
+      "sha": "8e33d137a3fd77588c098d866782391a873fc00a"
     },
     "test-room/index.html": {
       "sha": "ecb910fb80c68211077681e4dbfd3311d839cafd"
@@ -70,12 +70,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "47b00637779d4215e34bc670418ff8e48f9f1894"
+      "sha": "b999cc43bd7d0ffd035a3c2253b0291580a9b348"
     },
     "index.js.map": {
-      "sha": "deb455ec158375bde170730d0a0b91d698c8ef1d"
+      "sha": "7569148aed69445f7993a5155e2fc12969c47262"
     },
-    "md5": "af6cc67a6e4fc78c0fb7767889e6b32e",
+    "md5": "a0888cf94f007293b8b81b880137724c",
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -85,10 +85,11 @@
     "module": "src/index.ts",
     "type": "module",
     "scripts": {
-      "start": "bun run build && bun index.ts --watch",
-      "start:prod": "bun run build && NODE_ENV=production bun run index.ts --watch",
+      "start": "bun run build && bun --watch index.ts",
+      "start:prod": "bun run build && NODE_ENV=production bun --watch index.ts",
       "build": "bun i && bun run build-icon && bun run bundler/bundler.ts",
-      "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons"
+      "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons",
+      "dev": "bun run build && bun --watch index.ts"
     },
     "devDependencies": {
       "napl": "link:napl",
@@ -111,9 +112,9 @@
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "41c255d863b9eb4d1ad2cb4c551e47ffa22eb10b"
+      "sha": "8e33d137a3fd77588c098d866782391a873fc00a"
     },
-    "md5": "a838a1c84a3adf8ec2c3bfd662a45e9e"
+    "md5": "18e5c741a3e480e1f6fc444de944fb07"
   },
   "/example/test-room/dir.json": {
     "index.html": {
@@ -178,6 +179,7 @@
       "build:example": "cd example && bun i && bun run build && cd ..",
       "example": "cd example && bun start && cd ..",
       "example:prod": "cd example && bun start:prod && cd ..",
+      "dev": "bun run build:example && cd example && bun --watch index.ts",
       "fix-package-name": "npm explore package-name-fixer -- bun start \"$(pwd)\"",
       "auto-publish": "npm explore @dobuki/auto-publish -- bun run auto-publish \"$(pwd)\""
     },
@@ -207,15 +209,33 @@
   },
   "/src/attachments/dir.json": {
     "Attachment.ts": {
-      "sha": "df8c03103e12fc0aa1e5c3cb585a2a1f963abf87"
+      "sha": "a3179774969decfd805c479cea885fe3e3829a85"
     },
-    "KeyboardAttachment.ts": {
-      "sha": "43fdf24dff61b54d1121ae919e00edb2b070392e"
+    "BallChain.ts": {
+      "sha": "4a4b6fcf91edf4dfe536cd42e21502890872f0a2"
+    },
+    "Controlled.ts": {
+      "sha": "a2d73fcfaf35485bfe8e1370e14496d1e2b28f8c"
+    },
+    "Keyboard.ts": {
+      "sha": "2ab27ccf746dfc2a44ee4b4216451036d5d21c8d"
+    },
+    "Momentum.ts": {
+      "sha": "3b8764585e1654757c1eee7ed461e969d36c4d9a"
+    },
+    "SlowDown.ts": {
+      "sha": "f7247eeb3cb28844340281abceeb4a9bc51ed294"
     },
     "VizAttachments.ts": {
-      "sha": "210e3224eb4182574db49aea0c94d9cae86aa2d2"
+      "sha": "734e7f9d159a5efca515ff7a4fbf6fcec9f6995b"
     },
-    "md5": "ad9ac5e66032b8a6a4c80f8c0c7aa13c"
+    "WallBounds.ts": {
+      "sha": "08e80e83bf4dd4d66dca97931cfc8ee1e628bc8f"
+    },
+    "md5": "842eb29b5a8e1df73f8346ca4ee47a6b",
+    "registry.ts": {
+      "sha": "4321070ed247cd2108896ca8cc46d672a9614783"
+    }
   },
   "/src/clients/dir.json": {
     "CommInterface.ts": {
@@ -234,27 +254,27 @@
   },
   "/src/context/dir.json": {
     "Context.ts": {
-      "sha": "4cf36437c04f37f5d313917ba1de1a11703ab46e"
+      "sha": "eefec589e288c794f479d40309e22713df9fa730"
     },
     "World.ts": {
-      "sha": "a5714a6aced204d621ffd57e83f572d992861912"
+      "sha": "521608d7179b8e2fca4670348bca3cc903beea43"
     },
-    "md5": "724c6bf9426ecb010ea88d0663a58405"
+    "md5": "91af11679a28cb9e6563a115bff87002"
   },
   "/src/core/dir.json": {
     "Processor.ts": {
-      "sha": "8d062b7466d627b061ee321019e145503ce6f190"
+      "sha": "dac90f683f6993da8ba3f5ec224d3c4fb1fc1d6d"
     },
     "Program.ts": {
-      "sha": "dd05892bd80d7994067a045c70157cab2f421deb"
+      "sha": "191ae60eaccc8684a3e8fd5b62309020ed5cb3fc"
     },
     "Sample.ts": {
-      "sha": "f4be3cc823647b004eefc1bfe7c131081197ef6d"
+      "sha": "7e628c4d0572f9408112cda32c4eb196b36b185a"
     },
     "create-context.ts": {
-      "sha": "3854a75a327fb4873ca3f21502e1b88d269f12d6"
+      "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
     },
-    "md5": "ca605bce24fd0da6562a6b0ae52aa609",
+    "md5": "f2b144c47c059c42a57d6efdf20c5675",
     "processor.test.ts": {
       "sha": "149b3a61998da4f9766910d4549e430b7f489926"
     }
@@ -297,13 +317,31 @@
   },
   "/src/dir.json": {
     "attachments/Attachment.ts": {
-      "sha": "df8c03103e12fc0aa1e5c3cb585a2a1f963abf87"
+      "sha": "a3179774969decfd805c479cea885fe3e3829a85"
     },
-    "attachments/KeyboardAttachment.ts": {
-      "sha": "43fdf24dff61b54d1121ae919e00edb2b070392e"
+    "attachments/BallChain.ts": {
+      "sha": "4a4b6fcf91edf4dfe536cd42e21502890872f0a2"
+    },
+    "attachments/Controlled.ts": {
+      "sha": "a2d73fcfaf35485bfe8e1370e14496d1e2b28f8c"
+    },
+    "attachments/Keyboard.ts": {
+      "sha": "2ab27ccf746dfc2a44ee4b4216451036d5d21c8d"
+    },
+    "attachments/Momentum.ts": {
+      "sha": "3b8764585e1654757c1eee7ed461e969d36c4d9a"
+    },
+    "attachments/SlowDown.ts": {
+      "sha": "f7247eeb3cb28844340281abceeb4a9bc51ed294"
     },
     "attachments/VizAttachments.ts": {
-      "sha": "210e3224eb4182574db49aea0c94d9cae86aa2d2"
+      "sha": "734e7f9d159a5efca515ff7a4fbf6fcec9f6995b"
+    },
+    "attachments/WallBounds.ts": {
+      "sha": "08e80e83bf4dd4d66dca97931cfc8ee1e628bc8f"
+    },
+    "attachments/registry.ts": {
+      "sha": "4321070ed247cd2108896ca8cc46d672a9614783"
     },
     "clients/CommInterface.ts": {
       "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
@@ -315,22 +353,22 @@
       "sha": "fb86aac10dc23073617bb14c26d6a8e0695668d4"
     },
     "context/Context.ts": {
-      "sha": "4cf36437c04f37f5d313917ba1de1a11703ab46e"
+      "sha": "eefec589e288c794f479d40309e22713df9fa730"
     },
     "context/World.ts": {
-      "sha": "a5714a6aced204d621ffd57e83f572d992861912"
+      "sha": "521608d7179b8e2fca4670348bca3cc903beea43"
     },
     "core/Processor.ts": {
-      "sha": "8d062b7466d627b061ee321019e145503ce6f190"
+      "sha": "dac90f683f6993da8ba3f5ec224d3c4fb1fc1d6d"
     },
     "core/Program.ts": {
-      "sha": "dd05892bd80d7994067a045c70157cab2f421deb"
+      "sha": "191ae60eaccc8684a3e8fd5b62309020ed5cb3fc"
     },
     "core/Sample.ts": {
-      "sha": "f4be3cc823647b004eefc1bfe7c131081197ef6d"
+      "sha": "7e628c4d0572f9408112cda32c4eb196b36b185a"
     },
     "core/create-context.ts": {
-      "sha": "3854a75a327fb4873ca3f21502e1b88d269f12d6"
+      "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
     },
     "core/processor.test.ts": {
       "sha": "149b3a61998da4f9766910d4549e430b7f489926"
@@ -353,7 +391,7 @@
     "index.ts": {
       "sha": "58f846d460391024a6b3ef2c7ea367d000abfb2a"
     },
-    "md5": "16fbcd5f087f8f2aeca78f05d8cca6e8",
+    "md5": "42f02dcbdc30f2e363b9236662310287",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },

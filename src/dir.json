@@ -1,12 +1,30 @@
 {
   "attachments/Attachment.ts": {
-    "sha": "df8c03103e12fc0aa1e5c3cb585a2a1f963abf87"
+    "sha": "a3179774969decfd805c479cea885fe3e3829a85"
   },
-  "attachments/KeyboardAttachment.ts": {
-    "sha": "43fdf24dff61b54d1121ae919e00edb2b070392e"
+  "attachments/BallChain.ts": {
+    "sha": "4a4b6fcf91edf4dfe536cd42e21502890872f0a2"
+  },
+  "attachments/Controlled.ts": {
+    "sha": "a2d73fcfaf35485bfe8e1370e14496d1e2b28f8c"
+  },
+  "attachments/Keyboard.ts": {
+    "sha": "2ab27ccf746dfc2a44ee4b4216451036d5d21c8d"
+  },
+  "attachments/Momentum.ts": {
+    "sha": "3b8764585e1654757c1eee7ed461e969d36c4d9a"
+  },
+  "attachments/SlowDown.ts": {
+    "sha": "f7247eeb3cb28844340281abceeb4a9bc51ed294"
   },
   "attachments/VizAttachments.ts": {
-    "sha": "210e3224eb4182574db49aea0c94d9cae86aa2d2"
+    "sha": "734e7f9d159a5efca515ff7a4fbf6fcec9f6995b"
+  },
+  "attachments/WallBounds.ts": {
+    "sha": "08e80e83bf4dd4d66dca97931cfc8ee1e628bc8f"
+  },
+  "attachments/registry.ts": {
+    "sha": "4321070ed247cd2108896ca8cc46d672a9614783"
   },
   "clients/CommInterface.ts": {
     "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
@@ -18,22 +36,22 @@
     "sha": "fb86aac10dc23073617bb14c26d6a8e0695668d4"
   },
   "context/Context.ts": {
-    "sha": "4cf36437c04f37f5d313917ba1de1a11703ab46e"
+    "sha": "eefec589e288c794f479d40309e22713df9fa730"
   },
   "context/World.ts": {
-    "sha": "a5714a6aced204d621ffd57e83f572d992861912"
+    "sha": "521608d7179b8e2fca4670348bca3cc903beea43"
   },
   "core/Processor.ts": {
-    "sha": "8d062b7466d627b061ee321019e145503ce6f190"
+    "sha": "dac90f683f6993da8ba3f5ec224d3c4fb1fc1d6d"
   },
   "core/Program.ts": {
-    "sha": "dd05892bd80d7994067a045c70157cab2f421deb"
+    "sha": "191ae60eaccc8684a3e8fd5b62309020ed5cb3fc"
   },
   "core/Sample.ts": {
-    "sha": "f4be3cc823647b004eefc1bfe7c131081197ef6d"
+    "sha": "7e628c4d0572f9408112cda32c4eb196b36b185a"
   },
   "core/create-context.ts": {
-    "sha": "3854a75a327fb4873ca3f21502e1b88d269f12d6"
+    "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
   },
   "core/processor.test.ts": {
     "sha": "149b3a61998da4f9766910d4549e430b7f489926"
@@ -56,7 +74,7 @@
   "index.ts": {
     "sha": "58f846d460391024a6b3ef2c7ea367d000abfb2a"
   },
-  "md5": "16fbcd5f087f8f2aeca78f05d8cca6e8",
+  "md5": "42f02dcbdc30f2e363b9236662310287",
   "observer/IObservable.ts": {
     "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
   },
