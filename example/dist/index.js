@@ -11190,19 +11190,12 @@ class VizAttachment {
   refresh(context) {
     const ctx = this.canvas.getContext("2d");
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    this.renderBackground(ctx);
     this.renderShadows(context);
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 5;
-    ctx.beginPath();
     const now = Date.now();
     context.root.world?.elements.forEach((elem) => {
       if (elem.type === "hero") {
-        ctx.moveTo(elem.x + 40, elem.y);
-        ctx.arc(elem.x, elem.y, 40, 0, Math.PI * 2);
-        const dx = elem.dx * 2;
-        const dy = elem.dy * 2;
-        ctx.moveTo(elem.x + dx + 20, elem.y + dy);
-        ctx.arc(elem.x + dx, elem.y + dy, 20, 0, Math.PI * 2);
+        this.renderHero(ctx, elem);
       } else if (elem.type === "chain" && now < elem.expiration) {
         ctx.moveTo(elem.x + 5, elem.y);
         ctx.arc(elem.x, elem.y, 5, 0, Math.PI * 2);
@@ -11210,18 +11203,183 @@ class VizAttachment {
         if (elem.ko && Math.random() < 0.7) {
           return;
         }
-        const topOffset = elem.ko ? 50 : 0;
-        ctx.strokeRect(elem.x - 10, elem.y - 10, 20, 20);
-        ctx.strokeRect(elem.x - 15, elem.y - 15, 30, 30);
-        ctx.moveTo(elem.x - 10 * 4, elem.y + 5 * 4);
-        ctx.lineTo(elem.x, elem.y - 15 * 4 + topOffset);
-        ctx.lineTo(elem.x + 10 * 4, elem.y + 5 * 4);
-        ctx.lineTo(elem.x - 10 * 4, elem.y + 5 * 4);
+        this.renderMonster(ctx, elem);
       }
     });
     ctx.stroke();
     this.renderChain(context);
     this.renderBall(context);
+  }
+  renderBackground(ctx) {
+    const sky = ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+    sky.addColorStop(0, "#7ec0ee");
+    sky.addColorStop(1, "#e0f7fa");
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, this.canvas.height * 0.7);
+    ctx.bezierCurveTo(this.canvas.width * 0.2, this.canvas.height * 0.5, this.canvas.width * 0.4, this.canvas.height * 0.8, this.canvas.width * 0.6, this.canvas.height * 0.6);
+    ctx.bezierCurveTo(this.canvas.width * 0.7, this.canvas.height * 0.5, this.canvas.width * 0.9, this.canvas.height * 0.8, this.canvas.width, this.canvas.height * 0.7);
+    ctx.lineTo(this.canvas.width, this.canvas.height);
+    ctx.lineTo(0, this.canvas.height);
+    ctx.closePath();
+    ctx.fillStyle = "#b0bec5";
+    ctx.globalAlpha = 0.5;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.restore();
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, this.canvas.height * 0.85);
+    for (let x = 0;x <= this.canvas.width; x += 40) {
+      const y5 = this.canvas.height * 0.85 + 10 * Math.sin(x / 60);
+      ctx.lineTo(x, y5);
+    }
+    ctx.lineTo(this.canvas.width, this.canvas.height);
+    ctx.lineTo(0, this.canvas.height);
+    ctx.closePath();
+    const ground = ctx.createLinearGradient(0, this.canvas.height * 0.85, 0, this.canvas.height);
+    ground.addColorStop(0, "#4caf50");
+    ground.addColorStop(1, "#795548");
+    ctx.fillStyle = ground;
+    ctx.fill();
+    ctx.restore();
+    this.renderClouds(ctx);
+    this.renderGrass(ctx);
+    this.renderRocks(ctx);
+  }
+  renderClouds(ctx) {
+    const clouds = [
+      { x: 120, y: 80, s: 1 },
+      { x: 400, y: 60, s: 1.3 },
+      { x: 700, y: 100, s: 0.8 },
+      { x: 1000, y: 70, s: 1.1 },
+      { x: 1400, y: 90, s: 0.9 }
+    ];
+    ctx.save();
+    ctx.globalAlpha = 0.7;
+    ctx.fillStyle = "#fff";
+    clouds.forEach((cloud) => {
+      ctx.beginPath();
+      ctx.ellipse(cloud.x, cloud.y, 40 * cloud.s, 18 * cloud.s, 0, 0, Math.PI * 2);
+      ctx.ellipse(cloud.x + 30 * cloud.s, cloud.y + 5 * cloud.s, 25 * cloud.s, 12 * cloud.s, 0, 0, Math.PI * 2);
+      ctx.ellipse(cloud.x - 25 * cloud.s, cloud.y + 8 * cloud.s, 22 * cloud.s, 10 * cloud.s, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+  renderGrass(ctx) {
+    ctx.save();
+    for (let x = 30;x < this.canvas.width; x += 70) {
+      const baseY = this.canvas.height * 0.85 + 8 * Math.sin(x / 60);
+      ctx.beginPath();
+      ctx.moveTo(x, baseY);
+      ctx.lineTo(x - 4, baseY + 14);
+      ctx.lineTo(x + 2, baseY + 8);
+      ctx.lineTo(x + 4, baseY + 14);
+      ctx.lineTo(x + 2, baseY);
+      ctx.closePath();
+      ctx.fillStyle = "#388e3c";
+      ctx.globalAlpha = 0.7;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+  renderRocks(ctx) {
+    ctx.save();
+    const rocks = [
+      { x: 200, y: this.canvas.height * 0.87, r: 12 },
+      { x: 600, y: this.canvas.height * 0.89, r: 8 },
+      { x: 900, y: this.canvas.height * 0.88, r: 16 },
+      { x: 1300, y: this.canvas.height * 0.86, r: 10 }
+    ];
+    ctx.fillStyle = "#888";
+    ctx.globalAlpha = 0.8;
+    rocks.forEach((rock) => {
+      ctx.beginPath();
+      ctx.ellipse(rock.x, rock.y, rock.r, rock.r * 0.7, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+  renderHero(ctx, elem) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(elem.x, elem.y + 50, 35, 12, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0,0,0,0.18)";
+    ctx.filter = "blur(1.5px)";
+    ctx.fill();
+    ctx.filter = "none";
+    ctx.save();
+    ctx.strokeStyle = "#444";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(elem.x - 15, elem.y + 40);
+    ctx.lineTo(elem.x - 30, elem.y + 60);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(elem.x - 30, elem.y + 65, 8, 0, Math.PI * 2);
+    ctx.fillStyle = "#888";
+    ctx.shadowColor = "#222";
+    ctx.shadowBlur = 4;
+    ctx.fill();
+    ctx.restore();
+    ctx.beginPath();
+    ctx.ellipse(elem.x, elem.y + 25, 18, 28, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#fff";
+    ctx.strokeStyle = "#222";
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
+    for (let i = -3;i <= 3; i++) {
+      ctx.beginPath();
+      ctx.moveTo(elem.x - 16, elem.y + 25 + i * 7);
+      ctx.lineTo(elem.x + 16, elem.y + 25 + i * 7);
+      ctx.strokeStyle = i % 2 === 0 ? "#222" : "#bbb";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+    ctx.beginPath();
+    ctx.arc(elem.x, elem.y, 15, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffe0b2";
+    ctx.strokeStyle = "#222";
+    ctx.lineWidth = 2;
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 4;
+    ctx.fill();
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.beginPath();
+    ctx.arc(elem.x - 5, elem.y - 2, 2, 0, Math.PI * 2);
+    ctx.arc(elem.x + 5, elem.y - 2, 2, 0, Math.PI * 2);
+    ctx.fillStyle = "#222";
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(elem.x, elem.y + 4, 5, 0, Math.PI);
+    ctx.strokeStyle = "#222";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(elem.x - 18, elem.y + 20);
+    ctx.lineTo(elem.x - 32, elem.y + 35);
+    ctx.moveTo(elem.x + 18, elem.y + 20);
+    ctx.lineTo(elem.x + 32, elem.y + 35);
+    ctx.strokeStyle = "#222";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(elem.x - 10, elem.y + 50);
+    ctx.lineTo(elem.x - 15, elem.y + 40);
+    ctx.moveTo(elem.x + 10, elem.y + 50);
+    ctx.lineTo(elem.x + 15, elem.y + 40);
+    ctx.strokeStyle = "#222";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.restore();
   }
   renderShadows(context) {
     const ctx = this.canvas.getContext("2d");
@@ -11308,6 +11466,94 @@ class VizAttachment {
       ctx.arc(ball.x, ball.y - ballHeight, 20, 0, Math.PI * 2);
       ctx.stroke();
     }
+  }
+  renderMonster(ctx, elem) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(elem.x, elem.y + 20, 18, 7, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0,0,0,0.18)";
+    ctx.filter = "blur(1.2px)";
+    ctx.fill();
+    ctx.filter = "none";
+    const grad = ctx.createRadialGradient(elem.x, elem.y, 10, elem.x, elem.y, 30);
+    grad.addColorStop(0, "#fff176");
+    grad.addColorStop(1, "#f44336");
+    ctx.beginPath();
+    ctx.arc(elem.x, elem.y, 28, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.shadowColor = "#f44336";
+    ctx.shadowBlur = 10;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(elem.x - 16, elem.y - 18);
+    ctx.lineTo(elem.x - 26, elem.y - 38);
+    ctx.lineTo(elem.x - 10, elem.y - 22);
+    ctx.closePath();
+    ctx.fillStyle = "#fff";
+    ctx.strokeStyle = "#b71c1c";
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(elem.x + 16, elem.y - 18);
+    ctx.lineTo(elem.x + 26, elem.y - 38);
+    ctx.lineTo(elem.x + 10, elem.y - 22);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(elem.x - 8, elem.y - 4, 4, 0, Math.PI * 2);
+    ctx.arc(elem.x + 8, elem.y - 4, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "#fff";
+    ctx.shadowColor = "#fffde7";
+    ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.beginPath();
+    ctx.arc(elem.x - 8, elem.y - 4, 2, 0, Math.PI * 2);
+    ctx.arc(elem.x + 8, elem.y - 4, 2, 0, Math.PI * 2);
+    ctx.fillStyle = "#00e676";
+    ctx.fill();
+    ctx.restore();
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(elem.x, elem.y + 10, 10, 0, Math.PI, false);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#222";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(elem.x - 5, elem.y + 15);
+    ctx.lineTo(elem.x - 7, elem.y + 22);
+    ctx.lineTo(elem.x - 3, elem.y + 15);
+    ctx.moveTo(elem.x + 5, elem.y + 15);
+    ctx.lineTo(elem.x + 7, elem.y + 22);
+    ctx.lineTo(elem.x + 3, elem.y + 15);
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+    ctx.save();
+    ctx.strokeStyle = "#b71c1c";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(elem.x - 20, elem.y + 10);
+    ctx.lineTo(elem.x - 38, elem.y + 24);
+    ctx.moveTo(elem.x + 20, elem.y + 10);
+    ctx.lineTo(elem.x + 38, elem.y + 24);
+    ctx.stroke();
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(elem.x - 38, elem.y + 24);
+    ctx.lineTo(elem.x - 42, elem.y + 28);
+    ctx.moveTo(elem.x + 38, elem.y + 24);
+    ctx.lineTo(elem.x + 42, elem.y + 28);
+    ctx.stroke();
+    ctx.restore();
+    ctx.restore();
   }
   onAttach(program) {
     document.body.appendChild(this.canvas);
@@ -11966,4 +12212,4 @@ export {
   root
 };
 
-//# debugId=1540E8692D9E574164756E2164756E21
+//# debugId=CC3B51518DA72D6064756E2164756E21
