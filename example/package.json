@@ -11,20 +11,21 @@
   },
   "devDependencies": {
     "napl": "link:napl",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.6",
     "bun-lightningcss": "^0.2.0",
-    "bun-types": "^1.2.2",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
+    "bun-types": "^1.3.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
     "icon-gen": "^4.0.0",
     "png-to-ico": "^2.1.8",
     "serve-static-bun": "^0.5.3"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@dobuki/syncopath": "^1.0.29",
+    "@dobuki/hello-worker": "^1.0.2",
+    "@dobuki/syncopath": "^1.0.35",
     "json-stringify-pretty-compact": "^4.0.0"
   }
 }
