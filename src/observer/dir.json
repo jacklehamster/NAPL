@@ -1,12 +1,9 @@
 {
-  "IObservable.ts": {
-    "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
-  },
   "Observer.ts": {
     "sha": "f70ca15384694b185b193a4f60280e40246ac555"
   },
   "ObserverManager.ts": {
     "sha": "6007400cef3ca3d533bf7182f608d04080997ca8"
   },
-  "md5": "2bf2a0b32e7a2b6a64095e16ac240e12"
+  "md5": "4398ffb4b9f8135bd98abe259d7a5296"
 }

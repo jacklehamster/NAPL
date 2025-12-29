@@ -44,30 +44,18 @@
   "index.ts": {
     "sha": "54a029fa3c80689750ed1afe19d4fad40315953d"
   },
-  "md5": "00b6f973785a44cb8e2a4b13591488cf",
-  "observer/IObservable.ts": {
-    "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
-  },
+  "md5": "1216a38a03b1acc01bd521610da4015b",
   "observer/Observer.ts": {
     "sha": "f70ca15384694b185b193a4f60280e40246ac555"
   },
   "observer/ObserverManager.ts": {
     "sha": "6007400cef3ca3d533bf7182f608d04080997ca8"
   },
-  "types/ClientState.ts": {
-    "sha": "9e6c1fdea2ce7724f9f2488ee9036e8a44129228"
-  },
-  "types/Config.ts": {
-    "sha": "ec1f6f0d14bab4910499a855f2f0449fef9a11c5"
-  },
   "types/Data.ts": {
-    "sha": "f8ffee1c0f7ef637c7d7fa22a797ba75ae4d3f42"
+    "sha": "e80885c6d9b9dd45ba7517393a4e9e92ad053df4"
   },
   "types/Payload.ts": {
     "sha": "41a3073baac11203bf054f9a6da8148e8d48cdac"
-  },
-  "types/RoomState.ts": {
-    "sha": "14745dadcece1b1586393501d835e78ca7d6aacc"
   },
   "types/Update.ts": {
     "sha": "665a17ca925de0898eeb1dcf26924b1d80b16373"
