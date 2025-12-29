@@ -161,7 +161,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.85",
+    "version": "1.0.86",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -187,7 +187,7 @@
       "example:prod": "cd example && bun start:prod && cd ..",
       "dev": "bun run build:example && cd example && bun --watch index.ts",
       "fix-package-name": "npm explore package-name-fixer -- bun start \"$(pwd)\"",
-      "auto-publish": "npm explore @dobuki/auto-publish -- bun run auto-publish \"$(pwd)\""
+      "npm-patch": "npm version patch && npm publish"
     },
     "publishConfig": {
       "access": "public"
