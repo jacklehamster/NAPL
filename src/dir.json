@@ -15,13 +15,10 @@
     "sha": "eefec589e288c794f479d40309e22713df9fa730"
   },
   "core/Processor.ts": {
-    "sha": "dac90f683f6993da8ba3f5ec224d3c4fb1fc1d6d"
+    "sha": "4a1e8adf4a3df5f56f5e1772f266ea94dd41b6a6"
   },
   "core/Program.ts": {
-    "sha": "191ae60eaccc8684a3e8fd5b62309020ed5cb3fc"
-  },
-  "core/Sample.ts": {
-    "sha": "543b088f84374c30a4f984b600ab8f364fe7b804"
+    "sha": "d780c519bfb984e6c0b6dd1ee095d2ea238e80a5"
   },
   "core/create-context.ts": {
     "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
@@ -42,12 +39,12 @@
     "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
   },
   "cycles/data-update/data-update.ts": {
-    "sha": "68f76d1e8e862e9357fcfc392f478b632ae703d8"
+    "sha": "a699a4a0af0273f723a74331c26e27d1f6f5310b"
   },
   "index.ts": {
-    "sha": "58f846d460391024a6b3ef2c7ea367d000abfb2a"
+    "sha": "54a029fa3c80689750ed1afe19d4fad40315953d"
   },
-  "md5": "38c91d4a16d04c33d5f7738f656a8048",
+  "md5": "00b6f973785a44cb8e2a4b13591488cf",
   "observer/IObservable.ts": {
     "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
   },

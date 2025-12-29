@@ -1,17 +1,14 @@
 {
   "Processor.ts": {
-    "sha": "dac90f683f6993da8ba3f5ec224d3c4fb1fc1d6d"
+    "sha": "4a1e8adf4a3df5f56f5e1772f266ea94dd41b6a6"
   },
   "Program.ts": {
-    "sha": "191ae60eaccc8684a3e8fd5b62309020ed5cb3fc"
-  },
-  "Sample.ts": {
-    "sha": "543b088f84374c30a4f984b600ab8f364fe7b804"
+    "sha": "d780c519bfb984e6c0b6dd1ee095d2ea238e80a5"
   },
   "create-context.ts": {
     "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
   },
-  "md5": "b9d75867be9871c42e454ec80072e374",
+  "md5": "42300841976edf3534af1f87f14d3f4d",
   "processor.test.ts": {
     "sha": "149b3a61998da4f9766910d4549e430b7f489926"
   }

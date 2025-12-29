@@ -1,11 +1,14 @@
 {
   "index.js": {
-    "sha": "987bd40c4d77b06d3918ef392341527a58de674e"
+    "sha": "ab5f8f0adb63035106820a91ca07a33cf2f97da4"
   },
   "index.js.map": {
-    "sha": "c47d6a3c6dbfc00dbed730cbbc21df8affee5d8d"
+    "sha": "61aa395e2bb82cc6d92f5570f696433695961841"
   },
-  "md5": "bd4f8dd08ca873f7da859ee53279f700",
+  "md5": "1283f6f96877f06e8c91821cd4e03ad1",
+  "signal-room.worker.js": {
+    "sha": "e2b5c427321d7f886270943ab0426df3879b859c"
+  },
   "styles-da87zv4s.css": {
     "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
   }

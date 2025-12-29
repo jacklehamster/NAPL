@@ -18,9 +18,9 @@
     "config.json": {
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
-    "md5": "01884609fea33ace853a927f862dd3ff",
+    "md5": "1b58e4cf3edbc5c1d2f013efa07e5524",
     "package.json": {
-      "sha": "7cf3600850c6e2c96a5397e68c2b0bb08852fd6a"
+      "sha": "b742cfb88713fc6b3ecbd1ed54e94f44606e1378"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -31,7 +31,7 @@
       "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
     },
     "bun.lockb": {
-      "sha": "db608e2d5c90b605974b786e933f5cfd2a214e22"
+      "sha": "98f2be327d5723409413787d7446615c4eec20e3"
     },
     "bundler/bundler.ts": {
       "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
@@ -40,10 +40,13 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "987bd40c4d77b06d3918ef392341527a58de674e"
+      "sha": "ab5f8f0adb63035106820a91ca07a33cf2f97da4"
     },
     "dist/index.js.map": {
-      "sha": "c47d6a3c6dbfc00dbed730cbbc21df8affee5d8d"
+      "sha": "61aa395e2bb82cc6d92f5570f696433695961841"
+    },
+    "dist/signal-room.worker.js": {
+      "sha": "e2b5c427321d7f886270943ab0426df3879b859c"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -52,14 +55,14 @@
       "sha": "b4080ddbb6b3adfa6799c5d87dd674e2c9459b2c"
     },
     "index.ts": {
-      "sha": "ccb5152139dd200abdab11310fffb8ab87d1c235"
+      "sha": "f8e603ed981543a565aaa1e3461708b276d65fbc"
     },
-    "md5": "980b9d7590695df7bf679cfa95e5383e",
+    "md5": "a5dc796df13dbc74ceaa7061c810abc3",
     "package.json": {
-      "sha": "7cf3600850c6e2c96a5397e68c2b0bb08852fd6a"
+      "sha": "b742cfb88713fc6b3ecbd1ed54e94f44606e1378"
     },
     "src/index.ts": {
-      "sha": "861be56a5c9e1ebc6997a08c8a7e75a5f1ca77a6"
+      "sha": "78b2fc0466e5e20cdd2cd322d496cec95f90aa2f"
     },
     "test-room/index.html": {
       "sha": "ecb910fb80c68211077681e4dbfd3311d839cafd"
@@ -70,12 +73,15 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "987bd40c4d77b06d3918ef392341527a58de674e"
+      "sha": "ab5f8f0adb63035106820a91ca07a33cf2f97da4"
     },
     "index.js.map": {
-      "sha": "c47d6a3c6dbfc00dbed730cbbc21df8affee5d8d"
+      "sha": "61aa395e2bb82cc6d92f5570f696433695961841"
     },
-    "md5": "bd4f8dd08ca873f7da859ee53279f700",
+    "md5": "1283f6f96877f06e8c91821cd4e03ad1",
+    "signal-room.worker.js": {
+      "sha": "e2b5c427321d7f886270943ab0426df3879b859c"
+    },
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     }
@@ -103,19 +109,18 @@
       "serve-static-bun": "^0.5.3"
     },
     "peerDependencies": {
-      "typescript": "^5.8.2"
+      "typescript": "^5.9.3"
     },
     "dependencies": {
-      "@dobuki/hello-worker": "^1.0.2",
-      "@dobuki/syncopath": "^1.0.35",
+      "@dobuki/hello-worker": "^1.0.14",
       "json-stringify-pretty-compact": "^4.0.0"
     }
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "861be56a5c9e1ebc6997a08c8a7e75a5f1ca77a6"
+      "sha": "78b2fc0466e5e20cdd2cd322d496cec95f90aa2f"
     },
-    "md5": "8a687ad68a105dd02e0fe57666f1d649"
+    "md5": "e989985674b5ac7c7c5a77a9a8d196ed"
   },
   "/example/test-room/dir.json": {
     "index.html": {
@@ -205,6 +210,7 @@
     },
     "dependencies": {
       "@dobuki/data-blob": "^1.0.18",
+      "@dobuki/hello-worker": "^1.0.10",
       "@msgpack/msgpack": "^3.1.3"
     }
   },
@@ -237,18 +243,15 @@
   },
   "/src/core/dir.json": {
     "Processor.ts": {
-      "sha": "dac90f683f6993da8ba3f5ec224d3c4fb1fc1d6d"
+      "sha": "4a1e8adf4a3df5f56f5e1772f266ea94dd41b6a6"
     },
     "Program.ts": {
-      "sha": "191ae60eaccc8684a3e8fd5b62309020ed5cb3fc"
-    },
-    "Sample.ts": {
-      "sha": "543b088f84374c30a4f984b600ab8f364fe7b804"
+      "sha": "d780c519bfb984e6c0b6dd1ee095d2ea238e80a5"
     },
     "create-context.ts": {
       "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
     },
-    "md5": "b9d75867be9871c42e454ec80072e374",
+    "md5": "42300841976edf3534af1f87f14d3f4d",
     "processor.test.ts": {
       "sha": "149b3a61998da4f9766910d4549e430b7f489926"
     }
@@ -267,9 +270,9 @@
       "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
     },
     "data-update.ts": {
-      "sha": "68f76d1e8e862e9357fcfc392f478b632ae703d8"
+      "sha": "a699a4a0af0273f723a74331c26e27d1f6f5310b"
     },
-    "md5": "7f98a62b20a660da8f37a81152e98904"
+    "md5": "200abf5847b1588f775a5e4d4adc95de"
   },
   "/src/cycles/dir.json": {
     "data-update/SetDataOptions.ts": {
@@ -285,9 +288,9 @@
       "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
     },
     "data-update/data-update.ts": {
-      "sha": "68f76d1e8e862e9357fcfc392f478b632ae703d8"
+      "sha": "a699a4a0af0273f723a74331c26e27d1f6f5310b"
     },
-    "md5": "5138fe652375a088efde69007bef06cd"
+    "md5": "5ce6af14c0c2752cff8ff42475324a9c"
   },
   "/src/dir.json": {
     "attachments/Attachment.ts": {
@@ -306,13 +309,10 @@
       "sha": "eefec589e288c794f479d40309e22713df9fa730"
     },
     "core/Processor.ts": {
-      "sha": "dac90f683f6993da8ba3f5ec224d3c4fb1fc1d6d"
+      "sha": "4a1e8adf4a3df5f56f5e1772f266ea94dd41b6a6"
     },
     "core/Program.ts": {
-      "sha": "191ae60eaccc8684a3e8fd5b62309020ed5cb3fc"
-    },
-    "core/Sample.ts": {
-      "sha": "543b088f84374c30a4f984b600ab8f364fe7b804"
+      "sha": "d780c519bfb984e6c0b6dd1ee095d2ea238e80a5"
     },
     "core/create-context.ts": {
       "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
@@ -333,12 +333,12 @@
       "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
     },
     "cycles/data-update/data-update.ts": {
-      "sha": "68f76d1e8e862e9357fcfc392f478b632ae703d8"
+      "sha": "a699a4a0af0273f723a74331c26e27d1f6f5310b"
     },
     "index.ts": {
-      "sha": "58f846d460391024a6b3ef2c7ea367d000abfb2a"
+      "sha": "54a029fa3c80689750ed1afe19d4fad40315953d"
     },
-    "md5": "38c91d4a16d04c33d5f7738f656a8048",
+    "md5": "00b6f973785a44cb8e2a4b13591488cf",
     "observer/IObservable.ts": {
       "sha": "115338c7e3cc9396e18d55631e09db2a965b600a"
     },
