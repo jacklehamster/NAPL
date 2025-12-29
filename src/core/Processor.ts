@@ -9,7 +9,6 @@ import { ObserverManager } from "../observer/ObserverManager";
 import { Update } from "../types/Update";
 import { Payload } from "@/types/Payload";
 import { OutgoingCom } from "@/clients/CommInterface";
-import { Connection } from "@/connections/Connection";
 
 export class Processor {
   readonly #observerManager = new ObserverManager();
@@ -35,51 +34,38 @@ export class Processor {
   performCycle(context: Context) {
     this.#sendUpdate(context);
     const updates = commitUpdates(context.root, context.incomingUpdates, context.properties);
-    this.#observerManager.triggerObservers(context, updates);
-  }
-
-  startCycle(context: Context): Connection {
-    let animationFrame = 0;
-    const loop = (t: number) => {
-      animationFrame = requestAnimationFrame(loop);
-      this.performCycle(context);
-      context.refresh?.();
-    };
-    animationFrame = requestAnimationFrame(loop);
-    return {
-      disconnect() {
-        cancelAnimationFrame(animationFrame);
-      },
-    };
+    if (updates) {
+      this.#observerManager.triggerObservers(context, updates);
+    }
+    context.refresh?.();
   }
 
   #sendUpdate(context: Context) {
-    if (context.outgoingUpdates.length) {
-      //  Apply function to value
-      context.outgoingUpdates.forEach(update => {
-        update.path = this.#fixPath(update.path, context);
-        const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
-        update.value = typeof update.value === "function" ? update.value(previous) : update.value;
+    if (!context.outgoingUpdates.length) return;
+    //  Apply function to value
+    context.outgoingUpdates.forEach(update => {
+      update.path = this.#fixPath(update.path, context);
+      const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
+      update.value = typeof update.value === "function" ? update.value(previous) : update.value;
+    });
+
+    //  Apply incoming updates
+    const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
+    this.#addIncomingUpdates(confirmedUpdates, context);
+
+    //  send outgoing updates
+    const peerSet = new Set<string | undefined>();
+    context.outgoingUpdates.forEach(update => peerSet.add(update.peer));
+
+    peerSet.forEach((peer) => {
+      this.#outingCom.forEach(comm => {
+        comm.send(encode({
+          updates: context.outgoingUpdates
+            .filter(update => !update.peer || update.peer === peer)
+        }), peer);
       });
-
-      //  Apply incoming updates
-      const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
-      this.#addIncomingUpdates(confirmedUpdates, context);
-
-      //  send outgoing updates
-      const peerSet = new Set<string | undefined>();
-      context.outgoingUpdates.forEach(update => peerSet.add(update.peer));
-
-      peerSet.forEach((peer) => {
-        this.#outingCom.forEach(comm => {
-          comm.send(encode({
-            updates: context.outgoingUpdates
-              .filter(update => !update.peer || update.peer === peer)
-          }), peer);
-        });
-      });
-      context.outgoingUpdates.length = 0;
-    }
+    });
+    context.outgoingUpdates.length = 0;
   }
 
   receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {

@@ -2,45 +2,28 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { Data, Processor, Program } from "napl";
-import { joinWebRTCRoom, enterRoom } from "@dobuki/hello-worker";
+import { Data, Program } from "napl";
+import { enterWorld } from "@dobuki/hello-worker";
 
 const root: Data = {};
+
+const { send, enterRoom, addMessageListener, addUserListener, end } = enterWorld({
+  uid: crypto.randomUUID(),
+  logLine: (dir, msg) => console.log(dir, msg),
+  workerUrl: new URL("./signal-room.worker.js", import.meta.url),
+});
 
 const program = new Program({
   root,
 });
-
-const { sendToAll, sendToUser, enter } = joinWebRTCRoom({
-  userId: crypto.randomUUID(),
-  enterRoom,
-  logLine(direction, obj) {
-    console.log(direction, obj);
-  },
-  onMessage(data, from) {
-    program.processor.receivedData(data as ArrayBuffer, program);
-    cycle();
-  },
-});
-enter({ room: "napl-demo-room", host: "hello.dobuki.net" });
-
 program.connectComm({
-  onNewClient(peer: string) {
-    console.log("New peer connected:", peer);
-  },
-  onMessage(data: Uint8Array, from: string): void {
-    console.log("Program received data", data, "from", from);
-  },
-  send(data: Uint8Array, peer?: string): void {
-    console.log("Sending data", data, "to", peer);
-    if (peer) {
-      sendToUser(data as any, peer);
-    } else {
-      sendToAll(data as any);
-    }
-  },
+  onMessage: addMessageListener,
+  onNewClient: addUserListener,
+  send,
+  close: end,
 });
 
+enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
 
 function refreshData() {
   const div: HTMLDivElement = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
@@ -58,25 +41,61 @@ function refreshData() {
   div2.textContent = JSON.stringify(program.outgoingUpdates, null, 2);
 }
 
-const processor = new Processor();
-processor.connectComm({
-  send(data: Uint8Array) {
-    console.log("Updates sent out", data);
-  }
-});
-processor.observe().onChange(refreshData);
+// const processor = new Processor();
+// processor.observe().onChange(refreshData);
+
+program.processor.observe().onChange(refreshData);
 
 function cycle() {
-  program.processor.performCycle(program);
-  program.refresh?.();
+  program.performCycle();
   refreshData();
 }
 
 function setupGamePlayer() {
+  let paused = false;
+  const updateButtons = new Set<() => void>();
+  function resetButtons() {
+    updateButtons.forEach(callback => callback());
+  }
+  function startLoop() {
+    paused = false;
+    let rafId = 0;
+    function loop() {
+      rafId = requestAnimationFrame(loop);
+      cycle();
+    }
+    rafId = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(rafId);
+      paused = true;
+    };
+  }
+
+  {
+    let stop: undefined | (() => void);
+    const button = document.body.appendChild(document.createElement("button"));
+    button.textContent = "⏸️";
+    button.addEventListener("click", () => {
+      if (paused) {
+        stop = startLoop();
+      } else {
+        stop?.();
+        stop = undefined;
+      }
+      resetButtons();
+    });
+    updateButtons.add(() => {
+      button.textContent = paused ? "▶️" : "⏸️";
+    });
+    stop = startLoop();
+  }
   {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "⏯️";
     button.addEventListener("click", cycle);
+    updateButtons.add(() => {
+      button.disabled = !paused;
+    })
   }
   {
     const button = document.body.appendChild(document.createElement("button"));
@@ -86,6 +105,7 @@ function setupGamePlayer() {
       refreshData();
     });
   }
+  resetButtons();
 }
 
 setupGamePlayer();

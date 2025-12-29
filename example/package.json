@@ -21,11 +21,10 @@
     "serve-static-bun": "^0.5.3"
   },
   "peerDependencies": {
-    "typescript": "^5.8.2"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@dobuki/hello-worker": "^1.0.2",
-    "@dobuki/syncopath": "^1.0.35",
+    "@dobuki/hello-worker": "^1.0.14",
     "json-stringify-pretty-compact": "^4.0.0"
   }
 }

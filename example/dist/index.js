@@ -2,11 +2,12 @@
 var KEYS = "~{keys}";
 var VALUES = "~{values}";
 var REGEX = /~\{([^}]+)\}/;
-function commitUpdates(root, updates, properties, updatedPaths = {}) {
+function commitUpdates(root, updates, properties) {
   if (!updates.length) {
-    return updatedPaths;
+    return;
   }
   sortUpdates(updates);
+  const updatedPaths = {};
   updates.forEach((update) => {
     if (!update.confirmed) {
       return;
@@ -1675,42 +1676,31 @@ class Processor {
   performCycle(context) {
     this.#sendUpdate(context);
     const updates = commitUpdates(context.root, context.incomingUpdates, context.properties);
-    this.#observerManager.triggerObservers(context, updates);
-  }
-  startCycle(context) {
-    let animationFrame = 0;
-    const loop = (t) => {
-      animationFrame = requestAnimationFrame(loop);
-      this.performCycle(context);
-      context.refresh?.();
-    };
-    animationFrame = requestAnimationFrame(loop);
-    return {
-      disconnect() {
-        cancelAnimationFrame(animationFrame);
-      }
-    };
+    if (updates) {
+      this.#observerManager.triggerObservers(context, updates);
+    }
+    context.refresh?.();
   }
   #sendUpdate(context) {
-    if (context.outgoingUpdates.length) {
-      context.outgoingUpdates.forEach((update) => {
-        update.path = this.#fixPath(update.path, context);
-        const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
-        update.value = typeof update.value === "function" ? update.value(previous) : update.value;
+    if (!context.outgoingUpdates.length)
+      return;
+    context.outgoingUpdates.forEach((update) => {
+      update.path = this.#fixPath(update.path, context);
+      const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
+      update.value = typeof update.value === "function" ? update.value(previous) : update.value;
+    });
+    const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
+    this.#addIncomingUpdates(confirmedUpdates, context);
+    const peerSet = new Set;
+    context.outgoingUpdates.forEach((update) => peerSet.add(update.peer));
+    peerSet.forEach((peer) => {
+      this.#outingCom.forEach((comm) => {
+        comm.send(encode({
+          updates: context.outgoingUpdates.filter((update) => !update.peer || update.peer === peer)
+        }), peer);
       });
-      const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
-      this.#addIncomingUpdates(confirmedUpdates, context);
-      const peerSet = new Set;
-      context.outgoingUpdates.forEach((update) => peerSet.add(update.peer));
-      peerSet.forEach((peer) => {
-        this.#outingCom.forEach((comm) => {
-          comm.send(encode({
-            updates: context.outgoingUpdates.filter((update) => !update.peer || update.peer === peer)
-          }), peer);
-        });
-      });
-      context.outgoingUpdates.length = 0;
-    }
+    });
+    context.outgoingUpdates.length = 0;
   }
   receivedData(data, context) {
     const payload = decode(data);
@@ -1805,8 +1795,8 @@ class Program {
   connectComm(comm) {
     return hookCommInterface(this, comm, this.processor);
   }
-  start() {
-    return this.processor.startCycle(this);
+  performCycle() {
+    this.processor.performCycle(this);
   }
   observe(path) {
     return this.processor.observe(path);
@@ -1852,211 +1842,7 @@ class Program {
     this.refresher.forEach((r) => r.refresh?.(this));
   }
 }
-// ../src/core/Sample.ts
-class Sample {
-  program = new Program;
-  main() {
-    const cycle = this.program.start();
-    return {
-      disconnect() {
-        cycle.disconnect();
-      }
-    };
-  }
-}
-// node_modules/@dobuki/hello-worker/dist/webrtc-room.js
-function joinWebRTCRoom({ userId, onMessage, logLine, enterRoom }) {
-  const rtcConfig = {
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
-  };
-  const peers = new Map;
-  function wireDataChannel(state) {
-    const dc = state.dataChannel;
-    if (!dc)
-      return;
-    dc.onopen = () => logLine("\uD83D\uDCAC", { event: "dc-open", userId: state.userId });
-    dc.onmessage = (e) => {
-      onMessage?.(e.data, { userId: state.userId, peerId: state.userId });
-      logLine("\uD83D\uDCAC", { event: "dc-message", userId: state.userId, data: e.data });
-    };
-    dc.onclose = () => logLine("\uD83D\uDCAC", { event: "dc-close", userId: state.userId });
-    dc.onerror = () => logLine("⚠️ ERROR", { error: "dc-error", userId: state.userId });
-  }
-  async function flushRemoteIce(state) {
-    if (!state.pc.remoteDescription)
-      return;
-    const queued = state.pendingRemoteIce;
-    state.pendingRemoteIce = [];
-    for (const ice of queued) {
-      try {
-        await state.pc.addIceCandidate(ice);
-      } catch (e) {
-        logLine("⚠️ ERROR", { error: "add-ice-failed", userId: state.userId, detail: String(e) });
-      }
-    }
-  }
-  function getPeer(user) {
-    let state = peers.get(user.info.userId);
-    if (!state) {
-      const newState = {
-        userId: user.info.userId,
-        pc: new RTCPeerConnection(rtcConfig),
-        pendingRemoteIce: [],
-        users: new Set([user]),
-        dataChannel: null
-      };
-      peers.set(user.info.userId, newState);
-      newState.pc.onicecandidate = (ev) => {
-        if (!ev.candidate)
-          return;
-        for (let user2 of newState.users) {
-          const success = user2.receive("ice", ev.candidate.toJSON());
-          if (success)
-            break;
-          newState.users.delete(user2);
-        }
-      };
-      newState.pc.ondatachannel = (ev) => {
-        newState.dataChannel = ev.channel;
-        wireDataChannel(newState);
-      };
-      newState.pc.onconnectionstatechange = () => {
-        logLine("\uD83D\uDCAC", { event: "pc-state", userId: newState.userId, state: newState.pc.connectionState });
-      };
-      state = newState;
-    } else {
-      state.users.add(user);
-    }
-    peers.set(state.userId, state);
-    return state;
-  }
-  function leaveUser(userId2) {
-    const p = peers.get(userId2);
-    if (!p)
-      return;
-    try {
-      p.dataChannel?.close();
-    } catch {}
-    try {
-      p.pc.close();
-    } catch {}
-    peers.delete(userId2);
-    logLine("\uD83D\uDC64 USER LEFT", userId2);
-  }
-  const roomsEntered = new Map;
-  function enter({ room, host }) {
-    const { exitRoom } = enterRoom({
-      userId,
-      room,
-      host,
-      logLine,
-      onPeerJoined: async (user) => {
-        const state = getPeer(user);
-        const pc = state.pc;
-        if (!state.dataChannel) {
-          state.dataChannel = pc.createDataChannel("data");
-          wireDataChannel(state);
-        }
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-        user.receive("offer", pc.localDescription);
-      },
-      onPeerLeft: (info) => {
-        const state = peers.get(info.userId);
-        if (!state)
-          return;
-        for (const user of state.users) {
-          if (user.info.userId === info.userId) {
-            state.users.delete(user);
-            break;
-          }
-        }
-        logLine("\uD83D\uDC64 LEFT", info);
-        if (state.users.size === 0) {
-          try {
-            state.dataChannel?.close();
-          } catch {}
-          try {
-            state.pc.close();
-          } catch {}
-          leaveUser(info.userId);
-        }
-      },
-      onMessage: async (type, payload, from) => {
-        const state = getPeer(from);
-        const pc = state.pc;
-        if (type === "offer") {
-          await pc.setRemoteDescription(payload);
-          const answer = await pc.createAnswer();
-          await pc.setLocalDescription(answer);
-          from.receive("answer", pc.localDescription);
-          await flushRemoteIce(state);
-          return;
-        }
-        if (type === "answer") {
-          await pc.setRemoteDescription(payload);
-          await flushRemoteIce(state);
-          return;
-        }
-        if (type === "ice") {
-          const ice = payload;
-          if (!pc.remoteDescription) {
-            state.pendingRemoteIce.push(ice);
-            return;
-          }
-          try {
-            await pc.addIceCandidate(ice);
-          } catch (e) {
-            logLine("⚠️ ERROR", { error: "add-ice-failed", userId: state.userId, detail: String(e) });
-          }
-          return;
-        }
-      }
-    });
-    roomsEntered.set(`${host}/room/${room}`, { exitRoom, host, room });
-  }
-  function exit({ room, host }) {
-    const key = `${host}/room/${room}`;
-    const session = roomsEntered.get(key);
-    if (session) {
-      session.exitRoom();
-      roomsEntered.delete(key);
-    }
-  }
-  const sendToUser = (userId2, data) => {
-    const p = peers.get(userId2);
-    if (!p)
-      return;
-    if (p.dataChannel?.readyState === "open")
-      p.dataChannel.send(data);
-  };
-  function sendToAll(data) {
-    for (const p of peers.values()) {
-      if (p.dataChannel?.readyState === "open")
-        p.dataChannel.send(data);
-    }
-  }
-  return {
-    sendToUser,
-    sendToAll,
-    end: () => {
-      roomsEntered.values().forEach(({ exitRoom }) => exitRoom());
-      roomsEntered.clear();
-      for (const p of peers.values()) {
-        try {
-          p.dataChannel?.close();
-        } catch {}
-        try {
-          p.pc.close();
-        } catch {}
-      }
-      peers.clear();
-    },
-    enter,
-    exit
-  };
-}
-// node_modules/@dobuki/hello-worker/dist/signal-room.js
+// node_modules/@dobuki/hello-worker/dist/impl/signal-room.js
 function enterRoom({ userId, room, host, onOpen, onClose, onError, logLine, onPeerJoined, onPeerLeft, onMessage }) {
   const wsUrl = "wss://" + host + "/room/" + room + "?userId=" + encodeURIComponent(userId);
   const ws = new WebSocket(wsUrl);
@@ -2080,8 +1866,9 @@ function enterRoom({ userId, room, host, onOpen, onClose, onError, logLine, onPe
     logLine?.("\uD83D\uDDA5️ ➡️ \uD83D\uDC64", msg);
     if (msg.type === "peer-joined" && msg.peerId && msg.userId) {
       const { userId: userId2, peerId } = msg;
-      onPeerJoined?.({
-        info: { peerId, userId: userId2 },
+      onPeerJoined({
+        userId: userId2,
+        peerId,
         receive: (type, payload) => {
           return send(type, peerId, payload);
         }
@@ -2090,13 +1877,14 @@ function enterRoom({ userId, room, host, onOpen, onClose, onError, logLine, onPe
     }
     if (msg.type === "peer-left" && msg.peerId && msg.userId) {
       const { userId: userId2, peerId } = msg;
-      onPeerLeft?.({ peerId, userId: userId2 });
+      onPeerLeft(userId2, peerId);
       return;
     }
     if (msg.peerId && msg.userId) {
       const { userId: userId2, peerId } = msg;
-      onMessage?.(msg.type, msg.payload, {
-        info: { peerId, userId: userId2 },
+      onMessage(msg.type, msg.payload, {
+        userId: userId2,
+        peerId,
         receive: (type, payload) => {
           return send(type, peerId, payload);
         }
@@ -2124,39 +1912,321 @@ function enterRoom({ userId, room, host, onOpen, onClose, onError, logLine, onPe
     }
   };
 }
+
+// node_modules/@dobuki/hello-worker/dist/signal-room.js
+function enterRoom2({ userId, room, host, onOpen, onClose, onError, onPeerJoined, onPeerLeft, onMessage, logLine, workerUrl }) {
+  if (!workerUrl) {
+    const CDN_WORKER_URL = `https://cdn.jsdelivr.net/npm/@dobuki/hello-worker/dist/signal-room.worker.min.js`;
+    console.warn("Warning: enterRoom called without workerUrl; this may cause issues in some environments. You should pass workerUrl explicitly. Use:", CDN_WORKER_URL);
+    return enterRoom({
+      userId,
+      room,
+      host,
+      onOpen,
+      onClose,
+      onError,
+      onPeerJoined,
+      onPeerLeft,
+      onMessage
+    });
+  }
+  const worker = new Worker(workerUrl, { type: "module" });
+  let exited = false;
+  function makeUser({ userId: userId2, peerId }) {
+    return {
+      userId: userId2,
+      peerId,
+      receive: (type, payload) => {
+        if (exited)
+          return false;
+        worker.postMessage({ cmd: "send", toPeerId: peerId, type, payload });
+        return true;
+      }
+    };
+  }
+  const onWorkerMessage = (e) => {
+    const ev = e.data;
+    if (ev.kind === "open")
+      onOpen?.();
+    else if (ev.kind === "close")
+      worker.terminate();
+    else if (ev.kind === "error")
+      onError?.();
+    else if (ev.kind === "peer-joined")
+      onPeerJoined(makeUser({ userId: ev.userId, peerId: ev.peerId }));
+    else if (ev.kind === "peer-left")
+      onPeerLeft(ev.userId, ev.peerId);
+    else if (ev.kind === "message")
+      onMessage(ev.type, ev.payload, makeUser({ userId: ev.fromUserId, peerId: ev.fromPeerId }));
+    else if (ev.kind === "log")
+      logLine?.(ev.direction, ev.obj);
+  };
+  worker.addEventListener("message", onWorkerMessage);
+  worker.postMessage({ cmd: "enter", userId, room, host });
+  return {
+    exitRoom: () => {
+      exited = true;
+      worker.removeEventListener("message", onWorkerMessage);
+      worker.postMessage({ cmd: "exit" });
+    }
+  };
+}
+
+// node_modules/@dobuki/hello-worker/dist/webrtc-peer-collector.js
+var DEFAULT_ENTER_ROOM = enterRoom2;
+function collectPeerConnections({ userId, receivePeerConnection, leaveUserWithoutPeer = false, rtcConfig = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }, enterRoomFunction: enterRoom3 = DEFAULT_ENTER_ROOM, logLine = console.debug, onLeaveUser, workerUrl }) {
+  const users = new Map;
+  function getPeer(peer) {
+    let state = users.get(peer.userId);
+    if (!state) {
+      const newState = {
+        userId: peer.userId,
+        pc: new RTCPeerConnection(rtcConfig),
+        pendingRemoteIce: [],
+        peers: new Set([peer])
+      };
+      users.set(peer.userId, newState);
+      newState.pc.onicecandidate = (ev) => {
+        if (!ev.candidate)
+          return;
+        for (let user of newState.peers) {
+          const success = user.receive("ice", ev.candidate.toJSON());
+          if (success)
+            break;
+        }
+      };
+      newState.pc.onconnectionstatechange = () => {
+        logLine("\uD83D\uDCAC", { event: "pc-state", userId: newState.userId, state: newState.pc.connectionState });
+      };
+      state = newState;
+    } else {
+      state.peers.add(peer);
+    }
+    users.set(state.userId, state);
+    return state;
+  }
+  function leaveUser(userId2) {
+    onLeaveUser?.(userId2);
+    const p = users.get(userId2);
+    if (!p)
+      return;
+    try {
+      p.pc.close();
+    } catch {}
+    users.delete(userId2);
+    logLine("\uD83D\uDC64 USER LEFT", userId2);
+  }
+  async function flushRemoteIce(state) {
+    if (!state.pc.remoteDescription)
+      return;
+    const queued = state.pendingRemoteIce;
+    state.pendingRemoteIce = [];
+    for (const ice of queued) {
+      try {
+        await state.pc.addIceCandidate(ice);
+      } catch (e) {
+        logLine("⚠️ ERROR", { error: "add-ice-failed", userId: state.userId, detail: String(e) });
+      }
+    }
+  }
+  const roomsEntered = new Map;
+  function exit({ room, host }) {
+    const key = `${host}/room/${room}`;
+    const session = roomsEntered.get(key);
+    if (session) {
+      session.exitRoom();
+      roomsEntered.delete(key);
+    }
+  }
+  function enter({ room, host }) {
+    const { exitRoom } = enterRoom3({
+      userId,
+      room,
+      host,
+      logLine,
+      workerUrl,
+      async onPeerJoined(user) {
+        const state = getPeer(user);
+        const pc = state.pc;
+        receivePeerConnection({ pc, userId: user.userId, initiator: true });
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        user.receive("offer", pc.localDescription?.toJSON());
+      },
+      onPeerLeft(userId2, peerId) {
+        const state = users.get(userId2);
+        if (!state)
+          return;
+        for (const user of state.peers) {
+          if (user.peerId === peerId) {
+            state.peers.delete(user);
+            break;
+          }
+        }
+        if (state.peers.size === 0 && leaveUserWithoutPeer) {
+          leaveUser(userId2);
+        }
+      },
+      async onMessage(type, payload, from) {
+        const state = getPeer(from);
+        const pc = state.pc;
+        if (type === "offer") {
+          receivePeerConnection({ pc, userId: from.userId, initiator: false });
+          await pc.setRemoteDescription(payload);
+          const answer = await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+          from.receive("answer", pc.localDescription?.toJSON());
+          await flushRemoteIce(state);
+          return;
+        }
+        if (type === "answer") {
+          await pc.setRemoteDescription(payload);
+          await flushRemoteIce(state);
+          receivePeerConnection({ pc, userId: from.userId, initiator: true });
+          return;
+        }
+        if (type === "ice") {
+          const ice = payload;
+          if (!pc.remoteDescription) {
+            state.pendingRemoteIce.push(ice);
+            return;
+          }
+          try {
+            await pc.addIceCandidate(ice);
+          } catch (e) {
+            logLine("⚠️ ERROR", { error: "add-ice-failed", userId: state.userId, detail: String(e) });
+          }
+          return;
+        }
+      }
+    });
+    roomsEntered.set(`${host}/room/${room}`, { exitRoom, room, host });
+  }
+  return {
+    enterRoom: enter,
+    exitRoom: exit,
+    leaveUser,
+    getUsers() {
+      return Array.from(users.keys());
+    },
+    getRooms() {
+      return Array.from(roomsEntered.values());
+    }
+  };
+}
+// node_modules/@dobuki/hello-worker/dist/enter-world.js
+function enterWorld({ uid, logLine = console.debug, enterRoomFunction = enterRoom2, autoLeaveUsers = false, workerUrl }) {
+  const userId = uid ?? `user-${crypto.randomUUID()}`;
+  const rtcConfig = {
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+  };
+  const messagesListeners = new Set;
+  const usersListener = new Set;
+  function wireDataChannel(userId2, dc) {
+    dc.onopen = () => logLine("\uD83D\uDCAC", { event: "dc-open", userId: userId2 });
+    dc.onmessage = ({ data }) => {
+      messagesListeners.forEach((listener) => listener(data, userId2));
+      logLine("\uD83D\uDCAC", { event: "dc-message", userId: userId2, data });
+    };
+    dc.onclose = () => logLine("\uD83D\uDCAC", { event: "dc-close", userId: userId2 });
+    dc.onerror = () => logLine("⚠️ ERROR", { error: "dc-error", userId: userId2 });
+  }
+  const dataChannels = new Map;
+  const { enterRoom: enterRoom3, exitRoom, leaveUser, getUsers, getRooms } = collectPeerConnections({
+    userId,
+    rtcConfig,
+    enterRoomFunction,
+    logLine,
+    workerUrl,
+    leaveUserWithoutPeer: autoLeaveUsers,
+    onLeaveUser(userId2) {
+      const dc = dataChannels.get(userId2);
+      try {
+        dc?.close();
+      } catch {}
+      dataChannels.delete(userId2);
+    },
+    receivePeerConnection({ pc, userId: userId2, initiator }) {
+      if (initiator) {
+        const dc = pc.createDataChannel("data");
+        wireDataChannel(userId2, dc);
+        dataChannels.set(userId2, dc);
+      } else {
+        pc.ondatachannel = (ev) => {
+          const dc = ev.channel;
+          wireDataChannel(userId2, dc);
+          dataChannels.set(userId2, dc);
+        };
+      }
+      logLine("\uD83D\uDCAC", { event: "pc-ready", userId: userId2, initiator });
+    }
+  });
+  function send(data, userId2) {
+    dataChannels.forEach((dataChannel, pUserId) => {
+      if (userId2 && pUserId !== userId2)
+        return;
+      if (dataChannel.readyState === "open")
+        dataChannel.send(data);
+    });
+  }
+  function removeMessageListener(listener) {
+    messagesListeners.delete(listener);
+  }
+  function addMessageListener(listener) {
+    messagesListeners.add(listener);
+    return () => {
+      removeMessageListener(listener);
+    };
+  }
+  function removeUserListener(listener) {
+    usersListener.delete(listener);
+  }
+  function addUserListener(listener) {
+    usersListener.add(listener);
+    return () => {
+      removeUserListener(listener);
+    };
+  }
+  return {
+    userId,
+    send,
+    enterRoom: enterRoom3,
+    exitRoom,
+    leaveUser,
+    getUsers,
+    addMessageListener,
+    removeMessageListener,
+    addUserListener,
+    removeUserListener,
+    end() {
+      getUsers().forEach((user) => leaveUser(user));
+      getRooms().forEach(({ room, host }) => exitRoom({ room, host }));
+      dataChannels.forEach((dataChannel) => {
+        try {
+          dataChannel.close();
+        } catch {}
+      });
+      dataChannels.clear();
+    }
+  };
+}
 // src/index.ts
 var root = {};
+var { send, enterRoom: enterRoom3, addMessageListener, addUserListener, end } = enterWorld({
+  uid: crypto.randomUUID(),
+  logLine: (dir, msg) => console.log(dir, msg),
+  workerUrl: new URL("./signal-room.worker.js", import.meta.url)
+});
 var program = new Program({
   root
 });
-var { sendToAll, sendToUser, enter } = joinWebRTCRoom({
-  userId: crypto.randomUUID(),
-  enterRoom,
-  logLine(direction, obj) {
-    console.log(direction, obj);
-  },
-  onMessage(data, from) {
-    program.processor.receivedData(data, program);
-    cycle();
-  }
-});
-enter({ room: "napl-demo-room", host: "hello.dobuki.net" });
 program.connectComm({
-  onNewClient(peer) {
-    console.log("New peer connected:", peer);
-  },
-  onMessage(data, from) {
-    console.log("Program received data", data, "from", from);
-  },
-  send(data, peer) {
-    console.log("Sending data", data, "to", peer);
-    if (peer) {
-      sendToUser(data, peer);
-    } else {
-      sendToAll(data);
-    }
-  }
+  onMessage: addMessageListener,
+  onNewClient: addUserListener,
+  send,
+  close: end
 });
+enterRoom3({ room: "napl-demo-room", host: "hello.dobuki.net" });
 function refreshData() {
   const div = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
   div.id = "log-div";
@@ -2171,23 +2241,55 @@ function refreshData() {
   div2.style.fontSize = "12px";
   div2.textContent = JSON.stringify(program.outgoingUpdates, null, 2);
 }
-var processor = new Processor;
-processor.connectComm({
-  send(data) {
-    console.log("Updates sent out", data);
-  }
-});
-processor.observe().onChange(refreshData);
+program.processor.observe().onChange(refreshData);
 function cycle() {
-  program.processor.performCycle(program);
-  program.refresh?.();
+  program.performCycle();
   refreshData();
 }
 function setupGamePlayer() {
+  let paused = false;
+  const updateButtons = new Set;
+  function resetButtons() {
+    updateButtons.forEach((callback) => callback());
+  }
+  function startLoop() {
+    paused = false;
+    let rafId = 0;
+    function loop() {
+      rafId = requestAnimationFrame(loop);
+      cycle();
+    }
+    rafId = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(rafId);
+      paused = true;
+    };
+  }
+  {
+    let stop;
+    const button = document.body.appendChild(document.createElement("button"));
+    button.textContent = "⏸️";
+    button.addEventListener("click", () => {
+      if (paused) {
+        stop = startLoop();
+      } else {
+        stop?.();
+        stop = undefined;
+      }
+      resetButtons();
+    });
+    updateButtons.add(() => {
+      button.textContent = paused ? "▶️" : "⏸️";
+    });
+    stop = startLoop();
+  }
   {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "⏯️";
     button.addEventListener("click", cycle);
+    updateButtons.add(() => {
+      button.disabled = !paused;
+    });
   }
   {
     const button = document.body.appendChild(document.createElement("button"));
@@ -2197,10 +2299,11 @@ function setupGamePlayer() {
       refreshData();
     });
   }
+  resetButtons();
 }
 setupGamePlayer();
 export {
   root
 };
 
-//# debugId=C38810BF4185D64864756E2164756E21
+//# debugId=DD9ECDC56499AE2964756E2164756E21

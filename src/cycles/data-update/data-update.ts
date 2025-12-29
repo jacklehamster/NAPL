@@ -9,13 +9,13 @@ const REGEX = /~\{([^}]+)\}/;
 export function commitUpdates(
   root: Data,
   updates: Update[],
-  properties: Record<string, any>,
-  updatedPaths: Record<string, any> = {}) {
+  properties: Record<string, any>) {
 
   if (!updates.length) {
-    return updatedPaths;
+    return undefined;
   }
   sortUpdates(updates);
+  const updatedPaths: Record<string, any> = {};
   updates.forEach((update) => {
     if (!update.confirmed) {
       return;

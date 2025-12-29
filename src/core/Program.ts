@@ -39,8 +39,8 @@ export class Program<T extends Data = Data> implements Context<T> {
     return hookCommInterface(this, comm, this.processor);
   }
 
-  start() {
-    return this.processor.startCycle(this);
+  performCycle() {
+    this.processor.performCycle(this);
   }
 
   observe(path: string | string[]) {
