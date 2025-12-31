@@ -29,12 +29,12 @@
   "index.ts": {
     "sha": "f8e603ed981543a565aaa1e3461708b276d65fbc"
   },
-  "md5": "0b5d8c0e5ba3d9a005ad87c5b61ff331",
+  "md5": "daf15ee280d8a012c776398e889135e0",
   "package.json": {
     "sha": "9f2eb0a3b9680506c2cdaae377fd46d3395339b9"
   },
   "src/index.ts": {
-    "sha": "6b2c82ddbc6ecb97906a4ce6636d5ccedc5650d5"
+    "sha": "cfd62b275eeeb79c4f1e3d0c033d3df2711ffe48"
   },
   "test-room/index.html": {
     "sha": "d91404f859441b6d832950e6108ff5b16dc6390d"
