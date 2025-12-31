@@ -82,7 +82,7 @@ function setupGamePlayer() {
     let stop: undefined | (() => void);
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "⏸️";
-    button.addEventListener("click", () => {
+    button.addEventListener("presssed", () => {
       if (paused) {
         stop = startLoop();
       } else {
@@ -99,7 +99,7 @@ function setupGamePlayer() {
   {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "⏯️";
-    button.addEventListener("click", cycle);
+    button.addEventListener("presssed", cycle);
     updateButtons.add(() => {
       button.disabled = !paused;
     })
@@ -107,7 +107,7 @@ function setupGamePlayer() {
   {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "🔄";
-    button.addEventListener("click", () => {
+    button.addEventListener("presssed", () => {
       program.setData("abc", Math.random());
       refreshData();
     });

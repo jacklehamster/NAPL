@@ -79,20 +79,20 @@ export class Program<T extends Data = Data> implements Context<T> {
     pushData(this.now, this.outgoingUpdates, path, value, ACTIVE);
   }
 
-  getName(attachment: Attachment) {
+  private getAttachmentName(attachment: Attachment) {
     return attachment.constructor.name;
   }
 
   attach(attachment: Attachment): Connection {
-    attachment.onAttach?.(this);
     if (attachment.refresh) {
       this.refresher.add(attachment);
     }
-    this.aux[this.getName(attachment)] = attachment;
+    this.aux[this.getAttachmentName(attachment)] = attachment;
+    attachment.onAttach?.(this);
     return {
       disconnect: () => {
         attachment.onDetach?.(this);
-        delete this.aux[this.getName(attachment)];
+        delete this.aux[this.getAttachmentName(attachment)];
         this.refresher.delete(attachment);
       },
     };
