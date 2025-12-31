@@ -9,11 +9,9 @@ export function hookCommInterface(context: Context, comm: CommInterface, process
     processor.receivedData(buffer, context);
   });
   const removeOnNewClient = comm.onNewClient(peer => {
+    const peerProps = { active: true, peer };
     Object.entries(context.root).forEach(([key, value]) => {
-      setData(Date.now(), context.outgoingUpdates, key, value, {
-        active: true,
-        peer,
-      });
+      setData(Date.now(), context.outgoingUpdates, key, value, peerProps);
     });
   });
   const disconnectComm = processor.connectComm(comm);

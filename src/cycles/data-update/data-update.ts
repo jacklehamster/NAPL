@@ -1,6 +1,8 @@
 import { Update } from "../../types/Update";
 import { Data } from "../../types/Data";
 
+const NO_OBJ = {};
+
 // This function is used to commit updates to the root object
 export function commitUpdates(root: Data, updates: Update[], properties: Record<string, any>) {
   if (!updates.length) {
@@ -109,9 +111,9 @@ function translateProp(obj: any, prop: string | number, properties: Record<strin
   } else if (prop.startsWith("~{") && prop.endsWith("}")) {
     switch (prop) {
       case '~{keys}':
-        return Object.keys(obj ?? {});
+        return Object.keys(obj ?? NO_OBJ);
       case '~{values}':
-        return Object.values(obj ?? {});
+        return Object.values(obj ?? NO_OBJ);
       default:
         return obj[translateValue(prop, properties)];
     }
