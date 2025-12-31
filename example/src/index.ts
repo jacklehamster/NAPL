@@ -8,6 +8,7 @@ import { enterWorld } from "@dobuki/hello-worker";
 const root: Data = {};
 
 const { send, enterRoom, addMessageListener, addUserListener, end } = enterWorld({
+  appId: "napl-test",
   uid: crypto.randomUUID(),
   logLine: (dir, msg) => console.log(dir, msg),
   workerUrl: new URL("./signal-room.worker.js", import.meta.url),
@@ -18,7 +19,12 @@ const program = new Program({
 });
 program.connectComm({
   onMessage: addMessageListener,
-  onNewClient: addUserListener,
+  onNewClient: (listener: (user: string) => void) => {
+    addUserListener((user) => {
+      console.log("Joining user");
+      listener(user);
+    });
+  },
   send,
   close: end,
 });
