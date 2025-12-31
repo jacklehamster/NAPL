@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "72bdc6f323ee8836a77e4d86e0cd033394220743"
+      "sha": "a363ba3ef0ebdf1e9623ca08d988e10eb21d3bfb"
     },
     "dist/index.js.map": {
-      "sha": "5d2d6f2f4eef0322c95071620fe51b968ea6e09b"
+      "sha": "f3a0a727fd0b09fe72e1d8432c0252a64c20cf3e"
     },
     "dist/signal-room.worker.js": {
       "sha": "8563a46e7ef635eb6fce32cfb77dc86272eb4fcd"
@@ -57,7 +57,7 @@
     "index.ts": {
       "sha": "f8e603ed981543a565aaa1e3461708b276d65fbc"
     },
-    "md5": "408f5b63d8d7fbea6c19051b1db77da5",
+    "md5": "6d0e2cb489316022eca1deaca6e1269f",
     "package.json": {
       "sha": "9f2eb0a3b9680506c2cdaae377fd46d3395339b9"
     },
@@ -73,12 +73,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "72bdc6f323ee8836a77e4d86e0cd033394220743"
+      "sha": "a363ba3ef0ebdf1e9623ca08d988e10eb21d3bfb"
     },
     "index.js.map": {
-      "sha": "5d2d6f2f4eef0322c95071620fe51b968ea6e09b"
+      "sha": "f3a0a727fd0b09fe72e1d8432c0252a64c20cf3e"
     },
-    "md5": "34a95a3d04038d13459cf7101740a11d",
+    "md5": "7d0d5cd2befe34a54c44a8e73d084b30",
     "signal-room.worker.js": {
       "sha": "8563a46e7ef635eb6fce32cfb77dc86272eb4fcd"
     },
@@ -219,9 +219,9 @@
       "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
     },
     "CommInterfaceHook.ts": {
-      "sha": "fdda652bc0850f5c1fcd0627ca84012a01fffa9c"
+      "sha": "4d570f3567946d11f3d2b03e7ab88b0888b84b5c"
     },
-    "md5": "9af2bba4e648d9b462773b52d77e45ea"
+    "md5": "d1e5a0977701e41bcbada91169587b3c"
   },
   "/src/connections/dir.json": {
     "Connection.ts": {
@@ -264,9 +264,9 @@
       "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
     },
     "data-update.ts": {
-      "sha": "aeb52c268d5f6cb61a7a5368d2a1c0fa5ec97ed1"
+      "sha": "73a22071ad2e0fe9ade847b2689cf226eb7b272a"
     },
-    "md5": "8c0428965fa80fc38b286d9736cac9dc"
+    "md5": "d4583c6f06321c8b1c22ed1210122a47"
   },
   "/src/cycles/dir.json": {
     "data-update/SetDataOptions.ts": {
@@ -282,16 +282,16 @@
       "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
     },
     "data-update/data-update.ts": {
-      "sha": "aeb52c268d5f6cb61a7a5368d2a1c0fa5ec97ed1"
+      "sha": "73a22071ad2e0fe9ade847b2689cf226eb7b272a"
     },
-    "md5": "e6ab834ec87177f714a2f452868fdb73"
+    "md5": "5a62ecc0e5c995727ad246a091bd7aac"
   },
   "/src/dir.json": {
     "clients/CommInterface.ts": {
       "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
     },
     "clients/CommInterfaceHook.ts": {
-      "sha": "fdda652bc0850f5c1fcd0627ca84012a01fffa9c"
+      "sha": "4d570f3567946d11f3d2b03e7ab88b0888b84b5c"
     },
     "connections/Connection.ts": {
       "sha": "fb86aac10dc23073617bb14c26d6a8e0695668d4"
@@ -324,12 +324,12 @@
       "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
     },
     "cycles/data-update/data-update.ts": {
-      "sha": "aeb52c268d5f6cb61a7a5368d2a1c0fa5ec97ed1"
+      "sha": "73a22071ad2e0fe9ade847b2689cf226eb7b272a"
     },
     "index.ts": {
       "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
     },
-    "md5": "0c00acc541a6ae5403b7f64716ed01df",
+    "md5": "c4a9f6143df96952ce638f83a82a33c7",
     "observer/Observer.ts": {
       "sha": "b4de8fbb7900e986100a5fdee1bfa219c416b06c"
     },
