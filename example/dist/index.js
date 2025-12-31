@@ -65,7 +65,7 @@ function sortUpdates(updates) {
     return a.path.localeCompare(b.path);
   });
 }
-function getLeafObject(obj, parts, offset, autoCreate, properties = {}) {
+function getLeafObject(obj, parts, offset, autoCreate, properties = NO_OBJ) {
   let current = obj;
   for (let i = 0;i < parts.length - offset; i++) {
     const prop = parts[i];
@@ -2195,4 +2195,4 @@ export {
   program
 };
 
-//# debugId=B9D6DF1DFE6C90F064756E2164756E21
+//# debugId=91D16024AE000D9964756E2164756E21

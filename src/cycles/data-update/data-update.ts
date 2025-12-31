@@ -75,7 +75,7 @@ function sortUpdates(updates: Update[]) {
 }
 
 //  Dig into the object to get the leaf object, given the parts of the path
-export function getLeafObject(obj: Record<string, any>, parts: (string | number)[], offset: number, autoCreate: boolean, properties: Record<string, any> = {}) {
+export function getLeafObject(obj: Record<string, any>, parts: (string | number)[], offset: number, autoCreate: boolean, properties: Record<string, any> = NO_OBJ) {
   let current = obj;
   for (let i = 0; i < parts.length - offset; i++) {
     const prop = parts[i];
