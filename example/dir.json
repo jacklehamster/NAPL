@@ -3,7 +3,7 @@
     "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
   },
   "bun.lockb": {
-    "sha": "98f2be327d5723409413787d7446615c4eec20e3"
+    "sha": "faff428b83db7133e67d3d1853c3a00aa4f9e57f"
   },
   "bundler/bundler.ts": {
     "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
@@ -12,13 +12,13 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/index.js": {
-    "sha": "ab5f8f0adb63035106820a91ca07a33cf2f97da4"
+    "sha": "6941e08c011e152f5918cad729391b21f26f99b6"
   },
   "dist/index.js.map": {
-    "sha": "61aa395e2bb82cc6d92f5570f696433695961841"
+    "sha": "f43ba7d5bf78df87294ff1dc73fca331704d5e7d"
   },
   "dist/signal-room.worker.js": {
-    "sha": "e2b5c427321d7f886270943ab0426df3879b859c"
+    "sha": "7b42b0c550165cfc2fcd767de6a6f01d175c82ca"
   },
   "dist/styles-da87zv4s.css": {
     "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -29,12 +29,12 @@
   "index.ts": {
     "sha": "f8e603ed981543a565aaa1e3461708b276d65fbc"
   },
-  "md5": "a5dc796df13dbc74ceaa7061c810abc3",
+  "md5": "ae559a6265bb9e8f5464bea6ec52b6ff",
   "package.json": {
-    "sha": "b742cfb88713fc6b3ecbd1ed54e94f44606e1378"
+    "sha": "6a1ed488e204479ac20725730bb319a478477fa8"
   },
   "src/index.ts": {
-    "sha": "78b2fc0466e5e20cdd2cd322d496cec95f90aa2f"
+    "sha": "f9c12d569a84e058355c6f6a9b49bb8f8a19f7c3"
   },
   "test-room/index.html": {
     "sha": "ecb910fb80c68211077681e4dbfd3311d839cafd"
