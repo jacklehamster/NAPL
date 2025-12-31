@@ -62,21 +62,21 @@ export class Program<T extends Data = Data> implements Context<T> {
 
   setData(path: string, value: any | ((value: any) => any)) {
     if (typeof (value) === "function") {
-      const oldValue = getData(this, path, this.properties);
+      const oldValue = getData(this.root, path, this.properties);
       value = value(oldValue);
       if (oldValue === value) {
         return;
       }
     }
-    setData(this.root, this.now, this.outgoingUpdates, path, value, ACTIVE);
+    setData(this.now, this.outgoingUpdates, path, value, ACTIVE);
   }
 
   pushData(path: string, value: any | ((value: any) => any)) {
     if (typeof (value) === "function") {
-      const oldValue = getData(this, path, this.properties);
+      const oldValue = getData(this.root, path, this.properties);
       value = value(oldValue);
     }
-    pushData(this.root, this.now, this.outgoingUpdates, path, value, ACTIVE);
+    pushData(this.now, this.outgoingUpdates, path, value, ACTIVE);
   }
 
   getName(attachment: Attachment) {

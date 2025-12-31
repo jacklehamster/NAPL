@@ -10,7 +10,7 @@ export function hookCommInterface(context: Context, comm: CommInterface, process
   });
   const removeOnNewClient = comm.onNewClient(peer => {
     Object.entries(context.root).forEach(([key, value]) => {
-      setData(context.root, Date.now(), context.outgoingUpdates, key, value, {
+      setData(Date.now(), context.outgoingUpdates, key, value, {
         active: true,
         peer,
       });

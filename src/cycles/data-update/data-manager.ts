@@ -11,19 +11,19 @@ export function getData(root: Data, path: string, properties: { [key: string]: a
   return getLeafObject(root, parts, 0, false, properties) as any;
 }
 
-export function pushData(root: Data, now: number, outgoingUpdates: Update[], path: string, value: any, options: UpdateOptions = NO_OBJ) {
+export function pushData(now: number, outgoingUpdates: Update[], path: string, value: any, options: UpdateOptions = NO_OBJ) {
   const props: {path: string; value: any; append: true} = { path, value, append: true };
-  return processDataUpdate(root, now, outgoingUpdates, props, options);
+  return processDataUpdate(now, outgoingUpdates, props, options);
 }
 
-export function setData(root: Data, now: number, outgoingUpdates: Update[], path: string, value: any, options: SetDataOptions = NO_OBJ) {
+export function setData(now: number, outgoingUpdates: Update[], path: string, value: any, options: SetDataOptions = NO_OBJ) {
   const props: {path: string; value: any; append?: boolean; insert?: number} = { path, value };
   if (options.append) props.append = options.append;
   if (options.insert) props.insert = options.insert;
-  return processDataUpdate(root, now, outgoingUpdates, props, options);
+  return processDataUpdate(now, outgoingUpdates, props, options);
 }
 
-function processDataUpdate(root: Data, now: number, outgoingUpdates: Update[], update: Update, options: UpdateOptions = NO_OBJ) {
+function processDataUpdate(now: number, outgoingUpdates: Update[], update: Update, options: UpdateOptions = NO_OBJ) {
   update.peer = options.peer;
   if (options.active) {
     markUpdateConfirmed(update, now);
