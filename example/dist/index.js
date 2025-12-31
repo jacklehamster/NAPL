@@ -1,4 +1,5 @@
 // ../src/cycles/data-update/data-update.ts
+var NO_OBJ = {};
 function commitUpdates(root, updates, properties) {
   if (!updates.length) {
     return;
@@ -98,9 +99,9 @@ function translateProp(obj, prop, properties, autoCreate) {
   } else if (prop.startsWith("~{") && prop.endsWith("}")) {
     switch (prop) {
       case "~{keys}":
-        return Object.keys(obj ?? {});
+        return Object.keys(obj ?? NO_OBJ);
       case "~{values}":
-        return Object.values(obj ?? {});
+        return Object.values(obj ?? NO_OBJ);
       default:
         return obj[translateValue(prop, properties)];
     }
@@ -1587,16 +1588,16 @@ class Processor {
   }
 }
 // ../src/cycles/data-update/data-manager.ts
-var NO_OBJ = {};
+var NO_OBJ2 = {};
 function getData(root, path, properties) {
   const parts = path.split("/");
   return getLeafObject(root, parts, 0, false, properties);
 }
-function pushData(now, outgoingUpdates, path, value, options = NO_OBJ) {
+function pushData(now, outgoingUpdates, path, value, options = NO_OBJ2) {
   const props = { path, value, append: true };
   processDataUpdate(now, outgoingUpdates, props, options);
 }
-function setData(now, outgoingUpdates, path, value, options = NO_OBJ) {
+function setData(now, outgoingUpdates, path, value, options = NO_OBJ2) {
   const props = { path, value };
   if (options.append)
     props.append = options.append;
@@ -1604,7 +1605,7 @@ function setData(now, outgoingUpdates, path, value, options = NO_OBJ) {
     props.insert = options.insert;
   processDataUpdate(now, outgoingUpdates, props, options);
 }
-function processDataUpdate(now, outgoingUpdates, update, options = NO_OBJ) {
+function processDataUpdate(now, outgoingUpdates, update, options = NO_OBJ2) {
   if (options.peer)
     update.peer = options.peer;
   if (options.active) {
@@ -1753,11 +1754,9 @@ function hookCommInterface(context, comm, processor) {
     processor.receivedData(buffer, context);
   });
   const removeOnNewClient = comm.onNewClient((peer) => {
+    const peerProps = { active: true, peer };
     Object.entries(context.root).forEach(([key, value]) => {
-      setData(Date.now(), context.outgoingUpdates, key, value, {
-        active: true,
-        peer
-      });
+      setData(Date.now(), context.outgoingUpdates, key, value, peerProps);
     });
   });
   const disconnectComm = processor.connectComm(comm);
@@ -2196,4 +2195,4 @@ export {
   program
 };
 
-//# debugId=436AA40309C576A364756E2164756E21
+//# debugId=B9D6DF1DFE6C90F064756E2164756E21
