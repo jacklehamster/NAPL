@@ -1,7 +1,4 @@
 // ../src/cycles/data-update/data-update.ts
-var KEYS = "~{keys}";
-var VALUES = "~{values}";
-var REGEX = /~\{([^}]+)\}/;
 function commitUpdates(root, updates, properties) {
   if (!updates.length) {
     return;
@@ -86,7 +83,7 @@ function translateValue(value, properties) {
   if (value.startsWith("~{") && value.endsWith("}")) {
     switch (value) {
       default:
-        const group = value.match(REGEX);
+        const group = value.match(/~\{([^}]+)\}/);
         if (group) {
           return properties[group[1]];
         }
@@ -100,9 +97,9 @@ function translateProp(obj, prop, properties, autoCreate) {
     value = obj[prop];
   } else if (prop.startsWith("~{") && prop.endsWith("}")) {
     switch (prop) {
-      case KEYS:
+      case "~{keys}":
         return Object.keys(obj ?? {});
-      case VALUES:
+      case "~{values}":
         return Object.values(obj ?? {});
       default:
         return obj[translateValue(prop, properties)];
@@ -1541,6 +1538,80 @@ function decode(buffer, options) {
   return decoder.decode(buffer);
 }
 
+// ../src/core/Processor.ts
+class Processor {
+  #outingCom = new Set;
+  connectComm(comm) {
+    this.#outingCom.add(comm);
+    return () => {
+      this.#outingCom.delete(comm);
+    };
+  }
+  performCycle(context) {
+    this.#sendOutgoingUpdate(context);
+    return commitUpdates(context.root, context.incomingUpdates, context.properties);
+  }
+  receivedData(data, context) {
+    const payload = decode(data);
+    if (payload?.updates?.length) {
+      this.#addIncomingUpdates(payload.updates, context);
+    }
+  }
+  #sendOutgoingUpdate(context) {
+    if (!context.outgoingUpdates.length)
+      return;
+    context.outgoingUpdates.forEach((update) => {
+      update.path = this.#fixPath(update.path, context);
+      const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
+      update.value = typeof update.value === "function" ? update.value(previous) : update.value;
+    });
+    const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
+    this.#addIncomingUpdates(confirmedUpdates, context);
+    const peerSet = new Set;
+    context.outgoingUpdates.forEach((update) => peerSet.add(update.peer));
+    peerSet.forEach((peer) => {
+      this.#outingCom.forEach((comm) => {
+        comm.send(encode({
+          updates: context.outgoingUpdates.filter((update) => update.peer === peer)
+        }), peer);
+      });
+    });
+    context.outgoingUpdates.length = 0;
+  }
+  #addIncomingUpdates(updates, context) {
+    context.incomingUpdates.push(...updates);
+  }
+  #fixPath(path, context) {
+    const split = path.split("/");
+    return split.map((part) => translateValue(part, context.properties)).join("/");
+  }
+}
+// ../src/cycles/data-update/data-manager.ts
+var NO_OBJ = {};
+function getData(root, path, properties) {
+  const parts = path.split("/");
+  return getLeafObject(root, parts, 0, false, properties);
+}
+function pushData(now, outgoingUpdates, path, value, options = NO_OBJ) {
+  const props = { path, value, append: true };
+  processDataUpdate(now, outgoingUpdates, props, options);
+}
+function setData(now, outgoingUpdates, path, value, options = NO_OBJ) {
+  const props = { path, value };
+  if (options.append)
+    props.append = options.append;
+  if (options.insert)
+    props.insert = options.insert;
+  processDataUpdate(now, outgoingUpdates, props, options);
+}
+function processDataUpdate(now, outgoingUpdates, update, options = NO_OBJ) {
+  if (options.peer)
+    update.peer = options.peer;
+  if (options.active) {
+    markUpdateConfirmed(update, now);
+  }
+  outgoingUpdates.push(update);
+}
 // ../src/observer/Observer.ts
 class Observer {
   paths;
@@ -1590,7 +1661,7 @@ class Observer {
     return newValues;
   }
   triggerIfChanged(context, updates) {
-    const newValues = !this.paths.length ? [] : this.#valuesChanged(context, this.initialized ? updates : {});
+    const newValues = !this.paths.length ? undefined : this.#valuesChanged(context, this.initialized ? updates : {});
     if (!newValues) {
       return;
     }
@@ -1635,117 +1706,46 @@ class Observer {
     this.observerManagger.removeObserver(this);
   }
 }
-
 // ../src/observer/ObserverManager.ts
 class ObserverManager {
-  #observers = new Set;
+  observers = new Map;
+  ensurePath(path) {
+    const obsSet = this.observers.get(path);
+    if (obsSet) {
+      return obsSet;
+    }
+    const observerSet = new Set;
+    this.observers.set(path, observerSet);
+    return observerSet;
+  }
   observe(paths, multi) {
     const observer = new Observer(paths, this, multi);
-    this.#observers.add(observer);
+    paths.forEach((path) => {
+      const obsSet = this.ensurePath(path);
+      obsSet.add(observer);
+    });
     return observer;
   }
   triggerObservers(context, updates) {
-    this.#observers.forEach((o) => o.triggerIfChanged(context, updates));
+    const obsTriggered = new Set;
+    for (let path in updates) {
+      this.observers.get(path)?.forEach((observer) => obsTriggered.add(observer));
+    }
+    obsTriggered.forEach((o) => o.triggerIfChanged(context, updates));
   }
   removeObserver(observer) {
-    this.#observers.delete(observer);
+    observer.paths.forEach((path) => {
+      const obsSet = this.observers.get(path);
+      obsSet?.delete(observer);
+      if (!obsSet?.size) {
+        this.observers.delete(path);
+      }
+    });
   }
   close() {
-    this.#observers.forEach((o) => o.close());
+    this.observers.forEach((obsSet) => obsSet.forEach((o) => o.close()));
+    this.observers.clear();
   }
-}
-
-// ../src/core/Processor.ts
-class Processor {
-  #observerManager = new ObserverManager;
-  #outingCom = new Set;
-  connectComm(comm) {
-    this.#outingCom.add(comm);
-    return () => {
-      this.#outingCom.delete(comm);
-    };
-  }
-  observe(paths) {
-    const multi = Array.isArray(paths);
-    const pathArray = paths === undefined ? [] : multi ? paths : [paths];
-    return this.#observerManager.observe(pathArray, multi);
-  }
-  removeObserver(observer) {
-    this.#observerManager.removeObserver(observer);
-  }
-  performCycle(context) {
-    this.#sendUpdate(context);
-    const updates = commitUpdates(context.root, context.incomingUpdates, context.properties);
-    if (updates) {
-      this.#observerManager.triggerObservers(context, updates);
-    }
-    context.refresh?.();
-  }
-  #sendUpdate(context) {
-    if (!context.outgoingUpdates.length)
-      return;
-    context.outgoingUpdates.forEach((update) => {
-      update.path = this.#fixPath(update.path, context);
-      const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
-      update.value = typeof update.value === "function" ? update.value(previous) : update.value;
-    });
-    const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
-    this.#addIncomingUpdates(confirmedUpdates, context);
-    const peerSet = new Set;
-    context.outgoingUpdates.forEach((update) => peerSet.add(update.peer));
-    peerSet.forEach((peer) => {
-      this.#outingCom.forEach((comm) => {
-        comm.send(encode({
-          updates: context.outgoingUpdates.filter((update) => !update.peer || update.peer === peer)
-        }), peer);
-      });
-    });
-    context.outgoingUpdates.length = 0;
-  }
-  receivedData(data, context) {
-    const payload = decode(data);
-    if (payload?.myClientId) {
-      context.clientId = payload.myClientId;
-    }
-    if (payload?.updates) {
-      this.#addIncomingUpdates(payload.updates, context);
-    }
-  }
-  #addIncomingUpdates(updates, context) {
-    context.incomingUpdates.push(...updates);
-  }
-  #fixPath(path, context) {
-    const split = path.split("/");
-    return split.map((part) => translateValue(part, {
-      self: context.clientId,
-      ...context.properties
-    })).join("/");
-  }
-}
-// ../src/cycles/data-update/data-manager.ts
-function getData(root, path = "", properties) {
-  const parts = path.split("/");
-  return getLeafObject(root, parts, 0, false, properties);
-}
-function pushData(root, now, outgoingUpdates, path, value, options = {}) {
-  const props = { path, value, append: true };
-  return processDataUpdate(root, now, outgoingUpdates, props, options);
-}
-function setData(root, now, outgoingUpdates, path, value, options = {}) {
-  const props = { path, value };
-  if (options.append)
-    props.append = options.append;
-  if (options.insert)
-    props.insert = options.insert;
-  return processDataUpdate(root, now, outgoingUpdates, props, options);
-}
-function processDataUpdate(root, now, outgoingUpdates, update, options = {}) {
-  update.peer = options.peer;
-  if (options.active ?? root.config?.activeUpdates) {
-    markUpdateConfirmed(update, now);
-  }
-  outgoingUpdates.push(update);
-  return update;
 }
 // ../src/clients/CommInterfaceHook.ts
 function hookCommInterface(context, comm, processor) {
@@ -1754,18 +1754,18 @@ function hookCommInterface(context, comm, processor) {
   });
   const removeOnNewClient = comm.onNewClient((peer) => {
     Object.entries(context.root).forEach(([key, value]) => {
-      setData(context.root, Date.now(), context.outgoingUpdates, key, value, {
+      setData(Date.now(), context.outgoingUpdates, key, value, {
         active: true,
         peer
       });
     });
   });
-  const commConnection = processor.connectComm(comm);
+  const disconnectComm = processor.connectComm(comm);
   return {
     disconnect: () => {
       removeOnMessage();
       removeOnNewClient();
-      commConnection();
+      disconnectComm();
     }
   };
 }
@@ -1776,29 +1776,37 @@ var ACTIVE = {
 };
 
 class Program {
-  clientId;
+  userId;
   incomingUpdates = [];
   outgoingUpdates = [];
   root;
   properties;
   processor = new Processor;
-  aux = {};
-  refresher = new Set;
+  observerManager = new ObserverManager;
   preNow = 0;
   nowChunk = 0;
-  constructor({ clientId, root, properties } = {}) {
-    this.clientId = clientId;
+  constructor({ userId, root, properties }) {
+    this.userId = userId;
     this.root = root ?? {};
     this.properties = properties ?? {};
+    this.properties.self = userId;
   }
   connectComm(comm) {
     return hookCommInterface(this, comm, this.processor);
   }
   performCycle() {
-    this.processor.performCycle(this);
+    const updates = this.processor.performCycle(this);
+    if (updates) {
+      this.observerManager.triggerObservers(this, updates);
+    }
   }
-  observe(path) {
-    return this.processor.observe(path);
+  observe(paths) {
+    const multi = Array.isArray(paths);
+    const pathArray = paths === undefined ? [] : multi ? paths : [paths];
+    return this.observerManager.observe(pathArray, multi);
+  }
+  removeObserver(observer) {
+    this.observerManager.removeObserver(observer);
   }
   get now() {
     const t = Date.now();
@@ -1806,45 +1814,26 @@ class Program {
       this.nowChunk++;
     } else {
       this.nowChunk = 0;
+      this.preNow = t;
     }
     return t + this.nowChunk / 1000;
   }
   setData(path, value) {
     if (typeof value === "function") {
-      const oldValue = getData(this, path, this.properties);
+      const oldValue = getData(this.root, path, this.properties);
       value = value(oldValue);
       if (oldValue === value) {
         return;
       }
     }
-    setData(this.root, this.now, this.outgoingUpdates, path, value, ACTIVE);
+    setData(this.now, this.outgoingUpdates, path, value, ACTIVE);
   }
   pushData(path, value) {
     if (typeof value === "function") {
-      const oldValue = getData(this, path, this.properties);
+      const oldValue = getData(this.root, path, this.properties);
       value = value(oldValue);
     }
-    pushData(this.root, this.now, this.outgoingUpdates, path, value, ACTIVE);
-  }
-  getName(attachment) {
-    return attachment.constructor.name;
-  }
-  attach(attachment) {
-    attachment.onAttach?.(this);
-    if (attachment.refresh) {
-      this.refresher.add(attachment);
-    }
-    this.aux[this.getName(attachment)] = attachment;
-    return {
-      disconnect: () => {
-        attachment.onDetach?.(this);
-        delete this.aux[this.getName(attachment)];
-        this.refresher.delete(attachment);
-      }
-    };
-  }
-  refresh() {
-    this.refresher.forEach((r) => r.refresh?.(this));
+    pushData(this.now, this.outgoingUpdates, path, value, ACTIVE);
   }
 }
 // node_modules/@dobuki/hello-worker/dist/index.js
@@ -2105,13 +2094,13 @@ function E({ uid: i, appId: h, logLine: W = console.debug, enterRoomFunction: C 
 
 // src/index.ts
 var root = {};
-var { send, enterRoom, addMessageListener, addUserListener, end } = E({
+var { userId, send, enterRoom, addMessageListener, addUserListener, end } = E({
   appId: "napl-test",
-  uid: crypto.randomUUID(),
   logLine: (dir, msg) => console.log(dir, msg),
   workerUrl: new URL("./signal-room.worker.js", import.meta.url)
 });
 var program = new Program({
+  userId,
   root
 });
 program.connectComm({
@@ -2127,6 +2116,7 @@ program.connectComm({
   close: end
 });
 enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
+program.observe("abc").onChange((value) => console.log(value));
 function refreshData() {
   const div = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
   div.id = "log-div";
@@ -2141,7 +2131,6 @@ function refreshData() {
   div2.style.fontSize = "12px";
   div2.textContent = JSON.stringify(program.outgoingUpdates, null, 2);
 }
-program.processor.observe().onChange(refreshData);
 function cycle() {
   program.performCycle();
   refreshData();
@@ -2169,7 +2158,7 @@ function setupGamePlayer() {
     let stop;
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "⏸️";
-    button.addEventListener("click", () => {
+    button.addEventListener("mousedown", () => {
       if (paused) {
         stop = startLoop();
       } else {
@@ -2186,7 +2175,7 @@ function setupGamePlayer() {
   {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "⏯️";
-    button.addEventListener("click", cycle);
+    button.addEventListener("mousedown", cycle);
     updateButtons.add(() => {
       button.disabled = !paused;
     });
@@ -2194,7 +2183,7 @@ function setupGamePlayer() {
   {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "\uD83D\uDD04";
-    button.addEventListener("click", () => {
+    button.addEventListener("mousedown", () => {
       program.setData("abc", Math.random());
       refreshData();
     });
@@ -2207,4 +2196,4 @@ export {
   program
 };
 
-//# debugId=5CC5C5EA7C2A687064756E2164756E21
+//# debugId=436AA40309C576A364756E2164756E21

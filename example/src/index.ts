@@ -7,14 +7,14 @@ import { enterWorld } from "@dobuki/hello-worker";
 
 const root: Data = {};
 
-const { send, enterRoom, addMessageListener, addUserListener, end } = enterWorld({
+const { userId, send, enterRoom, addMessageListener, addUserListener, end } = enterWorld({
   appId: "napl-test",
-  uid: crypto.randomUUID(),
   logLine: (dir, msg) => console.log(dir, msg),
   workerUrl: new URL("./signal-room.worker.js", import.meta.url),
 });
 
 const program = new Program({
+  userId,
   root,
 });
 program.connectComm({
@@ -32,6 +32,8 @@ program.connectComm({
 
 enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
 
+program.observe("abc").onChange(value => console.log(value));
+
 function refreshData() {
   const div: HTMLDivElement = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
   div.id = "log-div";
@@ -47,11 +49,6 @@ function refreshData() {
   div2.style.fontSize = "12px";
   div2.textContent = JSON.stringify(program.outgoingUpdates, null, 2);
 }
-
-// const processor = new Processor();
-// processor.observe().onChange(refreshData);
-
-program.processor.observe().onChange(refreshData);
 
 function cycle() {
   program.performCycle();
@@ -82,7 +79,7 @@ function setupGamePlayer() {
     let stop: undefined | (() => void);
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "⏸️";
-    button.addEventListener("presssed", () => {
+    button.addEventListener("mousedown", () => {
       if (paused) {
         stop = startLoop();
       } else {
@@ -99,7 +96,7 @@ function setupGamePlayer() {
   {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "⏯️";
-    button.addEventListener("presssed", cycle);
+    button.addEventListener("mousedown", cycle);
     updateButtons.add(() => {
       button.disabled = !paused;
     })
@@ -107,7 +104,7 @@ function setupGamePlayer() {
   {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "🔄";
-    button.addEventListener("presssed", () => {
+    button.addEventListener("mousedown", () => {
       program.setData("abc", Math.random());
       refreshData();
     });

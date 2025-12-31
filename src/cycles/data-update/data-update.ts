@@ -1,16 +1,8 @@
 import { Update } from "../../types/Update";
 import { Data } from "../../types/Data";
 
-const KEYS = "~{keys}";
-const VALUES = "~{values}";
-const REGEX = /~\{([^}]+)\}/;
-
 // This function is used to commit updates to the root object
-export function commitUpdates(
-  root: Data,
-  updates: Update[],
-  properties: Record<string, any>) {
-
+export function commitUpdates(root: Data, updates: Update[], properties: Record<string, any>) {
   if (!updates.length) {
     return undefined;
   }
@@ -101,7 +93,7 @@ export function translateValue(value: any, properties: Record<string, any>) {
   if (value.startsWith("~{") && value.endsWith("}")) {
     switch (value) {
       default:
-        const group = value.match(REGEX);
+        const group = value.match(/~\{([^}]+)\}/);
         if (group) {
           return properties[group[1]];
         }
@@ -116,9 +108,9 @@ function translateProp(obj: any, prop: string | number, properties: Record<strin
     value = obj[prop];
   } else if (prop.startsWith("~{") && prop.endsWith("}")) {
     switch (prop) {
-      case KEYS:
+      case '~{keys}':
         return Object.keys(obj ?? {});
-      case VALUES:
+      case '~{values}':
         return Object.values(obj ?? {});
       default:
         return obj[translateValue(prop, properties)];

@@ -6,11 +6,12 @@ import { hookCommInterface } from "@/clients/CommInterfaceHook";
 import { Connection } from "@/connections/Connection";
 import { getData, pushData, setData } from "@/cycles/data-update/data-manager";
 import { UpdateOptions } from "@/cycles/data-update/UpdateOptions";
-import { Attachment } from "@/attachments/Attachment";
 import { Data } from "@/types/Data";
+import { ObserverManager } from "@/observer/ObserverManager";
+import { Observer } from "@/observer/Observer";
 
 interface Props<T extends Data> {
-  clientId?: string;
+  userId: string;
   root?: T;
   properties?: Record<string, any>;
 }
@@ -20,21 +21,21 @@ const ACTIVE: UpdateOptions = {
 };
 
 export class Program<T extends Data = Data> implements Context<T> {
-  clientId?: string;
+  userId: string;
   readonly incomingUpdates: Update[] = [];
   readonly outgoingUpdates: Update[] = [];
   readonly root: T;
   readonly properties: Record<string, any>;
-  readonly processor: Processor = new Processor();
-  readonly aux: Record<string, Attachment> = {};
-  readonly refresher: Set<Attachment> = new Set();
+  private readonly processor: Processor = new Processor();
+  private readonly observerManager: ObserverManager = new ObserverManager();
   preNow: number = 0;
   nowChunk: number = 0;
 
-  constructor({ clientId, root, properties }: Props<T> = {}) {
-    this.clientId = clientId;
+  constructor({ userId, root, properties }: Props<T>) {
+    this.userId = userId;
     this.root = root ?? {} as T;
     this.properties = properties ?? {};
+    this.properties.self = userId;
   }
 
   connectComm(comm: CommInterface): Connection {
@@ -42,11 +43,20 @@ export class Program<T extends Data = Data> implements Context<T> {
   }
 
   performCycle() {
-    this.processor.performCycle(this);
+    const updates = this.processor.performCycle(this);
+    if (updates) {
+      this.observerManager.triggerObservers(this, updates);
+    }
   }
 
-  observe(path: string | string[]) {
-    return this.processor.observe(path);
+  observe(paths?: (string[] | string)): Observer {
+    const multi = Array.isArray(paths);
+    const pathArray = paths === undefined ? [] : multi ? paths : [paths];
+    return this.observerManager.observe(pathArray, multi);
+  }
+
+  removeObserver(observer: Observer): void {
+    this.observerManager.removeObserver(observer);
   }
 
   get now() {
@@ -77,28 +87,5 @@ export class Program<T extends Data = Data> implements Context<T> {
       value = value(oldValue);
     }
     pushData(this.now, this.outgoingUpdates, path, value, ACTIVE);
-  }
-
-  private getAttachmentName(attachment: Attachment) {
-    return attachment.constructor.name;
-  }
-
-  attach(attachment: Attachment): Connection {
-    if (attachment.refresh) {
-      this.refresher.add(attachment);
-    }
-    this.aux[this.getAttachmentName(attachment)] = attachment;
-    attachment.onAttach?.(this);
-    return {
-      disconnect: () => {
-        attachment.onDetach?.(this);
-        delete this.aux[this.getAttachmentName(attachment)];
-        this.refresher.delete(attachment);
-      },
-    };
-  }
-
-  refresh(): void {
-    this.refresher.forEach(r => r.refresh?.(this));
   }
 }

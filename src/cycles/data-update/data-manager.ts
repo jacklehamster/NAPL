@@ -13,21 +13,20 @@ export function getData(root: Data, path: string, properties: { [key: string]: a
 
 export function pushData(now: number, outgoingUpdates: Update[], path: string, value: any, options: UpdateOptions = NO_OBJ) {
   const props: {path: string; value: any; append: true} = { path, value, append: true };
-  return processDataUpdate(now, outgoingUpdates, props, options);
+  processDataUpdate(now, outgoingUpdates, props, options);
 }
 
 export function setData(now: number, outgoingUpdates: Update[], path: string, value: any, options: SetDataOptions = NO_OBJ) {
   const props: {path: string; value: any; append?: boolean; insert?: number} = { path, value };
   if (options.append) props.append = options.append;
   if (options.insert) props.insert = options.insert;
-  return processDataUpdate(now, outgoingUpdates, props, options);
+  processDataUpdate(now, outgoingUpdates, props, options);
 }
 
 function processDataUpdate(now: number, outgoingUpdates: Update[], update: Update, options: UpdateOptions = NO_OBJ) {
-  update.peer = options.peer;
+  if (options.peer) update.peer = options.peer;
   if (options.active) {
     markUpdateConfirmed(update, now);
   }
   outgoingUpdates.push(update);
-  return update;
 }

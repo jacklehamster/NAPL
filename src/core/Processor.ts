@@ -4,14 +4,11 @@
 import { decode, encode } from "@msgpack/msgpack";
 import { Context } from "../context/Context";
 import { commitUpdates, getLeafObject, translateValue } from "../cycles/data-update/data-update";
-import { Observer } from "../observer/Observer";
-import { ObserverManager } from "../observer/ObserverManager";
 import { Update } from "../types/Update";
 import { Payload } from "@/types/Payload";
 import { OutgoingCom } from "@/clients/CommInterface";
 
 export class Processor {
-  readonly #observerManager = new ObserverManager();
   readonly #outingCom = new Set<OutgoingCom>();
 
   connectComm(comm: OutgoingCom) {
@@ -21,23 +18,11 @@ export class Processor {
     };
   }
 
-  observe(paths?: (string[] | string)): Observer {
-    const multi = Array.isArray(paths);
-    const pathArray = paths === undefined ? [] : multi ? paths : [paths];
-    return this.#observerManager.observe(pathArray, multi);
-  }
-
-  removeObserver(observer: Observer): void {
-    this.#observerManager.removeObserver(observer);
-  }
-
   performCycle(context: Context) {
-    this.#sendUpdate(context);
-    const updates = commitUpdates(context.root, context.incomingUpdates, context.properties);
-    if (updates) {
-      this.#observerManager.triggerObservers(context, updates);
-    }
-    context.refresh?.();
+    //  Send out outgoing updates
+    this.#sendOutgoingUpdate(context);
+    //  Process incoming updates
+    return commitUpdates(context.root, context.incomingUpdates, context.properties);
   }
 
   receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
@@ -48,8 +33,7 @@ export class Processor {
     }
   }
 
-
-  #sendUpdate(context: Context) {
+  #sendOutgoingUpdate(context: Context) {
     if (!context.outgoingUpdates.length) return;
     //  Apply function to value
     context.outgoingUpdates.forEach(update => {
@@ -70,7 +54,7 @@ export class Processor {
       this.#outingCom.forEach(comm => {
         comm.send(encode({
           updates: context.outgoingUpdates
-            .filter(update => !update.peer || update.peer === peer)
+            .filter(update => update.peer === peer)
         }), peer);
       });
     });
@@ -83,9 +67,6 @@ export class Processor {
 
   #fixPath(path: string, context: Context) {
     const split = path.split("/");
-    return split.map(part => translateValue(part, {
-      self: context.clientId,
-      ...context.properties,
-    })).join("/");
+    return split.map(part => translateValue(part, context.properties)).join("/");
   }
 }

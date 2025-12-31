@@ -16,12 +16,12 @@ export function hookCommInterface(context: Context, comm: CommInterface, process
       });
     });
   });
-  const commConnection = processor.connectComm(comm);
+  const disconnectComm = processor.connectComm(comm);
   return {
     disconnect: () => {
       removeOnMessage();
       removeOnNewClient();
-      commConnection();
+      disconnectComm();
     },
   }
 }
