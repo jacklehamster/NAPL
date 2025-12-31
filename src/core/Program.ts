@@ -55,6 +55,7 @@ export class Program<T extends Data = Data> implements Context<T> {
       this.nowChunk++;
     } else {
       this.nowChunk = 0;
+      this.preNow = t;
     }
     return t + this.nowChunk / 1000;
   }
