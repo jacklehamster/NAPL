@@ -36,12 +36,12 @@
     "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
   },
   "cycles/data-update/data-update.ts": {
-    "sha": "73a22071ad2e0fe9ade847b2689cf226eb7b272a"
+    "sha": "942268a4eadf1a1b9d6da7b230155c9ad1206bcd"
   },
   "index.ts": {
     "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
   },
-  "md5": "c4a9f6143df96952ce638f83a82a33c7",
+  "md5": "dfd7bb69f80004f7c52367368ed8b1ec",
   "observer/Observer.ts": {
     "sha": "b4de8fbb7900e986100a5fdee1bfa219c416b06c"
   },
