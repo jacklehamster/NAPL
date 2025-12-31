@@ -40,6 +40,15 @@ export class Processor {
     context.refresh?.();
   }
 
+  receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
+    const payload = decode(data) as Payload;
+
+    if (payload?.updates?.length) {
+      this.#addIncomingUpdates(payload.updates, context);
+    }
+  }
+
+
   #sendUpdate(context: Context) {
     if (!context.outgoingUpdates.length) return;
     //  Apply function to value
@@ -66,17 +75,6 @@ export class Processor {
       });
     });
     context.outgoingUpdates.length = 0;
-  }
-
-  receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
-    const payload = decode(data) as Payload;
-
-    if (payload?.myClientId) {
-      context.clientId = payload.myClientId;
-    }
-    if (payload?.updates) {
-      this.#addIncomingUpdates(payload.updates, context);
-    }
   }
 
   #addIncomingUpdates(updates: Update[], context: Context) {

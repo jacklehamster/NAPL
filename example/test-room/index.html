@@ -22,7 +22,9 @@
   </head>
   <body>
     <script type="module">
-      import "../dist/index.js";
+      import { root, program } from "../dist/index.js";
+      window.root = root;
+      window.program = program;
     </script>
   </body>
 </html>

@@ -11,7 +11,7 @@
     "copy-workers": "mkdir -p dist && cp ./node_modules/@dobuki/hello-worker/dist/signal-room.worker.js ./dist/signal-room.worker.js"
   },
   "devDependencies": {
-    "@dobuki/hello-worker": "^1.0.19",
+    "@dobuki/hello-worker": "^1.0.21",
     "@types/express": "^5.0.6",
     "bun-lightningcss": "^0.2.0",
     "bun-types": "^1.3.5",

@@ -28,6 +28,8 @@ export class Program<T extends Data = Data> implements Context<T> {
   readonly processor: Processor = new Processor();
   readonly aux: Record<string, Attachment> = {};
   readonly refresher: Set<Attachment> = new Set();
+  preNow: number = 0;
+  nowChunk: number = 0;
 
   constructor({ clientId, root, properties }: Props<T> = {}) {
     this.clientId = clientId;
@@ -48,7 +50,13 @@ export class Program<T extends Data = Data> implements Context<T> {
   }
 
   get now() {
-    return Date.now();
+    const t = Date.now();
+    if (this.preNow === t) {
+      this.nowChunk++;
+    } else {
+      this.nowChunk = 0;
+    }
+    return t + this.nowChunk / 1000;
   }
 
   setData(path: string, value: any | ((value: any) => any)) {

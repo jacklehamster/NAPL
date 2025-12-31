@@ -20,9 +20,10 @@ const program = new Program({
 program.connectComm({
   onMessage: addMessageListener,
   onNewClient: (listener: (user: string) => void) => {
-    addUserListener((user) => {
-      console.log("Joining user");
-      listener(user);
+    addUserListener((user, action, users) => {
+      if (action === "join") {
+        listener(user);
+      }
     });
   },
   send,
@@ -107,7 +108,7 @@ function setupGamePlayer() {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "🔄";
     button.addEventListener("click", () => {
-      program.outgoingUpdates.push({ path: "abc", value: Math.random(), confirmed: 1 });
+      program.setData("abc", Math.random());
       refreshData();
     });
   }
@@ -116,4 +117,4 @@ function setupGamePlayer() {
 
 setupGamePlayer();
 
-export { root };
+export { root, program };

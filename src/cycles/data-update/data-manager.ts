@@ -10,20 +10,15 @@ export function getData(root: Data, path: string = "", properties: { [key: strin
 }
 
 export function pushData(root: Data, now: number, outgoingUpdates: Update[], path: string, value: any, options: UpdateOptions = {}) {
-  return processDataUpdate(root, now, outgoingUpdates, {
-    path,
-    value,
-    append: true,
-  }, options);
+  const props: {path: string; value: any; append: true} = { path, value, append: true };
+  return processDataUpdate(root, now, outgoingUpdates, props, options);
 }
 
 export function setData(root: Data, now: number, outgoingUpdates: Update[], path: string, value: any, options: SetDataOptions = {}) {
-  return processDataUpdate(root, now, outgoingUpdates, {
-    path,
-    value,
-    append: options.append,
-    insert: options.insert,
-  }, options);
+  const props: {path: string; value: any; append?: boolean; insert?: number} = { path, value };
+  if (options.append) props.append = options.append;
+  if (options.insert) props.insert = options.insert;
+  return processDataUpdate(root, now, outgoingUpdates, props, options);
 }
 
 function processDataUpdate(root: Data, now: number, outgoingUpdates: Update[], update: Update, options: UpdateOptions = {}) {

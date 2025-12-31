@@ -50,7 +50,7 @@ export function commitUpdates(
   let size = 0;
   for (let i = 0; i < updates.length; i++) {
     updates[size] = updates[i];
-    if (updates[i].path in updatedPaths) {
+    if (!updates[i].confirmed) {
       size++;
     }
   }

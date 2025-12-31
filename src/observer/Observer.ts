@@ -58,7 +58,7 @@ export class Observer {
   }
 
   triggerIfChanged(context: Context, updates: Record<string, any>) {
-    const newValues = !this.paths.length ? [] : this.#valuesChanged(context, this.initialized ? updates : {});
+    const newValues = !this.paths.length ? undefined : this.#valuesChanged(context, this.initialized ? updates : {});
     if (!newValues) {
       return;
     }
