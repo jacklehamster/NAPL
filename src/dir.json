@@ -6,16 +6,13 @@
     "sha": "8bd5b1b1752d03c293d5598801511db85a95629d"
   },
   "context/Context.ts": {
-    "sha": "31c8443a5efa99f5fc95ce604e69e23c5078784f"
+    "sha": "c48e2493d0b342bcebd740d2b83a0008e4201974"
   },
   "core/Processor.ts": {
-    "sha": "8ea5be048c10a51935d9393df31ee4e8964bbd04"
+    "sha": "24b134f34785be4172a6df59c28932353a9097a3"
   },
   "core/Program.ts": {
-    "sha": "67ba4cd5191fa30a1f1ff65cde70be9648611b63"
-  },
-  "core/create-context.ts": {
-    "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
+    "sha": "883f149e57fe05f2a86232e1d43a5b5763c49684"
   },
   "core/processor.test.ts": {
     "sha": "149b3a61998da4f9766910d4549e430b7f489926"
@@ -35,7 +32,7 @@
   "index.ts": {
     "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
   },
-  "md5": "0df4a7a66b181d3b6a42d76f1500af7f",
+  "md5": "e98d023e905edbafa3ecf4d5e10801d6",
   "observer/Observer.ts": {
     "sha": "b4de8fbb7900e986100a5fdee1bfa219c416b06c"
   },
