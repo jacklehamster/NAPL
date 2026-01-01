@@ -30,6 +30,7 @@ program.connectComm({
         program.setData(`users/${user}`, undefined);
       }
       userList = users;
+      refreshData();
     });
   },
   send,
@@ -42,6 +43,7 @@ const emoji = generateEmojis(1);
 
 const randomName = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals] });
 program.observe("abc").onChange((value: any) => console.log(value));
+program.observe("users/~{keys}").onChange((keys: string[]) => console.log(keys));
 program.setData("users/~{self}/name", randomName);
 program.setData("users/~{self}/emoji", emoji[0].image);
 
@@ -98,10 +100,6 @@ function cycle() {
     refreshData();
   }
 }
-
-program.addIncomingUpdatesListener(() => {
-  refreshData();
-});
 
 function setupGamePlayer() {
   let paused = false;

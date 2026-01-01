@@ -28,7 +28,6 @@ export class Program<T extends Data = Data> implements Context<T> {
   readonly properties: Record<string, any>;
   private readonly processor: Processor = new Processor();
   private readonly observerManager: ObserverManager = new ObserverManager();
-  private readonly incomingUpdatesListener = new Set<(updates: Update[]) => void>();
   private preNow: number = 0;
   private nowChunk: number = 0;
 
@@ -50,21 +49,6 @@ export class Program<T extends Data = Data> implements Context<T> {
       return true;
     }
     return false;
-  }
-
-  onIncomingUpdates(updates: Update[]): void {
-    this.incomingUpdatesListener.forEach(listener => listener(updates));
-  }
-
-  removeIncomingUpdateListener(listener: (updates: Update[]) => void) {
-    this.incomingUpdatesListener.delete(listener);
-  }
-
-  addIncomingUpdatesListener(listener: (updates: Update[]) => void) {
-    this.incomingUpdatesListener.add(listener);
-    return () => {
-      this.removeIncomingUpdateListener(listener);
-    };
   }
 
   observe(paths?: (string[] | string)): Observer {

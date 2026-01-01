@@ -1,10 +1,15 @@
-import { Context } from "../context/Context";
+import { Context } from "@/context/Context";
 import { Observer } from "./Observer";
 
 export class ObserverManager {
   private readonly observers = new Map<string, Set<Observer>>();
 
   private ensurePath(path: string): Set<Observer> {
+    if (path.endsWith("~{keys}") || path.endsWith("~{values}")) {
+      const parts = path.split("/");
+      path = parts.slice(0, parts.length - 1).join('/');
+    }
+
     const obsSet = this.observers.get(path);
     if (obsSet) {
       return obsSet;
@@ -23,12 +28,13 @@ export class ObserverManager {
     return observer;
   }
 
+  readonly #tempObsTriggered = new Set<Observer>();
   triggerObservers(context: Context, updates: Record<string, any>) {
-    const obsTriggered = new Set<Observer>();
     for (let path in updates) {
-      this.observers.get(path)?.forEach(observer => obsTriggered.add(observer));
+      this.observers.get(path)?.forEach(observer => this.#tempObsTriggered.add(observer));
     }
-    obsTriggered.forEach(o => o.triggerIfChanged(context, updates));
+    this.#tempObsTriggered.forEach(o => o.triggerIfChanged(context, updates));
+    this.#tempObsTriggered.clear();
   }
 
   removeObserver(observer: Observer) {

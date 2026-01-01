@@ -11,18 +11,18 @@ export function commitUpdates(root: Data, updates: Update[], properties: Record<
   sortUpdates(updates);
   const updatedPaths: Record<string, any> = {};
   updates.forEach((update) => {
-    console.log("Commit update,", update);
     if (!update.confirmed) {
       return;
     }
 
     const parts = update.path.split("/");
-    const leaf: any = getLeafObject(root, parts, 1, true, properties);
+    const leaf: any = getLeafObject(root, parts, 1, true, properties, updatedPaths);
     const prop = parts[parts.length - 1];
     const value = translateValue(update.value, properties);
     if (value === undefined) {
       delete leaf[prop];
-      cleanupRoot(root, parts, 0);
+      updatedPaths[parts.slice(0, parts.length-1).join("/")] = undefined;
+      cleanupRoot(root, parts, 0, updatedPaths);
     } else {
       leaf[prop] = value;
     }
@@ -40,12 +40,13 @@ export function commitUpdates(root: Data, updates: Update[], properties: Record<
 }
 
 // This function is used to remove empty objects from the root object
-function cleanupRoot(root: any, parts: (string | number)[], index: number) {
+function cleanupRoot(root: any, parts: (string | number)[], index: number, updatedPaths: Record<string, any>) {
   if (!root || typeof (root) !== "object" || Array.isArray(root)) {
     return false;
   }
-  if (cleanupRoot(root[parts[index]], parts, index + 1)) {
+  if (cleanupRoot(root[parts[index]], parts, index + 1, updatedPaths)) {
     delete root[parts[index]];
+    updatedPaths[parts.slice(0, index - 1).join("/")] = undefined;
   }
   return Object.keys(root).length === 0;
 }
@@ -62,11 +63,11 @@ function sortUpdates(updates: Update[]) {
 }
 
 //  Dig into the object to get the leaf object, given the parts of the path
-export function getLeafObject(obj: Data, parts: (string | number)[], offset: number, autoCreate: boolean, properties: Record<string, any>): Data {
+export function getLeafObject(obj: Data, parts: (string | number)[], offset: number, autoCreate: boolean, properties: Record<string, any>, updatedPaths?: Record<string, any>): Data {
   let current = obj;
   for (let i = 0; i < parts.length - offset; i++) {
     const prop = parts[i];
-    const value = translateProp(current, prop, properties, autoCreate);
+    const value = translateProp(current, prop, properties, autoCreate, updatedPaths, parts.slice(0, i).join("/"));
     if (value === undefined) {
       return value;
     }
@@ -91,7 +92,7 @@ export function translateValue(value: any, properties: Record<string, any>) {
   return value;
 }
 
-function translateProp(obj: any, prop: string | number, properties: Record<string, any>, autoCreate: boolean) {
+export function translateProp(obj: any, prop: string | number, properties: Record<string, any>, autoCreate: boolean = false, updatePaths?: Record<string, any>, path?: string) {
   let value;
   if (typeof prop !== "string") {
     value = obj[prop];
@@ -109,6 +110,9 @@ function translateProp(obj: any, prop: string | number, properties: Record<strin
   }
   if (value === undefined && autoCreate) {
     value = obj[prop] = {};
+    if (updatePaths && path) {
+      updatePaths[path] = value;
+    }
   }
   return value;
 }
