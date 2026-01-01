@@ -12,10 +12,10 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/index.js": {
-    "sha": "397f902c8e679954ae1cfb62d232938b3cf47b57"
+    "sha": "cca217aa3eb4c28cb115841c9a9bee704ba2d504"
   },
   "dist/index.js.map": {
-    "sha": "ccf0c0ede180ff7041f1f82e2877b45002913974"
+    "sha": "7427ef087371e81119b0f7ef545af6e5ff3a97ca"
   },
   "dist/signal-room.worker.js": {
     "sha": "8563a46e7ef635eb6fce32cfb77dc86272eb4fcd"
@@ -29,12 +29,12 @@
   "index.ts": {
     "sha": "f8e603ed981543a565aaa1e3461708b276d65fbc"
   },
-  "md5": "b395fa23f3a22395581b9f7200344a59",
+  "md5": "048ac97cc3ae6c701852f8760d88aa0a",
   "package.json": {
     "sha": "fc450ac226e01a78ab877c9c13e44ff09e6a79e3"
   },
   "src/index.ts": {
-    "sha": "14d4716e00e110a81060f1be1f50cd3af2ce85da"
+    "sha": "bc38c492e8de0f1845dca4fbec502336874f8b8f"
   },
   "test-room/index.html": {
     "sha": "d91404f859441b6d832950e6108ff5b16dc6390d"
