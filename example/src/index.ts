@@ -82,13 +82,15 @@ function refreshData() {
   divUsers.style.position = "absolute";
   divUsers.style.top = "5px";
   divUsers.style.right = "5px";
-  console.log([userId, ...userList]);
+  divUsers.style.padding = "5px";
+  divUsers.style.border = "1px solid black";
+  divUsers.style.backgroundColor = "#ffffffaa";
+  const usrs = root?.users as any;
   divUsers.textContent = "USERS\n" + 
     [userId, ...userList].map(userId => {
-      const usrs = root?.users as any;
-      return `${usrs?.[userId]?.emoji} ${usrs?.[userId]?.name}`;
+      const user = usrs?.[userId];
+      return `${user?.emoji} ${user?.name}`;
     }).join("\n");
-
 }
 
 function cycle() {

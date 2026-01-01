@@ -16,7 +16,6 @@ export function setData(now: number, outgoingUpdates: Update[], path: string, va
 }
 
 function processDataUpdate(now: number, outgoingUpdates: Update[], update: Update, options: UpdateOptions = NO_OBJ) {
-  console.log(">>>PROCESS", update);
   if (options.peer) update.peer = options.peer;
   if (options.active) {
     markUpdateConfirmed(update, now);

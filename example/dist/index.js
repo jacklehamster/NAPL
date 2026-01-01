@@ -12766,7 +12766,6 @@ function commitUpdates(root, updates, properties) {
     }
     const parts = update.path.split("/");
     const leaf = getLeafObject(root, parts, 1, true, properties);
-    console.log(">>>", parts, leaf);
     const prop = parts[parts.length - 1];
     const value = translateValue(update.value, properties);
     if (value === undefined) {
@@ -14338,7 +14337,6 @@ function setData(now, outgoingUpdates, path, value, options = NO_OBJ2) {
   processDataUpdate(now, outgoingUpdates, props, options);
 }
 function processDataUpdate(now, outgoingUpdates, update, options = NO_OBJ2) {
-  console.log(">>>PROCESS", update);
   if (options.peer)
     update.peer = options.peer;
   if (options.active) {
@@ -14923,9 +14921,7 @@ program.connectComm({
 enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
 var emoji = generateEmojis(1);
 var randomName = n({ dictionaries: [l, t, r] });
-program.observe("abc").onChange((value) => console.log(value));
-program.setData("users/~{self}/name", randomName);
-program.setData("users/~{self}/emoji", emoji[0].image);
+program.setData("users/~{self}", { name: randomName, emoji: emoji[0].image });
 function refreshData() {
   const div = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
   div.id = "log-div";
@@ -14963,11 +14959,14 @@ Last update: ${new Date().toISOString()}
   divUsers.style.position = "absolute";
   divUsers.style.top = "5px";
   divUsers.style.right = "5px";
-  console.log([userId, ...userList]);
+  divUsers.style.padding = "5px";
+  divUsers.style.border = "1px solid black";
+  divUsers.style.backgroundColor = "#ffffffaa";
+  const usrs = root?.users;
   divUsers.textContent = `USERS
 ` + [userId, ...userList].map((userId2) => {
-    const usrs = root?.users;
-    return `${usrs?.[userId2]?.emoji} ${usrs?.[userId2]?.name}`;
+    const user = usrs?.[userId2];
+    return `${user?.emoji} ${user?.name}`;
   }).join(`
 `);
 }
@@ -15040,4 +15039,4 @@ export {
   program
 };
 
-//# debugId=D7D0DA580239497264756E2164756E21
+//# debugId=16AEADEBE61DEF8F64756E2164756E21
