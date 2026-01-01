@@ -16,24 +16,10 @@ export function commitUpdates(root: Data, updates: Update[], properties: Record<
     }
 
     const parts = update.path.split("/");
-    const leaf: any = getLeafObject(root, parts, 1, true);
+    const leaf: any = getLeafObject(root, parts, 1, true, properties);
     const prop = parts[parts.length - 1];
     const value = translateValue(update.value, properties);
-    if (update.append) {
-      if (!Array.isArray(leaf[prop])) {
-        leaf[prop] = [];
-      }
-      leaf[prop] = [...leaf[prop], value];
-    } else if ((update.insert ?? -1) >= 0) {
-      if (!Array.isArray(leaf[prop])) {
-        leaf[prop] = [];
-      }
-      leaf[prop] = [...leaf[prop].slice(0, (update.insert ?? -1)), value, ...leaf[prop].slice(update.insert)];
-    } else if ((update.delete ?? -1) >= 0) {
-      if (Array.isArray(leaf[prop])) {
-        leaf[prop] = [...leaf[prop].slice(0, update.delete), ...leaf[prop].slice((update.delete ?? -1) + 1)];
-      }
-    } else if (value === undefined) {
+    if (value === undefined) {
       delete leaf[prop];
       cleanupRoot(root, parts, 0);
     } else {
@@ -53,7 +39,7 @@ export function commitUpdates(root: Data, updates: Update[], properties: Record<
 }
 
 // This function is used to remove empty objects from the root object
-function cleanupRoot(root: Record<string, any>, parts: (string | number)[], index: number) {
+function cleanupRoot(root: any, parts: (string | number)[], index: number) {
   if (!root || typeof (root) !== "object" || Array.isArray(root)) {
     return false;
   }
@@ -75,7 +61,7 @@ function sortUpdates(updates: Update[]) {
 }
 
 //  Dig into the object to get the leaf object, given the parts of the path
-export function getLeafObject(obj: Record<string, any>, parts: (string | number)[], offset: number, autoCreate: boolean, properties: Record<string, any> = NO_OBJ) {
+export function getLeafObject(obj: Data, parts: (string | number)[], offset: number, autoCreate: boolean, properties: Record<string, any>): Data {
   let current = obj;
   for (let i = 0; i < parts.length - offset; i++) {
     const prop = parts[i];

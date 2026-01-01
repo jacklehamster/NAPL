@@ -3,8 +3,7 @@ import { Update } from "@/types/Update";
 import { Processor } from "./Processor";
 import { CommInterface } from "@/clients/CommInterface";
 import { hookCommInterface } from "@/clients/CommInterfaceHook";
-import { Connection } from "@/connections/Connection";
-import { getData, pushData, setData } from "@/cycles/data-update/data-manager";
+import { getData, setData } from "@/cycles/data-update/data-manager";
 import { UpdateOptions } from "@/cycles/data-update/UpdateOptions";
 import { Data } from "@/types/Data";
 import { ObserverManager } from "@/observer/ObserverManager";
@@ -12,7 +11,7 @@ import { Observer } from "@/observer/Observer";
 
 interface Props<T extends Data> {
   userId: string;
-  root?: T;
+  root?: Record<string, T>;
   properties?: Record<string, any>;
 }
 
@@ -22,23 +21,25 @@ const ACTIVE: UpdateOptions = {
 
 export class Program<T extends Data = Data> implements Context<T> {
   userId: string;
+  readonly root: Record<string, T>;
   readonly incomingUpdates: Update[] = [];
   readonly outgoingUpdates: Update[] = [];
-  readonly root: T;
+  readonly updateTimestamp: Record<string, number> = {};
   readonly properties: Record<string, any>;
   private readonly processor: Processor = new Processor();
   private readonly observerManager: ObserverManager = new ObserverManager();
-  preNow: number = 0;
-  nowChunk: number = 0;
+  private readonly incomingUpdatesListener = new Set<(updates: Update[]) => void>();
+  private preNow: number = 0;
+  private nowChunk: number = 0;
 
   constructor({ userId, root, properties }: Props<T>) {
     this.userId = userId;
-    this.root = root ?? {} as T;
+    this.root = root ?? {};
     this.properties = properties ?? {};
     this.properties.self = userId;
   }
 
-  connectComm(comm: CommInterface): Connection {
+  connectComm(comm: CommInterface) {
     return hookCommInterface(this, comm, this.processor);
   }
 
@@ -46,7 +47,24 @@ export class Program<T extends Data = Data> implements Context<T> {
     const updates = this.processor.performCycle(this);
     if (updates) {
       this.observerManager.triggerObservers(this, updates);
+      return true;
     }
+    return false;
+  }
+
+  onIncomingUpdates(updates: Update[]): void {
+    this.incomingUpdatesListener.forEach(listener => listener(updates));
+  }
+
+  removeIncomingUpdateListener(listener: (updates: Update[]) => void) {
+    this.incomingUpdatesListener.delete(listener);
+  }
+
+  addIncomingUpdatesListener(listener: (updates: Update[]) => void) {
+    this.incomingUpdatesListener.add(listener);
+    return () => {
+      this.removeIncomingUpdateListener(listener);
+    };
   }
 
   observe(paths?: (string[] | string)): Observer {
@@ -70,7 +88,7 @@ export class Program<T extends Data = Data> implements Context<T> {
     return t + this.nowChunk / 1000;
   }
 
-  setData(path: string, value: any | ((value: any) => any)) {
+  setData(path: string, value: Data | ((value: Data) => Data)) {
     if (typeof (value) === "function") {
       const oldValue = getData(this.root, path, this.properties);
       value = value(oldValue);
@@ -79,13 +97,5 @@ export class Program<T extends Data = Data> implements Context<T> {
       }
     }
     setData(this.now, this.outgoingUpdates, path, value, ACTIVE);
-  }
-
-  pushData(path: string, value: any | ((value: any) => any)) {
-    if (typeof (value) === "function") {
-      const oldValue = getData(this.root, path, this.properties);
-      value = value(oldValue);
-    }
-    pushData(this.now, this.outgoingUpdates, path, value, ACTIVE);
   }
 }

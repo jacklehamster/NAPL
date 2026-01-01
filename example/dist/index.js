@@ -11,24 +11,10 @@ function commitUpdates(root, updates, properties) {
       return;
     }
     const parts = update.path.split("/");
-    const leaf = getLeafObject(root, parts, 1, true);
+    const leaf = getLeafObject(root, parts, 1, true, properties);
     const prop = parts[parts.length - 1];
     const value = translateValue(update.value, properties);
-    if (update.append) {
-      if (!Array.isArray(leaf[prop])) {
-        leaf[prop] = [];
-      }
-      leaf[prop] = [...leaf[prop], value];
-    } else if ((update.insert ?? -1) >= 0) {
-      if (!Array.isArray(leaf[prop])) {
-        leaf[prop] = [];
-      }
-      leaf[prop] = [...leaf[prop].slice(0, update.insert ?? -1), value, ...leaf[prop].slice(update.insert)];
-    } else if ((update.delete ?? -1) >= 0) {
-      if (Array.isArray(leaf[prop])) {
-        leaf[prop] = [...leaf[prop].slice(0, update.delete), ...leaf[prop].slice((update.delete ?? -1) + 1)];
-      }
-    } else if (value === undefined) {
+    if (value === undefined) {
       delete leaf[prop];
       cleanupRoot(root, parts, 0);
     } else {
@@ -65,7 +51,7 @@ function sortUpdates(updates) {
     return a.path.localeCompare(b.path);
   });
 }
-function getLeafObject(obj, parts, offset, autoCreate, properties = NO_OBJ) {
+function getLeafObject(obj, parts, offset, autoCreate, properties) {
   let current = obj;
   for (let i = 0;i < parts.length - offset; i++) {
     const prop = parts[i];
@@ -1541,11 +1527,11 @@ function decode(buffer, options) {
 
 // ../src/core/Processor.ts
 class Processor {
-  #outingCom = new Set;
+  outingCom = new Set;
   connectComm(comm) {
-    this.#outingCom.add(comm);
+    this.outingCom.add(comm);
     return () => {
-      this.#outingCom.delete(comm);
+      this.outingCom.delete(comm);
     };
   }
   performCycle(context) {
@@ -1554,24 +1540,20 @@ class Processor {
   }
   receivedData(data, context) {
     const payload = decode(data);
-    if (payload?.updates?.length) {
-      this.#addIncomingUpdates(payload.updates, context);
-    }
+    this.#addIncomingUpdates(payload.updates, context);
   }
   #sendOutgoingUpdate(context) {
     if (!context.outgoingUpdates.length)
       return;
     context.outgoingUpdates.forEach((update) => {
       update.path = this.#fixPath(update.path, context);
-      const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
-      update.value = typeof update.value === "function" ? update.value(previous) : update.value;
     });
     const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
     this.#addIncomingUpdates(confirmedUpdates, context);
     const peerSet = new Set;
     context.outgoingUpdates.forEach((update) => peerSet.add(update.peer));
     peerSet.forEach((peer) => {
-      this.#outingCom.forEach((comm) => {
+      this.outingCom.forEach((comm) => {
         comm.send(encode({
           updates: context.outgoingUpdates.filter((update) => update.peer === peer)
         }), peer);
@@ -1580,7 +1562,10 @@ class Processor {
     context.outgoingUpdates.length = 0;
   }
   #addIncomingUpdates(updates, context) {
+    if (!updates?.length)
+      return;
     context.incomingUpdates.push(...updates);
+    context.onIncomingUpdates?.(updates);
   }
   #fixPath(path, context) {
     const split = path.split("/");
@@ -1593,16 +1578,8 @@ function getData(root, path, properties) {
   const parts = path.split("/");
   return getLeafObject(root, parts, 0, false, properties);
 }
-function pushData(now, outgoingUpdates, path, value, options = NO_OBJ2) {
-  const props = { path, value, append: true };
-  processDataUpdate(now, outgoingUpdates, props, options);
-}
 function setData(now, outgoingUpdates, path, value, options = NO_OBJ2) {
   const props = { path, value };
-  if (options.append)
-    props.append = options.append;
-  if (options.insert)
-    props.insert = options.insert;
   processDataUpdate(now, outgoingUpdates, props, options);
 }
 function processDataUpdate(now, outgoingUpdates, update, options = NO_OBJ2) {
@@ -1755,8 +1732,9 @@ function hookCommInterface(context, comm, processor) {
   });
   const removeOnNewClient = comm.onNewClient((peer) => {
     const peerProps = { active: true, peer };
+    const now = Date.now();
     Object.entries(context.root).forEach(([key, value]) => {
-      setData(Date.now(), context.outgoingUpdates, key, value, peerProps);
+      setData(now, context.outgoingUpdates, key, value, peerProps);
     });
   });
   const disconnectComm = processor.connectComm(comm);
@@ -1776,12 +1754,14 @@ var ACTIVE = {
 
 class Program {
   userId;
+  root;
   incomingUpdates = [];
   outgoingUpdates = [];
-  root;
+  updateTimestamp = {};
   properties;
   processor = new Processor;
   observerManager = new ObserverManager;
+  incomingUpdatesListener = new Set;
   preNow = 0;
   nowChunk = 0;
   constructor({ userId, root, properties }) {
@@ -1797,7 +1777,21 @@ class Program {
     const updates = this.processor.performCycle(this);
     if (updates) {
       this.observerManager.triggerObservers(this, updates);
+      return true;
     }
+    return false;
+  }
+  onIncomingUpdates(updates) {
+    this.incomingUpdatesListener.forEach((listener) => listener(updates));
+  }
+  removeIncomingUpdateListener(listener) {
+    this.incomingUpdatesListener.delete(listener);
+  }
+  addIncomingUpdatesListener(listener) {
+    this.incomingUpdatesListener.add(listener);
+    return () => {
+      this.removeIncomingUpdateListener(listener);
+    };
   }
   observe(paths) {
     const multi = Array.isArray(paths);
@@ -1826,13 +1820,6 @@ class Program {
       }
     }
     setData(this.now, this.outgoingUpdates, path, value, ACTIVE);
-  }
-  pushData(path, value) {
-    if (typeof value === "function") {
-      const oldValue = getData(this.root, path, this.properties);
-      value = value(oldValue);
-    }
-    pushData(this.now, this.outgoingUpdates, path, value, ACTIVE);
   }
 }
 // node_modules/@dobuki/hello-worker/dist/index.js
@@ -2122,18 +2109,35 @@ function refreshData() {
   div.style.whiteSpace = "pre";
   div.style.fontFamily = "monospace";
   div.style.fontSize = "20px";
-  div.textContent = JSON.stringify(root, null, 2);
-  const div2 = document.querySelector("#log-div2") ?? document.body.appendChild(document.createElement("div"));
-  div2.id = "log-div2";
-  div2.style.whiteSpace = "pre";
-  div2.style.fontFamily = "monospace";
-  div2.style.fontSize = "12px";
-  div2.textContent = JSON.stringify(program.outgoingUpdates, null, 2);
+  div.textContent = JSON.stringify(root, null, 2) + `
+Last update: ${new Date().toISOString()}
+`;
+  const divSplit = document.querySelector("#log-block") ?? document.body.appendChild(document.createElement("div"));
+  divSplit.style.display = "flex";
+  divSplit.style.flexDirection = "row";
+  const divOut = document.querySelector("#log-div-out") ?? divSplit.appendChild(document.createElement("div"));
+  divOut.id = "log-div-out";
+  divOut.style.whiteSpace = "pre";
+  divOut.style.fontFamily = "monospace";
+  divOut.style.fontSize = "12px";
+  divOut.textContent = program.outgoingUpdates.length ? `OUT
+` + JSON.stringify(program.outgoingUpdates, null, 2) : "";
+  const divIn = document.querySelector("#log-div-in") ?? divSplit.appendChild(document.createElement("div"));
+  divIn.id = "log-div-in";
+  divIn.style.whiteSpace = "pre";
+  divIn.style.fontFamily = "monospace";
+  divIn.style.fontSize = "12px";
+  divIn.textContent = program.incomingUpdates.length ? `IN
+` + JSON.stringify(program.incomingUpdates, null, 2) : "";
 }
 function cycle() {
-  program.performCycle();
-  refreshData();
+  if (program.performCycle()) {
+    refreshData();
+  }
 }
+program.addIncomingUpdatesListener(() => {
+  refreshData();
+});
 function setupGamePlayer() {
   let paused = false;
   const updateButtons = new Set;
@@ -2183,7 +2187,7 @@ function setupGamePlayer() {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "\uD83D\uDD04";
     button.addEventListener("mousedown", () => {
-      program.setData("abc", Math.random());
+      program.setData(`abc`, Math.random());
       refreshData();
     });
   }
@@ -2195,4 +2199,4 @@ export {
   program
 };
 
-//# debugId=91D16024AE000D9964756E2164756E21
+//# debugId=D6D5C7242A147FE164756E2164756E21

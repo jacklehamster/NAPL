@@ -3,18 +3,18 @@
 
 import { decode, encode } from "@msgpack/msgpack";
 import { Context } from "../context/Context";
-import { commitUpdates, getLeafObject, translateValue } from "../cycles/data-update/data-update";
+import { commitUpdates, translateValue } from "../cycles/data-update/data-update";
 import { Update } from "../types/Update";
 import { Payload } from "@/types/Payload";
 import { OutgoingCom } from "@/clients/CommInterface";
 
 export class Processor {
-  readonly #outingCom = new Set<OutgoingCom>();
+  private readonly outingCom = new Set<OutgoingCom>();
 
   connectComm(comm: OutgoingCom) {
-    this.#outingCom.add(comm);
+    this.outingCom.add(comm);
     return () => {
-      this.#outingCom.delete(comm);
+      this.outingCom.delete(comm);
     };
   }
 
@@ -27,10 +27,7 @@ export class Processor {
 
   receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
     const payload = decode(data) as Payload;
-
-    if (payload?.updates?.length) {
-      this.#addIncomingUpdates(payload.updates, context);
-    }
+    this.#addIncomingUpdates(payload.updates, context);
   }
 
   #sendOutgoingUpdate(context: Context) {
@@ -38,8 +35,6 @@ export class Processor {
     //  Apply function to value
     context.outgoingUpdates.forEach(update => {
       update.path = this.#fixPath(update.path, context);
-      const previous = getLeafObject(context.root, update.path.split("/"), 0, false);
-      update.value = typeof update.value === "function" ? update.value(previous) : update.value;
     });
 
     //  Apply incoming updates
@@ -51,7 +46,7 @@ export class Processor {
     context.outgoingUpdates.forEach(update => peerSet.add(update.peer));
 
     peerSet.forEach((peer) => {
-      this.#outingCom.forEach(comm => {
+      this.outingCom.forEach(comm => {
         comm.send(encode({
           updates: context.outgoingUpdates
             .filter(update => update.peer === peer)
@@ -61,8 +56,10 @@ export class Processor {
     context.outgoingUpdates.length = 0;
   }
 
-  #addIncomingUpdates(updates: Update[], context: Context) {
+  #addIncomingUpdates(updates: Update[] | undefined, context: Context) {
+    if (!updates?.length) return;
     context.incomingUpdates.push(...updates);
+    context.onIncomingUpdates?.(updates);
   }
 
   #fixPath(path: string, context: Context) {
