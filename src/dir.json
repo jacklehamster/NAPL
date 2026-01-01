@@ -12,7 +12,7 @@
     "sha": "8ea5be048c10a51935d9393df31ee4e8964bbd04"
   },
   "core/Program.ts": {
-    "sha": "5132f7d4a054c19fe573bed185e92cc3b1a4800e"
+    "sha": "67ba4cd5191fa30a1f1ff65cde70be9648611b63"
   },
   "core/create-context.ts": {
     "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
@@ -30,17 +30,17 @@
     "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
   },
   "cycles/data-update/data-update.ts": {
-    "sha": "663638b569535041fb4d3e2dbd1de649f7d8e043"
+    "sha": "f793067598ce377d4a7f7b2f43e14af258c8250c"
   },
   "index.ts": {
     "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
   },
-  "md5": "51a836e9a9d188a37cc06e84b551e099",
+  "md5": "0df4a7a66b181d3b6a42d76f1500af7f",
   "observer/Observer.ts": {
     "sha": "b4de8fbb7900e986100a5fdee1bfa219c416b06c"
   },
   "observer/ObserverManager.ts": {
-    "sha": "9662952e0d9c49cdab6081763cc4f5a41724186b"
+    "sha": "462021bfa89947fb19c69cc1e946b75250bb1162"
   },
   "types/Data.ts": {
     "sha": "46bea5872673b83916cd3fd785ed5314f50e4b26"

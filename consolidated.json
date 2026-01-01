@@ -18,9 +18,9 @@
     "config.json": {
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
-    "md5": "779654069b9379aafe44bfb40d839bd1",
+    "md5": "02d44ed59a36009b390f545e9c2365cc",
     "package.json": {
-      "sha": "fc450ac226e01a78ab877c9c13e44ff09e6a79e3"
+      "sha": "996d76e4e82331b984d68d41e8dbb8204051dfa2"
     },
     "tsconfig.json": {
       "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
@@ -31,7 +31,7 @@
       "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
     },
     "bun.lockb": {
-      "sha": "4e413ca53de8748443001a49bd66c7583c714623"
+      "sha": "f14352ab276adc2401d311e93814400309328019"
     },
     "bundler/bundler.ts": {
       "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
@@ -40,13 +40,13 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "cca217aa3eb4c28cb115841c9a9bee704ba2d504"
+      "sha": "c94d8f886c959f0f049a5e8e262e9a7e19ec55d3"
     },
     "dist/index.js.map": {
-      "sha": "7427ef087371e81119b0f7ef545af6e5ff3a97ca"
+      "sha": "d062d9fcf51f5be69eaff385a0187efc11b00981"
     },
     "dist/signal-room.worker.js": {
-      "sha": "8563a46e7ef635eb6fce32cfb77dc86272eb4fcd"
+      "sha": "05cc48a014739b9b3fcd85b5eae3b3b52486565d"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -57,12 +57,12 @@
     "index.ts": {
       "sha": "f8e603ed981543a565aaa1e3461708b276d65fbc"
     },
-    "md5": "048ac97cc3ae6c701852f8760d88aa0a",
+    "md5": "c8a9c05b0991ce1b4054354d4351a5f2",
     "package.json": {
-      "sha": "fc450ac226e01a78ab877c9c13e44ff09e6a79e3"
+      "sha": "996d76e4e82331b984d68d41e8dbb8204051dfa2"
     },
     "src/index.ts": {
-      "sha": "bc38c492e8de0f1845dca4fbec502336874f8b8f"
+      "sha": "e98630bc8a9cd8267764c85c00fef566c7091ae6"
     },
     "test-room/index.html": {
       "sha": "d91404f859441b6d832950e6108ff5b16dc6390d"
@@ -73,14 +73,14 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "cca217aa3eb4c28cb115841c9a9bee704ba2d504"
+      "sha": "c94d8f886c959f0f049a5e8e262e9a7e19ec55d3"
     },
     "index.js.map": {
-      "sha": "7427ef087371e81119b0f7ef545af6e5ff3a97ca"
+      "sha": "d062d9fcf51f5be69eaff385a0187efc11b00981"
     },
-    "md5": "612c63c278a592f6c3e9d7ebcb5efa13",
+    "md5": "a071578c38efcdf96f7ea71933c158ce",
     "signal-room.worker.js": {
-      "sha": "8563a46e7ef635eb6fce32cfb77dc86272eb4fcd"
+      "sha": "05cc48a014739b9b3fcd85b5eae3b3b52486565d"
     },
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -99,7 +99,7 @@
       "copy-workers": "mkdir -p dist && cp ./node_modules/@dobuki/hello-worker/dist/signal-room.worker.js ./dist/signal-room.worker.js"
     },
     "devDependencies": {
-      "@dobuki/hello-worker": "^1.0.22",
+      "@dobuki/hello-worker": "^1.0.24",
       "@types/express": "^5.0.6",
       "bun-lightningcss": "^0.2.0",
       "bun-types": "^1.3.5",
@@ -123,9 +123,9 @@
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "bc38c492e8de0f1845dca4fbec502336874f8b8f"
+      "sha": "e98630bc8a9cd8267764c85c00fef566c7091ae6"
     },
-    "md5": "69030ea2eac265360dad6ab447ee08b7"
+    "md5": "9f97de6cfbf35f0b593f32fa025b4810"
   },
   "/example/test-room/dir.json": {
     "index.html": {
@@ -239,12 +239,12 @@
       "sha": "8ea5be048c10a51935d9393df31ee4e8964bbd04"
     },
     "Program.ts": {
-      "sha": "5132f7d4a054c19fe573bed185e92cc3b1a4800e"
+      "sha": "67ba4cd5191fa30a1f1ff65cde70be9648611b63"
     },
     "create-context.ts": {
       "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
     },
-    "md5": "4897d047356bc8ea357187cc285c46d4",
+    "md5": "a12b175aa193524609aec27d7e0ace05",
     "processor.test.ts": {
       "sha": "149b3a61998da4f9766910d4549e430b7f489926"
     }
@@ -260,9 +260,9 @@
       "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
     },
     "data-update.ts": {
-      "sha": "663638b569535041fb4d3e2dbd1de649f7d8e043"
+      "sha": "f793067598ce377d4a7f7b2f43e14af258c8250c"
     },
-    "md5": "0b239e1208179eb0c989370ff6c00498"
+    "md5": "d3d0f86b944e310e9ac93d20f6915fba"
   },
   "/src/cycles/dir.json": {
     "data-update/UpdateOptions.ts": {
@@ -275,9 +275,9 @@
       "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
     },
     "data-update/data-update.ts": {
-      "sha": "663638b569535041fb4d3e2dbd1de649f7d8e043"
+      "sha": "f793067598ce377d4a7f7b2f43e14af258c8250c"
     },
-    "md5": "dd5c1c0d46cd1fba4dd085820336e111"
+    "md5": "740001265235faf6606210a07afb963f"
   },
   "/src/dir.json": {
     "clients/CommInterface.ts": {
@@ -293,7 +293,7 @@
       "sha": "8ea5be048c10a51935d9393df31ee4e8964bbd04"
     },
     "core/Program.ts": {
-      "sha": "5132f7d4a054c19fe573bed185e92cc3b1a4800e"
+      "sha": "67ba4cd5191fa30a1f1ff65cde70be9648611b63"
     },
     "core/create-context.ts": {
       "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
@@ -311,17 +311,17 @@
       "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
     },
     "cycles/data-update/data-update.ts": {
-      "sha": "663638b569535041fb4d3e2dbd1de649f7d8e043"
+      "sha": "f793067598ce377d4a7f7b2f43e14af258c8250c"
     },
     "index.ts": {
       "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
     },
-    "md5": "51a836e9a9d188a37cc06e84b551e099",
+    "md5": "0df4a7a66b181d3b6a42d76f1500af7f",
     "observer/Observer.ts": {
       "sha": "b4de8fbb7900e986100a5fdee1bfa219c416b06c"
     },
     "observer/ObserverManager.ts": {
-      "sha": "9662952e0d9c49cdab6081763cc4f5a41724186b"
+      "sha": "462021bfa89947fb19c69cc1e946b75250bb1162"
     },
     "types/Data.ts": {
       "sha": "46bea5872673b83916cd3fd785ed5314f50e4b26"
@@ -338,9 +338,9 @@
       "sha": "b4de8fbb7900e986100a5fdee1bfa219c416b06c"
     },
     "ObserverManager.ts": {
-      "sha": "9662952e0d9c49cdab6081763cc4f5a41724186b"
+      "sha": "462021bfa89947fb19c69cc1e946b75250bb1162"
     },
-    "md5": "b1335390d375ee33eb2600ba113b050b"
+    "md5": "c00a44c6caa60995be7a388176885796"
   },
   "/src/types/dir.json": {
     "Data.ts": {
