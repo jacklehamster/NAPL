@@ -1,18 +1,15 @@
 {
-  "SetDataOptions.ts": {
-    "sha": "146778dc634c51a5ba002bc8f81ec0d615b3651d"
-  },
   "UpdateOptions.ts": {
     "sha": "6c0a9f208d284868d72187e00f9b57141ce40c4a"
   },
   "data-manager.ts": {
-    "sha": "df2284b11def1348865a9be0c081ff91bd2362d1"
+    "sha": "976d20794eeabbcb1bbff770f1d81aed1cd93024"
   },
   "data-update.test.ts": {
     "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
   },
   "data-update.ts": {
-    "sha": "942268a4eadf1a1b9d6da7b230155c9ad1206bcd"
+    "sha": "74f52d95a1cc7b0729c578d3ade24f5af57ecbc6"
   },
-  "md5": "b4e6bf6b8883781d205c5edc5f270c58"
+  "md5": "6c5919bad0a26a8718be288e351a87f1"
 }

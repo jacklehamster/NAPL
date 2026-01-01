@@ -3,19 +3,16 @@
     "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
   },
   "clients/CommInterfaceHook.ts": {
-    "sha": "4d570f3567946d11f3d2b03e7ab88b0888b84b5c"
-  },
-  "connections/Connection.ts": {
-    "sha": "fb86aac10dc23073617bb14c26d6a8e0695668d4"
+    "sha": "56de150b826c4a9f4851eb5c023edf3a7c152e8a"
   },
   "context/Context.ts": {
-    "sha": "8da7a2b184ed3f046b33c2cde0fb228d5f87b3de"
+    "sha": "31c8443a5efa99f5fc95ce604e69e23c5078784f"
   },
   "core/Processor.ts": {
-    "sha": "6a9c8131a9d94bf44acfc94031d55df87ca4fdfa"
+    "sha": "8ea5be048c10a51935d9393df31ee4e8964bbd04"
   },
   "core/Program.ts": {
-    "sha": "3c9ecbd291d2938247a9784c934b27d91fb575ab"
+    "sha": "5132f7d4a054c19fe573bed185e92cc3b1a4800e"
   },
   "core/create-context.ts": {
     "sha": "094e28b9771e9027130ea3d1c0ac59582b1b8c0e"
@@ -23,25 +20,22 @@
   "core/processor.test.ts": {
     "sha": "149b3a61998da4f9766910d4549e430b7f489926"
   },
-  "cycles/data-update/SetDataOptions.ts": {
-    "sha": "146778dc634c51a5ba002bc8f81ec0d615b3651d"
-  },
   "cycles/data-update/UpdateOptions.ts": {
     "sha": "6c0a9f208d284868d72187e00f9b57141ce40c4a"
   },
   "cycles/data-update/data-manager.ts": {
-    "sha": "df2284b11def1348865a9be0c081ff91bd2362d1"
+    "sha": "976d20794eeabbcb1bbff770f1d81aed1cd93024"
   },
   "cycles/data-update/data-update.test.ts": {
     "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
   },
   "cycles/data-update/data-update.ts": {
-    "sha": "942268a4eadf1a1b9d6da7b230155c9ad1206bcd"
+    "sha": "74f52d95a1cc7b0729c578d3ade24f5af57ecbc6"
   },
   "index.ts": {
     "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
   },
-  "md5": "dfd7bb69f80004f7c52367368ed8b1ec",
+  "md5": "f212df4425acee06ba6b44fd69cf3078",
   "observer/Observer.ts": {
     "sha": "b4de8fbb7900e986100a5fdee1bfa219c416b06c"
   },
@@ -49,12 +43,12 @@
     "sha": "9662952e0d9c49cdab6081763cc4f5a41724186b"
   },
   "types/Data.ts": {
-    "sha": "e80885c6d9b9dd45ba7517393a4e9e92ad053df4"
+    "sha": "46bea5872673b83916cd3fd785ed5314f50e4b26"
   },
   "types/Payload.ts": {
     "sha": "a060d15fb635eec02e46702528acdb1b49e92bcd"
   },
   "types/Update.ts": {
-    "sha": "665a17ca925de0898eeb1dcf26924b1d80b16373"
+    "sha": "b929b6462fe37438a7debcb180f2149988035f2c"
   }
 }
