@@ -3,7 +3,7 @@
     "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
   },
   "clients/CommInterfaceHook.ts": {
-    "sha": "56de150b826c4a9f4851eb5c023edf3a7c152e8a"
+    "sha": "8bd5b1b1752d03c293d5598801511db85a95629d"
   },
   "context/Context.ts": {
     "sha": "31c8443a5efa99f5fc95ce604e69e23c5078784f"
@@ -24,18 +24,18 @@
     "sha": "6c0a9f208d284868d72187e00f9b57141ce40c4a"
   },
   "cycles/data-update/data-manager.ts": {
-    "sha": "976d20794eeabbcb1bbff770f1d81aed1cd93024"
+    "sha": "2f8d1d0b2529dd98b854ead5d6480190d9a69898"
   },
   "cycles/data-update/data-update.test.ts": {
     "sha": "bfd6b7b16830141142d2403365aada1ab6fb2d5b"
   },
   "cycles/data-update/data-update.ts": {
-    "sha": "74f52d95a1cc7b0729c578d3ade24f5af57ecbc6"
+    "sha": "f2634d2fc6e39f86ae7f27aca0a5abb79d2abe79"
   },
   "index.ts": {
     "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
   },
-  "md5": "f212df4425acee06ba6b44fd69cf3078",
+  "md5": "1ab50026ec2984130d174de5c6049900",
   "observer/Observer.ts": {
     "sha": "b4de8fbb7900e986100a5fdee1bfa219c416b06c"
   },

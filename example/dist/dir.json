@@ -1,11 +1,11 @@
 {
   "index.js": {
-    "sha": "0872c3912c2eb8ac517c37a00aa8a0e407af3bf7"
+    "sha": "397f902c8e679954ae1cfb62d232938b3cf47b57"
   },
   "index.js.map": {
-    "sha": "21bde3c84e3170c06b215e51b5de44b104b1e546"
+    "sha": "ccf0c0ede180ff7041f1f82e2877b45002913974"
   },
-  "md5": "423e2bc721b890a0a6b5abcfeaa9881b",
+  "md5": "5ed6317cf72d0c377353274b0ce09ef0",
   "signal-room.worker.js": {
     "sha": "8563a46e7ef635eb6fce32cfb77dc86272eb4fcd"
   },
