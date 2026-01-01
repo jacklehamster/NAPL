@@ -20,26 +20,26 @@ export class Processor {
 
   performCycle(context: Context) {
     //  Send out outgoing updates
-    this.#sendOutgoingUpdate(context);
+    this.sendOutgoingUpdate(context);
     //  Process incoming updates
     return commitUpdates(context.root, context.incomingUpdates, context.properties);
   }
 
   receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
     const payload = decode(data) as Payload;
-    this.#addIncomingUpdates(payload.updates, context);
+    this.receiveIncomingUpdates(payload.updates, context);
   }
 
-  #sendOutgoingUpdate(context: Context) {
+  private sendOutgoingUpdate(context: Context) {
     if (!context.outgoingUpdates.length) return;
     //  Apply function to value
     context.outgoingUpdates.forEach(update => {
-      update.path = this.#fixPath(update.path, context);
+      update.path = this.fixPath(update.path, context);
     });
 
     //  Apply incoming updates
     const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
-    this.#addIncomingUpdates(confirmedUpdates, context);
+    this.receiveIncomingUpdates(confirmedUpdates, context);
 
     //  send outgoing updates
     const peerSet = new Set<string | undefined>();
@@ -56,13 +56,13 @@ export class Processor {
     context.outgoingUpdates.length = 0;
   }
 
-  #addIncomingUpdates(updates: Update[] | undefined, context: Context) {
+  private receiveIncomingUpdates(updates: Update[] | undefined, context: Context) {
     if (!updates?.length) return;
     context.incomingUpdates.push(...updates);
     context.onIncomingUpdates?.(updates);
   }
 
-  #fixPath(path: string, context: Context) {
+  private fixPath(path: string, context: Context) {
     const split = path.split("/");
     return split.map(part => translateValue(part, context.properties)).join("/");
   }

@@ -20,7 +20,7 @@ const ACTIVE: UpdateOptions = {
 };
 
 export class Program<T extends Data = Data> implements Context<T> {
-  userId: string;
+  readonly userId: string;
   readonly root: Record<string, T>;
   readonly incomingUpdates: Update[] = [];
   readonly outgoingUpdates: Update[] = [];
