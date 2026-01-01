@@ -4,14 +4,17 @@
 
 import { Data, Program } from "napl";
 import { enterWorld } from "@dobuki/hello-worker";
+import {uniqueNamesGenerator, adjectives, colors, animals} from "unique-names-generator";
+const { generateEmojis } = require("generate-random-emoji");
 
-const root: Data = {};
+const root: Record<string, Data> = {};
 
 const { userId, send, enterRoom, addMessageListener, addUserListener, end } = enterWorld({
   appId: "napl-test",
-  logLine: (dir, msg) => console.log(dir, msg),
   workerUrl: new URL("./signal-room.worker.js", import.meta.url),
 });
+
+let userList: string[] = [];
 
 const program = new Program({
   userId,
@@ -23,7 +26,10 @@ program.connectComm({
     addUserListener((user, action, users) => {
       if (action === "join") {
         listener(user);
+      } else if (action === "leave") {
+        program.setData(`users/${user}`, undefined);
       }
+      userList = users;
     });
   },
   send,
@@ -32,7 +38,12 @@ program.connectComm({
 
 enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
 
+const emoji = generateEmojis(1);
+
+const randomName = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals] });
 program.observe("abc").onChange((value: any) => console.log(value));
+program.setData("users/~{self}/name", randomName);
+program.setData("users/~{self}/emoji", emoji[0].image);
 
 function refreshData() {
   const div: HTMLDivElement = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
@@ -48,6 +59,7 @@ function refreshData() {
 
   const divOut: HTMLDivElement = document.querySelector("#log-div-out") ?? divSplit.appendChild(document.createElement("div"));
   divOut.id = "log-div-out";
+  divOut.style.flex = "1";
   divOut.style.whiteSpace = "pre";
   divOut.style.fontFamily = "monospace";
   divOut.style.fontSize = "12px";
@@ -55,10 +67,28 @@ function refreshData() {
 
   const divIn: HTMLDivElement = document.querySelector("#log-div-in") ?? divSplit.appendChild(document.createElement("div"));
   divIn.id = "log-div-in";
+  divIn.style.flex = "1";
   divIn.style.whiteSpace = "pre";
   divIn.style.fontFamily = "monospace";
   divIn.style.fontSize = "12px";
   divIn.textContent = program.incomingUpdates.length ? "IN\n" + JSON.stringify(program.incomingUpdates, null, 2) : "";
+
+  const divUsers: HTMLDivElement = document.querySelector("#log-div-users") ?? document.body.appendChild(document.createElement("div"));
+  divUsers.id = "log-div-users";
+  divUsers.style.flex = "1";
+  divUsers.style.whiteSpace = "pre";
+  divUsers.style.fontFamily = "monospace";
+  divUsers.style.fontSize = "12px";
+  divUsers.style.position = "absolute";
+  divUsers.style.top = "5px";
+  divUsers.style.right = "5px";
+  console.log([userId, ...userList]);
+  divUsers.textContent = "USERS\n" + 
+    [userId, ...userList].map(userId => {
+      const usrs = root?.users as any;
+      return `${usrs?.[userId]?.emoji} ${usrs?.[userId]?.name}`;
+    }).join("\n");
+
 }
 
 function cycle() {

@@ -11,12 +11,14 @@ export function commitUpdates(root: Data, updates: Update[], properties: Record<
   sortUpdates(updates);
   const updatedPaths: Record<string, any> = {};
   updates.forEach((update) => {
+    console.log("Commit update,", update);
     if (!update.confirmed) {
       return;
     }
 
     const parts = update.path.split("/");
     const leaf: any = getLeafObject(root, parts, 1, true, properties);
+    console.log(">>>", parts, leaf);
     const prop = parts[parts.length - 1];
     const value = translateValue(update.value, properties);
     if (value === undefined) {
