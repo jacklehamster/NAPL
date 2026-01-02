@@ -14502,11 +14502,13 @@ class ObserverManager {
   }
 }
 // ../src/clients/CommInterfaceHook.ts
-function deepShareData(context, pathParts, obj, peer, now, peerProps) {
-  if (typeof obj === "object" && obj && Object.values(obj).length) {
-    Object.entries(obj).forEach(([key, value]) => {
-      deepShareData(context, [...pathParts, key], value, peer, now, peerProps);
-    });
+function deepShareData(context, obj, peerProps, pathParts = [], now = Date.now()) {
+  const shouldGoDeep = typeof obj === "object" && obj && !(obj instanceof ArrayBuffer) && Object.values(obj).length;
+  if (shouldGoDeep) {
+    for (let key in obj) {
+      const value = Array.isArray(obj) ? obj[Number(key)] : obj[key];
+      deepShareData(context, value, peerProps, [...pathParts, key], now);
+    }
   } else {
     setData(now, context.outgoingUpdates, pathParts.join("/"), obj, peerProps);
   }
@@ -14516,7 +14518,7 @@ function hookCommInterface(context, comm, processor) {
     processor.receivedData(buffer, context);
   });
   const removeOnNewClient = comm.onNewClient((peer) => {
-    deepShareData(context, [], context.root, peer, Date.now(), { active: true, peer });
+    deepShareData(context, context.root, { active: true, peer });
   });
   const disconnectComm = processor.connectComm(comm);
   return {
@@ -14931,13 +14933,14 @@ program.onIncomingUpdatesReceived = () => refreshData();
 addEventListener("mousemove", (e2) => {
   program.setData("cursor/pos", { x: e2.pageX, y: e2.pageY });
   program.setData("cursor/emoji", emoji);
+  program.setData("cursor/user", userId);
 });
-program.observe(["cursor/pos", "cursor/emoji"]).onChange(([pos, emoji2]) => {
+program.observe(["cursor/pos", "cursor/emoji", "cursor/user"]).onChange(([pos, emoji2, user]) => {
   const div = document.querySelector("#div-emoji");
   if (div) {
-    console.log(pos, emoji2);
-    div.style.left = `${pos.x + 10}px`;
-    div.style.top = `${pos.y + 10}px`;
+    const offset = user === userId ? [2, 2] : [-div.offsetWidth / 2, -div.offsetHeight / 2];
+    div.style.left = `${pos.x + offset[0]}px`;
+    div.style.top = `${pos.y + offset[1]}px`;
     div.textContent = emoji2;
   }
 });
@@ -14989,6 +14992,8 @@ Last update: ${new Date().toISOString()}
   const divEmoji = document.querySelector("#div-emoji") ?? document.body.appendChild(document.createElement("div"));
   divEmoji.id = "div-emoji";
   divEmoji.style.position = "absolute";
+  divEmoji.style.fontSize = "20pt";
+  divEmoji.style.opacity = ".5";
 }
 function setupGamePlayer() {
   let paused = false;
@@ -15051,4 +15056,4 @@ export {
   program
 };
 
-//# debugId=4CADA635748A6EA064756E2164756E21
+//# debugId=BA87AF500675580164756E2164756E21

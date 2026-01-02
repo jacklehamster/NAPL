@@ -52,13 +52,14 @@ program.onIncomingUpdatesReceived = () => refreshData();
 addEventListener("mousemove", (e: MouseEvent) => {
   program.setData("cursor/pos", {x: e.pageX, y: e.pageY});
   program.setData("cursor/emoji", emoji);
+  program.setData("cursor/user", userId);
 });
-program.observe(["cursor/pos", "cursor/emoji"]).onChange(([pos, emoji]: [any, string]) => {
+program.observe(["cursor/pos", "cursor/emoji", "cursor/user"]).onChange(([pos, emoji, user]: [any, string, string]) => {
   const div = document.querySelector("#div-emoji") as HTMLDivElement;
   if (div) {
-    console.log(pos, emoji);
-    div.style.left = `${pos.x + 10}px`;
-    div.style.top = `${pos.y + 10}px`;
+    const offset = user === userId ? [2, 2]: [-div.offsetWidth / 2, -div.offsetHeight / 2];
+    div.style.left = `${pos.x + offset[0]}px`;
+    div.style.top = `${pos.y + offset[1]}px`;
     div.textContent = emoji;
   }
 });
@@ -111,6 +112,8 @@ function refreshData() {
   const divEmoji: HTMLDivElement = document.querySelector("#div-emoji") ?? document.body.appendChild(document.createElement("div"));
   divEmoji.id = "div-emoji";
   divEmoji.style.position = "absolute";
+  divEmoji.style.fontSize = "20pt";
+  divEmoji.style.opacity = ".5";
 }
 
 function setupGamePlayer() {

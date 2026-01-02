@@ -4,11 +4,13 @@ import { Processor } from "../core/Processor";
 import { setData } from "@/cycles/data-update/data-manager";
 import { Data } from "@/types/Data";
 
-function deepShareData(context: Context, pathParts: string[], obj: Data, peer: string, now: number, peerProps: { active: true; peer: string }) {
-  if (typeof obj === "object" && obj && Object.values(obj).length) {
-    Object.entries(obj).forEach(([key, value]) => {
-      deepShareData(context, [...pathParts,key], value, peer, now, peerProps);
-    });
+export function deepShareData(context: Context, obj: Data, peerProps: { active: true; peer: string }, pathParts: string[] = [], now: number = Date.now()) {
+  const shouldGoDeep = typeof obj === "object" && obj && !(obj instanceof ArrayBuffer) && Object.values(obj).length;
+  if (shouldGoDeep) {
+    for (let key in obj) {
+      const value = Array.isArray(obj) ? obj[Number(key)] : obj[key];
+      deepShareData(context, value, peerProps, [...pathParts, key], now);
+    }
   } else {
     setData(now, context.outgoingUpdates, pathParts.join("/"), obj, peerProps);
   }
@@ -19,7 +21,7 @@ export function hookCommInterface(context: Context, comm: CommInterface, process
     processor.receivedData(buffer, context);
   });
   const removeOnNewClient = comm.onNewClient(peer => {
-    deepShareData(context, [], context.root, peer, Date.now(), { active: true, peer });
+    deepShareData(context, context.root, { active: true, peer });
   });
   const disconnectComm = processor.connectComm(comm);
   return {
