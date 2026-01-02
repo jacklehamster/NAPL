@@ -166,7 +166,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.92",
+    "version": "1.0.93",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
