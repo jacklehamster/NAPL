@@ -41,7 +41,7 @@ export class Observer {
 
     if (this.#previousValues.every((prev, index) => {
       const newValue = newValues[index];
-      if (prev === newValue) {
+      if (prev === newValue && typeof(newValue) !== "object") {
         return true;
       }
       if (Array.isArray(prev) && Array.isArray(newValue)
@@ -62,7 +62,6 @@ export class Observer {
     if (!newValues) {
       return;
     }
-
     const previousValues = this.#previousValues;
     this.#previousValues = newValues;
 

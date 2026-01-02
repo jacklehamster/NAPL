@@ -44,6 +44,7 @@ const emoji = generateEmojis(1);
 const randomName = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals] });
 program.observe("abc").onChange((value: any) => console.log(value));
 program.observe("users/~{keys}").onChange((keys: string[]) => console.log(keys));
+program.observe("users").onChange((users: string[]) => console.log("USERS", users));
 program.setData("users/~{self}/name", randomName);
 program.setData("users/~{self}/emoji", emoji[0].image);
 program.onIncomingUpdatesReceived = () => refreshData();
@@ -76,6 +77,11 @@ function refreshData() {
   divIn.style.fontSize = "12px";
   divIn.textContent = program.incomingUpdates.length ? "IN\n" + JSON.stringify(program.incomingUpdates, null, 2) : "";
 
+  const usrs = root.users as any;
+  const allUsers = [userId, ...userList].map(userId => {
+      return usrs?.[userId];
+  });
+
   const divUsers: HTMLDivElement = document.querySelector("#log-div-users") ?? document.body.appendChild(document.createElement("div"));
   divUsers.id = "log-div-users";
   divUsers.style.flex = "1";
@@ -88,12 +94,11 @@ function refreshData() {
   divUsers.style.padding = "5px";
   divUsers.style.border = "1px solid black";
   divUsers.style.backgroundColor = "#ffffffaa";
-  const usrs = root?.users as any;
   divUsers.textContent = "USERS\n" + 
-    [userId, ...userList].map(userId => {
-      const user = usrs?.[userId];
-      return `${user?.emoji} ${user?.name}`;
-    }).join("\n");
+    allUsers.map(user => `${user?.emoji} ${user?.name}`).join("\n");
+
+  const divEmojis: HTMLDivElement = document.querySelector("#div-emojis") ?? document.body.appendChild(document.createElement("div"));
+  divEmojis.id = "div-emojis";
 }
 
 function cycle() {

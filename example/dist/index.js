@@ -12753,6 +12753,16 @@ var require_generate_random_emoji = __commonJS((exports, module) => {
 
 // ../src/cycles/data-update/data-update.ts
 var NO_OBJ = {};
+function filterArray(array, cond) {
+  let size = 0;
+  for (let i = 0;i < array.length; i++) {
+    array[size] = array[i];
+    if (cond(array[i])) {
+      size++;
+    }
+  }
+  array.length = size;
+}
 function commitUpdates({ root, incomingUpdates, outgoingUpdates, properties }, consolidate) {
   if (consolidate) {
     consolidateUpdates(incomingUpdates, outgoingUpdates);
@@ -12771,21 +12781,18 @@ function commitUpdates({ root, incomingUpdates, outgoingUpdates, properties }, c
     const value = translateValue(update.value, properties);
     if (value === undefined) {
       delete leaf[prop];
-      updatedPaths[parts.slice(0, parts.length - 1).join("/")] = undefined;
+      updatedPaths[parts.slice(0, parts.length).join("/")] = undefined;
+      updatedPaths[parts.slice(0, parts.length - 1).join("/")] = leaf;
       cleanupRoot(root, parts, 0, updatedPaths);
     } else {
+      if (typeof leaf[prop] === undefined) {
+        updatedPaths[parts.slice(0, parts.length).join("/")] = leaf;
+      }
       leaf[prop] = value;
     }
     updatedPaths[update.path] = leaf[prop];
   });
-  let size = 0;
-  for (let i = 0;i < incomingUpdates.length; i++) {
-    incomingUpdates[size] = incomingUpdates[i];
-    if (!incomingUpdates[i].confirmed) {
-      size++;
-    }
-  }
-  incomingUpdates.length = size;
+  filterArray(incomingUpdates, (update) => !update.confirmed);
   return updatedPaths;
 }
 function cleanupRoot(root, parts, index, updatedPaths) {
@@ -12794,7 +12801,10 @@ function cleanupRoot(root, parts, index, updatedPaths) {
   }
   if (cleanupRoot(root[parts[index]], parts, index + 1, updatedPaths)) {
     delete root[parts[index]];
-    updatedPaths[parts.slice(0, index - 1).join("/")] = undefined;
+    const leafPath = parts.slice(0, index + 1);
+    updatedPaths[leafPath.join("/")] = undefined;
+    leafPath.pop();
+    updatedPaths[leafPath.join("/")] = root;
   }
   return Object.keys(root).length === 0;
 }
@@ -12828,22 +12838,8 @@ function consolidateUpdates(incoming, outgoing) {
       }
     }
   }
-  let size = 0;
-  for (let i = 0;i < incoming.length; i++) {
-    incoming[size] = incoming[i];
-    if (!incoming[i].confirmed || _map.get(incoming[i].path) === incoming[i]) {
-      size++;
-    }
-  }
-  incoming.length = size;
-  size = 0;
-  for (let i = 0;i < outgoing.length; i++) {
-    outgoing[size] = outgoing[i];
-    if (!outgoing[i].confirmed || _map.get(outgoing[i].path) === outgoing[i]) {
-      size++;
-    }
-  }
-  outgoing.length = size;
+  filterArray(incoming, (update) => !update.confirmed || _map.get(update.path) === update);
+  filterArray(outgoing, (update) => !update.confirmed || _map.get(update.path) === update);
   _map.clear();
 }
 function getLeafObject(obj, parts, offset, autoCreate, properties, updatedPaths) {
@@ -12851,7 +12847,7 @@ function getLeafObject(obj, parts, offset, autoCreate, properties, updatedPaths)
   const pathParts = [];
   for (let i = 0;i < parts.length - offset; i++) {
     const prop = parts[i];
-    const value = translateProp(current, prop, properties, autoCreate, updatedPaths, parts.slice(0, i).join("/"));
+    const value = translateProp(current, prop, properties, autoCreate, updatedPaths, parts.slice(0, i + 1).join("/"));
     if (value === undefined) {
       return value;
     }
@@ -12874,7 +12870,7 @@ function translateValue(value, properties) {
   }
   return value;
 }
-function translateProp(obj, prop, properties, autoCreate = false, updatePaths, path) {
+function translateProp(obj, prop, properties, autoCreate = false, updatedPaths, path) {
   let value;
   if (typeof prop !== "string") {
     value = obj[prop];
@@ -12892,8 +12888,8 @@ function translateProp(obj, prop, properties, autoCreate = false, updatePaths, p
   }
   if (value === undefined && autoCreate) {
     value = obj[prop] = {};
-    if (updatePaths && path) {
-      updatePaths[path] = value;
+    if (updatedPaths && path) {
+      updatedPaths[path] = value;
     }
   }
   return value;
@@ -14420,7 +14416,7 @@ class Observer {
     const newValues = this.paths.map((path, index) => updates && (path in updates) ? updates[path] : getLeafObject(context.root, this.#partsArrays[index], 0, false, context.properties));
     if (this.#previousValues.every((prev, index) => {
       const newValue = newValues[index];
-      if (prev === newValue) {
+      if (prev === newValue && typeof newValue !== "object") {
         return true;
       }
       if (Array.isArray(prev) && Array.isArray(newValue) && prev.length === newValue.length && prev.every((elem, idx) => elem === newValue[idx])) {
@@ -14504,7 +14500,7 @@ class ObserverManager {
   }
   #tempObsTriggered = new Set;
   triggerObservers(context, updates) {
-    for (let path in updates) {
+    for (const path in updates) {
       this.observers.get(path)?.forEach((observer) => this.#tempObsTriggered.add(observer));
     }
     this.#tempObsTriggered.forEach((o) => o.triggerIfChanged(context, updates));
@@ -14602,261 +14598,261 @@ class Program {
   }
 }
 // node_modules/@dobuki/hello-worker/dist/index.js
-function O(X) {
-  let { userId: Y, appId: M, room: R, host: h, autoRejoin: Q = true, logLine: q } = X, Z = false, $ = 0, B, W, _ = true, A = new Map, V = `wss://${h}/room/${M}/${R}?userId=${encodeURIComponent(Y)}`;
-  function S() {
-    if (Z)
+function n(Y) {
+  let { userId: Z, appId: x, room: E, host: N, autoRejoin: q = true, logLine: C } = Y, K = false, _ = 0, Q, S, F = true, V = new Map, $ = `wss://${N}/room/${x}/${E}?userId=${encodeURIComponent(Z)}`;
+  function J() {
+    if (K)
       return;
-    B = new WebSocket(V), B.onopen = () => {
-      if (_)
-        X.onOpen?.(), _ = false;
-      $ = 0;
-    }, B.onmessage = (D) => {
+    Q = new WebSocket($), Q.onopen = () => {
+      if (F)
+        Y.onOpen?.(), F = false;
+      _ = 0;
+    }, Q.onmessage = (H) => {
       try {
-        let c = JSON.parse(D.data);
-        if (q?.("\uD83D\uDDA5️ ➡️ \uD83D\uDC64", c), c.type === "peer-joined" || c.type === "peer-left")
-          f(c.users);
+        let c = JSON.parse(H.data);
+        if (C?.("\uD83D\uDDA5️ ➡️ \uD83D\uDC64", c), c.type === "peer-joined" || c.type === "peer-left")
+          O(c.users);
         else if (c.peerId && c.userId)
-          X.onMessage(c.type, c.payload, { userId: c.userId, peerId: c.peerId, receive: (z, K) => J(z, c.peerId, K) });
+          Y.onMessage(c.type, c.payload, { userId: c.userId, peerId: c.peerId, receive: (T, B) => A(T, c.peerId, B) });
       } catch {
-        q?.("⚠️ ERROR", { error: "invalid-json" });
+        C?.("⚠️ ERROR", { error: "invalid-json" });
       }
-    }, B.onclose = (D) => {
-      let z = [1001, 1006, 1011, 1012, 1013].includes(D.code);
-      if (Q && !Z && z) {
-        let K = Math.min(Math.pow(2, $) * 1000, 30000), T = Math.random() * 1000, b = K + T;
-        q?.("\uD83D\uDD04 RECONNECTING", { attempt: $ + 1, delayMs: Math.round(b) }), $++, W = setTimeout(S, b);
+    }, Q.onclose = (H) => {
+      let T = [1001, 1006, 1011, 1012, 1013].includes(H.code);
+      if (q && !K && T) {
+        let B = Math.min(Math.pow(2, _) * 1000, 30000), b = Math.random() * 1000, W = B + b;
+        C?.("\uD83D\uDD04 RECONNECTING", { attempt: _ + 1, delayMs: Math.round(W) }), _++, S = setTimeout(J, W);
       } else
-        X.onClose?.({ code: D.code, reason: D.reason, wasClean: D.wasClean });
-    }, B.onerror = () => X.onError?.();
+        Y.onClose?.({ code: H.code, reason: H.reason, wasClean: H.wasClean });
+    }, Q.onerror = () => Y.onError?.();
   }
-  function J(D, c, z) {
-    if (Z || B.readyState !== WebSocket.OPEN)
+  function A(H, c, T) {
+    if (K || Q.readyState !== WebSocket.OPEN)
       return false;
-    let K = { type: D, to: c, payload: z };
-    return B.send(JSON.stringify(K)), q?.("\uD83D\uDC64 ➡️ \uD83D\uDDA5️", K), true;
+    let B = { type: H, to: c, payload: T };
+    return Q.send(JSON.stringify(B)), C?.("\uD83D\uDC64 ➡️ \uD83D\uDDA5️", B), true;
   }
-  function f(D) {
-    let c = [], z = [], K = new Set;
-    D.forEach(({ userId: T, peerId: b }) => {
-      if (T === Y)
+  function O(H) {
+    let c = [], T = [], B = new Set;
+    H.forEach(({ userId: b, peerId: W }) => {
+      if (b === Z)
         return;
-      if (!A.has(b)) {
-        let F = { userId: T, peerId: b, receive: (G, H) => J(G, b, H) };
-        A.set(b, F), c.push(F);
+      if (!V.has(W)) {
+        let f = { userId: b, peerId: W, receive: (D, z) => A(D, W, z) };
+        V.set(W, f), c.push(f);
       }
-      K.add(b);
+      B.add(W);
     });
-    for (let [T, b] of A.entries())
-      if (!K.has(T))
-        A.delete(T), z.push({ peerId: T, userId: b.userId });
+    for (let [b, W] of V.entries())
+      if (!B.has(b))
+        V.delete(b), T.push({ peerId: b, userId: W.userId });
     if (c.length)
-      X.onPeerJoined(c);
-    if (z.length)
-      X.onPeerLeft(z);
+      Y.onPeerJoined(c);
+    if (T.length)
+      Y.onPeerLeft(T);
   }
-  return S(), { exitRoom: () => {
-    Z = true, clearTimeout(W), B.close();
+  return J(), { exitRoom: () => {
+    K = true, clearTimeout(S), Q.close();
   } };
 }
-function N({ userId: X, appId: Y, room: M, host: R, autoRejoin: h = true, onOpen: Q, onClose: q, onError: Z, onPeerJoined: $, onPeerLeft: B, onMessage: W, logLine: _, workerUrl: A }) {
-  if (!A)
-    return console.warn("Warning: enterRoom called without workerUrl; this may cause issues in some environments. You should pass workerUrl explicitly. Use:", "https://cdn.jsdelivr.net/npm/@dobuki/hello-worker/dist/signal-room.worker.min.js"), O({ userId: X, appId: Y, room: M, host: R, autoRejoin: h, onOpen: Q, onClose: q, onError: Z, onPeerJoined: $, onPeerLeft: B, onMessage: W });
-  let V = new Worker(A, { type: "module" }), S = false;
-  function J({ userId: D, peerId: c }) {
-    return { userId: D, peerId: c, receive: (z, K) => {
-      if (S)
+function R({ userId: Y, appId: Z, room: x, host: E, autoRejoin: N = true, onOpen: q, onClose: C, onError: K, onPeerJoined: _, onPeerLeft: Q, onMessage: S, logLine: F, workerUrl: V }) {
+  if (!V)
+    return console.warn("Warning: enterRoom called without workerUrl; this may cause issues in some environments. You should pass workerUrl explicitly. Use:", "https://cdn.jsdelivr.net/npm/@dobuki/hello-worker/dist/signal-room.worker.min.js"), n({ userId: Y, appId: Z, room: x, host: E, autoRejoin: N, onOpen: q, onClose: C, onError: K, onPeerJoined: _, onPeerLeft: Q, onMessage: S });
+  let $ = new Worker(V, { type: "module" }), J = false;
+  function A({ userId: H, peerId: c }) {
+    return { userId: H, peerId: c, receive: (T, B) => {
+      if (J)
         return false;
-      return V.postMessage({ cmd: "send", toPeerId: c, type: z, payload: K }), true;
+      return $.postMessage({ cmd: "send", toPeerId: c, type: T, payload: B }), true;
     } };
   }
-  let f = (D) => {
-    let c = D.data;
+  let O = (H) => {
+    let c = H.data;
     if (c.kind === "open")
-      Q?.();
+      q?.();
     else if (c.kind === "close")
-      V.terminate(), q?.(c.ev);
+      $.terminate(), C?.(c.ev);
     else if (c.kind === "error")
-      Z?.();
+      K?.();
     else if (c.kind === "peer-joined")
-      $(c.users.map((z) => J({ userId: z.userId, peerId: z.peerId })));
+      _(c.users.map((T) => A({ userId: T.userId, peerId: T.peerId })));
     else if (c.kind === "peer-left")
-      B(c.users);
+      Q(c.users);
     else if (c.kind === "message")
-      W(c.type, c.payload, J({ userId: c.fromUserId, peerId: c.fromPeerId }));
+      S(c.type, c.payload, A({ userId: c.fromUserId, peerId: c.fromPeerId }));
     else if (c.kind === "log")
-      _?.(c.direction, c.obj);
+      F?.(c.direction, c.obj);
   };
-  return V.addEventListener("message", f), V.postMessage({ cmd: "enter", userId: X, appId: Y, room: M, host: R, autoRejoin: h }), { exitRoom: () => {
-    S = true, V.removeEventListener("message", f), V.postMessage({ cmd: "exit" });
+  return $.addEventListener("message", O), $.postMessage({ cmd: "enter", userId: Y, appId: Z, room: x, host: E, autoRejoin: N }), { exitRoom: () => {
+    J = true, $.removeEventListener("message", O), $.postMessage({ cmd: "exit" });
   } };
 }
-var j = N;
-function E({ appId: X, receivePeerConnection: Y, peerlessUserExpiration: M, rtcConfig: R = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }, enterRoomFunction: h = j, logLine: Q = console.debug, onLeaveUser: q, workerUrl: Z }) {
-  let $ = `user-${crypto.randomUUID()}`, B = new Map;
-  function W(f) {
-    let D = B.get(f.userId), c = false;
-    if (!D) {
-      let z = { userId: f.userId, pc: new RTCPeerConnection(R), pendingRemoteIce: [], peers: new Map };
-      z.peers.set(f.peerId, f), B.set(f.userId, z), z.pc.onicecandidate = (K) => {
-        if (!K.candidate)
+var j = R;
+function L({ appId: Y, receivePeerConnection: Z, peerlessUserExpiration: x, rtcConfig: E = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }, enterRoomFunction: N = j, logLine: q = console.debug, onLeaveUser: C, workerUrl: K, onRoomReady: _, onRoomClose: Q }) {
+  let S = `user-${crypto.randomUUID()}`, F = new Map;
+  function V(c) {
+    let T = F.get(c.userId), B = false;
+    if (!T) {
+      let b = { userId: c.userId, pc: new RTCPeerConnection(E), pendingRemoteIce: [], peers: new Map };
+      b.peers.set(c.peerId, c), F.set(c.userId, b), b.pc.onicecandidate = (W) => {
+        if (!W.candidate)
           return;
-        for (let T of z.peers.values())
-          if (T.receive("ice", K.candidate.toJSON()))
+        for (let f of b.peers.values())
+          if (f.receive("ice", W.candidate.toJSON()))
             break;
-      }, z.pc.onconnectionstatechange = () => {
-        Q("\uD83D\uDCAC", { event: "pc-state", userId: z.userId, state: z.pc.connectionState });
-      }, D = z, B.set(D.userId, D), c = true;
-    } else if (D)
-      clearTimeout(D.expirationTimeout), D.expirationTimeout = 0, D.peers.set(f.peerId, f);
-    return [D, c];
+      }, b.pc.onconnectionstatechange = () => {
+        q("\uD83D\uDCAC", { event: "pc-state", userId: b.userId, state: b.pc.connectionState });
+      }, T = b, F.set(T.userId, T), B = true;
+    } else if (T)
+      clearTimeout(T.expirationTimeout), T.expirationTimeout = 0, T.peers.set(c.peerId, c);
+    return [T, B];
   }
-  function _(f) {
-    q?.(f);
-    let D = B.get(f);
-    if (!D)
+  function $(c) {
+    C?.(c);
+    let T = F.get(c);
+    if (!T)
       return;
     try {
-      D.pc.close();
+      T.pc.close();
     } catch {}
-    B.delete(f);
+    F.delete(c);
   }
-  async function A(f) {
-    if (!f.pc.remoteDescription)
+  async function J(c) {
+    if (!c.pc.remoteDescription)
       return;
-    let D = f.pendingRemoteIce;
-    f.pendingRemoteIce = [];
-    for (let c of D)
+    let T = c.pendingRemoteIce;
+    c.pendingRemoteIce = [];
+    for (let B of T)
       try {
-        await f.pc.addIceCandidate(c);
-      } catch (z) {
-        Q("⚠️ ERROR", { error: "add-ice-failed", userId: f.userId, detail: String(z) });
+        await c.pc.addIceCandidate(B);
+      } catch (b) {
+        q("⚠️ ERROR", { error: "add-ice-failed", userId: c.userId, detail: String(b) });
       }
   }
-  let V = new Map;
-  function S({ room: f, host: D }) {
-    let c = `${D}/room/${f}`, z = V.get(c);
-    if (z)
-      z.exitRoom(), V.delete(c);
+  let A = new Map;
+  function O({ room: c, host: T }) {
+    let B = `${T}/room/${c}`, b = A.get(B);
+    if (b)
+      b.exitRoom(), A.delete(B);
   }
-  function J({ room: f, host: D }) {
-    return new Promise((c, z) => {
-      async function K(b) {
-        let [F] = W(b), G = F.pc, H = await G.createOffer();
-        await G.setLocalDescription(H), b.receive("offer", G.localDescription?.toJSON());
+  function H({ room: c, host: T }) {
+    return new Promise((B, b) => {
+      async function W(D) {
+        let [z] = V(D), G = z.pc, X = await G.createOffer();
+        await G.setLocalDescription(X), D.receive("offer", G.localDescription?.toJSON());
       }
-      let { exitRoom: T } = h({ userId: $, appId: X, room: f, host: D, logLine: Q, workerUrl: Z, autoRejoin: true, onOpen() {
-        console.log("onOpen"), c();
+      let { exitRoom: f } = N({ userId: S, appId: Y, room: c, host: T, logLine: q, workerUrl: K, autoRejoin: true, onOpen() {
+        _?.({ room: c, host: T }), B();
       }, onError() {
-        console.log("onError"), z();
-      }, onClose(b) {
-        console.log("onClose", b);
-      }, onPeerJoined(b) {
-        b.forEach((F) => {
-          let [G, H] = W(F);
-          if (!H)
+        console.error("onError"), b();
+      }, onClose(D) {
+        Q?.({ room: c, host: T, ev: D });
+      }, onPeerJoined(D) {
+        D.forEach((z) => {
+          let [G, X] = V(z);
+          if (!X)
             return;
-          let C = G.pc;
-          Y({ pc: C, userId: F.userId, initiator: true }), K(F);
+          let M = G.pc;
+          Z({ pc: M, userId: z.userId, initiator: true }), W(z);
         });
-      }, onPeerLeft(b) {
-        b.forEach(({ userId: F, peerId: G }) => {
-          let H = B.get(F);
-          if (!H)
+      }, onPeerLeft(D) {
+        D.forEach(({ userId: z, peerId: G }) => {
+          let X = F.get(z);
+          if (!X)
             return;
-          if (H.peers.delete(G), !H.peers.size)
-            H.expirationTimeout = setTimeout(() => _(F), M ?? 0);
+          if (X.peers.delete(G), !X.peers.size)
+            X.expirationTimeout = setTimeout(() => $(z), x ?? 0);
         });
-      }, async onMessage(b, F, G) {
-        let [H] = W(G), C = H.pc;
-        if (b === "offer") {
-          Y({ pc: C, userId: G.userId, initiator: false }), await C.setRemoteDescription(F);
-          let x = await C.createAnswer();
-          await C.setLocalDescription(x), G.receive("answer", C.localDescription?.toJSON()), await A(H);
+      }, async onMessage(D, z, G) {
+        let [X] = V(G), M = X.pc;
+        if (D === "offer") {
+          Z({ pc: M, userId: G.userId, initiator: false }), await M.setRemoteDescription(z);
+          let h = await M.createAnswer();
+          await M.setLocalDescription(h), G.receive("answer", M.localDescription?.toJSON()), await J(X);
           return;
         }
-        if (b === "answer") {
-          await C.setRemoteDescription(F), await A(H);
+        if (D === "answer") {
+          await M.setRemoteDescription(z), await J(X);
           return;
         }
-        if (b === "ice") {
-          let x = F;
-          if (!C.remoteDescription) {
-            H.pendingRemoteIce.push(x);
+        if (D === "ice") {
+          let h = z;
+          if (!M.remoteDescription) {
+            X.pendingRemoteIce.push(h);
             return;
           }
           try {
-            await C.addIceCandidate(x);
-          } catch (L) {
-            Q("⚠️ ERROR", { error: "add-ice-failed", userId: H.userId, detail: String(L) });
+            await M.addIceCandidate(h);
+          } catch (g) {
+            q("⚠️ ERROR", { error: "add-ice-failed", userId: X.userId, detail: String(g) });
           }
           return;
         }
       } });
-      V.set(`${D}/room/${f}`, { exitRoom: T, room: f, host: D });
+      A.set(`${T}/room/${c}`, { exitRoom: f, room: c, host: T });
     });
   }
-  return { userId: $, enterRoom: J, exitRoom: S, leaveUser: _, end() {
-    V.forEach(({ exitRoom: f }) => f()), V.clear(), B.forEach(({ userId: f }) => _(f)), B.clear();
+  return { userId: S, enterRoom: H, exitRoom: O, leaveUser: $, end() {
+    A.forEach(({ exitRoom: c }) => c()), A.clear(), F.forEach(({ userId: c }) => $(c)), F.clear();
   } };
 }
-function U({ appId: X, logLine: Y = console.debug, enterRoomFunction: M = N, peerlessUserExpiration: R, workerUrl: h }) {
-  let Q = [], q = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }, Z = new Set;
-  function $(T, b) {
-    b.onopen = () => {
-      Y("\uD83D\uDCAC", { event: "dc-open", userId: T }), Q.push(T), W.forEach((F) => F(T, "join", Q));
-    }, b.onmessage = ({ data: F }) => {
-      Z.forEach((G) => G(F, T)), Y("\uD83D\uDCAC", { event: "dc-message", userId: T, data: F });
-    }, b.onclose = () => {
-      Y("\uD83D\uDCAC", { event: "dc-close", userId: T }), Q.splice(Q.indexOf(T), 1), W.forEach((F) => F(T, "leave", Q));
-    }, b.onerror = () => Y("⚠️ ERROR", { error: "dc-error", userId: T });
+function U({ appId: Y, logLine: Z = console.debug, enterRoomFunction: x = R, peerlessUserExpiration: E, workerUrl: N, onRoomReady: q, onRoomClose: C }) {
+  let K = [], _ = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }, Q = new Set;
+  function S(f, D) {
+    D.onopen = () => {
+      Z("\uD83D\uDCAC", { event: "dc-open", userId: f }), K.push(f), V.forEach((z) => z(f, "join", K));
+    }, D.onmessage = ({ data: z }) => {
+      Q.forEach((G) => G(z, f)), Z("\uD83D\uDCAC", { event: "dc-message", userId: f, data: z });
+    }, D.onclose = () => {
+      Z("\uD83D\uDCAC", { event: "dc-close", userId: f }), K.splice(K.indexOf(f), 1), V.forEach((z) => z(f, "leave", K));
+    }, D.onerror = () => Z("⚠️ ERROR", { error: "dc-error", userId: f });
   }
-  let B = new Map, W = new Set, { userId: _, enterRoom: A, exitRoom: V, leaveUser: S, end: J } = E({ appId: X, rtcConfig: q, enterRoomFunction: M, logLine: Y, workerUrl: h, peerlessUserExpiration: R, onLeaveUser(T) {
-    let b = B.get(T);
+  let F = new Map, V = new Set, { userId: $, enterRoom: J, exitRoom: A, leaveUser: O, end: H } = L({ appId: Y, rtcConfig: _, enterRoomFunction: x, logLine: Z, workerUrl: N, peerlessUserExpiration: E, onRoomReady: q, onRoomClose: C, onLeaveUser(f) {
+    let D = F.get(f);
     try {
-      b?.close();
+      D?.close();
     } catch {}
-    B.delete(T);
-  }, receivePeerConnection({ pc: T, userId: b, initiator: F }) {
-    if (F) {
-      let G = T.createDataChannel("data");
-      $(b, G), B.set(b, G);
+    F.delete(f);
+  }, receivePeerConnection({ pc: f, userId: D, initiator: z }) {
+    if (z) {
+      let G = f.createDataChannel("data");
+      S(D, G), F.set(D, G);
     } else
-      T.ondatachannel = (G) => {
-        let H = G.channel;
-        $(b, H), B.set(b, H), T.ondatachannel = null;
+      f.ondatachannel = (G) => {
+        let X = G.channel;
+        S(D, X), F.set(D, X), f.ondatachannel = null;
       };
   } });
-  function f(T, b) {
-    B.forEach((F, G) => {
-      if (b && G !== b)
+  function c(f, D) {
+    F.forEach((z, G) => {
+      if (D && G !== D)
         return;
-      if (F.readyState === "open")
-        F.send(T);
+      if (z.readyState === "open")
+        z.send(f);
     });
   }
-  function D(T) {
-    Z.delete(T);
+  function T(f) {
+    Q.delete(f);
   }
-  function c(T) {
-    return Z.add(T), () => {
-      D(T);
+  function B(f) {
+    return Q.add(f), () => {
+      T(f);
     };
   }
-  function z(T) {
-    W.delete(T);
+  function b(f) {
+    V.delete(f);
   }
-  function K(T) {
-    return W.add(T), () => {
-      z(T);
+  function W(f) {
+    return V.add(f), () => {
+      b(f);
     };
   }
-  return { userId: _, send: f, enterRoom: A, exitRoom: V, leaveUser: S, getUsers: () => Q, addMessageListener: c, removeMessageListener: D, addUserListener: K, removeUserListener: z, end() {
-    B.forEach((T) => {
+  return { userId: $, send: c, enterRoom: J, exitRoom: A, leaveUser: O, getUsers: () => K, addMessageListener: B, removeMessageListener: T, addUserListener: W, removeUserListener: b, end() {
+    F.forEach((f) => {
       try {
-        T.close();
+        f.close();
       } catch {}
-    }), B.clear(), J(), W.clear(), Q.length = 0;
+    }), F.clear(), H(), V.clear(), K.length = 0;
   } };
 }
 
@@ -14870,8 +14866,8 @@ var a = (a2) => {
 class e {
   constructor(a2) {
     this.dictionaries = undefined, this.length = undefined, this.separator = undefined, this.style = undefined, this.seed = undefined;
-    const { length: e2, separator: i, dictionaries: n, style: l, seed: r } = a2;
-    this.dictionaries = n, this.separator = i, this.length = e2, this.style = l, this.seed = r;
+    const { length: e2, separator: i, dictionaries: n2, style: l, seed: r } = a2;
+    this.dictionaries = n2, this.separator = i, this.length = e2, this.style = l, this.seed = r;
   }
   generate() {
     if (!this.dictionaries)
@@ -14882,16 +14878,16 @@ class e {
       throw new Error(`The length cannot be bigger than the number of dictionaries.
 Length provided: ${this.length}. Number of dictionaries provided: ${this.dictionaries.length}`);
     let e2 = this.seed;
-    return this.dictionaries.slice(0, this.length).reduce((i, n) => {
+    return this.dictionaries.slice(0, this.length).reduce((i, n2) => {
       let l;
       e2 ? (l = ((e3) => {
         if (typeof e3 == "string") {
-          const i2 = e3.split("").map((a2) => a2.charCodeAt(0)).reduce((a2, e4) => a2 + e4, 1), n2 = Math.floor(Number(i2));
-          return a(n2);
+          const i2 = e3.split("").map((a2) => a2.charCodeAt(0)).reduce((a2, e4) => a2 + e4, 1), n3 = Math.floor(Number(i2));
+          return a(n3);
         }
         return a(e3);
       })(e2), e2 = 4294967296 * l) : l = Math.random();
-      let r = n[Math.floor(l * n.length)] || "";
+      let r = n2[Math.floor(l * n2.length)] || "";
       if (this.style === "lowerCase")
         r = r.toLowerCase();
       else if (this.style === "capital") {
@@ -14904,8 +14900,8 @@ Length provided: ${this.length}. Number of dictionaries provided: ${this.diction
   }
 }
 var i = { separator: "_", dictionaries: [] };
-var n = (a2) => {
-  const n2 = [...a2 && a2.dictionaries || i.dictionaries], l = { ...i, ...a2, length: a2 && a2.length || n2.length, dictionaries: n2 };
+var n2 = (a2) => {
+  const n3 = [...a2 && a2.dictionaries || i.dictionaries], l = { ...i, ...a2, length: a2 && a2.length || n3.length, dictionaries: n3 };
   if (!a2 || !a2.dictionaries || !a2.dictionaries.length)
     throw new Error('A "dictionaries" array must be provided. This is a breaking change introduced starting from Unique Name Generator v4. Read more about the breaking change here: https://github.com/andreasonny83/unique-names-generator#migration-guide');
   return new e(l).generate();
@@ -14944,9 +14940,10 @@ program.connectComm({
 });
 enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
 var emoji = generateEmojis(1);
-var randomName = n({ dictionaries: [l, t, r] });
+var randomName = n2({ dictionaries: [l, t, r] });
 program.observe("abc").onChange((value) => console.log(value));
 program.observe("users/~{keys}").onChange((keys) => console.log(keys));
+program.observe("users").onChange((users) => console.log("USERS", users));
 program.setData("users/~{self}/name", randomName);
 program.setData("users/~{self}/emoji", emoji[0].image);
 program.onIncomingUpdatesReceived = () => refreshData();
@@ -14978,6 +14975,10 @@ Last update: ${new Date().toISOString()}
   divIn.style.fontSize = "12px";
   divIn.textContent = program.incomingUpdates.length ? `IN
 ` + JSON.stringify(program.incomingUpdates, null, 2) : "";
+  const usrs = root.users;
+  const allUsers = [userId, ...userList].map((userId2) => {
+    return usrs?.[userId2];
+  });
   const divUsers = document.querySelector("#log-div-users") ?? document.body.appendChild(document.createElement("div"));
   divUsers.id = "log-div-users";
   divUsers.style.flex = "1";
@@ -14990,13 +14991,11 @@ Last update: ${new Date().toISOString()}
   divUsers.style.padding = "5px";
   divUsers.style.border = "1px solid black";
   divUsers.style.backgroundColor = "#ffffffaa";
-  const usrs = root?.users;
   divUsers.textContent = `USERS
-` + [userId, ...userList].map((userId2) => {
-    const user = usrs?.[userId2];
-    return `${user?.emoji} ${user?.name}`;
-  }).join(`
+` + allUsers.map((user) => `${user?.emoji} ${user?.name}`).join(`
 `);
+  const divEmojis = document.querySelector("#div-emojis") ?? document.body.appendChild(document.createElement("div"));
+  divEmojis.id = "div-emojis";
 }
 function cycle() {
   if (program.performCycle()) {
@@ -15064,4 +15063,4 @@ export {
   program
 };
 
-//# debugId=483F1E9608D32FC264756E2164756E21
+//# debugId=B4E4D346D5D0827464756E2164756E21

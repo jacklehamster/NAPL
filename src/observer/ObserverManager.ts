@@ -30,7 +30,7 @@ export class ObserverManager {
 
   readonly #tempObsTriggered = new Set<Observer>();
   triggerObservers(context: Context, updates: Record<string, any>) {
-    for (let path in updates) {
+    for (const path in updates) {
       this.observers.get(path)?.forEach(observer => this.#tempObsTriggered.add(observer));
     }
     this.#tempObsTriggered.forEach(o => o.triggerIfChanged(context, updates));
