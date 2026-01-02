@@ -1,9 +1,12 @@
 {
+  "clients/CommInterface.test.ts": {
+    "sha": "6a3c567cd691803d1e4565c033b4a36b662d4bac"
+  },
   "clients/CommInterface.ts": {
     "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
   },
   "clients/CommInterfaceHook.ts": {
-    "sha": "76d7ce8522583f1040cf4784f28d9562c3ea8edc"
+    "sha": "85190878bdfa8cf7fc76b894c10bc6080b189f4f"
   },
   "context/Context.ts": {
     "sha": "d37cd37be0d9c7db9f49a518ba4281268f903e0b"
@@ -32,7 +35,7 @@
   "index.ts": {
     "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
   },
-  "md5": "310af6d78c26ff54bf805f5b5fb38f56",
+  "md5": "99da6b8ed7716a4e954bb191ff06c7c0",
   "observer/Observer.ts": {
     "sha": "d541ac4a45f4e9247e33267a554a6a377ea44223"
   },
