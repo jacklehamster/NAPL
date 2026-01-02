@@ -3,6 +3,6 @@ import { Data } from "./Data";
 export interface Update {
   path: string;
   value?: Data;
-  confirmed?: number;
+  confirmed: number;
   peer?: string;
 }

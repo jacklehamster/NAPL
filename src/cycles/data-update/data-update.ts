@@ -51,20 +51,24 @@ function cleanupRoot(root: any, parts: (string | number)[], index: number, updat
   return Object.keys(root).length === 0;
 }
 
-function sortUpdates(updates: Update[]) {
-  updates.sort((a, b) => {
-    const confirmedA = a.confirmed ?? 0;
-    const confirmedB = b.confirmed ?? 0;
-    if (confirmedA !== confirmedB) {
-      return confirmedA - confirmedB;
+function compareUpdates(a: Update, b: Update) {
+    if (a.confirmed !== b.confirmed) {
+      return a.confirmed - b.confirmed;
     }
     return a.path.localeCompare(b.path);
-  });
+}
+
+function sortUpdates(updates: Update[]) {
+  updates.sort(compareUpdates);
+}
+
+export function consolidateUpdates(incoming: Update[], outgoing: Update[]) {
 }
 
 //  Dig into the object to get the leaf object, given the parts of the path
 export function getLeafObject(obj: Data, parts: (string | number)[], offset: number, autoCreate: boolean, properties: Record<string, any>, updatedPaths?: Record<string, any>): Data {
   let current = obj;
+  const pathParts: string[] = [];
   for (let i = 0; i < parts.length - offset; i++) {
     const prop = parts[i];
     const value = translateProp(current, prop, properties, autoCreate, updatedPaths, parts.slice(0, i).join("/"));
