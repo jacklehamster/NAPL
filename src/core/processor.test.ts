@@ -1,5 +1,5 @@
 import { OutgoingCom } from "../clients/CommInterface";
-import { Context, createContext } from "../context/Context";
+import { Context } from "../context/Context";
 import { Data } from "../types/Data";
 import { Processor } from "./Processor";
 
@@ -9,12 +9,18 @@ describe('Processor', () => {
   let context: Context | undefined;
 
   beforeEach(() => {
-    const root: Data = {
-      type: 'test',
-      abc: 123,
-      array: [1, 2, 3],
+    const ctx: Context = {
+      userId: "123",
+      root: {
+        type: 'test',
+        abc: 123,
+        array: [1, 2, 3],
+      },
+      incomingUpdates: [],
+      outgoingUpdates: [],
+      properties: {},
+      now: 0
     };
-    const ctx = createContext(root);
     processor = new Processor();
     outgoingComm = {
       send(u8) {

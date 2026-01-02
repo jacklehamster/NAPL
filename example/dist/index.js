@@ -14293,21 +14293,21 @@ class Processor {
     };
   }
   performCycle(context) {
-    this.#sendOutgoingUpdate(context);
+    this.sendOutgoingUpdate(context);
     return commitUpdates(context.root, context.incomingUpdates, context.properties);
   }
   receivedData(data, context) {
     const payload = decode(data);
-    this.#addIncomingUpdates(payload.updates, context);
+    this.receiveIncomingUpdates(payload.updates, context);
   }
-  #sendOutgoingUpdate(context) {
+  sendOutgoingUpdate(context) {
     if (!context.outgoingUpdates.length)
       return;
     context.outgoingUpdates.forEach((update) => {
-      update.path = this.#fixPath(update.path, context);
+      update.path = this.fixPath(update.path, context);
     });
     const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
-    this.#addIncomingUpdates(confirmedUpdates, context);
+    this.receiveIncomingUpdates(confirmedUpdates, context);
     const peerSet = new Set;
     context.outgoingUpdates.forEach((update) => peerSet.add(update.peer));
     peerSet.forEach((peer) => {
@@ -14319,13 +14319,13 @@ class Processor {
     });
     context.outgoingUpdates.length = 0;
   }
-  #addIncomingUpdates(updates, context) {
+  receiveIncomingUpdates(updates, context) {
     if (!updates?.length)
       return;
     context.incomingUpdates.push(...updates);
     context.onIncomingUpdates?.(updates);
   }
-  #fixPath(path, context) {
+  fixPath(path, context) {
     const split = path.split("/");
     return split.map((part) => translateValue(part, context.properties)).join("/");
   }
@@ -14525,7 +14525,6 @@ class Program {
   root;
   incomingUpdates = [];
   outgoingUpdates = [];
-  updateTimestamp = {};
   properties;
   processor = new Processor;
   observerManager = new ObserverManager;
@@ -15039,4 +15038,4 @@ export {
   program
 };
 
-//# debugId=6F797911C7CC48C564756E2164756E21
+//# debugId=C5CD8AC59B5AB26F64756E2164756E21

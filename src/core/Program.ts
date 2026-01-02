@@ -24,7 +24,6 @@ export class Program<T extends Data = Data> implements Context<T> {
   readonly root: Record<string, T>;
   readonly incomingUpdates: Update[] = [];
   readonly outgoingUpdates: Update[] = [];
-  readonly updateTimestamp: Record<string, number> = {};
   readonly properties: Record<string, any>;
   private readonly processor: Processor = new Processor();
   private readonly observerManager: ObserverManager = new ObserverManager();
