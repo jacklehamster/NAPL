@@ -3,7 +3,7 @@
     "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
   },
   "bun.lockb": {
-    "sha": "f14352ab276adc2401d311e93814400309328019"
+    "sha": "8ac9fd168478ff8ce18b813473897e1120f75f43"
   },
   "bundler/bundler.ts": {
     "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
@@ -12,10 +12,10 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/index.js": {
-    "sha": "a69b373ffeaae66dbc3aff63f66210a5c5ff7e01"
+    "sha": "12cda2cfadcf56c7591b05eaccc0521ade7eab98"
   },
   "dist/index.js.map": {
-    "sha": "b7ed0c714c8ffc2a604fb805dea179f2ca7b698d"
+    "sha": "c5674098db671fee8bb354b1c7e442c839ccc67b"
   },
   "dist/signal-room.worker.js": {
     "sha": "05cc48a014739b9b3fcd85b5eae3b3b52486565d"
@@ -29,12 +29,12 @@
   "index.ts": {
     "sha": "f8e603ed981543a565aaa1e3461708b276d65fbc"
   },
-  "md5": "100da808dbc35a3182eb00aab2697443",
+  "md5": "f0d0ca787e6f02fb40a166fe99193a40",
   "package.json": {
-    "sha": "996d76e4e82331b984d68d41e8dbb8204051dfa2"
+    "sha": "3c87eeea9785d8713548c14bd7d0da612baef84a"
   },
   "src/index.ts": {
-    "sha": "e51ecd9cb16afa2d122e1a6881864b1132352b14"
+    "sha": "b62b57be79046613fa4375251dd45b30b72ec1ed"
   },
   "test-room/index.html": {
     "sha": "d91404f859441b6d832950e6108ff5b16dc6390d"
