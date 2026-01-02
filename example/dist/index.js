@@ -12753,13 +12753,15 @@ var require_generate_random_emoji = __commonJS((exports, module) => {
 
 // ../src/cycles/data-update/data-update.ts
 var NO_OBJ = {};
-function commitUpdates(root, updates, properties) {
-  if (!updates.length) {
+function commitUpdates({ root, incomingUpdates, outgoingUpdates, properties }, consolidate) {
+  if (consolidate) {
+    consolidateUpdates(incomingUpdates, outgoingUpdates);
+  }
+  if (!incomingUpdates.length) {
     return;
   }
-  sortUpdates(updates);
   const updatedPaths = {};
-  updates.forEach((update) => {
+  incomingUpdates.forEach((update) => {
     if (!update.confirmed) {
       return;
     }
@@ -12777,13 +12779,13 @@ function commitUpdates(root, updates, properties) {
     updatedPaths[update.path] = leaf[prop];
   });
   let size = 0;
-  for (let i = 0;i < updates.length; i++) {
-    updates[size] = updates[i];
-    if (!updates[i].confirmed) {
+  for (let i = 0;i < incomingUpdates.length; i++) {
+    incomingUpdates[size] = incomingUpdates[i];
+    if (!incomingUpdates[i].confirmed) {
       size++;
     }
   }
-  updates.length = size;
+  incomingUpdates.length = size;
   return updatedPaths;
 }
 function cleanupRoot(root, parts, index, updatedPaths) {
@@ -12796,18 +12798,57 @@ function cleanupRoot(root, parts, index, updatedPaths) {
   }
   return Object.keys(root).length === 0;
 }
-function sortUpdates(updates) {
-  updates.sort((a, b) => {
-    const confirmedA = a.confirmed ?? 0;
-    const confirmedB = b.confirmed ?? 0;
-    if (confirmedA !== confirmedB) {
-      return confirmedA - confirmedB;
+function compareUpdates(a, b) {
+  if (a.confirmed !== b.confirmed) {
+    return a.confirmed - b.confirmed;
+  }
+  return a.path.localeCompare(b.path);
+}
+var _map = new Map;
+function consolidateUpdates(incoming, outgoing) {
+  if (!incoming.length && !outgoing.length) {
+    return;
+  }
+  _map.clear();
+  for (let i = 0;i < incoming.length; i++) {
+    const update = incoming[i];
+    if (update.confirmed) {
+      const existingUpdate = _map.get(update.path);
+      if (!existingUpdate || compareUpdates(existingUpdate, update) < 0) {
+        _map.set(update.path, update);
+      }
     }
-    return a.path.localeCompare(b.path);
-  });
+  }
+  for (let i = 0;i < outgoing.length; i++) {
+    const update = outgoing[i];
+    if (update.confirmed) {
+      const existingUpdate = _map.get(update.path);
+      if (!existingUpdate || compareUpdates(existingUpdate, update) < 0) {
+        _map.set(update.path, update);
+      }
+    }
+  }
+  let size = 0;
+  for (let i = 0;i < incoming.length; i++) {
+    incoming[size] = incoming[i];
+    if (!incoming[i].confirmed || _map.get(incoming[i].path) === incoming[i]) {
+      size++;
+    }
+  }
+  incoming.length = size;
+  size = 0;
+  for (let i = 0;i < outgoing.length; i++) {
+    outgoing[size] = outgoing[i];
+    if (!outgoing[i].confirmed || _map.get(outgoing[i].path) === outgoing[i]) {
+      size++;
+    }
+  }
+  outgoing.length = size;
+  _map.clear();
 }
 function getLeafObject(obj, parts, offset, autoCreate, properties, updatedPaths) {
   let current = obj;
+  const pathParts = [];
   for (let i = 0;i < parts.length - offset; i++) {
     const prop = parts[i];
     const value = translateProp(current, prop, properties, autoCreate, updatedPaths, parts.slice(0, i).join("/"));
@@ -12856,11 +12897,6 @@ function translateProp(obj, prop, properties, autoCreate = false, updatePaths, p
     }
   }
   return value;
-}
-function markUpdateConfirmed(update, now) {
-  if (!update.confirmed) {
-    update.confirmed = now;
-  }
 }
 // ../node_modules/@msgpack/msgpack/dist.esm/utils/utf8.mjs
 function utf8Count(str) {
@@ -14293,12 +14329,16 @@ class Processor {
     };
   }
   performCycle(context) {
+    consolidateUpdates(context.incomingUpdates, context.outgoingUpdates);
     this.sendOutgoingUpdate(context);
-    return commitUpdates(context.root, context.incomingUpdates, context.properties);
+    return commitUpdates(context);
   }
   receivedData(data, context) {
     const payload = decode(data);
+    if (!payload.updates?.length)
+      return;
     this.receiveIncomingUpdates(payload.updates, context);
+    context.onIncomingUpdatesReceived?.(payload.updates);
   }
   sendOutgoingUpdate(context) {
     if (!context.outgoingUpdates.length)
@@ -14323,7 +14363,6 @@ class Processor {
     if (!updates?.length)
       return;
     context.incomingUpdates.push(...updates);
-    context.onIncomingUpdates?.(updates);
   }
   fixPath(path, context) {
     const split = path.split("/");
@@ -14337,14 +14376,11 @@ function getData(root, path, properties) {
   return getLeafObject(root, parts, 0, false, properties);
 }
 function setData(now, outgoingUpdates, path, value, options = NO_OBJ2) {
-  const props = { path, value };
-  processDataUpdate(now, outgoingUpdates, props, options);
-}
-function processDataUpdate(now, outgoingUpdates, update, options = NO_OBJ2) {
+  const update = { path, value, confirmed: 0 };
   if (options.peer)
     update.peer = options.peer;
   if (options.active) {
-    markUpdateConfirmed(update, now);
+    update.confirmed = now;
   }
   outgoingUpdates.push(update);
 }
@@ -14489,21 +14525,21 @@ class ObserverManager {
   }
 }
 // ../src/clients/CommInterfaceHook.ts
-function hookCommInterface(context, comm, processor) {
-  function deepShareData(pathParts, obj, peer, now, peerProps) {
-    if (typeof obj === "object" && obj && Object.values(obj).length) {
-      Object.entries(obj).forEach(([key, value]) => {
-        deepShareData([...pathParts, key], value, peer, now, peerProps);
-      });
-    } else {
-      setData(now, context.outgoingUpdates, pathParts.join("/"), obj, peerProps);
-    }
+function deepShareData(context, pathParts, obj, peer, now, peerProps) {
+  if (typeof obj === "object" && obj && Object.values(obj).length) {
+    Object.entries(obj).forEach(([key, value]) => {
+      deepShareData(context, [...pathParts, key], value, peer, now, peerProps);
+    });
+  } else {
+    setData(now, context.outgoingUpdates, pathParts.join("/"), obj, peerProps);
   }
+}
+function hookCommInterface(context, comm, processor) {
   const removeOnMessage = comm.onMessage((buffer) => {
     processor.receivedData(buffer, context);
   });
   const removeOnNewClient = comm.onNewClient((peer) => {
-    deepShareData([], context.root, peer, Date.now(), { active: true, peer });
+    deepShareData(context, [], context.root, peer, Date.now(), { active: true, peer });
   });
   const disconnectComm = processor.connectComm(comm);
   return {
@@ -14528,8 +14564,7 @@ class Program {
   properties;
   processor = new Processor;
   observerManager = new ObserverManager;
-  preNow = 0;
-  nowChunk = 0;
+  onIncomingUpdatesReceived;
   constructor({ userId, root, properties }) {
     this.userId = userId;
     this.root = root ?? {};
@@ -14555,16 +14590,6 @@ class Program {
   removeObserver(observer) {
     this.observerManager.removeObserver(observer);
   }
-  get now() {
-    const t = Date.now();
-    if (this.preNow === t) {
-      this.nowChunk++;
-    } else {
-      this.nowChunk = 0;
-      this.preNow = t;
-    }
-    return t + this.nowChunk / 1000;
-  }
   setData(path, value) {
     if (typeof value === "function") {
       const oldValue = getData(this.root, path, this.properties);
@@ -14573,7 +14598,7 @@ class Program {
         return;
       }
     }
-    setData(this.now, this.outgoingUpdates, path, value, ACTIVE);
+    setData(Date.now(), this.outgoingUpdates, path, value, ACTIVE);
   }
 }
 // node_modules/@dobuki/hello-worker/dist/index.js
@@ -14924,6 +14949,7 @@ program.observe("abc").onChange((value) => console.log(value));
 program.observe("users/~{keys}").onChange((keys) => console.log(keys));
 program.setData("users/~{self}/name", randomName);
 program.setData("users/~{self}/emoji", emoji[0].image);
+program.onIncomingUpdatesReceived = () => refreshData();
 function refreshData() {
   const div = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
   div.id = "log-div";
@@ -15038,4 +15064,4 @@ export {
   program
 };
 
-//# debugId=C5CD8AC59B5AB26F64756E2164756E21
+//# debugId=483F1E9608D32FC264756E2164756E21

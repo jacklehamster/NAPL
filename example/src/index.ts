@@ -46,6 +46,7 @@ program.observe("abc").onChange((value: any) => console.log(value));
 program.observe("users/~{keys}").onChange((keys: string[]) => console.log(keys));
 program.setData("users/~{self}/name", randomName);
 program.setData("users/~{self}/emoji", emoji[0].image);
+program.onIncomingUpdatesReceived = () => refreshData();
 
 function refreshData() {
   const div: HTMLDivElement = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));

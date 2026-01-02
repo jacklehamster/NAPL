@@ -1,5 +1,5 @@
 import { Update } from "../../types/Update";
-import { getLeafObject, markUpdateConfirmed } from "./data-update";
+import { getLeafObject } from "./data-update";
 import { Data } from "../../types/Data";
 import { UpdateOptions } from "./UpdateOptions";
 
@@ -11,14 +11,10 @@ export function getData(root: Data, path: string, properties: { [key: string]: a
 }
 
 export function setData(now: number, outgoingUpdates: Update[], path: string, value: any, options: UpdateOptions = NO_OBJ) {
-  const props: {path: string; value: any; append?: boolean; insert?: number} = { path, value };
-  processDataUpdate(now, outgoingUpdates, props, options);
-}
-
-function processDataUpdate(now: number, outgoingUpdates: Update[], update: Update, options: UpdateOptions = NO_OBJ) {
+  const update: Update = { path, value, confirmed: 0 };
   if (options.peer) update.peer = options.peer;
   if (options.active) {
-    markUpdateConfirmed(update, now);
+    update.confirmed = now;
   }
   outgoingUpdates.push(update);
 }

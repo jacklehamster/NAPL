@@ -1,16 +1,19 @@
 import { Update } from "../../types/Update";
 import { Data } from "../../types/Data";
+import { Context } from "@/context/Context";
 
 const NO_OBJ = {};
 
 // This function is used to commit updates to the root object
-export function commitUpdates(root: Data, updates: Update[], properties: Record<string, any>) {
-  if (!updates.length) {
+export function commitUpdates({root, incomingUpdates, outgoingUpdates, properties}: Context, consolidate?: boolean) {
+  if (consolidate) {
+    consolidateUpdates(incomingUpdates, outgoingUpdates);
+  }
+  if (!incomingUpdates.length) {
     return undefined;
   }
-  sortUpdates(updates);
   const updatedPaths: Record<string, any> = {};
-  updates.forEach((update) => {
+  incomingUpdates.forEach((update) => {
     if (!update.confirmed) {
       return;
     }
@@ -29,13 +32,13 @@ export function commitUpdates(root: Data, updates: Update[], properties: Record<
     updatedPaths[update.path] = leaf[prop];
   });
   let size = 0;
-  for (let i = 0; i < updates.length; i++) {
-    updates[size] = updates[i];
-    if (!updates[i].confirmed) {
+  for (let i = 0; i < incomingUpdates.length; i++) {
+    incomingUpdates[size] = incomingUpdates[i];
+    if (!incomingUpdates[i].confirmed) {
       size++;
     }
   }
-  updates.length = size;
+  incomingUpdates.length = size;
   return updatedPaths;
 }
 
@@ -58,11 +61,49 @@ function compareUpdates(a: Update, b: Update) {
     return a.path.localeCompare(b.path);
 }
 
-function sortUpdates(updates: Update[]) {
-  updates.sort(compareUpdates);
-}
-
+const _map: Map<string, Update> = new Map();
 export function consolidateUpdates(incoming: Update[], outgoing: Update[]) {
+  if (!incoming.length && !outgoing.length) {
+    return;
+  }
+  //  Find actual confirmed updates
+  _map.clear();
+  for (let i = 0; i < incoming.length; i++) {
+    const update = incoming[i];
+    if (update.confirmed) {
+      const existingUpdate = _map.get(update.path);
+      if (!existingUpdate || compareUpdates(existingUpdate, update) < 0) {
+        _map.set(update.path, update);
+      }
+    }
+  }
+  for (let i = 0; i < outgoing.length; i++) {
+    const update = outgoing[i];
+    if (update.confirmed) {
+      const existingUpdate = _map.get(update.path);
+      if (!existingUpdate || compareUpdates(existingUpdate, update) < 0) {
+        _map.set(update.path, update);
+      }
+    }
+  }
+  //  remove redundant updates
+  let size = 0;
+  for (let i = 0; i < incoming.length; i++) {
+    incoming[size] = incoming[i];
+    if (!incoming[i].confirmed || _map.get(incoming[i].path) === incoming[i]) {
+      size++;
+    }
+  }
+  incoming.length = size;
+  size = 0;
+  for (let i = 0; i < outgoing.length; i++) {
+    outgoing[size] = outgoing[i];
+    if (!outgoing[i].confirmed || _map.get(outgoing[i].path) === outgoing[i]) {
+      size++;
+    }
+  }
+  outgoing.length = size;
+  _map.clear();
 }
 
 //  Dig into the object to get the leaf object, given the parts of the path
@@ -119,11 +160,4 @@ export function translateProp(obj: any, prop: string | number, properties: Recor
     }
   }
   return value;
-}
-
-//  Mark the update as confirmed
-export function markUpdateConfirmed(update: Update, now: number) {
-  if (!update.confirmed) {
-    update.confirmed = now;
-  }
 }

@@ -27,6 +27,7 @@ export class Program<T extends Data = Data> implements Context<T> {
   readonly properties: Record<string, any>;
   private readonly processor: Processor = new Processor();
   private readonly observerManager: ObserverManager = new ObserverManager();
+  onIncomingUpdatesReceived?: (updates: Update[]) => void;
 
   constructor({ userId, root, properties }: Props<T>) {
     this.userId = userId;

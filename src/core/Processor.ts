@@ -3,7 +3,7 @@
 
 import { decode, encode } from "@msgpack/msgpack";
 import { Context } from "../context/Context";
-import { commitUpdates, translateValue } from "../cycles/data-update/data-update";
+import { commitUpdates, consolidateUpdates, translateValue } from "../cycles/data-update/data-update";
 import { Update } from "../types/Update";
 import { Payload } from "@/types/Payload";
 import { OutgoingCom } from "@/clients/CommInterface";
@@ -19,15 +19,18 @@ export class Processor {
   }
 
   performCycle(context: Context) {
+    consolidateUpdates(context.incomingUpdates, context.outgoingUpdates);
     //  Send out outgoing updates
     this.sendOutgoingUpdate(context);
     //  Process incoming updates
-    return commitUpdates(context.root, context.incomingUpdates, context.properties);
+    return commitUpdates(context);
   }
 
   receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
     const payload = decode(data) as Payload;
+    if (!payload.updates?.length) return;
     this.receiveIncomingUpdates(payload.updates, context);
+    context.onIncomingUpdatesReceived?.(payload.updates);
   }
 
   private sendOutgoingUpdate(context: Context) {
