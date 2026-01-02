@@ -19,6 +19,7 @@ let userList: string[] = [];
 const program = new Program({
   userId,
   root,
+  onDataCycle: refreshData,
 });
 program.connectComm({
   onMessage: addMessageListener,
@@ -39,22 +40,35 @@ program.connectComm({
 
 enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
 
-const emoji = generateEmojis(1);
+const emoji = generateEmojis(1)[0].image;
 
 const randomName = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals] });
 program.observe("abc").onChange((value: any) => console.log(value));
-program.observe("users/~{keys}").onChange((keys: string[]) => console.log(keys));
 program.observe("users").onChange((users: string[]) => console.log("USERS", users));
 program.setData("users/~{self}/name", randomName);
-program.setData("users/~{self}/emoji", emoji[0].image);
+program.setData("users/~{self}/emoji", emoji);
 program.onIncomingUpdatesReceived = () => refreshData();
+
+addEventListener("mousemove", (e: MouseEvent) => {
+  program.setData("cursor/pos", {x: e.pageX, y: e.pageY});
+  program.setData("cursor/emoji", emoji);
+});
+program.observe(["cursor/pos", "cursor/emoji"]).onChange(([pos, emoji]: [any, string]) => {
+  const div = document.querySelector("#div-emoji") as HTMLDivElement;
+  if (div) {
+    console.log(pos, emoji);
+    div.style.left = `${pos.x + 10}px`;
+    div.style.top = `${pos.y + 10}px`;
+    div.textContent = emoji;
+  }
+});
 
 function refreshData() {
   const div: HTMLDivElement = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
   div.id = "log-div";
   div.style.whiteSpace = "pre";
   div.style.fontFamily = "monospace";
-  div.style.fontSize = "20px";
+  div.style.fontSize = "16px";
   div.textContent = JSON.stringify(root, null, 2) + `\nLast update: ${new Date().toISOString()}\n`;
 
   const divSplit: HTMLDivElement = document.querySelector("#log-block") ?? document.body.appendChild(document.createElement("div"));
@@ -78,9 +92,7 @@ function refreshData() {
   divIn.textContent = program.incomingUpdates.length ? "IN\n" + JSON.stringify(program.incomingUpdates, null, 2) : "";
 
   const usrs = root.users as any;
-  const allUsers = [userId, ...userList].map(userId => {
-      return usrs?.[userId];
-  });
+  const allUsers = [userId, ...userList].map(userId => usrs?.[userId]);
 
   const divUsers: HTMLDivElement = document.querySelector("#log-div-users") ?? document.body.appendChild(document.createElement("div"));
   divUsers.id = "log-div-users";
@@ -94,17 +106,11 @@ function refreshData() {
   divUsers.style.padding = "5px";
   divUsers.style.border = "1px solid black";
   divUsers.style.backgroundColor = "#ffffffaa";
-  divUsers.textContent = "USERS\n" + 
-    allUsers.map(user => `${user?.emoji} ${user?.name}`).join("\n");
+  divUsers.textContent = "USERS\n" + allUsers.map(user => `${user?.emoji} ${user?.name}`).join("\n");
 
-  const divEmojis: HTMLDivElement = document.querySelector("#div-emojis") ?? document.body.appendChild(document.createElement("div"));
-  divEmojis.id = "div-emojis";
-}
-
-function cycle() {
-  if (program.performCycle()) {
-    refreshData();
-  }
+  const divEmoji: HTMLDivElement = document.querySelector("#div-emoji") ?? document.body.appendChild(document.createElement("div"));
+  divEmoji.id = "div-emoji";
+  divEmoji.style.position = "absolute";
 }
 
 function setupGamePlayer() {
@@ -118,7 +124,7 @@ function setupGamePlayer() {
     let rafId = 0;
     function loop() {
       rafId = requestAnimationFrame(loop);
-      cycle();
+      program.performCycle();
     }
     rafId = requestAnimationFrame(loop);
     return () => {
@@ -148,7 +154,7 @@ function setupGamePlayer() {
   {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "⏯️";
-    button.addEventListener("mousedown", cycle);
+    button.addEventListener("mousedown", () => program.performCycle());
     updateButtons.add(() => {
       button.disabled = !paused;
     })

@@ -12752,7 +12752,6 @@ var require_generate_random_emoji = __commonJS((exports, module) => {
 });
 
 // ../src/cycles/data-update/data-update.ts
-var NO_OBJ = {};
 function filterArray(array, cond) {
   let size = 0;
   for (let i = 0;i < array.length; i++) {
@@ -12871,21 +12870,7 @@ function translateValue(value, properties) {
   return value;
 }
 function translateProp(obj, prop, properties, autoCreate = false, updatedPaths, path) {
-  let value;
-  if (typeof prop !== "string") {
-    value = obj[prop];
-  } else if (prop.startsWith("~{") && prop.endsWith("}")) {
-    switch (prop) {
-      case "~{keys}":
-        return Object.keys(obj ?? NO_OBJ);
-      case "~{values}":
-        return Object.values(obj ?? NO_OBJ);
-      default:
-        return obj[translateValue(prop, properties)];
-    }
-  } else {
-    value = obj[prop];
-  }
+  let value = obj[prop];
   if (value === undefined && autoCreate) {
     value = obj[prop] = {};
     if (updatedPaths && path) {
@@ -14366,12 +14351,12 @@ class Processor {
   }
 }
 // ../src/cycles/data-update/data-manager.ts
-var NO_OBJ2 = {};
+var NO_OBJ = {};
 function getData(root, path, properties) {
   const parts = path.split("/");
   return getLeafObject(root, parts, 0, false, properties);
 }
-function setData(now, outgoingUpdates, path, value, options = NO_OBJ2) {
+function setData(now, outgoingUpdates, path, value, options = NO_OBJ) {
   const update = { path, value, confirmed: 0 };
   if (options.peer)
     update.peer = options.peer;
@@ -14478,10 +14463,6 @@ class Observer {
 class ObserverManager {
   observers = new Map;
   ensurePath(path) {
-    if (path.endsWith("~{keys}") || path.endsWith("~{values}")) {
-      const parts = path.split("/");
-      path = parts.slice(0, parts.length - 1).join("/");
-    }
     const obsSet = this.observers.get(path);
     if (obsSet) {
       return obsSet;
@@ -14561,11 +14542,12 @@ class Program {
   processor = new Processor;
   observerManager = new ObserverManager;
   onIncomingUpdatesReceived;
-  constructor({ userId, root, properties }) {
+  constructor({ userId, root, properties, onDataCycle }) {
     this.userId = userId;
     this.root = root ?? {};
     this.properties = properties ?? {};
     this.properties.self = userId;
+    this.onDataCycle = onDataCycle;
   }
   connectComm(comm) {
     return hookCommInterface(this, comm, this.processor);
@@ -14574,9 +14556,8 @@ class Program {
     const updates = this.processor.performCycle(this);
     if (updates) {
       this.observerManager.triggerObservers(this, updates);
-      return true;
+      this.onDataCycle?.();
     }
-    return false;
   }
   observe(paths) {
     const multi = Array.isArray(paths);
@@ -14920,7 +14901,8 @@ var { userId, send, enterRoom, addMessageListener, addUserListener, end } = U({
 var userList = [];
 var program = new Program({
   userId,
-  root
+  root,
+  onDataCycle: refreshData
 });
 program.connectComm({
   onMessage: addMessageListener,
@@ -14939,20 +14921,32 @@ program.connectComm({
   close: end
 });
 enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
-var emoji = generateEmojis(1);
+var emoji = generateEmojis(1)[0].image;
 var randomName = n2({ dictionaries: [l, t, r] });
 program.observe("abc").onChange((value) => console.log(value));
-program.observe("users/~{keys}").onChange((keys) => console.log(keys));
 program.observe("users").onChange((users) => console.log("USERS", users));
 program.setData("users/~{self}/name", randomName);
-program.setData("users/~{self}/emoji", emoji[0].image);
+program.setData("users/~{self}/emoji", emoji);
 program.onIncomingUpdatesReceived = () => refreshData();
+addEventListener("mousemove", (e2) => {
+  program.setData("cursor/pos", { x: e2.pageX, y: e2.pageY });
+  program.setData("cursor/emoji", emoji);
+});
+program.observe(["cursor/pos", "cursor/emoji"]).onChange(([pos, emoji2]) => {
+  const div = document.querySelector("#div-emoji");
+  if (div) {
+    console.log(pos, emoji2);
+    div.style.left = `${pos.x + 10}px`;
+    div.style.top = `${pos.y + 10}px`;
+    div.textContent = emoji2;
+  }
+});
 function refreshData() {
   const div = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
   div.id = "log-div";
   div.style.whiteSpace = "pre";
   div.style.fontFamily = "monospace";
-  div.style.fontSize = "20px";
+  div.style.fontSize = "16px";
   div.textContent = JSON.stringify(root, null, 2) + `
 Last update: ${new Date().toISOString()}
 `;
@@ -14976,9 +14970,7 @@ Last update: ${new Date().toISOString()}
   divIn.textContent = program.incomingUpdates.length ? `IN
 ` + JSON.stringify(program.incomingUpdates, null, 2) : "";
   const usrs = root.users;
-  const allUsers = [userId, ...userList].map((userId2) => {
-    return usrs?.[userId2];
-  });
+  const allUsers = [userId, ...userList].map((userId2) => usrs?.[userId2]);
   const divUsers = document.querySelector("#log-div-users") ?? document.body.appendChild(document.createElement("div"));
   divUsers.id = "log-div-users";
   divUsers.style.flex = "1";
@@ -14994,13 +14986,9 @@ Last update: ${new Date().toISOString()}
   divUsers.textContent = `USERS
 ` + allUsers.map((user) => `${user?.emoji} ${user?.name}`).join(`
 `);
-  const divEmojis = document.querySelector("#div-emojis") ?? document.body.appendChild(document.createElement("div"));
-  divEmojis.id = "div-emojis";
-}
-function cycle() {
-  if (program.performCycle()) {
-    refreshData();
-  }
+  const divEmoji = document.querySelector("#div-emoji") ?? document.body.appendChild(document.createElement("div"));
+  divEmoji.id = "div-emoji";
+  divEmoji.style.position = "absolute";
 }
 function setupGamePlayer() {
   let paused = false;
@@ -15013,7 +15001,7 @@ function setupGamePlayer() {
     let rafId = 0;
     function loop() {
       rafId = requestAnimationFrame(loop);
-      cycle();
+      program.performCycle();
     }
     rafId = requestAnimationFrame(loop);
     return () => {
@@ -15042,7 +15030,7 @@ function setupGamePlayer() {
   {
     const button = document.body.appendChild(document.createElement("button"));
     button.textContent = "⏯️";
-    button.addEventListener("mousedown", cycle);
+    button.addEventListener("mousedown", () => program.performCycle());
     updateButtons.add(() => {
       button.disabled = !paused;
     });
@@ -15063,4 +15051,4 @@ export {
   program
 };
 
-//# debugId=B4E4D346D5D0827464756E2164756E21
+//# debugId=4CADA635748A6EA064756E2164756E21

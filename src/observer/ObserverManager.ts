@@ -5,11 +5,6 @@ export class ObserverManager {
   private readonly observers = new Map<string, Set<Observer>>();
 
   private ensurePath(path: string): Set<Observer> {
-    if (path.endsWith("~{keys}") || path.endsWith("~{values}")) {
-      const parts = path.split("/");
-      path = parts.slice(0, parts.length - 1).join('/');
-    }
-
     const obsSet = this.observers.get(path);
     if (obsSet) {
       return obsSet;

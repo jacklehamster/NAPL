@@ -13,6 +13,8 @@ interface Props<T extends Data> {
   userId: string;
   root?: Record<string, T>;
   properties?: Record<string, any>;
+  onDataCycle?: () => void;
+  runCycleOnSetData?: boolean;
 }
 
 const ACTIVE: UpdateOptions = {
@@ -27,13 +29,15 @@ export class Program<T extends Data = Data> implements Context<T> {
   readonly properties: Record<string, any>;
   private readonly processor: Processor = new Processor();
   private readonly observerManager: ObserverManager = new ObserverManager();
+  private onDataCycle?(): void;
   onIncomingUpdatesReceived?: (updates: Update[]) => void;
 
-  constructor({ userId, root, properties }: Props<T>) {
+  constructor({ userId, root, properties, onDataCycle }: Props<T>) {
     this.userId = userId;
     this.root = root ?? {};
     this.properties = properties ?? {};
     this.properties.self = userId;
+    this.onDataCycle = onDataCycle;
   }
 
   connectComm(comm: CommInterface) {
@@ -44,9 +48,8 @@ export class Program<T extends Data = Data> implements Context<T> {
     const updates = this.processor.performCycle(this);
     if (updates) {
       this.observerManager.triggerObservers(this, updates);
-      return true;
+      this.onDataCycle?.();
     }
-    return false;
   }
 
   observe(paths?: (string[] | string)): Observer {

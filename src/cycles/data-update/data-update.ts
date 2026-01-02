@@ -136,21 +136,7 @@ export function translateValue(value: any, properties: Record<string, any>) {
 }
 
 export function translateProp(obj: any, prop: string | number, properties: Record<string, any>, autoCreate: boolean = false, updatedPaths?: Record<string, any>, path?: string) {
-  let value;
-  if (typeof prop !== "string") {
-    value = obj[prop];
-  } else if (prop.startsWith("~{") && prop.endsWith("}")) {
-    switch (prop) {
-      case '~{keys}':
-        return Object.keys(obj ?? NO_OBJ);
-      case '~{values}':
-        return Object.values(obj ?? NO_OBJ);
-      default:
-        return obj[translateValue(prop, properties)];
-    }
-  } else {
-    value = obj[prop];
-  }
+  let value = obj[prop];
   if (value === undefined && autoCreate) {
     value = obj[prop] = {};
     if (updatedPaths && path) {
