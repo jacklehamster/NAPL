@@ -19,7 +19,6 @@ describe('Processor', () => {
       incomingUpdates: [],
       outgoingUpdates: [],
       properties: {},
-      now: 0
     };
     processor = new Processor();
     outgoingComm = {

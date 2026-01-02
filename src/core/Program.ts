@@ -27,8 +27,6 @@ export class Program<T extends Data = Data> implements Context<T> {
   readonly properties: Record<string, any>;
   private readonly processor: Processor = new Processor();
   private readonly observerManager: ObserverManager = new ObserverManager();
-  private preNow: number = 0;
-  private nowChunk: number = 0;
 
   constructor({ userId, root, properties }: Props<T>) {
     this.userId = userId;
@@ -60,17 +58,6 @@ export class Program<T extends Data = Data> implements Context<T> {
     this.observerManager.removeObserver(observer);
   }
 
-  get now() {
-    const t = Date.now();
-    if (this.preNow === t) {
-      this.nowChunk++;
-    } else {
-      this.nowChunk = 0;
-      this.preNow = t;
-    }
-    return t + this.nowChunk / 1000;
-  }
-
   setData(path: string, value: Data | ((value: Data) => Data)) {
     if (typeof (value) === "function") {
       const oldValue = getData(this.root, path, this.properties);
@@ -79,6 +66,6 @@ export class Program<T extends Data = Data> implements Context<T> {
         return;
       }
     }
-    setData(this.now, this.outgoingUpdates, path, value, ACTIVE);
+    setData(Date.now(), this.outgoingUpdates, path, value, ACTIVE);
   }
 }

@@ -9,6 +9,4 @@ export interface Context<T = Data> {
   properties: { [key: string]: any };
   setData?(path: string, value: any | ((value: any) => any)): void;
   pushData?(path: string, value: any | ((value: any) => any)): void;
-  onIncomingUpdates?(update: Update[]): void;
-  readonly now: number;
 }

@@ -59,7 +59,6 @@ export class Processor {
   private receiveIncomingUpdates(updates: Update[] | undefined, context: Context) {
     if (!updates?.length) return;
     context.incomingUpdates.push(...updates);
-    context.onIncomingUpdates?.(updates);
   }
 
   private fixPath(path: string, context: Context) {
