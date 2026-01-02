@@ -32,7 +32,7 @@ Update {
 
 ## Demo
 
-<https://napl.dobuki.net>
+<https://jacklehamster.github.io/napl/example>
 
 ## Process cycle
 
