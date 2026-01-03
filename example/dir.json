@@ -12,10 +12,10 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/index.js": {
-    "sha": "846fe1402bc538618e0ceffd3955c8040c7e9291"
+    "sha": "1a656904386a12e4364fc4fd4f3bdf4f551bfa92"
   },
   "dist/index.js.map": {
-    "sha": "2c3e7932af10cf3fa043a0fa2d50249fcbffebf0"
+    "sha": "4f6f93293372d54dea703be0d3b684f2a881857e"
   },
   "dist/signal-room.worker.js": {
     "sha": "05cc48a014739b9b3fcd85b5eae3b3b52486565d"
@@ -29,7 +29,7 @@
   "index.ts": {
     "sha": "f8e603ed981543a565aaa1e3461708b276d65fbc"
   },
-  "md5": "982425796d9a727165027e43b364f639",
+  "md5": "a36304f5dcd4734f48c7c47ad5c296d6",
   "package.json": {
     "sha": "3c87eeea9785d8713548c14bd7d0da612baef84a"
   },
