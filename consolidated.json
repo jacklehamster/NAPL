@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "ef496e2c7804b0cb0092c6448fd9978ada3a4e54"
+      "sha": "93d2d28c8e45a33d7aa7f59beb5e22e986c16151"
     },
     "dist/index.js.map": {
-      "sha": "1ce0891d490a143d14a6ee8eb98221e37cb7cbe2"
+      "sha": "76f5ba9932c04491e2b66bd40f43202a7ae47674"
     },
     "dist/signal-room.worker.js": {
       "sha": "05cc48a014739b9b3fcd85b5eae3b3b52486565d"
@@ -57,7 +57,7 @@
     "index.ts": {
       "sha": "bd4b1476e3cf69e1c07c77cefc98d4276daec470"
     },
-    "md5": "d2caef17b861aed02ee7dd098e762e1f",
+    "md5": "8e22435d550748713b16e1983411e222",
     "package.json": {
       "sha": "3c87eeea9785d8713548c14bd7d0da612baef84a"
     },
@@ -76,12 +76,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "ef496e2c7804b0cb0092c6448fd9978ada3a4e54"
+      "sha": "93d2d28c8e45a33d7aa7f59beb5e22e986c16151"
     },
     "index.js.map": {
-      "sha": "1ce0891d490a143d14a6ee8eb98221e37cb7cbe2"
+      "sha": "76f5ba9932c04491e2b66bd40f43202a7ae47674"
     },
-    "md5": "91d9868145d2c6f3ce099203fcc89a41",
+    "md5": "a60a6db2aac62ac508378d63e96fa631",
     "signal-room.worker.js": {
       "sha": "05cc48a014739b9b3fcd85b5eae3b3b52486565d"
     },
@@ -266,9 +266,9 @@
       "sha": "cbffb6901e070009789575ec062b6f428fd774f7"
     },
     "Program.ts": {
-      "sha": "710012975ccb7e1d605bca749a11e0dc4dfe9613"
+      "sha": "6069f0986b0c13ff0bebf2a25eae40f2c8782e8d"
     },
-    "md5": "755ac2627f0aa4667a96506b3fe911a6",
+    "md5": "5fcad892b1b90a50c98d737a98799134",
     "processor.test.ts": {
       "sha": "4b9a5d71ab07f031b19d42793cfbafe4fc1faba0"
     }
@@ -323,7 +323,7 @@
       "sha": "cbffb6901e070009789575ec062b6f428fd774f7"
     },
     "core/Program.ts": {
-      "sha": "710012975ccb7e1d605bca749a11e0dc4dfe9613"
+      "sha": "6069f0986b0c13ff0bebf2a25eae40f2c8782e8d"
     },
     "core/processor.test.ts": {
       "sha": "4b9a5d71ab07f031b19d42793cfbafe4fc1faba0"
@@ -343,7 +343,7 @@
     "index.ts": {
       "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
     },
-    "md5": "353c0d036daffddc66433d883a0eeeb2",
+    "md5": "7407d6e947b0a34f5ce394587c2efc6c",
     "observer/Observer.ts": {
       "sha": "f9db93b949303c7d7d882552ac65f5dfbe60ed8a"
     },

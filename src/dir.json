@@ -18,7 +18,7 @@
     "sha": "cbffb6901e070009789575ec062b6f428fd774f7"
   },
   "core/Program.ts": {
-    "sha": "710012975ccb7e1d605bca749a11e0dc4dfe9613"
+    "sha": "6069f0986b0c13ff0bebf2a25eae40f2c8782e8d"
   },
   "core/processor.test.ts": {
     "sha": "4b9a5d71ab07f031b19d42793cfbafe4fc1faba0"
@@ -38,7 +38,7 @@
   "index.ts": {
     "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
   },
-  "md5": "353c0d036daffddc66433d883a0eeeb2",
+  "md5": "7407d6e947b0a34f5ce394587c2efc6c",
   "observer/Observer.ts": {
     "sha": "f9db93b949303c7d7d882552ac65f5dfbe60ed8a"
   },
