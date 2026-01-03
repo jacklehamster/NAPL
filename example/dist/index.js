@@ -14936,7 +14936,9 @@ function setupRoom() {
   program.onReceivedIncomingUpdates = refreshData;
   enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
   const emoji = generateEmojis(1)[0].image;
-  const randomName = n2({ dictionaries: [l, t, r] });
+  const randomName = n2({
+    dictionaries: [l, t, r]
+  });
   program.observe("abc").onChange((value) => console.log(value));
   program.observe("users").onChange((users) => console.log("USERS", users));
   program.setData("users/~{self}/name", randomName);
@@ -15068,4 +15070,4 @@ export {
   setupRoom
 };
 
-//# debugId=D94278ACD049D2FE64756E2164756E21
+//# debugId=A4DCF30E689179F064756E2164756E21
