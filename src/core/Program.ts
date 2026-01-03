@@ -2,7 +2,6 @@ import { Context } from "@/context/Context";
 import { Update } from "@/types/Update";
 import { CommInterface } from "@/clients/CommInterface";
 import { setData } from "@/cycles/data-update/data-manager";
-import { UpdateOptions } from "@/cycles/data-update/UpdateOptions";
 import { Data } from "@/types/Data";
 import { ObserverManager } from "@/observer/ObserverManager";
 import { Observer } from "@/observer/Observer";
