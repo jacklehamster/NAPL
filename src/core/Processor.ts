@@ -3,7 +3,12 @@
 
 import { decode, encode } from "@msgpack/msgpack";
 import { Context } from "../context/Context";
-import { commitUpdates, consolidateUpdates, translateValue, UpdatePath } from "../cycles/data-update/data-update";
+import {
+  commitUpdates,
+  consolidateUpdates,
+  translateValue,
+  UpdatePath,
+} from "../cycles/data-update/data-update";
 import { Payload } from "@/types/Payload";
 import { OutgoingCom } from "@/clients/CommInterface";
 
@@ -29,18 +34,17 @@ export class Processor {
     const payload = decode(data) as Payload;
     if (!payload.updates?.length) return;
     context.incomingUpdates.push(...payload.updates);
-    context.onIncomingUpdatesReceived?.(payload.updates);
   }
 
   private sendOutgoingUpdate(context: Context) {
     if (!context.outgoingUpdates.length) return;
     //  Apply function to value
-    context.outgoingUpdates.forEach(update => {
+    context.outgoingUpdates.forEach((update) => {
       update.path = this.fixPath(update.path, context);
     });
 
     //  Apply incoming updates
-    context.outgoingUpdates.forEach(update => {
+    context.outgoingUpdates.forEach((update) => {
       if (update.confirmed) {
         context.incomingUpdates.push(update);
       }
@@ -48,14 +52,18 @@ export class Processor {
 
     //  send outgoing updates
     const peerSet = new Set<string | undefined>();
-    context.outgoingUpdates.forEach(update => peerSet.add(update.peer));
+    context.outgoingUpdates.forEach((update) => peerSet.add(update.peer));
 
     peerSet.forEach((peer) => {
-      this.outingCom.forEach(comm => {
-        comm.send(encode({
-          updates: context.outgoingUpdates
-            .filter(update => update.peer === peer)
-        }), peer);
+      this.outingCom.forEach((comm) => {
+        comm.send(
+          encode({
+            updates: context.outgoingUpdates.filter(
+              (update) => update.peer === peer,
+            ),
+          }),
+          peer,
+        );
       });
     });
     context.outgoingUpdates.length = 0;
@@ -63,6 +71,8 @@ export class Processor {
 
   private fixPath(path: string, context: Context) {
     const split = path.split("/");
-    return split.map(part => translateValue(part, context.properties)).join("/");
+    return split
+      .map((part) => translateValue(part, context.properties))
+      .join("/");
   }
 }

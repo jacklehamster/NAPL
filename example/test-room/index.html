@@ -3,26 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Game Room</title>
+    <title>Test Room</title>
     <style>
       body {
         background-color: lightgray;
-      }
-      canvas {
-        width: 100%;
-        height: 100%;
-        border: 2px solid black;
-      }
-      .syncousers {
-        position: absolute;
-        right: 0px;
-        top: 0px;
       }
     </style>
   </head>
   <body>
     <script type="module">
-      import { root, program } from "../dist/index.js";
+      import { setupRoom } from "../dist/index.js";
+      const { root, program } = setupRoom();
       window.root = root;
       window.program = program;
     </script>

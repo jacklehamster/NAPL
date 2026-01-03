@@ -137,9 +137,7 @@
     "compilerOptions": {
       "outDir": "dist",
       "rootDir": "",
-      "lib": [
-        "ESNext"
-      ],
+      "lib": ["ESNext"],
       "module": "esnext",
       "target": "esnext",
       "moduleResolution": "bundler",
@@ -155,14 +153,9 @@
       "allowSyntheticDefaultImports": true,
       "forceConsistentCasingInFileNames": true,
       "allowJs": true,
-      "types": [
-        "bun-types"
-      ]
+      "types": ["bun-types"]
     },
-    "include": [
-      "**/*.ts",
-      "**/*.tsx"
-    ]
+    "include": ["**/*.ts", "**/*.tsx"]
   },
   "/package.json": {
     "name": "napl",
@@ -197,9 +190,7 @@
     "publishConfig": {
       "access": "public"
     },
-    "files": [
-      "dist"
-    ],
+    "files": ["dist"],
     "author": {
       "name": "Jack Le Hamster",
       "email": "jacklehamster@gmail.com"
@@ -360,13 +351,9 @@
       "rootDir": "src",
       "baseUrl": "./",
       "paths": {
-        "@/*": [
-          "src/*"
-        ]
+        "@/*": ["src/*"]
       },
-      "lib": [
-        "ESNext"
-      ],
+      "lib": ["ESNext"],
       "module": "esnext",
       "target": "esnext",
       "moduleResolution": "bundler",
@@ -381,18 +368,10 @@
       "allowSyntheticDefaultImports": true,
       "forceConsistentCasingInFileNames": true,
       "allowJs": true,
-      "types": [
-        "bun-types"
-      ]
+      "types": ["bun-types"]
     },
-    "include": [
-      "src/**/*.ts",
-      "src/**/*.tsx"
-    ],
-    "exclude": [
-      "src/**/*.test.ts",
-      "src/**/*.test.tsx"
-    ]
+    "include": ["src/**/*.ts", "src/**/*.tsx"],
+    "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
   },
   "/tsconfig.types.json": {
     "extends": "./tsconfig.json",

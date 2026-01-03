@@ -15,16 +15,16 @@ NAPL is only meant to perform actions on its own data. Then an application can r
 ## Class Type
 
 - Object: {
-  updates: [Update]       // Other clients issue modification commands through }
+  updates: [Update] // Other clients issue modification commands through }
 
 ## Update
 
 Update {
-  id: string                // optional identifier for the update
-  timestamp: number         // The time of the update
-  path: [string|number]     // The path of the item to modify
-  value: value|expresssion  // Set to value or expression
-  confirmed: number         // Only confirmed updates can be applied.
+id: string // optional identifier for the update
+timestamp: number // The time of the update
+path: [string|number] // The path of the item to modify
+value: value|expresssion // Set to value or expression
+confirmed: number // Only confirmed updates can be applied.
 }
 
 - To perform an update, a program pushes a item into the Update array.
@@ -37,11 +37,11 @@ Update {
 ## Process cycle
 
 1. CodeParser: Register all types and data-bindings.
-  //  => registry / observers / clear updatedPaths
+   // => registry / observers / clear updatedPaths
 2. DataUpdateManager: Apply all update logs
-  //  => updatedPaths
+   // => updatedPaths
 3. DataBindingManager: Execute data-bindings
-  //  => root data updated
+   // => root data updated
 4. Execute all object code (triggered from observers or loopers)
-  //  
+   //
 5. Clean up

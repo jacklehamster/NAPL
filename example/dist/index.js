@@ -14341,7 +14341,6 @@ class Processor {
     if (!payload.updates?.length)
       return;
     context.incomingUpdates.push(...payload.updates);
-    context.onIncomingUpdatesReceived?.(payload.updates);
   }
   sendOutgoingUpdate(context) {
     if (!context.outgoingUpdates.length)
@@ -14532,6 +14531,7 @@ function deepShareData(context, obj, peerProps, pathParts = [], now = Date.now()
 function hookCommInterface(context, comm, processor) {
   const removeOnMessage = comm.onMessage((buffer) => {
     processor.receivedData(buffer, context);
+    context.onReceivedIncomingUpdates?.();
   });
   const removeOnNewClient = comm.onNewClient((peer) => {
     deepShareData(context, context.root, { active: true, peer });
@@ -14560,7 +14560,6 @@ class Program {
   processor = new Processor;
   observerManager = new ObserverManager;
   _updates = new Map;
-  onIncomingUpdatesReceived;
   constructor({ userId, root, properties, onDataCycle }) {
     this.userId = userId;
     this.root = root ?? {};
@@ -14904,167 +14903,169 @@ var l = ["able", "above", "absent", "absolute", "abstract", "abundant", "academi
 var r = ["aardvark", "aardwolf", "albatross", "alligator", "alpaca", "amphibian", "anaconda", "angelfish", "anglerfish", "ant", "anteater", "antelope", "antlion", "ape", "aphid", "armadillo", "asp", "baboon", "badger", "bandicoot", "barnacle", "barracuda", "basilisk", "bass", "bat", "bear", "beaver", "bedbug", "bee", "beetle", "bird", "bison", "blackbird", "boa", "boar", "bobcat", "bobolink", "bonobo", "booby", "bovid", "bug", "butterfly", "buzzard", "camel", "canid", "canidae", "capybara", "cardinal", "caribou", "carp", "cat", "caterpillar", "catfish", "catshark", "cattle", "centipede", "cephalopod", "chameleon", "cheetah", "chickadee", "chicken", "chimpanzee", "chinchilla", "chipmunk", "cicada", "clam", "clownfish", "cobra", "cockroach", "cod", "condor", "constrictor", "coral", "cougar", "cow", "coyote", "crab", "crane", "crawdad", "crayfish", "cricket", "crocodile", "crow", "cuckoo", "damselfly", "deer", "dingo", "dinosaur", "dog", "dolphin", "donkey", "dormouse", "dove", "dragon", "dragonfly", "duck", "eagle", "earthworm", "earwig", "echidna", "eel", "egret", "elephant", "elk", "emu", "ermine", "falcon", "felidae", "ferret", "finch", "firefly", "fish", "flamingo", "flea", "fly", "flyingfish", "fowl", "fox", "frog", "galliform", "gamefowl", "gayal", "gazelle", "gecko", "gerbil", "gibbon", "giraffe", "goat", "goldfish", "goose", "gopher", "gorilla", "grasshopper", "grouse", "guan", "guanaco", "guineafowl", "gull", "guppy", "haddock", "halibut", "hamster", "hare", "harrier", "hawk", "hedgehog", "heron", "herring", "hippopotamus", "hookworm", "hornet", "horse", "hoverfly", "hummingbird", "hyena", "iguana", "impala", "jackal", "jaguar", "jay", "jellyfish", "junglefowl", "kangaroo", "kingfisher", "kite", "kiwi", "koala", "koi", "krill", "ladybug", "lamprey", "landfowl", "lark", "leech", "lemming", "lemur", "leopard", "leopon", "limpet", "lion", "lizard", "llama", "lobster", "locust", "loon", "louse", "lungfish", "lynx", "macaw", "mackerel", "magpie", "mammal", "manatee", "mandrill", "marlin", "marmoset", "marmot", "marsupial", "marten", "mastodon", "meadowlark", "meerkat", "mink", "minnow", "mite", "mockingbird", "mole", "mollusk", "mongoose", "monkey", "moose", "mosquito", "moth", "mouse", "mule", "muskox", "narwhal", "newt", "nightingale", "ocelot", "octopus", "opossum", "orangutan", "orca", "ostrich", "otter", "owl", "ox", "panda", "panther", "parakeet", "parrot", "parrotfish", "partridge", "peacock", "peafowl", "pelican", "penguin", "perch", "pheasant", "pig", "pigeon", "pike", "pinniped", "piranha", "planarian", "platypus", "pony", "porcupine", "porpoise", "possum", "prawn", "primate", "ptarmigan", "puffin", "puma", "python", "quail", "quelea", "quokka", "rabbit", "raccoon", "rat", "rattlesnake", "raven", "reindeer", "reptile", "rhinoceros", "roadrunner", "rodent", "rook", "rooster", "roundworm", "sailfish", "salamander", "salmon", "sawfish", "scallop", "scorpion", "seahorse", "shark", "sheep", "shrew", "shrimp", "silkworm", "silverfish", "skink", "skunk", "sloth", "slug", "smelt", "snail", "snake", "snipe", "sole", "sparrow", "spider", "spoonbill", "squid", "squirrel", "starfish", "stingray", "stoat", "stork", "sturgeon", "swallow", "swan", "swift", "swordfish", "swordtail", "tahr", "takin", "tapir", "tarantula", "tarsier", "termite", "tern", "thrush", "tick", "tiger", "tiglon", "toad", "tortoise", "toucan", "trout", "tuna", "turkey", "turtle", "tyrannosaurus", "unicorn", "urial", "vicuna", "viper", "vole", "vulture", "wallaby", "walrus", "warbler", "wasp", "weasel", "whale", "whippet", "whitefish", "wildcat", "wildebeest", "wildfowl", "wolf", "wolverine", "wombat", "woodpecker", "worm", "wren", "xerinae", "yak", "zebra"];
 var t = ["amaranth", "amber", "amethyst", "apricot", "aqua", "aquamarine", "azure", "beige", "black", "blue", "blush", "bronze", "brown", "chocolate", "coffee", "copper", "coral", "crimson", "cyan", "emerald", "fuchsia", "gold", "gray", "green", "harlequin", "indigo", "ivory", "jade", "lavender", "lime", "magenta", "maroon", "moccasin", "olive", "orange", "peach", "pink", "plum", "purple", "red", "rose", "salmon", "sapphire", "scarlet", "silver", "tan", "teal", "tomato", "turquoise", "violet", "white", "yellow"];
 
-// src/index.ts
+// src/test-room/index.ts
 var { generateEmojis } = require_generate_random_emoji();
-var root = {};
-var { userId, send, enterRoom, addMessageListener, addUserListener, end } = U({
-  appId: "napl-test",
-  workerUrl: new URL("./signal-room.worker.js", import.meta.url)
-});
-var userList = [];
-var program = new Program({
-  userId,
-  root,
-  onDataCycle: refreshData
-});
-program.connectComm({
-  onMessage: addMessageListener,
-  onNewClient: (listener) => {
-    addUserListener((user, action, users) => {
-      if (action === "join") {
-        listener(user);
-      } else if (action === "leave") {
-        program.setData(`users/${user}`, undefined);
-      }
-      userList = users;
-      refreshData();
-    });
-  },
-  send,
-  close: end
-});
-enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
-var emoji = generateEmojis(1)[0].image;
-var randomName = n2({ dictionaries: [l, t, r] });
-program.observe("abc").onChange((value) => console.log(value));
-program.observe("users").onChange((users) => console.log("USERS", users));
-program.setData("users/~{self}/name", randomName);
-program.setData("users/~{self}/emoji", emoji);
-program.onIncomingUpdatesReceived = () => refreshData();
-addEventListener("mousemove", (e2) => {
-  program.setData("cursor/pos", { x: e2.pageX, y: e2.pageY });
-  program.setData("cursor/emoji", emoji);
-  program.setData("cursor/user", userId);
-});
-program.observe(["cursor/pos", "cursor/emoji", "cursor/user"]).onChange(([pos, emoji2, user]) => {
-  const div = document.querySelector("#div-emoji");
-  if (div) {
-    const offset = user === userId ? [2, 2] : [-div.offsetWidth / 2, -div.offsetHeight / 2];
-    div.style.left = `${pos.x + offset[0]}px`;
-    div.style.top = `${pos.y + offset[1]}px`;
-    div.textContent = emoji2;
-  }
-});
-function refreshData() {
-  const div = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
-  div.id = "log-div";
-  div.style.whiteSpace = "pre";
-  div.style.fontFamily = "monospace";
-  div.style.fontSize = "16px";
-  div.textContent = JSON.stringify(root, null, 2) + `
+function setupRoom() {
+  const root = {};
+  const { userId, send, enterRoom, addMessageListener, addUserListener, end } = U({
+    appId: "napl-test",
+    workerUrl: new URL("./signal-room.worker.js", import.meta.url)
+  });
+  let userList = [];
+  const program = new Program({
+    userId,
+    root,
+    onDataCycle: refreshData
+  });
+  program.connectComm({
+    onMessage: addMessageListener,
+    onNewClient: (listener) => {
+      addUserListener((user, action, users) => {
+        if (action === "join") {
+          listener(user);
+        } else if (action === "leave") {
+          program.setData(`users/${user}`, undefined);
+        }
+        userList = users;
+        refreshData();
+      });
+    },
+    send,
+    close: end
+  });
+  program.onReceivedIncomingUpdates = refreshData;
+  enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
+  const emoji = generateEmojis(1)[0].image;
+  const randomName = n2({ dictionaries: [l, t, r] });
+  program.observe("abc").onChange((value) => console.log(value));
+  program.observe("users").onChange((users) => console.log("USERS", users));
+  program.setData("users/~{self}/name", randomName);
+  program.setData("users/~{self}/emoji", emoji);
+  addEventListener("mousemove", (e2) => {
+    program.setData("cursor/pos", { x: e2.pageX, y: e2.pageY });
+    program.setData("cursor/emoji", emoji);
+    program.setData("cursor/user", userId);
+  });
+  program.observe(["cursor/pos", "cursor/emoji", "cursor/user"]).onChange(([pos, emoji2, user]) => {
+    const div = document.querySelector("#div-emoji");
+    if (div) {
+      const offset = user === userId ? [2, 2] : [-div.offsetWidth / 2, -div.offsetHeight / 2];
+      div.style.left = `${pos.x + offset[0]}px`;
+      div.style.top = `${pos.y + offset[1]}px`;
+      div.textContent = emoji2;
+    }
+  });
+  function refreshData() {
+    const div = document.querySelector("#log-div") ?? document.body.appendChild(document.createElement("div"));
+    div.id = "log-div";
+    div.style.whiteSpace = "pre";
+    div.style.fontFamily = "monospace";
+    div.style.fontSize = "16px";
+    div.textContent = JSON.stringify(root, null, 2) + `
 Last update: ${new Date().toISOString()}
 `;
-  const divSplit = document.querySelector("#log-block") ?? document.body.appendChild(document.createElement("div"));
-  divSplit.style.display = "flex";
-  divSplit.style.flexDirection = "row";
-  const divOut = document.querySelector("#log-div-out") ?? divSplit.appendChild(document.createElement("div"));
-  divOut.id = "log-div-out";
-  divOut.style.flex = "1";
-  divOut.style.whiteSpace = "pre";
-  divOut.style.fontFamily = "monospace";
-  divOut.style.fontSize = "12px";
-  divOut.textContent = program.outgoingUpdates.length ? `OUT
+    const divSplit = document.querySelector("#log-block") ?? document.body.appendChild(document.createElement("div"));
+    divSplit.style.display = "flex";
+    divSplit.style.flexDirection = "row";
+    const divOut = document.querySelector("#log-div-out") ?? divSplit.appendChild(document.createElement("div"));
+    divOut.id = "log-div-out";
+    divOut.style.flex = "1";
+    divOut.style.whiteSpace = "pre";
+    divOut.style.fontFamily = "monospace";
+    divOut.style.fontSize = "12px";
+    divOut.textContent = program.outgoingUpdates.length ? `OUT
 ` + JSON.stringify(program.outgoingUpdates, null, 2) : "";
-  const divIn = document.querySelector("#log-div-in") ?? divSplit.appendChild(document.createElement("div"));
-  divIn.id = "log-div-in";
-  divIn.style.flex = "1";
-  divIn.style.whiteSpace = "pre";
-  divIn.style.fontFamily = "monospace";
-  divIn.style.fontSize = "12px";
-  divIn.textContent = program.incomingUpdates.length ? `IN
+    const divIn = document.querySelector("#log-div-in") ?? divSplit.appendChild(document.createElement("div"));
+    divIn.id = "log-div-in";
+    divIn.style.flex = "1";
+    divIn.style.whiteSpace = "pre";
+    divIn.style.fontFamily = "monospace";
+    divIn.style.fontSize = "12px";
+    divIn.textContent = program.incomingUpdates.length ? `IN
 ` + JSON.stringify(program.incomingUpdates, null, 2) : "";
-  const usrs = root.users;
-  const allUsers = [userId, ...userList].map((userId2) => usrs?.[userId2]);
-  const divUsers = document.querySelector("#log-div-users") ?? document.body.appendChild(document.createElement("div"));
-  divUsers.id = "log-div-users";
-  divUsers.style.flex = "1";
-  divUsers.style.whiteSpace = "pre";
-  divUsers.style.fontFamily = "monospace";
-  divUsers.style.fontSize = "12px";
-  divUsers.style.position = "absolute";
-  divUsers.style.top = "5px";
-  divUsers.style.right = "5px";
-  divUsers.style.padding = "5px";
-  divUsers.style.border = "1px solid black";
-  divUsers.style.backgroundColor = "#ffffffaa";
-  divUsers.textContent = `USERS
+    const usrs = root.users;
+    const allUsers = [userId, ...userList].map((userId2) => usrs?.[userId2]);
+    const divUsers = document.querySelector("#log-div-users") ?? document.body.appendChild(document.createElement("div"));
+    divUsers.id = "log-div-users";
+    divUsers.style.flex = "1";
+    divUsers.style.whiteSpace = "pre";
+    divUsers.style.fontFamily = "monospace";
+    divUsers.style.fontSize = "12px";
+    divUsers.style.position = "absolute";
+    divUsers.style.top = "5px";
+    divUsers.style.right = "5px";
+    divUsers.style.padding = "5px";
+    divUsers.style.border = "1px solid black";
+    divUsers.style.backgroundColor = "#ffffffaa";
+    divUsers.textContent = `USERS
 ` + allUsers.map((user) => `${user?.emoji} ${user?.name}`).join(`
 `);
-  const divEmoji = document.querySelector("#div-emoji") ?? document.body.appendChild(document.createElement("div"));
-  divEmoji.id = "div-emoji";
-  divEmoji.style.position = "absolute";
-  divEmoji.style.fontSize = "20pt";
-  divEmoji.style.opacity = ".5";
-}
-function setupGamePlayer() {
-  let paused = false;
-  const updateButtons = new Set;
-  function resetButtons() {
-    updateButtons.forEach((callback) => callback());
+    const divEmoji = document.querySelector("#div-emoji") ?? document.body.appendChild(document.createElement("div"));
+    divEmoji.id = "div-emoji";
+    divEmoji.style.position = "absolute";
+    divEmoji.style.fontSize = "20pt";
+    divEmoji.style.opacity = ".5";
   }
-  function startLoop() {
-    paused = false;
-    let rafId = 0;
-    function loop() {
-      rafId = requestAnimationFrame(loop);
-      program.performCycle();
+  function setupGamePlayer() {
+    let paused = false;
+    const updateButtons = new Set;
+    function resetButtons() {
+      updateButtons.forEach((callback) => callback());
     }
-    rafId = requestAnimationFrame(loop);
-    return () => {
-      cancelAnimationFrame(rafId);
-      paused = true;
-    };
-  }
-  {
-    let stop;
-    const button = document.body.appendChild(document.createElement("button"));
-    button.textContent = "⏸️";
-    button.addEventListener("mousedown", () => {
-      if (paused) {
-        stop = startLoop();
-      } else {
-        stop?.();
-        stop = undefined;
+    function startLoop() {
+      paused = false;
+      let rafId = 0;
+      function loop() {
+        rafId = requestAnimationFrame(loop);
+        program.performCycle();
       }
-      resetButtons();
-    });
-    updateButtons.add(() => {
-      button.textContent = paused ? "▶️" : "⏸️";
-    });
-    stop = startLoop();
+      rafId = requestAnimationFrame(loop);
+      return () => {
+        cancelAnimationFrame(rafId);
+        paused = true;
+      };
+    }
+    {
+      let stop;
+      const button = document.body.appendChild(document.createElement("button"));
+      button.textContent = "⏸️";
+      button.addEventListener("mousedown", () => {
+        if (paused) {
+          stop = startLoop();
+        } else {
+          stop?.();
+          stop = undefined;
+        }
+        resetButtons();
+      });
+      updateButtons.add(() => {
+        button.textContent = paused ? "▶️" : "⏸️";
+      });
+      stop = startLoop();
+    }
+    {
+      const button = document.body.appendChild(document.createElement("button"));
+      button.textContent = "⏯️";
+      button.addEventListener("mousedown", () => program.performCycle());
+      updateButtons.add(() => {
+        button.disabled = !paused;
+      });
+    }
+    {
+      const button = document.body.appendChild(document.createElement("button"));
+      button.textContent = "\uD83D\uDD04";
+      button.addEventListener("mousedown", () => {
+        program.setData(`abc`, Math.random());
+        refreshData();
+      });
+    }
+    resetButtons();
   }
-  {
-    const button = document.body.appendChild(document.createElement("button"));
-    button.textContent = "⏯️";
-    button.addEventListener("mousedown", () => program.performCycle());
-    updateButtons.add(() => {
-      button.disabled = !paused;
-    });
-  }
-  {
-    const button = document.body.appendChild(document.createElement("button"));
-    button.textContent = "\uD83D\uDD04";
-    button.addEventListener("mousedown", () => {
-      program.setData(`abc`, Math.random());
-      refreshData();
-    });
-  }
-  resetButtons();
+  setupGamePlayer();
+  return { root, program };
 }
-setupGamePlayer();
 export {
-  root,
-  program
+  setupRoom
 };
 
-//# debugId=A21329181545A13E64756E2164756E21
+//# debugId=D94278ACD049D2FE64756E2164756E21

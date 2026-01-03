@@ -1,7 +1,7 @@
 import { createServer } from "https";
 import express from "express";
 import path from "path";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 import { WebSocketServer } from "ws";
 dotenv.config();
 
@@ -18,8 +18,8 @@ app.get("/config.json", (_req, res) => {
     return;
   }
   res.json({
-    "split": false,
-    "show-tab": true
+    split: false,
+    "show-tab": true,
   });
 });
 
@@ -34,7 +34,7 @@ server.addListener("listening", () => {
   if (typeof address === "string") {
     console.log(`Listening on http://${address}:${PORT}`);
   } else if (address && typeof address === "object") {
-    const host = address.address === '::' ? 'localhost' : address.address;
+    const host = address.address === "::" ? "localhost" : address.address;
     console.log(`Listening on http://${host}:${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV ?? "dev"}`);
   }

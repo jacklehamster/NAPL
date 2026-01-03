@@ -32,7 +32,7 @@ export class Program<T extends Data = Data> implements Context<T> {
   private readonly observerManager: ObserverManager = new ObserverManager();
   private _updates = new Map<string, UpdatePath>();
   private onDataCycle?(): void;
-  onIncomingUpdatesReceived?: (updates: Update[]) => void;
+  onReceivedIncomingUpdates?(): void;
 
   constructor({ userId, root, properties, onDataCycle }: Props<T>) {
     this.userId = userId;
@@ -55,7 +55,7 @@ export class Program<T extends Data = Data> implements Context<T> {
     }
   }
 
-  observe(paths?: (string[] | string)): Observer {
+  observe(paths?: string[] | string): Observer {
     const multi = Array.isArray(paths);
     const pathArray = paths === undefined ? [] : multi ? paths : [paths];
     return this.observerManager.observe(pathArray, multi);
