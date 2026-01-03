@@ -9,14 +9,14 @@ export function deepShareData(
   obj: Data,
   peerProps: { active: true; peer: string },
   pathParts: string[] = [],
-  now: number = Date.now(),
+  now: number = Date.now()
 ) {
-  const shouldGoDeep =
+  const shouldGoDeeper =
     typeof obj === "object" &&
     obj &&
     !(obj instanceof ArrayBuffer) &&
     Object.values(obj).length;
-  if (shouldGoDeep) {
+  if (shouldGoDeeper) {
     for (let key in obj) {
       const value = Array.isArray(obj) ? obj[Number(key)] : obj[key];
       deepShareData(context, value, peerProps, [...pathParts, key], now);
@@ -29,7 +29,7 @@ export function deepShareData(
 export function hookCommInterface(
   context: Context,
   comm: CommInterface,
-  processor: Processor,
+  processor: Processor
 ) {
   const removeOnMessage = comm.onMessage((buffer) => {
     processor.receivedData(buffer, context);

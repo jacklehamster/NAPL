@@ -30,7 +30,7 @@ export class Program<T extends Data = Data> implements Context<T> {
   readonly properties: Record<string, any>;
   private readonly processor: Processor = new Processor();
   private readonly observerManager: ObserverManager = new ObserverManager();
-  private _updates = new Map<string, UpdatePath>();
+  private readonly updates = new Map<string, UpdatePath>();
   private onDataCycle?(): void;
   onReceivedIncomingUpdates?(): void;
 
@@ -47,10 +47,10 @@ export class Program<T extends Data = Data> implements Context<T> {
   }
 
   performCycle() {
-    this.processor.performCycle(this, this._updates);
-    if (this._updates.size) {
-      this.observerManager.triggerObservers(this, this._updates);
-      this._updates.clear();
+    this.processor.performCycle(this, this.updates);
+    if (this.updates.size) {
+      this.observerManager.triggerObservers(this, this.updates);
+      this.updates.clear();
       this.onDataCycle?.();
     }
   }
