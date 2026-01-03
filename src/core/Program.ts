@@ -44,10 +44,12 @@ export class Program<T extends Data = Data> implements Context<T> {
     return hookCommInterface(this, comm, this.processor);
   }
 
+  _updates = new Map<string, any>();
   performCycle() {
-    const updates = this.processor.performCycle(this);
-    if (updates) {
-      this.observerManager.triggerObservers(this, updates);
+    this.processor.performCycle(this, this._updates);
+    if (this._updates.size) {
+      this.observerManager.triggerObservers(this, this._updates);
+      this._updates.clear();
       this.onDataCycle?.();
     }
   }

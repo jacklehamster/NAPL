@@ -18,12 +18,12 @@ export class Processor {
     };
   }
 
-  performCycle(context: Context) {
+  performCycle(context: Context, updatedPaths: Map<string, any>) {
     consolidateUpdates(context.incomingUpdates, context.outgoingUpdates);
     //  Send out outgoing updates
     this.sendOutgoingUpdate(context);
     //  Process incoming updates
-    return commitUpdates(context);
+    commitUpdates(context, updatedPaths);
   }
 
   receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {

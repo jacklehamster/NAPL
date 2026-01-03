@@ -24,10 +24,10 @@ export class ObserverManager {
   }
 
   readonly #tempObsTriggered = new Set<Observer>();
-  triggerObservers(context: Context, updates: Record<string, any>) {
-    for (const path in updates) {
+  triggerObservers(context: Context, updates: Map<string, any>) {
+    updates.keys().forEach(path => {
       this.observers.get(path)?.forEach(observer => this.#tempObsTriggered.add(observer));
-    }
+    });
     this.#tempObsTriggered.forEach(o => o.triggerIfChanged(context, updates));
     this.#tempObsTriggered.clear();
   }

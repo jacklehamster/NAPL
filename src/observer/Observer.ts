@@ -32,10 +32,10 @@ export class Observer {
     return this;
   }
 
-  #valuesChanged(context: Context, updates: Record<string, any>) {
+  #valuesChanged(context: Context, updates?: Map<string, any>) {
     const newValues =
       this.paths.map((path, index) =>
-        (updates && path in updates) ? updates[path] :
+        updates?.has(path) ? updates.get(path) :
           getLeafObject(context.root, this.#partsArrays[index], 0, false, context.properties)
       );
 
@@ -57,8 +57,8 @@ export class Observer {
     return newValues;
   }
 
-  triggerIfChanged(context: Context, updates: Record<string, any>) {
-    const newValues = !this.paths.length ? undefined : this.#valuesChanged(context, this.initialized ? updates : {});
+  triggerIfChanged(context: Context, updates: Map<string, any>) {
+    const newValues = !this.paths.length ? undefined : this.#valuesChanged(context, this.initialized ? updates : undefined);
     if (!newValues) {
       return;
     }

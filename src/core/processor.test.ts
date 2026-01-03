@@ -31,6 +31,7 @@ describe('Processor', () => {
   });
 
   it('test update and databinding cycle', async () => {
+    const updatedPaths = new Map<string, any>();
     context?.outgoingUpdates.push(
       {
         path: 'abc',
@@ -43,9 +44,9 @@ describe('Processor', () => {
         confirmed: 2,
       }
     );
-    processor?.performCycle(context!);
+    processor?.performCycle(context!, updatedPaths);
     await new Promise((resolve) => setTimeout(resolve, 100));
-    processor?.performCycle(context!);
+    processor?.performCycle(context!, updatedPaths);
     expect(context!.root.abc).toBe(456);
     expect(context!.root.array).toEqual([1, 5, 3]);
   })

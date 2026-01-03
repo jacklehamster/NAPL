@@ -1,20 +1,25 @@
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it, beforeEach } from 'bun:test';
 import { cleanupRoot, commitUpdates, filterArray } from './data-update';
 import { Data } from '../../types/Data';
 
 describe('commitUpdates', () => {
+  let updatedPaths: Map<string, any>;
+  beforeEach(() => {
+    updatedPaths = new Map<string, any>();
+  });
+
   it('should sort updates by confirmed timestamp and apply them', () => {
     const obj: Data = {};
-    const updatedPaths = commitUpdates({ root: obj, incomingUpdates: [
+    commitUpdates({ root: obj, incomingUpdates: [
         { path: 'a/b', value: 2, confirmed: 2 },
         { path: 'a/b', value: 1, confirmed: 1 },
         { path: "test", value: "~{test}", confirmed: 3 },
       ], properties: {
         test: "123",
       }, outgoingUpdates: [],
-    }, true);
+    }, updatedPaths, true);
     expect(obj).toEqual({ a: { b: 2 }, test: "123" });
-    expect(updatedPaths).toEqual({
+    expect(Object.fromEntries(updatedPaths.entries())).toEqual({
       a: {
         b: 2,
       },
@@ -25,11 +30,11 @@ describe('commitUpdates', () => {
 
   it('should apply update when value is object', () => {
     const obj: Data = {};
-    const updatedPaths = commitUpdates({root: obj, incomingUpdates: [
+    commitUpdates({root: obj, incomingUpdates: [
       { path: "abc", value: { a: 1 }, confirmed: 1 },
-    ], properties: {}, outgoingUpdates: []}, true);
+    ], properties: {}, outgoingUpdates: []}, updatedPaths, true);
     expect(obj).toEqual({ abc: { a: 1 } });
-    expect(updatedPaths).toEqual({
+    expect(Object.fromEntries(updatedPaths.entries())).toEqual({
       abc: { a: 1 },
     });
   })
@@ -38,11 +43,11 @@ describe('commitUpdates', () => {
     const obj: Data = {
       abc: 1,
     };
-    const updatedPaths = commitUpdates({root: obj, incomingUpdates: [
+    commitUpdates({root: obj, incomingUpdates: [
       { path: "abc", value: undefined, confirmed: 1 },
-    ], properties: {}, outgoingUpdates: []}, true);
+    ], properties: {}, outgoingUpdates: []}, updatedPaths, true);
     expect(obj).toEqual({});
-    expect(updatedPaths).toEqual({
+    expect(Object.fromEntries(updatedPaths.entries())).toEqual({
       "abc": undefined,
       "": {},
     });
@@ -51,13 +56,13 @@ describe('commitUpdates', () => {
   it('should sort updates by confirmed timestamp and apply them', () => {
     const obj: Data = {};
 
-    const updatedPaths = commitUpdates({root: obj, incomingUpdates: [
+    commitUpdates({root: obj, incomingUpdates: [
       { path: 'a/b', value: 2, confirmed: 2 },
       { path: 'a/b', value: 1, confirmed: 1 },
       { path: "test", value: "~{test}", confirmed: 3 },
     ], properties: {
       test: "123",
-    }, outgoingUpdates: []}, true);
+    }, outgoingUpdates: []}, updatedPaths, true);
 
     expect(obj).toEqual({
       a: {
@@ -65,7 +70,7 @@ describe('commitUpdates', () => {
       },
       test: "123",
     });
-    expect(updatedPaths).toEqual({
+    expect(Object.fromEntries(updatedPaths.entries())).toEqual({
         a: {
           b: 2,
         },
@@ -84,6 +89,11 @@ describe('filterArray', () => {
 });
 
 describe('cleanupRoot', () => {
+  let updatedPaths: Map<string, any>;
+  beforeEach(() => {
+    updatedPaths = new Map<string, any>();
+  });
+
   it('should cleanup root', () => {
     const root: any = {
       test: {
@@ -97,7 +107,6 @@ describe('cleanupRoot', () => {
         },
       },
     };
-    const updatedPaths:Record<string, any> = {};
     cleanupRoot(root, ["test", "a", "c"], 0, updatedPaths);
     expect(root).toEqual({
       test: {
@@ -108,7 +117,7 @@ describe('cleanupRoot', () => {
         }
       }
     });
-    expect(updatedPaths).toEqual({
+    expect(Object.fromEntries(updatedPaths.entries())).toEqual({
       "test/a/c": undefined,
       "test/a": undefined,
       "test": {
