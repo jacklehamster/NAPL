@@ -29,7 +29,7 @@
   "index.ts": {
     "sha": "bd4b1476e3cf69e1c07c77cefc98d4276daec470"
   },
-  "md5": "2a59f21acee39b1c0926f7da297cfabd",
+  "md5": "a68a5deef701b5bf7f0b1ba8e42bee17",
   "package.json": {
     "sha": "3c87eeea9785d8713548c14bd7d0da612baef84a"
   },
@@ -37,7 +37,7 @@
     "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
   },
   "src/test-room/index.ts": {
-    "sha": "57be875f64cbe3242a43520227f704a3e6e3f008"
+    "sha": "3fca2fe6815d49cfe815d7dc6a463136cab5957e"
   },
   "test-room/index.html": {
     "sha": "f6df9ef6d40ad7d1d22cfcd73bf7b3d37bd24c5e"

@@ -57,7 +57,7 @@
     "index.ts": {
       "sha": "bd4b1476e3cf69e1c07c77cefc98d4276daec470"
     },
-    "md5": "2a59f21acee39b1c0926f7da297cfabd",
+    "md5": "a68a5deef701b5bf7f0b1ba8e42bee17",
     "package.json": {
       "sha": "3c87eeea9785d8713548c14bd7d0da612baef84a"
     },
@@ -65,7 +65,7 @@
       "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
     },
     "src/test-room/index.ts": {
-      "sha": "57be875f64cbe3242a43520227f704a3e6e3f008"
+      "sha": "3fca2fe6815d49cfe815d7dc6a463136cab5957e"
     },
     "test-room/index.html": {
       "sha": "f6df9ef6d40ad7d1d22cfcd73bf7b3d37bd24c5e"
@@ -128,16 +128,16 @@
     "index.ts": {
       "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
     },
-    "md5": "cc5056ecc6d4aa6a0912e08163670631",
+    "md5": "a409b46932a256a689a1f458cf581948",
     "test-room/index.ts": {
-      "sha": "57be875f64cbe3242a43520227f704a3e6e3f008"
+      "sha": "3fca2fe6815d49cfe815d7dc6a463136cab5957e"
     }
   },
   "/example/src/test-room/dir.json": {
     "index.ts": {
-      "sha": "57be875f64cbe3242a43520227f704a3e6e3f008"
+      "sha": "3fca2fe6815d49cfe815d7dc6a463136cab5957e"
     },
-    "md5": "7f8b4a3a7d27ee75d0d0be2f55881aaa"
+    "md5": "d83b0df8d516dce86af03a47b6e57872"
   },
   "/example/test-room/dir.json": {
     "index.html": {
