@@ -1,12 +1,12 @@
 {
   "CommInterface.test.ts": {
-    "sha": "6a3c567cd691803d1e4565c033b4a36b662d4bac"
+    "sha": "991a34c9bb3712689c11034da8f88beb76c890bb"
   },
   "CommInterface.ts": {
     "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
   },
   "CommInterfaceHook.ts": {
-    "sha": "85190878bdfa8cf7fc76b894c10bc6080b189f4f"
+    "sha": "0e00acc16da5c25e6ae8b963024a03ac79845d95"
   },
-  "md5": "f5fc422fb8b812e000387226ee4a68f3"
+  "md5": "96f77d635adc504115598ebbe8ddb507"
 }

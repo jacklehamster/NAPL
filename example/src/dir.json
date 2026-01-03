@@ -1,6 +1,9 @@
 {
   "index.ts": {
-    "sha": "20a75d153a8235222c802600a7b88b8c5c561a6b"
+    "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
   },
-  "md5": "0fc5f4cf29fc5d479b69855f35f0e305"
+  "md5": "cc5056ecc6d4aa6a0912e08163670631",
+  "test-room/index.ts": {
+    "sha": "57be875f64cbe3242a43520227f704a3e6e3f008"
+  }
 }

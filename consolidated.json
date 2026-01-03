@@ -1,15 +1,15 @@
 {
   "/bundler/dir.json": {
     "bundler.ts": {
-      "sha": "3313843ab8419c3273bfb987f31aba3afdfb1be3"
+      "sha": "4e121451223f22f50cba22ce35b1357b9a9a0d52"
     },
-    "md5": "10471cb9fc41dc7d543432c9c9b00ca7"
+    "md5": "6e03f03764b3dab16320576a97549f11"
   },
   "/example/bundler/dir.json": {
     "bundler.ts": {
-      "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
+      "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
     },
-    "md5": "8e993d7f3f5b568419c135c29211cdc9"
+    "md5": "5b1aff9cdf1129896ac1c13017a00847"
   },
   "/example/config.json": {
     "tab": "game-room"
@@ -18,12 +18,12 @@
     "config.json": {
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
-    "md5": "98e697444ddfb056848e8440fddd23b7",
+    "md5": "b7df91f339c0f97c9f488e8961825421",
     "package.json": {
       "sha": "3c87eeea9785d8713548c14bd7d0da612baef84a"
     },
     "tsconfig.json": {
-      "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
+      "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
     }
   },
   "/example/dir.json": {
@@ -34,16 +34,16 @@
       "sha": "8ac9fd168478ff8ce18b813473897e1120f75f43"
     },
     "bundler/bundler.ts": {
-      "sha": "a8f7b2aa31c69081e16f711724e1214506f46d9d"
+      "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
     },
     "config.json": {
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "1a656904386a12e4364fc4fd4f3bdf4f551bfa92"
+      "sha": "44e64b04f936aecff2ae2e1d9e9d5568773ea42b"
     },
     "dist/index.js.map": {
-      "sha": "4f6f93293372d54dea703be0d3b684f2a881857e"
+      "sha": "1488456f55b633d8215d5c574d35c0d08965db2d"
     },
     "dist/signal-room.worker.js": {
       "sha": "05cc48a014739b9b3fcd85b5eae3b3b52486565d"
@@ -52,33 +52,36 @@
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     },
     "index.html": {
-      "sha": "b4080ddbb6b3adfa6799c5d87dd674e2c9459b2c"
+      "sha": "ceb94765f2a324c12114ec5db533c0c7194aa941"
     },
     "index.ts": {
-      "sha": "f8e603ed981543a565aaa1e3461708b276d65fbc"
+      "sha": "bd4b1476e3cf69e1c07c77cefc98d4276daec470"
     },
-    "md5": "a36304f5dcd4734f48c7c47ad5c296d6",
+    "md5": "56914368e8db5e15301eac3d08430f7a",
     "package.json": {
       "sha": "3c87eeea9785d8713548c14bd7d0da612baef84a"
     },
     "src/index.ts": {
-      "sha": "20a75d153a8235222c802600a7b88b8c5c561a6b"
+      "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
+    },
+    "src/test-room/index.ts": {
+      "sha": "57be875f64cbe3242a43520227f704a3e6e3f008"
     },
     "test-room/index.html": {
-      "sha": "d91404f859441b6d832950e6108ff5b16dc6390d"
+      "sha": "f6df9ef6d40ad7d1d22cfcd73bf7b3d37bd24c5e"
     },
     "tsconfig.json": {
-      "sha": "5d54bba5d6d02edc48c065729f8965af5541693d"
+      "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
     }
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "1a656904386a12e4364fc4fd4f3bdf4f551bfa92"
+      "sha": "44e64b04f936aecff2ae2e1d9e9d5568773ea42b"
     },
     "index.js.map": {
-      "sha": "4f6f93293372d54dea703be0d3b684f2a881857e"
+      "sha": "1488456f55b633d8215d5c574d35c0d08965db2d"
     },
-    "md5": "c0ce171ae6add10d6830d9ebadf43141",
+    "md5": "40560c64e48526a1c0f72b0d78d1f758",
     "signal-room.worker.js": {
       "sha": "05cc48a014739b9b3fcd85b5eae3b3b52486565d"
     },
@@ -123,21 +126,32 @@
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "20a75d153a8235222c802600a7b88b8c5c561a6b"
+      "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
     },
-    "md5": "0fc5f4cf29fc5d479b69855f35f0e305"
+    "md5": "cc5056ecc6d4aa6a0912e08163670631",
+    "test-room/index.ts": {
+      "sha": "57be875f64cbe3242a43520227f704a3e6e3f008"
+    }
+  },
+  "/example/src/test-room/dir.json": {
+    "index.ts": {
+      "sha": "57be875f64cbe3242a43520227f704a3e6e3f008"
+    },
+    "md5": "7f8b4a3a7d27ee75d0d0be2f55881aaa"
   },
   "/example/test-room/dir.json": {
     "index.html": {
-      "sha": "d91404f859441b6d832950e6108ff5b16dc6390d"
+      "sha": "f6df9ef6d40ad7d1d22cfcd73bf7b3d37bd24c5e"
     },
-    "md5": "b2b8da303dc306307ae190370a23af63"
+    "md5": "097ac2a37598f494426aba368ac9ba98"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
       "outDir": "dist",
       "rootDir": "",
-      "lib": ["ESNext"],
+      "lib": [
+        "ESNext"
+      ],
       "module": "esnext",
       "target": "esnext",
       "moduleResolution": "bundler",
@@ -153,9 +167,14 @@
       "allowSyntheticDefaultImports": true,
       "forceConsistentCasingInFileNames": true,
       "allowJs": true,
-      "types": ["bun-types"]
+      "types": [
+        "bun-types"
+      ]
     },
-    "include": ["**/*.ts", "**/*.tsx"]
+    "include": [
+      "**/*.ts",
+      "**/*.tsx"
+    ]
   },
   "/package.json": {
     "name": "napl",
@@ -190,7 +209,9 @@
     "publishConfig": {
       "access": "public"
     },
-    "files": ["dist"],
+    "files": [
+      "dist"
+    ],
     "author": {
       "name": "Jack Le Hamster",
       "email": "jacklehamster@gmail.com"
@@ -212,107 +233,107 @@
   },
   "/src/clients/dir.json": {
     "CommInterface.test.ts": {
-      "sha": "6a3c567cd691803d1e4565c033b4a36b662d4bac"
+      "sha": "991a34c9bb3712689c11034da8f88beb76c890bb"
     },
     "CommInterface.ts": {
       "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
     },
     "CommInterfaceHook.ts": {
-      "sha": "85190878bdfa8cf7fc76b894c10bc6080b189f4f"
+      "sha": "0e00acc16da5c25e6ae8b963024a03ac79845d95"
     },
-    "md5": "f5fc422fb8b812e000387226ee4a68f3"
+    "md5": "96f77d635adc504115598ebbe8ddb507"
   },
   "/src/context/dir.json": {
     "Context.ts": {
-      "sha": "b1eaffa51c5408e859324e309d8d2c49bdbc087d"
+      "sha": "9b10e744d7e07645f91ff8985af0751b38bfa6ee"
     },
-    "md5": "54347ed4a479513b3d0af7c52105b1df"
+    "md5": "8053c952816255bb79919c4e214fcc81"
   },
   "/src/core/dir.json": {
     "Processor.ts": {
-      "sha": "698dccedfeaf7de14a176b869fff7c44b4e1fc12"
+      "sha": "cbffb6901e070009789575ec062b6f428fd774f7"
     },
     "Program.ts": {
-      "sha": "530df11917a749ecdead48d2c1cf635309856570"
+      "sha": "c358c49ba74d6f45c20eeae00587ce7648a45dfe"
     },
-    "md5": "075b1f6379abd9df62fa0c1d3c6668c9",
+    "md5": "49f40ad273d870b294461ab2dc5948ed",
     "processor.test.ts": {
-      "sha": "a4f7791ba4c8902504d50138fa413c1b2d67ff05"
+      "sha": "4b9a5d71ab07f031b19d42793cfbafe4fc1faba0"
     }
   },
   "/src/cycles/data-update/dir.json": {
     "UpdateOptions.ts": {
-      "sha": "6c0a9f208d284868d72187e00f9b57141ce40c4a"
+      "sha": "2b2aef0f7d4ad7cbe0027e631370fe15e7df9d96"
     },
     "data-manager.ts": {
-      "sha": "5c1cffae70d3e88dfa5e749a5e4098719b22c539"
+      "sha": "3937124c1a6f3fb4a2b2b24b375528e69db34573"
     },
     "data-update.test.ts": {
-      "sha": "53417c02b165757bff783670f5aea5d37864c6fa"
+      "sha": "b843646e477416994786915999588670cb716d82"
     },
     "data-update.ts": {
-      "sha": "677c9982b4bc3a24ba38040dc12cfaaa115b8ee6"
+      "sha": "93cb0dfa2c81904c682995f12a2dd7257ee16e43"
     },
-    "md5": "7c991694ee0e335a6160eef8bb97bb51"
+    "md5": "8aa49a7205a8944119a3b4d693f81331"
   },
   "/src/cycles/dir.json": {
     "data-update/UpdateOptions.ts": {
-      "sha": "6c0a9f208d284868d72187e00f9b57141ce40c4a"
+      "sha": "2b2aef0f7d4ad7cbe0027e631370fe15e7df9d96"
     },
     "data-update/data-manager.ts": {
-      "sha": "5c1cffae70d3e88dfa5e749a5e4098719b22c539"
+      "sha": "3937124c1a6f3fb4a2b2b24b375528e69db34573"
     },
     "data-update/data-update.test.ts": {
-      "sha": "53417c02b165757bff783670f5aea5d37864c6fa"
+      "sha": "b843646e477416994786915999588670cb716d82"
     },
     "data-update/data-update.ts": {
-      "sha": "677c9982b4bc3a24ba38040dc12cfaaa115b8ee6"
+      "sha": "93cb0dfa2c81904c682995f12a2dd7257ee16e43"
     },
-    "md5": "febc7f3d65deb6b9e2d4c43935673bcc"
+    "md5": "43f6c5592d29a534edb4e8b64c971f68"
   },
   "/src/dir.json": {
     "clients/CommInterface.test.ts": {
-      "sha": "6a3c567cd691803d1e4565c033b4a36b662d4bac"
+      "sha": "991a34c9bb3712689c11034da8f88beb76c890bb"
     },
     "clients/CommInterface.ts": {
       "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
     },
     "clients/CommInterfaceHook.ts": {
-      "sha": "85190878bdfa8cf7fc76b894c10bc6080b189f4f"
+      "sha": "0e00acc16da5c25e6ae8b963024a03ac79845d95"
     },
     "context/Context.ts": {
-      "sha": "b1eaffa51c5408e859324e309d8d2c49bdbc087d"
+      "sha": "9b10e744d7e07645f91ff8985af0751b38bfa6ee"
     },
     "core/Processor.ts": {
-      "sha": "698dccedfeaf7de14a176b869fff7c44b4e1fc12"
+      "sha": "cbffb6901e070009789575ec062b6f428fd774f7"
     },
     "core/Program.ts": {
-      "sha": "530df11917a749ecdead48d2c1cf635309856570"
+      "sha": "c358c49ba74d6f45c20eeae00587ce7648a45dfe"
     },
     "core/processor.test.ts": {
-      "sha": "a4f7791ba4c8902504d50138fa413c1b2d67ff05"
+      "sha": "4b9a5d71ab07f031b19d42793cfbafe4fc1faba0"
     },
     "cycles/data-update/UpdateOptions.ts": {
-      "sha": "6c0a9f208d284868d72187e00f9b57141ce40c4a"
+      "sha": "2b2aef0f7d4ad7cbe0027e631370fe15e7df9d96"
     },
     "cycles/data-update/data-manager.ts": {
-      "sha": "5c1cffae70d3e88dfa5e749a5e4098719b22c539"
+      "sha": "3937124c1a6f3fb4a2b2b24b375528e69db34573"
     },
     "cycles/data-update/data-update.test.ts": {
-      "sha": "53417c02b165757bff783670f5aea5d37864c6fa"
+      "sha": "b843646e477416994786915999588670cb716d82"
     },
     "cycles/data-update/data-update.ts": {
-      "sha": "677c9982b4bc3a24ba38040dc12cfaaa115b8ee6"
+      "sha": "93cb0dfa2c81904c682995f12a2dd7257ee16e43"
     },
     "index.ts": {
       "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
     },
-    "md5": "afeaa173c2e8510b818734a596da3c79",
+    "md5": "0aa211e9fe96796c6cffb43c1822550f",
     "observer/Observer.ts": {
-      "sha": "235f43e7a7118a1cd85b3917167d08f313560842"
+      "sha": "f9db93b949303c7d7d882552ac65f5dfbe60ed8a"
     },
     "observer/ObserverManager.ts": {
-      "sha": "65b2b7a03346be437f53498046b94ec0aaade6c1"
+      "sha": "b404b1fab24dc71ef79e91f25fc40fc90105559b"
     },
     "types/Data.ts": {
       "sha": "46bea5872673b83916cd3fd785ed5314f50e4b26"
@@ -326,12 +347,12 @@
   },
   "/src/observer/dir.json": {
     "Observer.ts": {
-      "sha": "235f43e7a7118a1cd85b3917167d08f313560842"
+      "sha": "f9db93b949303c7d7d882552ac65f5dfbe60ed8a"
     },
     "ObserverManager.ts": {
-      "sha": "65b2b7a03346be437f53498046b94ec0aaade6c1"
+      "sha": "b404b1fab24dc71ef79e91f25fc40fc90105559b"
     },
-    "md5": "650056c2e20b50277a0ec1eaa640f6b8"
+    "md5": "dde04eead975130d777cb63a3d814349"
   },
   "/src/types/dir.json": {
     "Data.ts": {
@@ -351,9 +372,13 @@
       "rootDir": "src",
       "baseUrl": "./",
       "paths": {
-        "@/*": ["src/*"]
+        "@/*": [
+          "src/*"
+        ]
       },
-      "lib": ["ESNext"],
+      "lib": [
+        "ESNext"
+      ],
       "module": "esnext",
       "target": "esnext",
       "moduleResolution": "bundler",
@@ -368,10 +393,18 @@
       "allowSyntheticDefaultImports": true,
       "forceConsistentCasingInFileNames": true,
       "allowJs": true,
-      "types": ["bun-types"]
+      "types": [
+        "bun-types"
+      ]
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
-    "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
+    "exclude": [
+      "src/**/*.test.ts",
+      "src/**/*.test.tsx"
+    ]
   },
   "/tsconfig.types.json": {
     "extends": "./tsconfig.json",
