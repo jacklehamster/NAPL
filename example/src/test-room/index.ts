@@ -14,6 +14,7 @@ const { generateEmojis } = require("generate-random-emoji");
 
 function setupRoom() {
   const root: Record<string, Data> = {};
+  let userList: string[] = [];
 
   const { userId, send, enterRoom, addMessageListener, addUserListener, end } =
     enterWorld({
@@ -21,30 +22,27 @@ function setupRoom() {
       workerUrl: new URL("./signal-room.worker.js", import.meta.url),
     });
 
-  let userList: string[] = [];
-
   const program = new Program({
     userId,
     root,
     onDataCycle: refreshData,
-  });
-  program.connectComm({
-    onMessage: addMessageListener,
-    onNewClient: (listener: (user: string) => void) => {
-      addUserListener((user, action, users) => {
-        if (action === "join") {
-          listener(user);
-        } else if (action === "leave") {
-          program.setData(`users/${user}`, undefined);
-        }
-        userList = users;
-        refreshData();
-      });
+    comm: {
+      onMessage: addMessageListener,
+      onNewClient: (listener: (user: string) => void) => {
+        addUserListener((user, action, users) => {
+          if (action === "join") {
+            listener(user);
+          } else if (action === "leave") {
+            program.setData(`users/${user}`, undefined);
+          }
+          userList = users;
+          refreshData();
+        });
+      },
+      send,
+      close: end,
     },
-    send,
-    close: end,
   });
-  program.onReceivedIncomingUpdates = refreshData;
 
   enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
 

@@ -1,14 +1,12 @@
 import { Context } from "@/context/Context";
 import { Update } from "@/types/Update";
-import { Processor } from "./Processor";
 import { CommInterface } from "@/clients/CommInterface";
-import { hookCommInterface } from "@/clients/CommInterfaceHook";
-import { getData, setData } from "@/cycles/data-update/data-manager";
+import { setData } from "@/cycles/data-update/data-manager";
 import { UpdateOptions } from "@/cycles/data-update/UpdateOptions";
 import { Data } from "@/types/Data";
 import { ObserverManager } from "@/observer/ObserverManager";
 import { Observer } from "@/observer/Observer";
-import { UpdatePath } from "@/cycles/data-update/data-update";
+import { CommAux } from "@/attachments/comm/CommAux";
 
 interface Props<T extends Data> {
   userId: string;
@@ -16,6 +14,8 @@ interface Props<T extends Data> {
   properties?: Record<string, any>;
   onDataCycle?: () => void;
   runCycleOnSetData?: boolean;
+  comm: CommInterface;
+  onReceivedIncomingUpdates?: () => void;
 }
 
 const ACTIVE: UpdateOptions = {
@@ -28,29 +28,32 @@ export class Program<T extends Data = Data> implements Context<T> {
   readonly incomingUpdates: Update[] = [];
   readonly outgoingUpdates: Update[] = [];
   readonly properties: Record<string, any>;
-  private readonly processor: Processor = new Processor();
-  private readonly observerManager: ObserverManager = new ObserverManager();
-  private readonly updates = new Map<string, UpdatePath>();
+  private readonly commAux: CommAux;
+  private readonly observerManager = new ObserverManager();
   private onDataCycle?(): void;
   onReceivedIncomingUpdates?(): void;
 
-  constructor({ userId, root, properties, onDataCycle }: Props<T>) {
+  constructor({
+    userId,
+    root,
+    properties,
+    onDataCycle,
+    comm,
+    onReceivedIncomingUpdates,
+  }: Props<T>) {
     this.userId = userId;
     this.root = root ?? {};
     this.properties = properties ?? {};
     this.properties.self = userId;
     this.onDataCycle = onDataCycle;
-  }
-
-  connectComm(comm: CommInterface) {
-    return hookCommInterface(this, comm, this.processor);
+    this.commAux = new CommAux(comm, this);
+    this.onReceivedIncomingUpdates = onReceivedIncomingUpdates;
   }
 
   performCycle() {
-    this.processor.performCycle(this, this.updates);
-    if (this.updates.size) {
-      this.observerManager.triggerObservers(this, this.updates);
-      this.updates.clear();
+    const updates = this.commAux.performCycle();
+    if (updates) {
+      this.observerManager.triggerObservers(this, updates);
       this.onDataCycle?.();
     }
   }
@@ -61,11 +64,11 @@ export class Program<T extends Data = Data> implements Context<T> {
     return this.observerManager.observe(pathArray, multi);
   }
 
-  removeObserver(observer: Observer): void {
-    this.observerManager.removeObserver(observer);
-  }
-
   setData(path: string, value: Data) {
     setData(Date.now(), this.outgoingUpdates, path, value, ACTIVE);
+  }
+
+  close() {
+    this.commAux.disconnect();
   }
 }

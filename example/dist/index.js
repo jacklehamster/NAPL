@@ -14518,8 +14518,8 @@ class ObserverManager {
 }
 // ../src/clients/CommInterfaceHook.ts
 function deepShareData(context, obj, peerProps, pathParts = [], now = Date.now()) {
-  const shouldGoDeep = typeof obj === "object" && obj && !(obj instanceof ArrayBuffer) && Object.values(obj).length;
-  if (shouldGoDeep) {
+  const shouldGoDeeper = typeof obj === "object" && obj && !(obj instanceof ArrayBuffer) && Object.values(obj).length;
+  if (shouldGoDeeper) {
     for (let key in obj) {
       const value = Array.isArray(obj) ? obj[Number(key)] : obj[key];
       deepShareData(context, value, peerProps, [...pathParts, key], now);
@@ -14546,6 +14546,28 @@ function hookCommInterface(context, comm, processor) {
   };
 }
 
+// ../src/attachments/comm/CommAux.ts
+class CommAux {
+  comm;
+  context;
+  processor = new Processor;
+  disconnect;
+  constructor(comm, context) {
+    this.comm = comm;
+    this.context = context;
+    const { disconnect } = hookCommInterface(context, this.comm, this.processor);
+    this.disconnect = disconnect;
+  }
+  _updates = new Map;
+  performCycle() {
+    this._updates.clear();
+    this.processor.performCycle(this.context, this._updates);
+    if (this._updates.size) {
+      return this._updates;
+    }
+  }
+}
+
 // ../src/core/Program.ts
 var ACTIVE = {
   active: true
@@ -14557,24 +14579,28 @@ class Program {
   incomingUpdates = [];
   outgoingUpdates = [];
   properties;
-  processor = new Processor;
+  commAux;
   observerManager = new ObserverManager;
-  _updates = new Map;
-  constructor({ userId, root, properties, onDataCycle }) {
+  constructor({
+    userId,
+    root,
+    properties,
+    onDataCycle,
+    comm,
+    onReceivedIncomingUpdates
+  }) {
     this.userId = userId;
     this.root = root ?? {};
     this.properties = properties ?? {};
     this.properties.self = userId;
     this.onDataCycle = onDataCycle;
-  }
-  connectComm(comm) {
-    return hookCommInterface(this, comm, this.processor);
+    this.commAux = new CommAux(comm, this);
+    this.onReceivedIncomingUpdates = onReceivedIncomingUpdates;
   }
   performCycle() {
-    this.processor.performCycle(this, this._updates);
-    if (this._updates.size) {
-      this.observerManager.triggerObservers(this, this._updates);
-      this._updates.clear();
+    const updates = this.commAux.performCycle();
+    if (updates) {
+      this.observerManager.triggerObservers(this, updates);
       this.onDataCycle?.();
     }
   }
@@ -14582,9 +14608,6 @@ class Program {
     const multi = Array.isArray(paths);
     const pathArray = paths === undefined ? [] : multi ? paths : [paths];
     return this.observerManager.observe(pathArray, multi);
-  }
-  removeObserver(observer) {
-    this.observerManager.removeObserver(observer);
   }
   setData(path, value) {
     setData(Date.now(), this.outgoingUpdates, path, value, ACTIVE);
@@ -14907,33 +14930,32 @@ var t = ["amaranth", "amber", "amethyst", "apricot", "aqua", "aquamarine", "azur
 var { generateEmojis } = require_generate_random_emoji();
 function setupRoom() {
   const root = {};
+  let userList = [];
   const { userId, send, enterRoom, addMessageListener, addUserListener, end } = U({
     appId: "napl-test",
     workerUrl: new URL("./signal-room.worker.js", import.meta.url)
   });
-  let userList = [];
   const program = new Program({
     userId,
     root,
-    onDataCycle: refreshData
+    onDataCycle: refreshData,
+    comm: {
+      onMessage: addMessageListener,
+      onNewClient: (listener) => {
+        addUserListener((user, action, users) => {
+          if (action === "join") {
+            listener(user);
+          } else if (action === "leave") {
+            program.setData(`users/${user}`, undefined);
+          }
+          userList = users;
+          refreshData();
+        });
+      },
+      send,
+      close: end
+    }
   });
-  program.connectComm({
-    onMessage: addMessageListener,
-    onNewClient: (listener) => {
-      addUserListener((user, action, users) => {
-        if (action === "join") {
-          listener(user);
-        } else if (action === "leave") {
-          program.setData(`users/${user}`, undefined);
-        }
-        userList = users;
-        refreshData();
-      });
-    },
-    send,
-    close: end
-  });
-  program.onReceivedIncomingUpdates = refreshData;
   enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
   const emoji = generateEmojis(1)[0].image;
   const randomName = n2({
@@ -15070,4 +15092,4 @@ export {
   setupRoom
 };
 
-//# debugId=A4DCF30E689179F064756E2164756E21
+//# debugId=BE39C1B1F2D6CE2D64756E2164756E21
