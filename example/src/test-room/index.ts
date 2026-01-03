@@ -175,7 +175,7 @@ function setupRoom() {
     {
       let stop: undefined | (() => void);
       const button = document.body.appendChild(
-        document.createElement("button"),
+        document.createElement("button")
       );
       button.textContent = "⏸️";
       button.addEventListener("mousedown", () => {
@@ -194,7 +194,7 @@ function setupRoom() {
     }
     {
       const button = document.body.appendChild(
-        document.createElement("button"),
+        document.createElement("button")
       );
       button.textContent = "⏯️";
       button.addEventListener("mousedown", () => program.performCycle());
@@ -204,7 +204,7 @@ function setupRoom() {
     }
     {
       const button = document.body.appendChild(
-        document.createElement("button"),
+        document.createElement("button")
       );
       button.textContent = "🔄";
       button.addEventListener("mousedown", () => {
