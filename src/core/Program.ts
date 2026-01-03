@@ -8,6 +8,7 @@ import { UpdateOptions } from "@/cycles/data-update/UpdateOptions";
 import { Data } from "@/types/Data";
 import { ObserverManager } from "@/observer/ObserverManager";
 import { Observer } from "@/observer/Observer";
+import { UpdatePath } from "@/cycles/data-update/data-update";
 
 interface Props<T extends Data> {
   userId: string;
@@ -29,6 +30,7 @@ export class Program<T extends Data = Data> implements Context<T> {
   readonly properties: Record<string, any>;
   private readonly processor: Processor = new Processor();
   private readonly observerManager: ObserverManager = new ObserverManager();
+  private _updates = new Map<string, UpdatePath>();
   private onDataCycle?(): void;
   onIncomingUpdatesReceived?: (updates: Update[]) => void;
 
@@ -44,7 +46,6 @@ export class Program<T extends Data = Data> implements Context<T> {
     return hookCommInterface(this, comm, this.processor);
   }
 
-  _updates = new Map<string, any>();
   performCycle() {
     this.processor.performCycle(this, this._updates);
     if (this._updates.size) {
@@ -64,14 +65,7 @@ export class Program<T extends Data = Data> implements Context<T> {
     this.observerManager.removeObserver(observer);
   }
 
-  setData(path: string, value: Data | ((value: Data) => Data)) {
-    if (typeof (value) === "function") {
-      const oldValue = getData(this.root, path, this.properties);
-      value = value(oldValue);
-      if (oldValue === value) {
-        return;
-      }
-    }
+  setData(path: string, value: Data) {
     setData(Date.now(), this.outgoingUpdates, path, value, ACTIVE);
   }
 }

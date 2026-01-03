@@ -13,8 +13,14 @@ export function filterArray<T>(array: T[], cond:(v:T) => boolean) {
   array.length = size;
 }
 
+export interface UpdatePath {
+  value: any;
+  confirmed: number;
+  isParent?: boolean;
+}
+
 // This function is used to commit updates to the root object
-export function commitUpdates({root, incomingUpdates, outgoingUpdates, properties}: Context, updatedPaths: Map<string, any>, consolidate?: boolean) {
+export function commitUpdates({root, incomingUpdates, outgoingUpdates, properties}: Context, updatedPaths: Map<string, UpdatePath>, consolidate?: boolean) {
   if (consolidate) {
     consolidateUpdates(incomingUpdates, outgoingUpdates);
   }
@@ -27,37 +33,57 @@ export function commitUpdates({root, incomingUpdates, outgoingUpdates, propertie
     }
 
     const parts = update.path.split("/");
-    const leaf: any = getLeafObject(root, parts, 1, true, properties, updatedPaths);
+    const leaf: any = getLeafObject(root, parts, 1, true, properties, updatedPaths, update.confirmed);
     const prop = parts[parts.length - 1];
     const value = translateValue(update.value, properties);
     if (value === undefined) {
       delete leaf[prop];
-      updatedPaths.set(parts.slice(0, parts.length).join("/"), undefined);
-      updatedPaths.set(parts.slice(0, parts.length - 1).join("/"), leaf);
-      cleanupRoot(root, parts, 0, updatedPaths);
+      updatedPaths.set(parts.slice(0, parts.length).join("/"), {
+        value: undefined,
+        confirmed: update.confirmed,
+      });
+      updatedPaths.set(parts.slice(0, parts.length - 1).join("/"), {
+        value: leaf,
+        confirmed: update.confirmed,
+        isParent: true,
+      });
+      cleanupRoot(root, parts, 0, updatedPaths, update.confirmed);
     } else {
       if (typeof(leaf[prop]) === undefined) {
-        updatedPaths.set(parts.slice(0, parts.length).join("/"), leaf);
+        updatedPaths.set(parts.slice(0, parts.length).join("/"), {
+          value: leaf,
+          confirmed: update.confirmed,
+          isParent: true,
+        });
       }
       leaf[prop] = value;
     }
-    updatedPaths.set(update.path, leaf[prop]);
+    updatedPaths.set(update.path, {
+      value: leaf[prop],
+      confirmed: update.confirmed,
+    });
 
   });
   filterArray(incomingUpdates, update => !update.confirmed);
 }
 
 // This function is used to remove empty objects from the root object
-export function cleanupRoot(root: any, parts: (string | number)[], index: number, updatedPaths: Map<string, any>) {
+export function cleanupRoot(root: any, parts: (string | number)[], index: number, updatedPaths: Map<string, UpdatePath>, confirmed: number) {
   if (!root || typeof (root) !== "object" || Array.isArray(root)) {
     return false;
   }
-  if (cleanupRoot(root[parts[index]], parts, index + 1, updatedPaths)) {
+  if (cleanupRoot(root[parts[index]], parts, index + 1, updatedPaths, confirmed)) {
     delete root[parts[index]];
     const leafPath = parts.slice(0, index + 1);
-    updatedPaths.set(leafPath.join("/"), undefined);
+    updatedPaths.set(leafPath.join("/"), {
+      value: undefined,
+      confirmed,
+    });
     leafPath.pop();
-    updatedPaths.set(leafPath.join("/"), root);  //  parent affected
+    updatedPaths.set(leafPath.join("/"), {
+      value: root,
+      confirmed,
+    });  //  parent affected
   }
   return Object.keys(root).length === 0;
 }
@@ -101,12 +127,12 @@ export function consolidateUpdates(incoming: Update[], outgoing: Update[]) {
 }
 
 //  Dig into the object to get the leaf object, given the parts of the path
-export function getLeafObject(obj: Data, parts: (string | number)[], offset: number, autoCreate: boolean, properties: Record<string, any>, updatedPaths?: Map<string, any>): Data {
+export function getLeafObject(obj: Data, parts: (string | number)[], offset: number, autoCreate: boolean, properties: Record<string, any>, updatedPaths?: Map<string, UpdatePath>, confirmed?: number): Data {
   let current = obj;
   const pathParts: string[] = [];
   for (let i = 0; i < parts.length - offset; i++) {
     const prop = parts[i];
-    const value = translateProp(current, prop, properties, autoCreate, updatedPaths, parts.slice(0, i + 1).join("/"));
+    const value = translateProp(current, prop, properties, autoCreate, updatedPaths, parts.slice(0, i + 1).join("/"), confirmed);
     if (value === undefined) {
       return value;
     }
@@ -131,13 +157,16 @@ export function translateValue(value: any, properties: Record<string, any>) {
   return value;
 }
 
-export function translateProp(obj: any, prop: string | number, properties: Record<string, any>, autoCreate: boolean = false, updatedPaths?: Map<string, any>, path?: string) {
+export function translateProp(obj: any, prop: string | number, properties: Record<string, any>, autoCreate: boolean = false, updatedPaths?: Map<string, UpdatePath>, path?: string, confirmed?: number) {
   const theProp = translateValue(prop, properties);
   let value = obj[theProp];
   if (value === undefined && autoCreate) {
     value = obj[theProp] = {};
-    if (updatedPaths && path) {
-      updatedPaths.set(path, value);
+    if (updatedPaths && path && confirmed) {
+      updatedPaths.set(path, {
+        value,
+        confirmed,
+      });
     }
   }
   return value;

@@ -7,6 +7,6 @@ export interface Context<T = Data> {
   incomingUpdates: Update[];
   outgoingUpdates: Update[];
   properties: { [key: string]: any };
-  setData?(path: string, value: any | ((value: any) => any)): void;
+  setData?(path: string, value: Data): void;
   onIncomingUpdatesReceived?(updates: Update[]): void;
 }

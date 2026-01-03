@@ -1,5 +1,6 @@
 import { Context } from "@/context/Context";
 import { Observer } from "./Observer";
+import { UpdatePath } from "@/cycles/data-update/data-update";
 
 export class ObserverManager {
   private readonly observers = new Map<string, Set<Observer>>();
@@ -24,7 +25,7 @@ export class ObserverManager {
   }
 
   readonly #tempObsTriggered = new Set<Observer>();
-  triggerObservers(context: Context, updates: Map<string, any>) {
+  triggerObservers(context: Context, updates: Map<string, UpdatePath>) {
     updates.keys().forEach(path => {
       this.observers.get(path)?.forEach(observer => this.#tempObsTriggered.add(observer));
     });

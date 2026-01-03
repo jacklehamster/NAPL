@@ -1,5 +1,6 @@
 import { OutgoingCom } from "../clients/CommInterface";
 import { Context } from "../context/Context";
+import { UpdatePath } from "../cycles/data-update/data-update";
 import { Data } from "../types/Data";
 import { Processor } from "./Processor";
 
@@ -31,7 +32,7 @@ describe('Processor', () => {
   });
 
   it('test update and databinding cycle', async () => {
-    const updatedPaths = new Map<string, any>();
+    const updatedPaths = new Map<string, UpdatePath>();
     context?.outgoingUpdates.push(
       {
         path: 'abc',

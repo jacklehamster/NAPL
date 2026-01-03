@@ -12774,34 +12774,54 @@ function commitUpdates({ root, incomingUpdates, outgoingUpdates, properties }, u
       return;
     }
     const parts = update.path.split("/");
-    const leaf = getLeafObject(root, parts, 1, true, properties, updatedPaths);
+    const leaf = getLeafObject(root, parts, 1, true, properties, updatedPaths, update.confirmed);
     const prop = parts[parts.length - 1];
     const value = translateValue(update.value, properties);
     if (value === undefined) {
       delete leaf[prop];
-      updatedPaths.set(parts.slice(0, parts.length).join("/"), undefined);
-      updatedPaths.set(parts.slice(0, parts.length - 1).join("/"), leaf);
-      cleanupRoot(root, parts, 0, updatedPaths);
+      updatedPaths.set(parts.slice(0, parts.length).join("/"), {
+        value: undefined,
+        confirmed: update.confirmed
+      });
+      updatedPaths.set(parts.slice(0, parts.length - 1).join("/"), {
+        value: leaf,
+        confirmed: update.confirmed,
+        isParent: true
+      });
+      cleanupRoot(root, parts, 0, updatedPaths, update.confirmed);
     } else {
       if (typeof leaf[prop] === undefined) {
-        updatedPaths.set(parts.slice(0, parts.length).join("/"), leaf);
+        updatedPaths.set(parts.slice(0, parts.length).join("/"), {
+          value: leaf,
+          confirmed: update.confirmed,
+          isParent: true
+        });
       }
       leaf[prop] = value;
     }
-    updatedPaths.set(update.path, leaf[prop]);
+    updatedPaths.set(update.path, {
+      value: leaf[prop],
+      confirmed: update.confirmed
+    });
   });
   filterArray(incomingUpdates, (update) => !update.confirmed);
 }
-function cleanupRoot(root, parts, index, updatedPaths) {
+function cleanupRoot(root, parts, index, updatedPaths, confirmed) {
   if (!root || typeof root !== "object" || Array.isArray(root)) {
     return false;
   }
-  if (cleanupRoot(root[parts[index]], parts, index + 1, updatedPaths)) {
+  if (cleanupRoot(root[parts[index]], parts, index + 1, updatedPaths, confirmed)) {
     delete root[parts[index]];
     const leafPath = parts.slice(0, index + 1);
-    updatedPaths.set(leafPath.join("/"), undefined);
+    updatedPaths.set(leafPath.join("/"), {
+      value: undefined,
+      confirmed
+    });
     leafPath.pop();
-    updatedPaths.set(leafPath.join("/"), root);
+    updatedPaths.set(leafPath.join("/"), {
+      value: root,
+      confirmed
+    });
   }
   return Object.keys(root).length === 0;
 }
@@ -12839,12 +12859,12 @@ function consolidateUpdates(incoming, outgoing) {
   filterArray(outgoing, (update) => !update.confirmed || _map.get(update.path) === update);
   _map.clear();
 }
-function getLeafObject(obj, parts, offset, autoCreate, properties, updatedPaths) {
+function getLeafObject(obj, parts, offset, autoCreate, properties, updatedPaths, confirmed) {
   let current = obj;
   const pathParts = [];
   for (let i = 0;i < parts.length - offset; i++) {
     const prop = parts[i];
-    const value = translateProp(current, prop, properties, autoCreate, updatedPaths, parts.slice(0, i + 1).join("/"));
+    const value = translateProp(current, prop, properties, autoCreate, updatedPaths, parts.slice(0, i + 1).join("/"), confirmed);
     if (value === undefined) {
       return value;
     }
@@ -12867,13 +12887,16 @@ function translateValue(value, properties) {
   }
   return value;
 }
-function translateProp(obj, prop, properties, autoCreate = false, updatedPaths, path) {
+function translateProp(obj, prop, properties, autoCreate = false, updatedPaths, path, confirmed) {
   const theProp = translateValue(prop, properties);
   let value = obj[theProp];
   if (value === undefined && autoCreate) {
     value = obj[theProp] = {};
-    if (updatedPaths && path) {
-      updatedPaths.set(path, value);
+    if (updatedPaths && path && confirmed) {
+      updatedPaths.set(path, {
+        value,
+        confirmed
+      });
     }
   }
   return value;
@@ -14317,7 +14340,7 @@ class Processor {
     const payload = decode(data);
     if (!payload.updates?.length)
       return;
-    this.receiveIncomingUpdates(payload.updates, context);
+    context.incomingUpdates.push(...payload.updates);
     context.onIncomingUpdatesReceived?.(payload.updates);
   }
   sendOutgoingUpdate(context) {
@@ -14326,8 +14349,11 @@ class Processor {
     context.outgoingUpdates.forEach((update) => {
       update.path = this.fixPath(update.path, context);
     });
-    const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
-    this.receiveIncomingUpdates(confirmedUpdates, context);
+    context.outgoingUpdates.forEach((update) => {
+      if (update.confirmed) {
+        context.incomingUpdates.push(update);
+      }
+    });
     const peerSet = new Set;
     context.outgoingUpdates.forEach((update) => peerSet.add(update.peer));
     peerSet.forEach((peer) => {
@@ -14339,11 +14365,6 @@ class Processor {
     });
     context.outgoingUpdates.length = 0;
   }
-  receiveIncomingUpdates(updates, context) {
-    if (!updates?.length)
-      return;
-    context.incomingUpdates.push(...updates);
-  }
   fixPath(path, context) {
     const split = path.split("/");
     return split.map((part) => translateValue(part, context.properties)).join("/");
@@ -14351,10 +14372,6 @@ class Processor {
 }
 // ../src/cycles/data-update/data-manager.ts
 var NO_OBJ = {};
-function getData(root, path, properties) {
-  const parts = path.split("/");
-  return getLeafObject(root, parts, 0, false, properties);
-}
 function setData(now, outgoingUpdates, path, value, options = NO_OBJ) {
   const update = { path, value, confirmed: 0 };
   if (options.peer)
@@ -14397,7 +14414,7 @@ class Observer {
     return this;
   }
   #valuesChanged(context, updates) {
-    const newValues = this.paths.map((path, index) => updates?.has(path) ? updates.get(path) : getLeafObject(context.root, this.#partsArrays[index], 0, false, context.properties));
+    const newValues = this.paths.map((path, index) => updates?.has(path) ? updates.get(path).value : getLeafObject(context.root, this.#partsArrays[index], 0, false, context.properties));
     if (this.#previousValues.every((prev, index) => {
       const newValue = newValues[index];
       if (prev === newValue && typeof newValue !== "object") {
@@ -14542,6 +14559,7 @@ class Program {
   properties;
   processor = new Processor;
   observerManager = new ObserverManager;
+  _updates = new Map;
   onIncomingUpdatesReceived;
   constructor({ userId, root, properties, onDataCycle }) {
     this.userId = userId;
@@ -14553,7 +14571,6 @@ class Program {
   connectComm(comm) {
     return hookCommInterface(this, comm, this.processor);
   }
-  _updates = new Map;
   performCycle() {
     this.processor.performCycle(this, this._updates);
     if (this._updates.size) {
@@ -14571,13 +14588,6 @@ class Program {
     this.observerManager.removeObserver(observer);
   }
   setData(path, value) {
-    if (typeof value === "function") {
-      const oldValue = getData(this.root, path, this.properties);
-      value = value(oldValue);
-      if (oldValue === value) {
-        return;
-      }
-    }
     setData(Date.now(), this.outgoingUpdates, path, value, ACTIVE);
   }
 }
@@ -15057,4 +15067,4 @@ export {
   program
 };
 
-//# debugId=1B48374882CBCC6964756E2164756E21
+//# debugId=A21329181545A13E64756E2164756E21

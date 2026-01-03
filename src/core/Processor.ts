@@ -3,8 +3,7 @@
 
 import { decode, encode } from "@msgpack/msgpack";
 import { Context } from "../context/Context";
-import { commitUpdates, consolidateUpdates, translateValue } from "../cycles/data-update/data-update";
-import { Update } from "../types/Update";
+import { commitUpdates, consolidateUpdates, translateValue, UpdatePath } from "../cycles/data-update/data-update";
 import { Payload } from "@/types/Payload";
 import { OutgoingCom } from "@/clients/CommInterface";
 
@@ -18,7 +17,7 @@ export class Processor {
     };
   }
 
-  performCycle(context: Context, updatedPaths: Map<string, any>) {
+  performCycle(context: Context, updatedPaths: Map<string, UpdatePath>) {
     consolidateUpdates(context.incomingUpdates, context.outgoingUpdates);
     //  Send out outgoing updates
     this.sendOutgoingUpdate(context);
@@ -29,7 +28,7 @@ export class Processor {
   receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
     const payload = decode(data) as Payload;
     if (!payload.updates?.length) return;
-    this.receiveIncomingUpdates(payload.updates, context);
+    context.incomingUpdates.push(...payload.updates);
     context.onIncomingUpdatesReceived?.(payload.updates);
   }
 
@@ -41,8 +40,11 @@ export class Processor {
     });
 
     //  Apply incoming updates
-    const confirmedUpdates = context.outgoingUpdates.filter(({ confirmed }) => confirmed);
-    this.receiveIncomingUpdates(confirmedUpdates, context);
+    context.outgoingUpdates.forEach(update => {
+      if (update.confirmed) {
+        context.incomingUpdates.push(update);
+      }
+    });
 
     //  send outgoing updates
     const peerSet = new Set<string | undefined>();
@@ -57,11 +59,6 @@ export class Processor {
       });
     });
     context.outgoingUpdates.length = 0;
-  }
-
-  private receiveIncomingUpdates(updates: Update[] | undefined, context: Context) {
-    if (!updates?.length) return;
-    context.incomingUpdates.push(...updates);
   }
 
   private fixPath(path: string, context: Context) {

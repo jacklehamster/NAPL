@@ -1,11 +1,11 @@
 import { describe, expect, it, beforeEach } from 'bun:test';
-import { cleanupRoot, commitUpdates, filterArray } from './data-update';
+import { cleanupRoot, commitUpdates, filterArray, UpdatePath } from './data-update';
 import { Data } from '../../types/Data';
 
 describe('commitUpdates', () => {
-  let updatedPaths: Map<string, any>;
+  let updatedPaths: Map<string, UpdatePath>;
   beforeEach(() => {
-    updatedPaths = new Map<string, any>();
+    updatedPaths = new Map();
   });
 
   it('should sort updates by confirmed timestamp and apply them', () => {
@@ -19,7 +19,7 @@ describe('commitUpdates', () => {
       }, outgoingUpdates: [],
     }, updatedPaths, true);
     expect(obj).toEqual({ a: { b: 2 }, test: "123" });
-    expect(Object.fromEntries(updatedPaths.entries())).toEqual({
+    expect(Object.fromEntries([...updatedPaths.entries()].map(([key, update]) => [key, update.value]))).toEqual({
       a: {
         b: 2,
       },
@@ -34,7 +34,7 @@ describe('commitUpdates', () => {
       { path: "abc", value: { a: 1 }, confirmed: 1 },
     ], properties: {}, outgoingUpdates: []}, updatedPaths, true);
     expect(obj).toEqual({ abc: { a: 1 } });
-    expect(Object.fromEntries(updatedPaths.entries())).toEqual({
+    expect(Object.fromEntries([...updatedPaths.entries()].map(([key, update]) => [key, update.value]))).toEqual({
       abc: { a: 1 },
     });
   })
@@ -47,7 +47,7 @@ describe('commitUpdates', () => {
       { path: "abc", value: undefined, confirmed: 1 },
     ], properties: {}, outgoingUpdates: []}, updatedPaths, true);
     expect(obj).toEqual({});
-    expect(Object.fromEntries(updatedPaths.entries())).toEqual({
+    expect(Object.fromEntries([...updatedPaths.entries()].map(([key, update]) => [key, update.value]))).toEqual({
       "abc": undefined,
       "": {},
     });
@@ -70,7 +70,7 @@ describe('commitUpdates', () => {
       },
       test: "123",
     });
-    expect(Object.fromEntries(updatedPaths.entries())).toEqual({
+    expect(Object.fromEntries([...updatedPaths.entries()].map(([key, update]) => [key, update.value]))).toEqual({
         a: {
           b: 2,
         },
@@ -107,7 +107,7 @@ describe('cleanupRoot', () => {
         },
       },
     };
-    cleanupRoot(root, ["test", "a", "c"], 0, updatedPaths);
+    cleanupRoot(root, ["test", "a", "c"], 0, updatedPaths, 1);
     expect(root).toEqual({
       test: {
         b: {
@@ -117,7 +117,7 @@ describe('cleanupRoot', () => {
         }
       }
     });
-    expect(Object.fromEntries(updatedPaths.entries())).toEqual({
+    expect(Object.fromEntries([...updatedPaths.entries()].map(([key, update]) => [key, update.value]))).toEqual({
       "test/a/c": undefined,
       "test/a": undefined,
       "test": {

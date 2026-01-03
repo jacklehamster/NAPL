@@ -35,7 +35,7 @@ export class Observer {
   #valuesChanged(context: Context, updates?: Map<string, any>) {
     const newValues =
       this.paths.map((path, index) =>
-        updates?.has(path) ? updates.get(path) :
+        updates?.has(path) ? updates.get(path).value :
           getLeafObject(context.root, this.#partsArrays[index], 0, false, context.properties)
       );
 
