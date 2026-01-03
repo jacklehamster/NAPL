@@ -14569,10 +14569,6 @@ class CommAux {
 }
 
 // ../src/core/Program.ts
-var ACTIVE = {
-  active: true
-};
-
 class Program {
   userId;
   root;
@@ -14609,8 +14605,12 @@ class Program {
     const pathArray = paths === undefined ? [] : multi ? paths : [paths];
     return this.observerManager.observe(pathArray, multi);
   }
+  static ACTIVE = { active: true };
   setData(path, value) {
-    setData(Date.now(), this.outgoingUpdates, path, value, ACTIVE);
+    setData(Date.now(), this.outgoingUpdates, path, value, Program.ACTIVE);
+  }
+  close() {
+    this.commAux.disconnect();
   }
 }
 // node_modules/@dobuki/hello-worker/dist/index.js
@@ -15092,4 +15092,4 @@ export {
   setupRoom
 };
 
-//# debugId=BE39C1B1F2D6CE2D64756E2164756E21
+//# debugId=97D8A240B20CCB0F64756E2164756E21
