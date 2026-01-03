@@ -18,10 +18,6 @@ interface Props<T extends Data> {
   onReceivedIncomingUpdates?: () => void;
 }
 
-const ACTIVE: UpdateOptions = {
-  active: true,
-};
-
 export class Program<T extends Data = Data> implements Context<T> {
   readonly userId: string;
   readonly root: Record<string, T>;
@@ -64,8 +60,9 @@ export class Program<T extends Data = Data> implements Context<T> {
     return this.observerManager.observe(pathArray, multi);
   }
 
+  private static readonly ACTIVE = { active: true };
   setData(path: string, value: Data) {
-    setData(Date.now(), this.outgoingUpdates, path, value, ACTIVE);
+    setData(Date.now(), this.outgoingUpdates, path, value, Program.ACTIVE);
   }
 
   close() {
