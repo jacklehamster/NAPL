@@ -12,10 +12,10 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/index.js": {
-    "sha": "a04dfb43ed430f67e665e4fa0210338d12d61821"
+    "sha": "e136be9ea77d2e9180e8bdc6ee9b9e17163afe5d"
   },
   "dist/index.js.map": {
-    "sha": "dd77d38b74769e8e04c68239972080f6c4920e90"
+    "sha": "b9e72e04fc52562dcbe8b10ad09599a30abc12ee"
   },
   "dist/signal-room.worker.js": {
     "sha": "2274ad341a94bbff502b16e60b05ab3807d0c137"
@@ -29,7 +29,7 @@
   "index.ts": {
     "sha": "bd4b1476e3cf69e1c07c77cefc98d4276daec470"
   },
-  "md5": "e52046f570f5d84392693413d961a311",
+  "md5": "3af031aab1cabb9b7ec004c97371f78c",
   "package.json": {
     "sha": "370e99860a12490a37c88073996a3db5f13bb761"
   },
@@ -37,10 +37,10 @@
     "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
   },
   "src/test-room/index.ts": {
-    "sha": "3d99d259a153e8288cd99cab9a74c517bd227aa9"
+    "sha": "233b856d3c1088787c137db172cee8d87b73a4ff"
   },
   "test-room/index.html": {
-    "sha": "f6df9ef6d40ad7d1d22cfcd73bf7b3d37bd24c5e"
+    "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
   },
   "tsconfig.json": {
     "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"

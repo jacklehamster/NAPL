@@ -40,10 +40,10 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/index.js": {
-      "sha": "a04dfb43ed430f67e665e4fa0210338d12d61821"
+      "sha": "e136be9ea77d2e9180e8bdc6ee9b9e17163afe5d"
     },
     "dist/index.js.map": {
-      "sha": "dd77d38b74769e8e04c68239972080f6c4920e90"
+      "sha": "b9e72e04fc52562dcbe8b10ad09599a30abc12ee"
     },
     "dist/signal-room.worker.js": {
       "sha": "2274ad341a94bbff502b16e60b05ab3807d0c137"
@@ -57,7 +57,7 @@
     "index.ts": {
       "sha": "bd4b1476e3cf69e1c07c77cefc98d4276daec470"
     },
-    "md5": "e52046f570f5d84392693413d961a311",
+    "md5": "3af031aab1cabb9b7ec004c97371f78c",
     "package.json": {
       "sha": "370e99860a12490a37c88073996a3db5f13bb761"
     },
@@ -65,10 +65,10 @@
       "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
     },
     "src/test-room/index.ts": {
-      "sha": "3d99d259a153e8288cd99cab9a74c517bd227aa9"
+      "sha": "233b856d3c1088787c137db172cee8d87b73a4ff"
     },
     "test-room/index.html": {
-      "sha": "f6df9ef6d40ad7d1d22cfcd73bf7b3d37bd24c5e"
+      "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
     },
     "tsconfig.json": {
       "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
@@ -76,12 +76,12 @@
   },
   "/example/dist/dir.json": {
     "index.js": {
-      "sha": "a04dfb43ed430f67e665e4fa0210338d12d61821"
+      "sha": "e136be9ea77d2e9180e8bdc6ee9b9e17163afe5d"
     },
     "index.js.map": {
-      "sha": "dd77d38b74769e8e04c68239972080f6c4920e90"
+      "sha": "b9e72e04fc52562dcbe8b10ad09599a30abc12ee"
     },
-    "md5": "c795afd7df756430dc2cf48747a4d905",
+    "md5": "4035dd43704993d8bc459b322e8f89fa",
     "signal-room.worker.js": {
       "sha": "2274ad341a94bbff502b16e60b05ab3807d0c137"
     },
@@ -128,22 +128,22 @@
     "index.ts": {
       "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
     },
-    "md5": "e6a6e00a5c2e22f3ebd77175fd3cad2c",
+    "md5": "89cb0c75742e4aa89559cf19425787fd",
     "test-room/index.ts": {
-      "sha": "3d99d259a153e8288cd99cab9a74c517bd227aa9"
+      "sha": "233b856d3c1088787c137db172cee8d87b73a4ff"
     }
   },
   "/example/src/test-room/dir.json": {
     "index.ts": {
-      "sha": "3d99d259a153e8288cd99cab9a74c517bd227aa9"
+      "sha": "233b856d3c1088787c137db172cee8d87b73a4ff"
     },
-    "md5": "4a49dd8de3a9a71c505c290eeaebe482"
+    "md5": "91d70fe00e269b14d52f4cebfab767ae"
   },
   "/example/test-room/dir.json": {
     "index.html": {
-      "sha": "f6df9ef6d40ad7d1d22cfcd73bf7b3d37bd24c5e"
+      "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
     },
-    "md5": "097ac2a37598f494426aba368ac9ba98"
+    "md5": "14af562105a4b1bcc7b6166f249b5f59"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -266,11 +266,11 @@
       "sha": "cbffb6901e070009789575ec062b6f428fd774f7"
     },
     "Program.ts": {
-      "sha": "24f0b5d4c0487b2a65567ec3ecb751dc4c929d0b"
+      "sha": "3898c59d6e9617fb7dc5d0bf0b1a497b1f9ccd40"
     },
-    "md5": "70e97d59718e0c9af1609f39a65c0dff",
+    "md5": "d51978fcb65dbc605431c1d3922564f2",
     "processor.test.ts": {
-      "sha": "4b9a5d71ab07f031b19d42793cfbafe4fc1faba0"
+      "sha": "506c36a429eb58343fe48061a73ab697dc960139"
     }
   },
   "/src/cycles/data-update/dir.json": {
@@ -278,7 +278,7 @@
       "sha": "2b2aef0f7d4ad7cbe0027e631370fe15e7df9d96"
     },
     "data-manager.ts": {
-      "sha": "3937124c1a6f3fb4a2b2b24b375528e69db34573"
+      "sha": "74ffde5757752f8294ce1d7af15ff7ac8440c168"
     },
     "data-update.test.ts": {
       "sha": "b843646e477416994786915999588670cb716d82"
@@ -286,14 +286,14 @@
     "data-update.ts": {
       "sha": "93cb0dfa2c81904c682995f12a2dd7257ee16e43"
     },
-    "md5": "8aa49a7205a8944119a3b4d693f81331"
+    "md5": "375e1953418a6dde889d5a91ef0dcb86"
   },
   "/src/cycles/dir.json": {
     "data-update/UpdateOptions.ts": {
       "sha": "2b2aef0f7d4ad7cbe0027e631370fe15e7df9d96"
     },
     "data-update/data-manager.ts": {
-      "sha": "3937124c1a6f3fb4a2b2b24b375528e69db34573"
+      "sha": "74ffde5757752f8294ce1d7af15ff7ac8440c168"
     },
     "data-update/data-update.test.ts": {
       "sha": "b843646e477416994786915999588670cb716d82"
@@ -301,7 +301,7 @@
     "data-update/data-update.ts": {
       "sha": "93cb0dfa2c81904c682995f12a2dd7257ee16e43"
     },
-    "md5": "43f6c5592d29a534edb4e8b64c971f68"
+    "md5": "34654d1496883cf7128ad4f77c36b141"
   },
   "/src/dir.json": {
     "attachments/comm/CommAux.ts": {
@@ -323,16 +323,16 @@
       "sha": "cbffb6901e070009789575ec062b6f428fd774f7"
     },
     "core/Program.ts": {
-      "sha": "24f0b5d4c0487b2a65567ec3ecb751dc4c929d0b"
+      "sha": "3898c59d6e9617fb7dc5d0bf0b1a497b1f9ccd40"
     },
     "core/processor.test.ts": {
-      "sha": "4b9a5d71ab07f031b19d42793cfbafe4fc1faba0"
+      "sha": "506c36a429eb58343fe48061a73ab697dc960139"
     },
     "cycles/data-update/UpdateOptions.ts": {
       "sha": "2b2aef0f7d4ad7cbe0027e631370fe15e7df9d96"
     },
     "cycles/data-update/data-manager.ts": {
-      "sha": "3937124c1a6f3fb4a2b2b24b375528e69db34573"
+      "sha": "74ffde5757752f8294ce1d7af15ff7ac8440c168"
     },
     "cycles/data-update/data-update.test.ts": {
       "sha": "b843646e477416994786915999588670cb716d82"
@@ -343,7 +343,7 @@
     "index.ts": {
       "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
     },
-    "md5": "2d8dfdd4f6b167b8937c5bea2b6a741e",
+    "md5": "8c8265bbd009c4f5fac91e6269c92a97",
     "observer/Observer.ts": {
       "sha": "f9db93b949303c7d7d882552ac65f5dfbe60ed8a"
     },
