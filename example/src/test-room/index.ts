@@ -12,7 +12,9 @@ import {
 } from "unique-names-generator";
 const { generateEmojis } = require("generate-random-emoji");
 
-function setupRoom() {
+function setupApp() {
+  const urlVars = new URLSearchParams(location.search);
+  const room = urlVars.get("room");
   const root: Record<string, Data> = {};
   let userList: string[] = [];
 
@@ -44,7 +46,7 @@ function setupRoom() {
     },
   });
 
-  enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
+  enterRoom({ room: room ?? "test-room", host: "hello.dobuki.net" });
 
   const emoji = generateEmojis(1)[0].image;
 
@@ -217,4 +219,4 @@ function setupRoom() {
   return { root, program };
 }
 
-export { setupRoom };
+export { setupApp };

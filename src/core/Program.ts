@@ -12,7 +12,6 @@ interface Props<T extends Data> {
   root?: Record<string, T>;
   properties?: Record<string, any>;
   onDataCycle?: () => void;
-  runCycleOnSetData?: boolean;
   comm: CommInterface;
   onReceivedIncomingUpdates?: () => void;
 }
@@ -60,7 +59,7 @@ export class Program<T extends Data = Data> implements Context<T> {
   }
 
   private static readonly ACTIVE = { active: true };
-  setData(path: string, value: Data) {
+  setData(path: string, value: Data | undefined) {
     setData(Date.now(), this.outgoingUpdates, path, value, Program.ACTIVE);
   }
 

@@ -14948,7 +14948,9 @@ var t = ["amaranth", "amber", "amethyst", "apricot", "aqua", "aquamarine", "azur
 
 // src/test-room/index.ts
 var { generateEmojis } = require_generate_random_emoji();
-function setupRoom() {
+function setupApp() {
+  const urlVars = new URLSearchParams(location.search);
+  const room = urlVars.get("room");
   const root = {};
   let userList = [];
   const { userId, send, enterRoom, addMessageListener, addUserListener, end } = v({
@@ -14976,7 +14978,7 @@ function setupRoom() {
       close: end
     }
   });
-  enterRoom({ room: "napl-demo-room", host: "hello.dobuki.net" });
+  enterRoom({ room: room ?? "test-room", host: "hello.dobuki.net" });
   const emoji = generateEmojis(1)[0].image;
   const randomName = n({
     dictionaries: [l, t, r]
@@ -15109,7 +15111,7 @@ Last update: ${new Date().toISOString()}
   return { root, program };
 }
 export {
-  setupRoom
+  setupApp
 };
 
-//# debugId=BFE567E93012851564756E2164756E21
+//# debugId=274A483872916AB964756E2164756E21
