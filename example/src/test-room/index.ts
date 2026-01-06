@@ -2,8 +2,7 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { Data, Program } from "napl";
-import { enterWorld } from "@dobuki/hello-worker";
+import { createApp } from "napl";
 import {
   uniqueNamesGenerator,
   adjectives,
@@ -15,35 +14,21 @@ const { generateEmojis } = require("generate-random-emoji");
 function setupApp() {
   const urlVars = new URLSearchParams(location.search);
   const room = urlVars.get("room");
-  const root: Record<string, Data> = {};
   let userList: string[] = [];
 
-  const { userId, send, enterRoom, addMessageListener, addUserListener, end } =
-    enterWorld({
-      appId: "napl-test",
-      workerUrl: new URL("./signal-room.worker.js", import.meta.url),
-    });
-
-  const program = new Program({
-    userId,
-    root,
+  const { userId, enterRoom, program } = createApp({
+    appId: "napl-test",
     onDataCycle: refreshData,
-    comm: {
-      onMessage: addMessageListener,
-      onNewClient: (listener: (user: string) => void) => {
-        addUserListener((user, action, users) => {
-          if (action === "join") {
-            listener(user);
-          } else if (action === "leave") {
-            program.setData(`users/${user}`, undefined);
-          }
-          userList = users;
-          refreshData();
-        });
-      },
-      send,
-      close: end,
+    onUsersJoined: (_, users) => {
+      userList = users;
+      refreshData();
     },
+    onUsersLeft: (user, users) => {
+      program.setData(`users/${user}`, undefined);
+      userList = users;
+      refreshData();
+    },
+    workerUrl: new URL("./signal-room.worker.js", import.meta.url),
   });
 
   enterRoom({ room: room ?? "test-room", host: "hello.dobuki.net" });
@@ -89,7 +74,7 @@ function setupApp() {
     div.style.fontFamily = "monospace";
     div.style.fontSize = "16px";
     div.textContent =
-      JSON.stringify(root, null, 2) +
+      JSON.stringify(program.root, null, 2) +
       `\nLast update: ${new Date().toISOString()}\n`;
 
     const divSplit: HTMLDivElement =
@@ -122,7 +107,7 @@ function setupApp() {
       ? "IN\n" + JSON.stringify(program.incomingUpdates, null, 2)
       : "";
 
-    const usrs = root.users as any;
+    const usrs = program.root.users as any;
     const allUsers = [userId, ...userList].map((userId) => usrs?.[userId]);
 
     const divUsers: HTMLDivElement =
@@ -216,7 +201,6 @@ function setupApp() {
   }
 
   setupGamePlayer();
-  return { root, program };
 }
 
 export { setupApp };

@@ -4,7 +4,7 @@ import { CommInterface } from "@/clients/CommInterface";
 import { setData } from "@/cycles/data-update/data-manager";
 import { Data } from "@/types/Data";
 import { ObserverManager } from "@/observer/ObserverManager";
-import { Observer } from "@/observer/Observer";
+import { IObserver, Observer } from "@/observer/Observer";
 import { CommAux } from "@/attachments/comm/CommAux";
 
 interface Props<T extends Data> {
@@ -16,7 +16,14 @@ interface Props<T extends Data> {
   onReceivedIncomingUpdates?: () => void;
 }
 
-export class Program<T extends Data = Data> implements Context<T> {
+export interface IProgram<T extends Data = Data> extends Context<T> {
+  performCycle(): void;
+  observe(paths?: string[] | string): IObserver;
+  setData(path: string, value: Data | undefined): void;
+  close(): void;
+}
+
+export class Program<T extends Data = Data> implements IProgram<T> {
   readonly userId: string;
   readonly root: Record<string, T>;
   readonly incomingUpdates: Update[] = [];
@@ -52,7 +59,7 @@ export class Program<T extends Data = Data> implements Context<T> {
     }
   }
 
-  observe(paths?: string[] | string): Observer {
+  observe(paths?: string[] | string): IObserver {
     const multi = Array.isArray(paths);
     const pathArray = paths === undefined ? [] : multi ? paths : [paths];
     return this.observerManager.observe(pathArray, multi);

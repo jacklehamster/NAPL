@@ -14613,7 +14613,7 @@ class Program {
     this.commAux.disconnect();
   }
 }
-// node_modules/@dobuki/hello-worker/dist/index.js
+// ../node_modules/@dobuki/hello-worker/dist/index.js
 function g(Y) {
   let { userId: H, appId: J, room: q, host: x, autoRejoin: _ = true, logLine: C } = Y, M = false, V = 0, K, $, W = true, Z = new Map, G = `wss://${x}/room/${J}/${q}?userId=${encodeURIComponent(H)}`;
   function X(S, T, n) {
@@ -14892,6 +14892,40 @@ function v({ appId: Y, logLine: H = console.debug, enterRoomFunction: J = L, pee
   } };
 }
 
+// ../src/app/App.ts
+function createApp({
+  appId,
+  onDataCycle,
+  onUsersJoined,
+  onUsersLeft,
+  workerUrl
+}) {
+  const { userId, send, enterRoom, addMessageListener, addUserListener, end } = v({ appId, workerUrl });
+  const program = new Program({
+    userId,
+    onDataCycle,
+    comm: {
+      onMessage: addMessageListener,
+      onNewClient: (listener) => {
+        const removeListener = addUserListener((user, action, users) => {
+          if (action === "join") {
+            listener(user);
+            onUsersJoined?.(user, users);
+          } else if (action === "leave") {
+            program.setData(`users/${user}`, undefined);
+            onUsersLeft?.(user, users);
+          }
+        });
+        return () => {
+          removeListener();
+        };
+      },
+      send,
+      close: end
+    }
+  });
+  return { userId, enterRoom, program };
+}
 // node_modules/unique-names-generator/dist/index.m.js
 var a = (a2) => {
   a2 = 1831565813 + (a2 |= 0) | 0;
@@ -14951,32 +14985,20 @@ var { generateEmojis } = require_generate_random_emoji();
 function setupApp() {
   const urlVars = new URLSearchParams(location.search);
   const room = urlVars.get("room");
-  const root = {};
   let userList = [];
-  const { userId, send, enterRoom, addMessageListener, addUserListener, end } = v({
+  const { userId, enterRoom, program } = createApp({
     appId: "napl-test",
-    workerUrl: new URL("./signal-room.worker.js", import.meta.url)
-  });
-  const program = new Program({
-    userId,
-    root,
     onDataCycle: refreshData,
-    comm: {
-      onMessage: addMessageListener,
-      onNewClient: (listener) => {
-        addUserListener((user, action, users) => {
-          if (action === "join") {
-            listener(user);
-          } else if (action === "leave") {
-            program.setData(`users/${user}`, undefined);
-          }
-          userList = users;
-          refreshData();
-        });
-      },
-      send,
-      close: end
-    }
+    onUsersJoined: (_, users) => {
+      userList = users;
+      refreshData();
+    },
+    onUsersLeft: (user, users) => {
+      program.setData(`users/${user}`, undefined);
+      userList = users;
+      refreshData();
+    },
+    workerUrl: new URL("./signal-room.worker.js", import.meta.url)
   });
   enterRoom({ room: room ?? "test-room", host: "hello.dobuki.net" });
   const emoji = generateEmojis(1)[0].image;
@@ -15007,7 +15029,7 @@ function setupApp() {
     div.style.whiteSpace = "pre";
     div.style.fontFamily = "monospace";
     div.style.fontSize = "16px";
-    div.textContent = JSON.stringify(root, null, 2) + `
+    div.textContent = JSON.stringify(program.root, null, 2) + `
 Last update: ${new Date().toISOString()}
 `;
     const divSplit = document.querySelector("#log-block") ?? document.body.appendChild(document.createElement("div"));
@@ -15029,7 +15051,7 @@ Last update: ${new Date().toISOString()}
     divIn.style.fontSize = "12px";
     divIn.textContent = program.incomingUpdates.length ? `IN
 ` + JSON.stringify(program.incomingUpdates, null, 2) : "";
-    const usrs = root.users;
+    const usrs = program.root.users;
     const allUsers = [userId, ...userList].map((userId2) => usrs?.[userId2]);
     const divUsers = document.querySelector("#log-div-users") ?? document.body.appendChild(document.createElement("div"));
     divUsers.id = "log-div-users";
@@ -15108,10 +15130,9 @@ Last update: ${new Date().toISOString()}
     resetButtons();
   }
   setupGamePlayer();
-  return { root, program };
 }
 export {
   setupApp
 };
 
-//# debugId=274A483872916AB964756E2164756E21
+//# debugId=CFA114C86A36FBBA64756E2164756E21
