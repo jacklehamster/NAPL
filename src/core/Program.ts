@@ -1,13 +1,14 @@
 import { Context } from "@/context/Context";
 import { Update } from "@/types/Update";
 import { CommInterface } from "@/clients/CommInterface";
-import { setData } from "@/cycles/data-update/data-manager";
+import { getData, setData } from "@/cycles/data-update/data-manager";
 import { Data } from "@/types/Data";
 import { ObserverManager } from "@/observer/ObserverManager";
 import { IObserver, Observer } from "@/observer/Observer";
 import { CommAux } from "@/attachments/comm/CommAux";
 
 interface Props<T extends Data> {
+  appId: string;
   userId: string;
   root?: Record<string, T>;
   properties?: Record<string, any>;
@@ -16,14 +17,15 @@ interface Props<T extends Data> {
   onReceivedIncomingUpdates?: () => void;
 }
 
-export interface IProgram<T extends Data = Data> extends Context<T> {
+export interface IProgram {
   performCycle(): void;
   observe(paths?: string[] | string): IObserver;
   setData(path: string, value: Data | undefined): void;
   close(): void;
 }
 
-export class Program<T extends Data = Data> implements IProgram<T> {
+export class Program<T extends Data = Data> implements IProgram, Context {
+  readonly appId: string;
   readonly userId: string;
   readonly root: Record<string, T>;
   readonly incomingUpdates: Update[] = [];
@@ -35,6 +37,7 @@ export class Program<T extends Data = Data> implements IProgram<T> {
   onReceivedIncomingUpdates?(): void;
 
   constructor({
+    appId,
     userId,
     root,
     properties,
@@ -42,6 +45,7 @@ export class Program<T extends Data = Data> implements IProgram<T> {
     comm,
     onReceivedIncomingUpdates,
   }: Props<T>) {
+    this.appId = appId;
     this.userId = userId;
     this.root = root ?? {};
     this.properties = properties ?? {};
@@ -68,6 +72,10 @@ export class Program<T extends Data = Data> implements IProgram<T> {
   private static readonly ACTIVE = { active: true };
   setData(path: string, value: Data | undefined) {
     setData(Date.now(), this.outgoingUpdates, path, value, Program.ACTIVE);
+  }
+
+  getData(path: string) {
+    return getData(this.root, path, this.properties);
   }
 
   close() {

@@ -14371,6 +14371,10 @@ class Processor {
 }
 // ../src/cycles/data-update/data-manager.ts
 var NO_OBJ = {};
+function getData(root, path, properties) {
+  const parts = path.split("/");
+  return getLeafObject(root, parts, 0, false, properties);
+}
 function setData(now, outgoingUpdates, path, value, options = NO_OBJ) {
   const update = { path, value, confirmed: 0 };
   if (options.peer)
@@ -14570,6 +14574,7 @@ class CommAux {
 
 // ../src/core/Program.ts
 class Program {
+  appId;
   userId;
   root;
   incomingUpdates = [];
@@ -14578,6 +14583,7 @@ class Program {
   commAux;
   observerManager = new ObserverManager;
   constructor({
+    appId,
     userId,
     root,
     properties,
@@ -14585,6 +14591,7 @@ class Program {
     comm,
     onReceivedIncomingUpdates
   }) {
+    this.appId = appId;
     this.userId = userId;
     this.root = root ?? {};
     this.properties = properties ?? {};
@@ -14608,6 +14615,9 @@ class Program {
   static ACTIVE = { active: true };
   setData(path, value) {
     setData(Date.now(), this.outgoingUpdates, path, value, Program.ACTIVE);
+  }
+  getData(path) {
+    return getData(this.root, path, this.properties);
   }
   close() {
     this.commAux.disconnect();
@@ -14898,31 +14908,38 @@ function createApp({
   onDataCycle,
   onUsersJoined,
   onUsersLeft,
+  onReceivedIncomingUpdates,
   workerUrl
 }) {
   const { userId, send, enterRoom, addMessageListener, addUserListener, end } = v({ appId, workerUrl });
+  function setData2(path, data) {
+    program.setData(path, data);
+  }
+  const comm = {
+    onMessage: addMessageListener,
+    onNewClient: (listener) => {
+      const removeListener = addUserListener((user, action, users) => {
+        if (action === "join") {
+          listener(user);
+          onUsersJoined?.(user, users);
+        } else if (action === "leave") {
+          setData2(`users/${user}`, undefined);
+          onUsersLeft?.(user, users);
+        }
+      });
+      return () => {
+        removeListener();
+      };
+    },
+    send,
+    close: end
+  };
   const program = new Program({
+    appId,
     userId,
     onDataCycle,
-    comm: {
-      onMessage: addMessageListener,
-      onNewClient: (listener) => {
-        const removeListener = addUserListener((user, action, users) => {
-          if (action === "join") {
-            listener(user);
-            onUsersJoined?.(user, users);
-          } else if (action === "leave") {
-            program.setData(`users/${user}`, undefined);
-            onUsersLeft?.(user, users);
-          }
-        });
-        return () => {
-          removeListener();
-        };
-      },
-      send,
-      close: end
-    }
+    comm,
+    onReceivedIncomingUpdates
   });
   return { userId, enterRoom, program };
 }
@@ -14989,6 +15006,7 @@ function setupApp() {
   const { userId, enterRoom, program } = createApp({
     appId: "napl-test",
     onDataCycle: refreshData,
+    onReceivedIncomingUpdates: refreshData,
     onUsersJoined: (_, users) => {
       userList = users;
       refreshData();
@@ -15001,26 +15019,30 @@ function setupApp() {
     workerUrl: new URL("./signal-room.worker.js", import.meta.url)
   });
   enterRoom({ room: room ?? "test-room", host: "hello.dobuki.net" });
-  const emoji = generateEmojis(1)[0].image;
   const randomName = n({
     dictionaries: [l, t, r]
   });
   program.observe("abc").onChange((value) => console.log(value));
-  program.observe("users").onChange((users) => console.log("USERS", users));
-  program.setData("users/~{self}/name", randomName);
-  program.setData("users/~{self}/emoji", emoji);
-  addEventListener("mousemove", (e2) => {
-    program.setData("cursor/pos", { x: e2.pageX, y: e2.pageY });
-    program.setData("cursor/emoji", emoji);
-    program.setData("cursor/user", userId);
+  program.observe("users").onChange((users) => {
+    console.log("USERS", users);
   });
-  program.observe(["cursor/pos", "cursor/emoji", "cursor/user"]).onChange(([pos, emoji2, user]) => {
+  program.setData("users/~{self}/name", randomName);
+  program.setData("users/~{self}/emoji", generateEmojis(1)[0].image);
+  addEventListener("mousemove", (e2) => {
+    const linked = program.getData("users/~{self}/linked") ?? true;
+    if (linked) {
+      program.setData("cursor/pos", { x: e2.pageX, y: e2.pageY });
+      program.setData("cursor/emoji", program.getData("users/~{self}/emoji"));
+      program.setData("cursor/user", userId);
+    }
+  });
+  program.observe(["cursor/pos", "cursor/emoji", "cursor/user"]).onChange(([pos, emoji, user]) => {
     const div = document.querySelector("#div-emoji");
     if (div) {
       const offset = user === userId ? [2, 2] : [-div.offsetWidth / 2, -div.offsetHeight / 2];
       div.style.left = `${pos.x + offset[0]}px`;
       div.style.top = `${pos.y + offset[1]}px`;
-      div.textContent = emoji2;
+      div.textContent = emoji;
     }
   });
   function refreshData() {
@@ -15052,7 +15074,10 @@ Last update: ${new Date().toISOString()}
     divIn.textContent = program.incomingUpdates.length ? `IN
 ` + JSON.stringify(program.incomingUpdates, null, 2) : "";
     const usrs = program.root.users;
-    const allUsers = [userId, ...userList].map((userId2) => usrs?.[userId2]);
+    const allUsers = [userId, ...userList].map((userId2) => [
+      usrs?.[userId2],
+      userId2
+    ]);
     const divUsers = document.querySelector("#log-div-users") ?? document.body.appendChild(document.createElement("div"));
     divUsers.id = "log-div-users";
     divUsers.style.flex = "1";
@@ -15065,9 +15090,38 @@ Last update: ${new Date().toISOString()}
     divUsers.style.padding = "5px";
     divUsers.style.border = "1px solid black";
     divUsers.style.backgroundColor = "#ffffffaa";
-    divUsers.textContent = `USERS
-` + allUsers.map((user) => `${user?.emoji} ${user?.name}`).join(`
-`);
+    divUsers.style.display = "flex";
+    divUsers.style.flexDirection = "column";
+    divUsers.innerHTML = "";
+    allUsers.forEach(([user, id]) => {
+      const group = divUsers.appendChild(document.createElement("div"));
+      group.style.display = "flex";
+      group.style.flexDirection = "row";
+      const emoji = group.appendChild(document.createElement("div"));
+      emoji.style.width = "20px";
+      emoji.style.textAlign = "center";
+      emoji.textContent = user?.emoji ?? "";
+      emoji.style.cursor = "pointer";
+      emoji.addEventListener("mousedown", () => {
+        const newEmoji = generateEmojis(1)[0].image;
+        program.setData(`users/${id}/emoji`, newEmoji);
+        if (program.getData("cursor/user") === id) {
+          program.setData("cursor/emoji", newEmoji);
+        }
+        refreshData();
+      });
+      const name = group.appendChild(document.createElement("div"));
+      name.textContent = user?.name ?? "";
+      name.style.width = "200px";
+      const link = group.appendChild(document.createElement("div"));
+      const linked = program.getData(`users/${id}/linked`) ?? true;
+      link.textContent = linked ? "\uD83D\uDD17" : "\uD83D\uDEAB";
+      link.style.cursor = "pointer";
+      link.addEventListener("mousedown", () => {
+        program.setData(`users/${id}/linked`, !linked);
+        refreshData();
+      });
+    });
     const divEmoji = document.querySelector("#div-emoji") ?? document.body.appendChild(document.createElement("div"));
     divEmoji.id = "div-emoji";
     divEmoji.style.position = "absolute";
@@ -15135,4 +15189,4 @@ export {
   setupApp
 };
 
-//# debugId=CFA114C86A36FBBA64756E2164756E21
+//# debugId=A0B3CD1954B0007264756E2164756E21

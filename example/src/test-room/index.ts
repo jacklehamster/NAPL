@@ -19,6 +19,7 @@ function setupApp() {
   const { userId, enterRoom, program } = createApp({
     appId: "napl-test",
     onDataCycle: refreshData,
+    onReceivedIncomingUpdates: refreshData,
     onUsersJoined: (_, users) => {
       userList = users;
       refreshData();
@@ -33,22 +34,23 @@ function setupApp() {
 
   enterRoom({ room: room ?? "test-room", host: "hello.dobuki.net" });
 
-  const emoji = generateEmojis(1)[0].image;
-
   const randomName = uniqueNamesGenerator({
     dictionaries: [adjectives, colors, animals],
   });
   program.observe("abc").onChange((value: any) => console.log(value));
-  program
-    .observe("users")
-    .onChange((users: string[]) => console.log("USERS", users));
+  program.observe("users").onChange((users: string[]) => {
+    console.log("USERS", users);
+  });
   program.setData("users/~{self}/name", randomName);
-  program.setData("users/~{self}/emoji", emoji);
+  program.setData("users/~{self}/emoji", generateEmojis(1)[0].image);
 
   addEventListener("mousemove", (e: MouseEvent) => {
-    program.setData("cursor/pos", { x: e.pageX, y: e.pageY });
-    program.setData("cursor/emoji", emoji);
-    program.setData("cursor/user", userId);
+    const linked = program.getData("users/~{self}/linked") ?? true;
+    if (linked) {
+      program.setData("cursor/pos", { x: e.pageX, y: e.pageY });
+      program.setData("cursor/emoji", program.getData("users/~{self}/emoji"));
+      program.setData("cursor/user", userId);
+    }
   });
   program
     .observe(["cursor/pos", "cursor/emoji", "cursor/user"])
@@ -108,7 +110,10 @@ function setupApp() {
       : "";
 
     const usrs = program.root.users as any;
-    const allUsers = [userId, ...userList].map((userId) => usrs?.[userId]);
+    const allUsers = [userId, ...userList].map((userId) => [
+      usrs?.[userId],
+      userId,
+    ]);
 
     const divUsers: HTMLDivElement =
       document.querySelector("#log-div-users") ??
@@ -124,9 +129,38 @@ function setupApp() {
     divUsers.style.padding = "5px";
     divUsers.style.border = "1px solid black";
     divUsers.style.backgroundColor = "#ffffffaa";
-    divUsers.textContent =
-      "USERS\n" +
-      allUsers.map((user) => `${user?.emoji} ${user?.name}`).join("\n");
+    divUsers.style.display = "flex";
+    divUsers.style.flexDirection = "column";
+    divUsers.innerHTML = "";
+    allUsers.forEach(([user, id]) => {
+      const group = divUsers.appendChild(document.createElement("div"));
+      group.style.display = "flex";
+      group.style.flexDirection = "row";
+      const emoji = group.appendChild(document.createElement("div"));
+      emoji.style.width = "20px";
+      emoji.style.textAlign = "center";
+      emoji.textContent = user?.emoji ?? "";
+      emoji.style.cursor = "pointer";
+      emoji.addEventListener("mousedown", () => {
+        const newEmoji = generateEmojis(1)[0].image;
+        program.setData(`users/${id}/emoji`, newEmoji);
+        if (program.getData("cursor/user") === id) {
+          program.setData("cursor/emoji", newEmoji);
+        }
+        refreshData();
+      });
+      const name = group.appendChild(document.createElement("div"));
+      name.textContent = user?.name ?? "";
+      name.style.width = "200px";
+      const link = group.appendChild(document.createElement("div"));
+      const linked = program.getData(`users/${id}/linked`) ?? true;
+      link.textContent = linked ? "🔗" : "🚫";
+      link.style.cursor = "pointer";
+      link.addEventListener("mousedown", () => {
+        program.setData(`users/${id}/linked`, !linked);
+        refreshData();
+      });
+    });
 
     const divEmoji: HTMLDivElement =
       document.querySelector("#div-emoji") ??

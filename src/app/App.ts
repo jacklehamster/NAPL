@@ -1,5 +1,5 @@
+import { CommInterface } from "@/clients/CommInterface";
 import { IProgram, Program } from "@/core/Program";
-import { Data } from "@/types/Data";
 import { enterWorld } from "@dobuki/hello-worker";
 
 interface Props {
@@ -8,40 +8,50 @@ interface Props {
   onUsersJoined?: (user: string, users: string[]) => void;
   onUsersLeft?: (user: string, users: string[]) => void;
   workerUrl?: URL;
+  onReceivedIncomingUpdates?(): void;
 }
 
-export function createApp<T extends Data = Data>({
+export function createApp({
   appId,
   onDataCycle,
   onUsersJoined,
   onUsersLeft,
+  onReceivedIncomingUpdates,
   workerUrl,
 }: Props) {
   const { userId, send, enterRoom, addMessageListener, addUserListener, end } =
     enterWorld({ appId, workerUrl });
 
-  const program: IProgram<T> = new Program<T>({
+  function setData(path: string, data: any) {
+    program.setData(path, data);
+  }
+
+  const comm: CommInterface = {
+    onMessage: addMessageListener,
+    onNewClient: (listener: (user: string) => void) => {
+      const removeListener = addUserListener((user, action, users) => {
+        if (action === "join") {
+          listener(user);
+          onUsersJoined?.(user, users);
+        } else if (action === "leave") {
+          setData(`users/${user}`, undefined);
+          onUsersLeft?.(user, users);
+        }
+      });
+      return () => {
+        removeListener();
+      };
+    },
+    send,
+    close: end,
+  };
+
+  const program: IProgram = new Program({
+    appId,
     userId,
     onDataCycle,
-    comm: {
-      onMessage: addMessageListener,
-      onNewClient: (listener: (user: string) => void) => {
-        const removeListener = addUserListener((user, action, users) => {
-          if (action === "join") {
-            listener(user);
-            onUsersJoined?.(user, users);
-          } else if (action === "leave") {
-            program.setData(`users/${user}`, undefined);
-            onUsersLeft?.(user, users);
-          }
-        });
-        return () => {
-          removeListener();
-        };
-      },
-      send,
-      close: end,
-    },
+    comm,
+    onReceivedIncomingUpdates,
   });
 
   return { userId, enterRoom, program };
