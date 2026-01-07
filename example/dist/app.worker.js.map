@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "sources": ["../src/worker-room/app.worker.ts"],
+  "sourcesContent": [
+    "console.log(\"TEST WORKER\");\n"
+  ],
+  "mappings": ";AAAA,QAAQ,IAAI,aAAa;",
+  "debugId": "1D3FC7147621425564756E2164756E21",
+  "names": []
+}

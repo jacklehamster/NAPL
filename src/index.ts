@@ -11,3 +11,5 @@ export * from "./context/Context";
 export * from "./clients/CommInterface";
 export * from "./core/Program";
 export * from "./app/App";
+export * from "./worker/CommInterface.worker";
+export * from "./app/WorkerApp";

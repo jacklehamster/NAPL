@@ -3,13 +3,13 @@ import { enterWorld } from "@dobuki/hello-worker";
 
 interface Props {
   appId: string;
-  helloWorkerUrl?: URL;
+  signalWorkerUrl?: URL;
   programWorkerUrl: URL;
 }
 
 export function createWorkerApp({
   appId,
-  helloWorkerUrl,
+  signalWorkerUrl,
   programWorkerUrl,
 }: Props) {
   const {
@@ -20,7 +20,7 @@ export function createWorkerApp({
     addMessageListener,
     addUserListener,
     end,
-  } = enterWorld({ appId, workerUrl: helloWorkerUrl });
+  } = enterWorld({ appId, workerUrl: signalWorkerUrl });
   const worker = new Worker(programWorkerUrl, { type: "module" });
   function sendToWorker(msg: WorkerCommand) {
     worker.postMessage(msg, msg.data ? [msg.data] : []);

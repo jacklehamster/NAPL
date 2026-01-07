@@ -14943,6 +14943,71 @@ function createApp({
   });
   return { userId, enterRoom, program };
 }
+// ../src/app/WorkerApp.ts
+function createWorkerApp({
+  appId,
+  signalWorkerUrl,
+  programWorkerUrl
+}) {
+  const {
+    userId,
+    send,
+    enterRoom,
+    exitRoom,
+    addMessageListener,
+    addUserListener,
+    end
+  } = v({ appId, workerUrl: signalWorkerUrl });
+  const worker = new Worker(programWorkerUrl, { type: "module" });
+  function sendToWorker(msg) {
+    worker.postMessage(msg, msg.data ? [msg.data] : []);
+  }
+  const removeUserListener = addUserListener((user, action, users) => {
+    sendToWorker({
+      type: "onUserUpdate",
+      user,
+      action,
+      users
+    });
+  });
+  const removeMessageListener = addMessageListener((data, from) => {
+    sendToWorker({
+      type: "onMessage",
+      data,
+      from
+    });
+  });
+  sendToWorker({
+    type: "createApp",
+    userId,
+    appId
+  });
+  function close() {
+    removeUserListener();
+    removeMessageListener();
+    end();
+  }
+  worker.addEventListener("message", (e) => {
+    const { action } = e.data;
+    switch (action) {
+      case "send":
+        send(e.data.data, e.data.peer);
+        break;
+      case "close":
+        close();
+        break;
+      case "enterRoom":
+        enterRoom({
+          room: e.data.room,
+          host: e.data.host
+        });
+        break;
+      case "exitRoom":
+        exitRoom({ room: e.data.room, host: e.data.host });
+        break;
+    }
+  });
+}
 // node_modules/unique-names-generator/dist/index.m.js
 var a = (a2) => {
   a2 = 1831565813 + (a2 |= 0) | 0;
@@ -15185,8 +15250,17 @@ Last update: ${new Date().toISOString()}
   }
   setupGamePlayer();
 }
+// src/worker-room/index.ts
+function setupWorkerApp() {
+  const workerApp = createWorkerApp({
+    appId: "worker-test",
+    signalWorkerUrl: new URL("./signal-room.worker.js", import.meta.url),
+    programWorkerUrl: new URL("./app.worker.js", import.meta.url)
+  });
+}
 export {
+  setupWorkerApp,
   setupApp
 };
 
-//# debugId=A0B3CD1954B0007264756E2164756E21
+//# debugId=BBFBFF03B980EA6A64756E2164756E21
