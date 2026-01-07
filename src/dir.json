@@ -1,4 +1,10 @@
 {
+  "app/App.ts": {
+    "sha": "e5c39072c9ad9831cc07f1a62824b7caa3c8c6a5"
+  },
+  "app/WorkerApp.ts": {
+    "sha": "4f2f823b4f7a8537b30d624813e87019e4cddf1a"
+  },
   "attachments/comm/CommAux.ts": {
     "sha": "cd54fddaf6716cc3b28acbfb23fc5c93b871b7b2"
   },
@@ -6,7 +12,7 @@
     "sha": "991a34c9bb3712689c11034da8f88beb76c890bb"
   },
   "clients/CommInterface.ts": {
-    "sha": "32be370b75d59d47a3e018ce81304b1f19ee0d36"
+    "sha": "a91a9ad8be1404d0c2b8906de512aad693e9a587"
   },
   "clients/CommInterfaceHook.ts": {
     "sha": "8a2bb548b57953aa15c6ce2c1d582475149bb96a"
@@ -18,7 +24,7 @@
     "sha": "cbffb6901e070009789575ec062b6f428fd774f7"
   },
   "core/Program.ts": {
-    "sha": "3898c59d6e9617fb7dc5d0bf0b1a497b1f9ccd40"
+    "sha": "76117c44fd0a96e61dcfaef3bfeac849a10692ad"
   },
   "core/processor.test.ts": {
     "sha": "506c36a429eb58343fe48061a73ab697dc960139"
@@ -36,11 +42,11 @@
     "sha": "93cb0dfa2c81904c682995f12a2dd7257ee16e43"
   },
   "index.ts": {
-    "sha": "f0160bc699d6f7625a8f939d12475a6966b39217"
+    "sha": "1353d15ef897de7c4307b9d35c0bea2cb35fe9bf"
   },
-  "md5": "8c8265bbd009c4f5fac91e6269c92a97",
+  "md5": "f707b9bd092551595c8c2d205493f42a",
   "observer/Observer.ts": {
-    "sha": "f9db93b949303c7d7d882552ac65f5dfbe60ed8a"
+    "sha": "44f85279f99eb14183fef9839d35620e14888c18"
   },
   "observer/ObserverManager.ts": {
     "sha": "b404b1fab24dc71ef79e91f25fc40fc90105559b"
@@ -53,5 +59,8 @@
   },
   "types/Update.ts": {
     "sha": "e718db0ff39c41b138b026df4d0f488108919aad"
+  },
+  "worker/CommInterface.worker.ts": {
+    "sha": "455e3431bd32571ac428a8c1d93f05a154ea9b86"
   }
 }
