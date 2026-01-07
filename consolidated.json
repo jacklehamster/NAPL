@@ -18,9 +18,9 @@
     "config.json": {
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
-    "md5": "ad04537d20e5b462401b47c3105cd96d",
+    "md5": "7d00188ad2997f44ca58b8556f391895",
     "package.json": {
-      "sha": "370e99860a12490a37c88073996a3db5f13bb761"
+      "sha": "ebbbad77da770c0cb74bcaf23c0ccca471fe90af"
     },
     "tsconfig.json": {
       "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
@@ -31,7 +31,7 @@
       "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
     },
     "bun.lockb": {
-      "sha": "5a1aff2bb5f6a9354cb529eed4007ddc2e48cd19"
+      "sha": "60f918b7612035a0d29786297bf9cafb2d9cbc8b"
     },
     "bundler/bundler.ts": {
       "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
@@ -39,14 +39,20 @@
     "config.json": {
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
+    "dist/app.worker.js": {
+      "sha": "09e1e21a77c9047d4642258538f4840036dc9407"
+    },
+    "dist/app.worker.js.map": {
+      "sha": "b1e4c856cc9e88f257335b9de78a7e3ac259f215"
+    },
     "dist/index.js": {
-      "sha": "a8fdd5b230bd74027d118872f0c0df2f0e8386c9"
+      "sha": "981f46f0f257e0bfbe865a7da8a1b511296bad13"
     },
     "dist/index.js.map": {
-      "sha": "0bdbbd291915ca4f387469deb36d108663bf5558"
+      "sha": "ae7cea18a77e5aebbefc4b4853118c468e24555e"
     },
     "dist/signal-room.worker.js": {
-      "sha": "2274ad341a94bbff502b16e60b05ab3807d0c137"
+      "sha": "f37029d94c2c5f646df47fae781cbc781376a398"
     },
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -57,33 +63,48 @@
     "index.ts": {
       "sha": "bd4b1476e3cf69e1c07c77cefc98d4276daec470"
     },
-    "md5": "3102fa57f75aeb547dc665b8967c3e34",
+    "md5": "0142af27c1ed466862be34f00957104e",
     "package.json": {
-      "sha": "370e99860a12490a37c88073996a3db5f13bb761"
+      "sha": "ebbbad77da770c0cb74bcaf23c0ccca471fe90af"
     },
     "src/index.ts": {
-      "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
+      "sha": "2a82df1c22fab9a2e7932652ef240a61c7e4a579"
     },
     "src/test-room/index.ts": {
       "sha": "06af8626b61d8746837db101a532f263f2ecf631"
+    },
+    "src/worker-room/app.worker.ts": {
+      "sha": "3a02f7f1ed1ac0d26cca9655ebb4a4014cc5e8d8"
+    },
+    "src/worker-room/index.ts": {
+      "sha": "6d7235d8460bb6aa8c9629d3917b315dad068252"
     },
     "test-room/index.html": {
       "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
     },
     "tsconfig.json": {
       "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
+    },
+    "worker-room/index.html": {
+      "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
     }
   },
   "/example/dist/dir.json": {
+    "app.worker.js": {
+      "sha": "09e1e21a77c9047d4642258538f4840036dc9407"
+    },
+    "app.worker.js.map": {
+      "sha": "b1e4c856cc9e88f257335b9de78a7e3ac259f215"
+    },
     "index.js": {
-      "sha": "a8fdd5b230bd74027d118872f0c0df2f0e8386c9"
+      "sha": "981f46f0f257e0bfbe865a7da8a1b511296bad13"
     },
     "index.js.map": {
-      "sha": "0bdbbd291915ca4f387469deb36d108663bf5558"
+      "sha": "ae7cea18a77e5aebbefc4b4853118c468e24555e"
     },
-    "md5": "3c11f8d93b952e8e552297a3755dc8cc",
+    "md5": "9ddc141d28140e07e1b0b83c11528d1b",
     "signal-room.worker.js": {
-      "sha": "2274ad341a94bbff502b16e60b05ab3807d0c137"
+      "sha": "f37029d94c2c5f646df47fae781cbc781376a398"
     },
     "styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -96,13 +117,14 @@
     "scripts": {
       "start": "bun run build && bun --watch index.ts",
       "start:prod": "bun run build && NODE_ENV=production bun --watch index.ts",
-      "build": "bun i && bun run build-icon && bun run copy-workers && bun run bundler/bundler.ts",
+      "build": "bun i && bun run build-icon && bun run copy-workers && bun run build-workers && bun run bundler/bundler.ts",
       "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons",
       "dev": "bun run build && bun --watch index.ts",
-      "copy-workers": "mkdir -p dist && cp ./node_modules/@dobuki/hello-worker/dist/signal-room.worker.js ./dist/signal-room.worker.js"
+      "copy-workers": "mkdir -p dist && cp ./node_modules/@dobuki/hello-worker/dist/signal-room.worker.js ./dist/signal-room.worker.js",
+      "build-workers": "mkdir -p dist && bun build ./src/worker-room/app.worker.ts --outdir ./dist --target=browser --format=esm --sourcemap"
     },
     "devDependencies": {
-      "@dobuki/hello-worker": "^1.0.28",
+      "@dobuki/hello-worker": "^1.0.31",
       "@types/express": "^5.0.6",
       "bun-lightningcss": "^0.2.0",
       "bun-types": "^1.3.5",
@@ -126,11 +148,17 @@
   },
   "/example/src/dir.json": {
     "index.ts": {
-      "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
+      "sha": "2a82df1c22fab9a2e7932652ef240a61c7e4a579"
     },
-    "md5": "bb53fb543e482ad653050bba7ebee575",
+    "md5": "edcc7a7d23a0aec39643cb83780d8658",
     "test-room/index.ts": {
       "sha": "06af8626b61d8746837db101a532f263f2ecf631"
+    },
+    "worker-room/app.worker.ts": {
+      "sha": "3a02f7f1ed1ac0d26cca9655ebb4a4014cc5e8d8"
+    },
+    "worker-room/index.ts": {
+      "sha": "6d7235d8460bb6aa8c9629d3917b315dad068252"
     }
   },
   "/example/src/test-room/dir.json": {
@@ -138,6 +166,15 @@
       "sha": "06af8626b61d8746837db101a532f263f2ecf631"
     },
     "md5": "38606ab2eb4c17d1cefc3e67fbdcb064"
+  },
+  "/example/src/worker-room/dir.json": {
+    "app.worker.ts": {
+      "sha": "3a02f7f1ed1ac0d26cca9655ebb4a4014cc5e8d8"
+    },
+    "index.ts": {
+      "sha": "6d7235d8460bb6aa8c9629d3917b315dad068252"
+    },
+    "md5": "665e31330e9fb0b4efc30b738226f95c"
   },
   "/example/test-room/dir.json": {
     "index.html": {
@@ -175,6 +212,12 @@
       "**/*.ts",
       "**/*.tsx"
     ]
+  },
+  "/example/worker-room/dir.json": {
+    "index.html": {
+      "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
+    },
+    "md5": "14af562105a4b1bcc7b6166f249b5f59"
   },
   "/package.json": {
     "name": "napl",
@@ -237,9 +280,9 @@
       "sha": "e5c39072c9ad9831cc07f1a62824b7caa3c8c6a5"
     },
     "WorkerApp.ts": {
-      "sha": "4f2f823b4f7a8537b30d624813e87019e4cddf1a"
+      "sha": "c9f142c0a8f35983fa7afb73fea7953c6208c2a6"
     },
-    "md5": "2b3c0a5ea82765ffe1fd2c707527b29a"
+    "md5": "30b6322b935dca797d01d11650db438d"
   },
   "/src/attachments/comm/dir.json": {
     "CommAux.ts": {
@@ -318,7 +361,7 @@
       "sha": "e5c39072c9ad9831cc07f1a62824b7caa3c8c6a5"
     },
     "app/WorkerApp.ts": {
-      "sha": "4f2f823b4f7a8537b30d624813e87019e4cddf1a"
+      "sha": "c9f142c0a8f35983fa7afb73fea7953c6208c2a6"
     },
     "attachments/comm/CommAux.ts": {
       "sha": "cd54fddaf6716cc3b28acbfb23fc5c93b871b7b2"
@@ -357,9 +400,9 @@
       "sha": "93cb0dfa2c81904c682995f12a2dd7257ee16e43"
     },
     "index.ts": {
-      "sha": "1353d15ef897de7c4307b9d35c0bea2cb35fe9bf"
+      "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
     },
-    "md5": "f707b9bd092551595c8c2d205493f42a",
+    "md5": "85e9c3a1de440efef2ad65a269483418",
     "observer/Observer.ts": {
       "sha": "44f85279f99eb14183fef9839d35620e14888c18"
     },
@@ -376,7 +419,7 @@
       "sha": "e718db0ff39c41b138b026df4d0f488108919aad"
     },
     "worker/CommInterface.worker.ts": {
-      "sha": "455e3431bd32571ac428a8c1d93f05a154ea9b86"
+      "sha": "47cc723e5f55ff6893f824bddff9149166b4f1f8"
     }
   },
   "/src/observer/dir.json": {
@@ -402,9 +445,9 @@
   },
   "/src/worker/dir.json": {
     "CommInterface.worker.ts": {
-      "sha": "455e3431bd32571ac428a8c1d93f05a154ea9b86"
+      "sha": "47cc723e5f55ff6893f824bddff9149166b4f1f8"
     },
-    "md5": "eb6e356b33c2d403aecac2966a5bd4a7"
+    "md5": "544dcb96919bb5501aca2ae9b41bce56"
   },
   "/tsconfig.json": {
     "compilerOptions": {

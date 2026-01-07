@@ -1,9 +1,15 @@
 {
   "index.ts": {
-    "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
+    "sha": "2a82df1c22fab9a2e7932652ef240a61c7e4a579"
   },
-  "md5": "bb53fb543e482ad653050bba7ebee575",
+  "md5": "edcc7a7d23a0aec39643cb83780d8658",
   "test-room/index.ts": {
     "sha": "06af8626b61d8746837db101a532f263f2ecf631"
+  },
+  "worker-room/app.worker.ts": {
+    "sha": "3a02f7f1ed1ac0d26cca9655ebb4a4014cc5e8d8"
+  },
+  "worker-room/index.ts": {
+    "sha": "6d7235d8460bb6aa8c9629d3917b315dad068252"
   }
 }

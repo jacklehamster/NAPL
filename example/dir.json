@@ -3,7 +3,7 @@
     "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
   },
   "bun.lockb": {
-    "sha": "5a1aff2bb5f6a9354cb529eed4007ddc2e48cd19"
+    "sha": "60f918b7612035a0d29786297bf9cafb2d9cbc8b"
   },
   "bundler/bundler.ts": {
     "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
@@ -11,14 +11,20 @@
   "config.json": {
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
+  "dist/app.worker.js": {
+    "sha": "09e1e21a77c9047d4642258538f4840036dc9407"
+  },
+  "dist/app.worker.js.map": {
+    "sha": "b1e4c856cc9e88f257335b9de78a7e3ac259f215"
+  },
   "dist/index.js": {
-    "sha": "a8fdd5b230bd74027d118872f0c0df2f0e8386c9"
+    "sha": "981f46f0f257e0bfbe865a7da8a1b511296bad13"
   },
   "dist/index.js.map": {
-    "sha": "0bdbbd291915ca4f387469deb36d108663bf5558"
+    "sha": "ae7cea18a77e5aebbefc4b4853118c468e24555e"
   },
   "dist/signal-room.worker.js": {
-    "sha": "2274ad341a94bbff502b16e60b05ab3807d0c137"
+    "sha": "f37029d94c2c5f646df47fae781cbc781376a398"
   },
   "dist/styles-da87zv4s.css": {
     "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
@@ -29,20 +35,29 @@
   "index.ts": {
     "sha": "bd4b1476e3cf69e1c07c77cefc98d4276daec470"
   },
-  "md5": "3102fa57f75aeb547dc665b8967c3e34",
+  "md5": "0142af27c1ed466862be34f00957104e",
   "package.json": {
-    "sha": "370e99860a12490a37c88073996a3db5f13bb761"
+    "sha": "ebbbad77da770c0cb74bcaf23c0ccca471fe90af"
   },
   "src/index.ts": {
-    "sha": "03c9e5482633fb6733709cd3d24db473b41d1e4a"
+    "sha": "2a82df1c22fab9a2e7932652ef240a61c7e4a579"
   },
   "src/test-room/index.ts": {
     "sha": "06af8626b61d8746837db101a532f263f2ecf631"
+  },
+  "src/worker-room/app.worker.ts": {
+    "sha": "3a02f7f1ed1ac0d26cca9655ebb4a4014cc5e8d8"
+  },
+  "src/worker-room/index.ts": {
+    "sha": "6d7235d8460bb6aa8c9629d3917b315dad068252"
   },
   "test-room/index.html": {
     "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
   },
   "tsconfig.json": {
     "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
+  },
+  "worker-room/index.html": {
+    "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
   }
 }

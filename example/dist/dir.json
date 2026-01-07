@@ -1,13 +1,19 @@
 {
+  "app.worker.js": {
+    "sha": "09e1e21a77c9047d4642258538f4840036dc9407"
+  },
+  "app.worker.js.map": {
+    "sha": "b1e4c856cc9e88f257335b9de78a7e3ac259f215"
+  },
   "index.js": {
-    "sha": "a8fdd5b230bd74027d118872f0c0df2f0e8386c9"
+    "sha": "981f46f0f257e0bfbe865a7da8a1b511296bad13"
   },
   "index.js.map": {
-    "sha": "0bdbbd291915ca4f387469deb36d108663bf5558"
+    "sha": "ae7cea18a77e5aebbefc4b4853118c468e24555e"
   },
-  "md5": "3c11f8d93b952e8e552297a3755dc8cc",
+  "md5": "9ddc141d28140e07e1b0b83c11528d1b",
   "signal-room.worker.js": {
-    "sha": "2274ad341a94bbff502b16e60b05ab3807d0c137"
+    "sha": "f37029d94c2c5f646df47fae781cbc781376a398"
   },
   "styles-da87zv4s.css": {
     "sha": "07ee8884738c76639f510b99559b8f69798f8a26"

@@ -3,7 +3,7 @@
     "sha": "e5c39072c9ad9831cc07f1a62824b7caa3c8c6a5"
   },
   "app/WorkerApp.ts": {
-    "sha": "4f2f823b4f7a8537b30d624813e87019e4cddf1a"
+    "sha": "c9f142c0a8f35983fa7afb73fea7953c6208c2a6"
   },
   "attachments/comm/CommAux.ts": {
     "sha": "cd54fddaf6716cc3b28acbfb23fc5c93b871b7b2"
@@ -42,9 +42,9 @@
     "sha": "93cb0dfa2c81904c682995f12a2dd7257ee16e43"
   },
   "index.ts": {
-    "sha": "1353d15ef897de7c4307b9d35c0bea2cb35fe9bf"
+    "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
   },
-  "md5": "f707b9bd092551595c8c2d205493f42a",
+  "md5": "85e9c3a1de440efef2ad65a269483418",
   "observer/Observer.ts": {
     "sha": "44f85279f99eb14183fef9839d35620e14888c18"
   },
@@ -61,6 +61,6 @@
     "sha": "e718db0ff39c41b138b026df4d0f488108919aad"
   },
   "worker/CommInterface.worker.ts": {
-    "sha": "455e3431bd32571ac428a8c1d93f05a154ea9b86"
+    "sha": "47cc723e5f55ff6893f824bddff9149166b4f1f8"
   }
 }
