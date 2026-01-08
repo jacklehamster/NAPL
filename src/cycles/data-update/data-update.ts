@@ -23,7 +23,7 @@ export interface UpdatePath {
 export function commitUpdates(
   { root, incomingUpdates, outgoingUpdates, properties }: Context,
   updatedPaths: Map<string, UpdatePath>,
-  consolidate?: boolean,
+  consolidate?: boolean
 ) {
   if (consolidate) {
     consolidateUpdates(incomingUpdates, outgoingUpdates);
@@ -44,7 +44,7 @@ export function commitUpdates(
       true,
       properties,
       updatedPaths,
-      update.confirmed,
+      update.confirmed
     );
     const prop = parts[parts.length - 1];
     const value = translateValue(update.value, properties);
@@ -84,7 +84,7 @@ export function cleanupRoot(
   parts: (string | number)[],
   index: number,
   updatedPaths: Map<string, UpdatePath>,
-  confirmed: number,
+  confirmed: number
 ) {
   if (!root || typeof root !== "object" || Array.isArray(root)) {
     return false;
@@ -142,11 +142,11 @@ export function consolidateUpdates(incoming: Update[], outgoing: Update[]) {
   //  remove redundant updates
   filterArray(
     incoming,
-    (update) => !update.confirmed || _map.get(update.path) === update,
+    (update) => !update.confirmed || _map.get(update.path) === update
   );
   filterArray(
     outgoing,
-    (update) => !update.confirmed || _map.get(update.path) === update,
+    (update) => !update.confirmed || _map.get(update.path) === update
   );
   _map.clear();
 }
@@ -159,10 +159,9 @@ export function getLeafObject(
   autoCreate: boolean,
   properties: Record<string, any>,
   updatedPaths?: Map<string, UpdatePath>,
-  confirmed?: number,
+  confirmed?: number
 ): Data {
   let current = obj;
-  const pathParts: string[] = [];
   for (let i = 0; i < parts.length - offset; i++) {
     const prop = parts[i];
     const value = translateProp(
@@ -172,9 +171,9 @@ export function getLeafObject(
       autoCreate,
       updatedPaths,
       parts.slice(0, i + 1).join("/"),
-      confirmed,
+      confirmed
     );
-    if (value === undefined) {
+    if (!value) {
       return value;
     }
     current = value;
@@ -198,14 +197,14 @@ export function translateValue(value: any, properties: Record<string, any>) {
   return value;
 }
 
-export function translateProp(
+function translateProp(
   obj: any,
   prop: string | number,
   properties: Record<string, any>,
   autoCreate: boolean = false,
   updatedPaths?: Map<string, UpdatePath>,
   path?: string,
-  confirmed?: number,
+  confirmed?: number
 ) {
   const theProp = translateValue(prop, properties);
   let value = obj[theProp];
