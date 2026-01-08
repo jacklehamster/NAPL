@@ -39,12 +39,12 @@
     "sha": "b843646e477416994786915999588670cb716d82"
   },
   "cycles/data-update/data-update.ts": {
-    "sha": "93cb0dfa2c81904c682995f12a2dd7257ee16e43"
+    "sha": "98e461c66ead3f19b13fbef5d509d06e87d9c3f5"
   },
   "index.ts": {
     "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
   },
-  "md5": "85e9c3a1de440efef2ad65a269483418",
+  "md5": "678d41c6353e5f37414ae6de9380641d",
   "observer/Observer.ts": {
     "sha": "44f85279f99eb14183fef9839d35620e14888c18"
   },
