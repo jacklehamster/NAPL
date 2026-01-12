@@ -2,7 +2,6 @@ import { createServer } from "https";
 import express from "express";
 import path from "path";
 import dotenv from "dotenv";
-import { WebSocketServer } from "ws";
 dotenv.config();
 
 const app = express();
@@ -10,7 +9,11 @@ const PORT = 3000;
 
 const server = createServer(app);
 
-const wss = new WebSocketServer({ server });
+app.use((_req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  next();
+});
 
 app.get("/config.json", (_req, res) => {
   if (process.env.NODE_ENV === "production") {

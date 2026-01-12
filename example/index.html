@@ -43,7 +43,6 @@
         const configJson = await fetch("config.json").then((res) => res.json());
         const searchParams = new URLSearchParams(location.search);
 
-        const shouldSplit = searchParams.get("split") ?? configJson.split;
         const initialTab = searchParams.get("tab") ?? configJson.tab;
         const showTab = searchParams.get("show-tab") ?? configJson["show-tab"];
         const room = searchParams.get("room") ?? configJson.room;
@@ -63,45 +62,16 @@
           button.id = `${site}-button`;
           button.textContent = site;
           button.addEventListener("click", () => {
+            container.textContent = "";
             if (!document.querySelector(`#${site}-content`)) {
               const frameRoom = room ?? site;
               const div = container.appendChild(document.createElement("div"));
               div.id = `${site}-content`;
               div.classList.add("content");
               const topF = div.appendChild(document.createElement("iframe"));
-              topF.title = "top";
               topF.classList.add("frame");
-              topF.setAttribute("src", `${site}?top&room=${frameRoom}`);
+              topF.setAttribute("src", `${site}?room=${frameRoom}`);
               topF.setAttribute("allow", "autoplay");
-              if (shouldSplit) {
-                const bottomF = div.appendChild(
-                  document.createElement("iframe"),
-                );
-                bottomF.title = "bottom";
-                bottomF.classList.add("frame");
-                bottomF.setAttribute("src", `${site}?bottom&room=${frameRoom}`);
-                bottomF.setAttribute("allow", "autoplay");
-
-                topF.classList.add("split");
-                bottomF.classList.add("split");
-
-                topF.addEventListener("load", () => {
-                  topF.contentWindow.addEventListener("focus", () => {
-                    topF.style.outline = "2px solid yellow";
-                  });
-                  topF.contentWindow.addEventListener("blur", () => {
-                    topF.style.outline = "none";
-                  });
-                });
-                bottomF.addEventListener("load", () => {
-                  bottomF.contentWindow.addEventListener("focus", () => {
-                    bottomF.style.outline = "2px solid yellow";
-                  });
-                  bottomF.contentWindow.addEventListener("blur", () => {
-                    bottomF.style.outline = "none";
-                  });
-                });
-              }
             }
 
             const contentDivs = document.querySelectorAll(".content");

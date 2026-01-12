@@ -14951,12 +14951,200 @@ function createApp({
   });
   return { userId, enterRoom, program };
 }
+// ../src/app/utils/StringEncoder.ts
+function hookStringEncoder() {
+  const enc = new TextEncoder;
+  const dec = new TextDecoder;
+  let scratch = new Uint8Array(64);
+  function decodeToString(data) {
+    let offset = 0;
+    const byteLength = data[offset++];
+    if (!byteLength) {
+      return ["", offset];
+    }
+    if (scratch.byteLength < byteLength) {
+      scratch = new Uint8Array(Math.max(data.byteLength, scratch.byteLength * 2));
+    }
+    scratch.set(data.subarray(offset, offset + byteLength));
+    const str = dec.decode(scratch.subarray(0, byteLength));
+    offset += byteLength;
+    return [str, offset];
+  }
+  function encodeString(str, data) {
+    let offset = 0;
+    if (!str.length) {
+      data[offset++] = 0;
+      return offset;
+    }
+    const bytes = enc.encode(str);
+    data[offset++] = bytes.length;
+    data.set(bytes, offset);
+    offset += bytes.length;
+    return offset;
+  }
+  function encodeStrings(str, data) {}
+  function decodeStrings(data) {}
+  return { encodeString, decodeToString };
+}
+
+// ../src/app/utils/serializers.ts
+function hookSerializers() {
+  const { encodeString, decodeToString } = hookStringEncoder();
+  const keySerializer = {
+    serialize: (msg, data) => {
+      let offset = 0;
+      offset += encodeString(msg.key, data);
+      const bits = (msg.altKey ? 1 << 0 : 0) | (msg.ctrlKey ? 1 << 1 : 0) | (msg.metaKey ? 1 << 2 : 0) | (msg.shiftKey ? 1 << 3 : 0) | (msg.repeat ? 1 << 4 : 0);
+      data[offset++] = bits;
+      return offset;
+    },
+    deserialize: (data, type) => {
+      let offset = 0;
+      const [key, shift] = decodeToString(data);
+      offset += shift;
+      const bits = data[offset++];
+      const altKey = (bits & 1 << 0) !== 0;
+      const ctrlKey = (bits & 1 << 1) !== 0;
+      const metaKey = (bits & 1 << 2) !== 0;
+      const shiftKey = (bits & 1 << 3) !== 0;
+      const repeat = (bits & 1 << 4) !== 0;
+      return [
+        {
+          type,
+          key,
+          altKey,
+          ctrlKey,
+          metaKey,
+          shiftKey,
+          repeat
+        },
+        offset
+      ];
+    }
+  };
+  const serializers = [
+    [0 /* KEY_DOWN */, keySerializer],
+    [1 /* KEY_UP */, keySerializer],
+    [
+      2 /* PING */,
+      {
+        serialize(msg, data) {
+          const dv = new DataView(data.buffer, data.byteOffset, data.byteLength);
+          let offset = 0;
+          dv.setUint32(offset, msg.now);
+          offset += 4;
+          return offset;
+        },
+        deserialize(data) {
+          const dv = new DataView(data.buffer, data.byteOffset, data.byteLength);
+          let offset = 0;
+          const now = dv.getUint32(offset, true);
+          offset += 4;
+          return [{ type: 2 /* PING */, now }, offset];
+        }
+      }
+    ],
+    [
+      3 /* ON_USER_UPDATE */,
+      {
+        serialize(msg, data) {
+          let offset = 0;
+          offset += encodeString(msg.user, data);
+          data[offset++] = msg.action === "join" ? 1 : 0;
+          for (const user of msg.users) {
+            offset += encodeString(user, data.subarray(offset));
+          }
+          offset += encodeString("", data.subarray(offset));
+          return offset;
+        },
+        deserialize(data) {
+          let offset = 0;
+          const [user, bytesConsumed] = decodeToString(data.subarray(offset));
+          offset += bytesConsumed;
+          const action = data[offset++] === 1 ? "join" : "leave";
+          const users = [];
+          do {
+            const [usr, consumed] = decodeToString(data.subarray(offset));
+            offset += consumed;
+            users.push(usr);
+          } while (users[users.length - 1].length);
+          users.pop();
+          return [
+            {
+              type: 3 /* ON_USER_UPDATE */,
+              user,
+              action,
+              users
+            },
+            offset
+          ];
+        }
+      }
+    ]
+  ];
+  const serializerMap = new Map(serializers);
+  function serialize(message, data) {
+    const serializer = serializerMap.get(message.type);
+    if (!serializer) {
+      return 0;
+    }
+    let offset = 0;
+    data[offset++] = message.type;
+    offset += serializer.serialize(message, data.subarray(1)) ?? 0;
+    return offset;
+  }
+  function deserialize(data) {
+    let offset = 0;
+    const type = data[offset++];
+    const [msg, bytesConsumed] = serializerMap.get(type)?.deserialize(data.subarray(1), type) ?? [undefined, 0];
+    offset += bytesConsumed;
+    return [msg, offset];
+  }
+  return {
+    serialize,
+    deserialize
+  };
+}
+
+// ../src/app/messenger.ts
+var WRITE = 0;
+var READ = 1;
+var BELL = 2;
+function setupMessenger(worker) {
+  const BYTES = 1024 * 1024;
+  const sab = new SharedArrayBuffer(BYTES);
+  const ctrl = new Int32Array(sab, 0, 8);
+  const data = new Uint8Array(sab, 32);
+  worker.postMessage({ sab });
+  const { serialize } = hookSerializers();
+  function sendMessage(msg) {
+    const w0 = Atomics.load(ctrl, WRITE);
+    const r0 = Atomics.load(ctrl, READ);
+    const wasEmpty = w0 === r0;
+    const bytesWritten = serialize(msg, data.subarray(w0));
+    if (bytesWritten) {
+      Atomics.store(ctrl, WRITE, w0 + bytesWritten);
+      if (wasEmpty) {
+        Atomics.add(ctrl, BELL, 1);
+        Atomics.notify(ctrl, BELL);
+      }
+    }
+  }
+  return {
+    sendMessage
+  };
+}
 // ../src/app/WorkerApp.ts
 function createWorkerApp({
   appId,
   signalWorkerUrl,
   programWorkerUrl
 }) {
+  if (!self.crossOriginIsolated) {
+    throw new Error(`This feature can’t run in your current browser context.
+      It requires Cross-Origin Isolation (COOP/COEP) to enable high-performance shared memory.
+      Please reload from the official site / correct environment, or contact your admin.`);
+  }
   const {
     userId,
     send,
@@ -14966,13 +15154,37 @@ function createWorkerApp({
     addUserListener,
     end
   } = U({ appId, workerUrl: signalWorkerUrl });
+  enterRoom({ room: "lobby", host: "hello.dobuki.net" });
   const worker = new Worker(programWorkerUrl, { type: "module" });
+  const { sendMessage } = setupMessenger(worker);
+  document.addEventListener("keydown", ({ key, altKey, ctrlKey, metaKey, shiftKey, repeat }) => {
+    sendMessage({
+      type: 0 /* KEY_DOWN */,
+      key,
+      altKey,
+      ctrlKey,
+      metaKey,
+      shiftKey,
+      repeat
+    });
+  });
+  document.addEventListener("keyup", ({ key, altKey, ctrlKey, metaKey, shiftKey, repeat }) => {
+    sendMessage({
+      type: 1 /* KEY_UP */,
+      key,
+      altKey,
+      ctrlKey,
+      metaKey,
+      shiftKey,
+      repeat
+    });
+  });
   function sendToWorker(msg) {
     worker.postMessage(msg, msg.data ? [msg.data] : []);
   }
   const removeUserListener = addUserListener((user, action, users) => {
-    sendToWorker({
-      type: "onUserUpdate",
+    sendMessage({
+      type: 3 /* ON_USER_UPDATE */,
       user,
       action,
       users
@@ -14990,12 +15202,13 @@ function createWorkerApp({
     userId,
     appId
   });
-  function close() {
-    removeUserListener();
-    removeMessageListener();
-    end();
-  }
-  worker.addEventListener("message", (e) => {
+  setTimeout(() => {
+    sendMessage({
+      type: 2 /* PING */,
+      now: performance.now()
+    });
+  }, 1000);
+  const onMessage = (e) => {
     const { action } = e.data;
     switch (action) {
       case "send":
@@ -15005,16 +15218,26 @@ function createWorkerApp({
         close();
         break;
       case "enterRoom":
-        enterRoom({
-          room: e.data.room,
-          host: e.data.host
-        });
+        enterRoom({ room: e.data.room, host: e.data.host });
         break;
       case "exitRoom":
         exitRoom({ room: e.data.room, host: e.data.host });
         break;
+      case "ping":
+        console.log("Ping", `${performance.now() - e.data.now}ms`);
+        break;
     }
-  });
+  };
+  worker.addEventListener("message", onMessage);
+  function close() {
+    worker.removeEventListener("message", onMessage);
+    removeUserListener();
+    removeMessageListener();
+    end();
+  }
+  return {
+    close
+  };
 }
 // node_modules/unique-names-generator/dist/index.m.js
 var a = (a2) => {
@@ -15260,7 +15483,7 @@ Last update: ${new Date().toISOString()}
 }
 // src/worker-room/index.ts
 function setupWorkerApp() {
-  const workerApp = createWorkerApp({
+  return createWorkerApp({
     appId: "worker-test",
     signalWorkerUrl: new URL("./signal-room.worker.js", import.meta.url),
     programWorkerUrl: new URL("./app.worker.js", import.meta.url)
@@ -15271,4 +15494,4 @@ export {
   setupApp
 };
 
-//# debugId=19033A6788FE68D464756E2164756E21
+//# debugId=0B465EA927C55A1A64756E2164756E21

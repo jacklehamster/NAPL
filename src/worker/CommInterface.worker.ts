@@ -2,18 +2,10 @@
 
 import { CommInterface } from "@/clients/CommInterface";
 import { IProgram, Program } from "@/core/Program";
-
-export type WorkerResponse =
-  | {
-      action: "send";
-      data: Uint8Array;
-      peer: string | undefined;
-    }
-  | ({ data?: undefined } & (
-      | { action: "close" }
-      | { action: "enterRoom"; room: string; host: string }
-      | { action: "exitRoom"; room: string; host: string }
-    ));
+import { WorkerResponse } from "./WorkerResponse";
+import { WorkerCommand } from "./WorkerCommand";
+import { hookSerializers } from "@/app/utils/serializers";
+import { BELL, READ, WRITE } from "@/app/messenger";
 
 function respond(response: WorkerResponse) {
   (self as DedicatedWorkerGlobalScope).postMessage(
@@ -22,22 +14,49 @@ function respond(response: WorkerResponse) {
   );
 }
 
-export type WorkerCommand =
-  | {
-      type: "onUserUpdate";
-      user: string;
-      action: string;
-      users: string[];
-      data?: undefined;
-    }
-  | { type: "onMessage"; data: any; from: string }
-  | { type: "createApp"; userId: string; appId: string; data?: undefined };
-
 export async function createProgram(): Promise<IProgram> {
   return new Promise<IProgram>((resolve) => {
     let program: Program | undefined;
     const messageListeners = new Array<(data: ArrayBuffer) => void>();
     const newUserListener = new Array<(user: string) => void>();
+
+    const { deserialize } = hookSerializers();
+    async function listen(ctrl: Int32Array, data: Uint8Array) {
+      let lastBell = Atomics.load(ctrl, BELL);
+
+      while (true) {
+        // sleep until bell changes
+        const result = Atomics.waitAsync(ctrl, BELL, lastBell, 8);
+        await result.value;
+        const bellNow = Atomics.load(ctrl, BELL);
+        if (bellNow === lastBell) continue;
+        lastBell = bellNow;
+
+        // drain whatever is available
+        const msg = drain(ctrl, data);
+        console.log(msg);
+      }
+    }
+
+    function drain(ctrl: Int32Array, data: Uint8Array) {
+      const r = Atomics.load(ctrl, READ);
+      const w = Atomics.load(ctrl, WRITE);
+      if (r >= w) {
+        if (r !== w) {
+          console.error(">>", r, w);
+        }
+        return;
+      }
+
+      const [msg, bytesConsumed] = deserialize(data.subarray(r)) ?? [
+        undefined,
+        0,
+      ];
+      if (bytesConsumed) {
+        Atomics.store(ctrl, READ, r + bytesConsumed);
+      }
+      return msg;
+    }
 
     class CommInterfaceWorker implements CommInterface {
       constructor() {}
@@ -65,27 +84,40 @@ export async function createProgram(): Promise<IProgram> {
       }
     }
 
-    self.addEventListener("message", (e: MessageEvent<WorkerCommand>) => {
-      const msg = e.data;
-      if (msg.type === "createApp") {
-        if (program) {
-          throw new Error("Can only create program once");
+    self.addEventListener(
+      "message",
+      (e: MessageEvent<WorkerCommand & { sab?: SharedArrayBuffer }>) => {
+        const msg = e.data;
+        if (msg.sab) {
+          const sab = msg.sab;
+          const ctrl = new Int32Array(sab, 0, 8);
+          const data = new Uint8Array(sab, 32);
+          listen(ctrl, data);
+
+          return;
         }
-        program = new Program({
-          appId: msg.appId,
-          userId: msg.userId,
-          comm: new CommInterfaceWorker(),
-        });
-        resolve(program);
-      } else if (msg.type === "onMessage") {
-        messageListeners.forEach((listener) => listener(msg.data));
-      } else if (msg.type === "onUserUpdate") {
-        if (msg.action === "join") {
-          newUserListener.forEach((listener) => listener(msg.user));
-        } else if (msg.action === "leave") {
-          program?.setData(`users/${msg.user}`, undefined);
+        if (msg.type === "createApp") {
+          if (program) {
+            throw new Error("Can only create program once");
+          }
+          program = new Program({
+            appId: msg.appId,
+            userId: msg.userId,
+            comm: new CommInterfaceWorker(),
+          });
+          resolve(program);
+        } else if (msg.type === "onMessage") {
+          messageListeners.forEach((listener) => listener(msg.data));
+        } else if (msg.type === "onUserUpdate") {
+          if (msg.action === "join") {
+            newUserListener.forEach((listener) => listener(msg.user));
+          } else if (msg.action === "leave") {
+            program?.setData(`users/${msg.user}`, undefined);
+          }
+        } else if (msg.type === "ping") {
+          respond({ action: "ping", now: msg.now });
         }
       }
-    });
+    );
   });
 }
