@@ -2,8 +2,29 @@
   "app/App.ts": {
     "sha": "e5c39072c9ad9831cc07f1a62824b7caa3c8c6a5"
   },
+  "app/MessageType.ts": {
+    "sha": "850cc2d18b36436bf080bd975f92b274e9e76c0d"
+  },
   "app/WorkerApp.ts": {
-    "sha": "c9f142c0a8f35983fa7afb73fea7953c6208c2a6"
+    "sha": "5b84043389d5a16dbcae0bce170700e8e5b31d89"
+  },
+  "app/comm/CommMessage.ts": {
+    "sha": "8c195a5a53f14f4ad599fdc54f5f24da9d97289e"
+  },
+  "app/input/KeyMessage.ts": {
+    "sha": "dca5720a1ecf2baf53c570ada1f8a6cd2ad6b6f1"
+  },
+  "app/messenger.ts": {
+    "sha": "f1647a3fa1c7232576d6b94b3ac833a361cf6d2e"
+  },
+  "app/ping/PingMessage.ts": {
+    "sha": "8d8dde627797022c4951ec0988d249cceefb89fe"
+  },
+  "app/utils/StringEncoder.ts": {
+    "sha": "9ecc65ef81b522310809fdf24ee36a5f2a8de019"
+  },
+  "app/utils/serializers.ts": {
+    "sha": "bdbd449fa6e39843386f87d3d7077cee2bcbce68"
   },
   "attachments/comm/CommAux.ts": {
     "sha": "cd54fddaf6716cc3b28acbfb23fc5c93b871b7b2"
@@ -44,7 +65,7 @@
   "index.ts": {
     "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
   },
-  "md5": "678d41c6353e5f37414ae6de9380641d",
+  "md5": "63dba3aab2b9c488f1fdd1c554650f71",
   "observer/Observer.ts": {
     "sha": "44f85279f99eb14183fef9839d35620e14888c18"
   },
@@ -61,6 +82,12 @@
     "sha": "e718db0ff39c41b138b026df4d0f488108919aad"
   },
   "worker/CommInterface.worker.ts": {
-    "sha": "47cc723e5f55ff6893f824bddff9149166b4f1f8"
+    "sha": "57814d4a2c906fe5682d821530237cf845119e6f"
+  },
+  "worker/WorkerCommand.ts": {
+    "sha": "12c4de8f91a30c4161089843a41cf60c1e0c8655"
+  },
+  "worker/WorkerResponse.ts": {
+    "sha": "18b580b4bf6f476a16da2ad6ba994ec2fc587dba"
   }
 }

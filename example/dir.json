@@ -12,16 +12,16 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/app.worker.js": {
-    "sha": "09e1e21a77c9047d4642258538f4840036dc9407"
+    "sha": "516d5c8e5f11bd4d2926f8e81cc1079357418423"
   },
   "dist/app.worker.js.map": {
-    "sha": "b1e4c856cc9e88f257335b9de78a7e3ac259f215"
+    "sha": "f488d693e2924f8ee012dc0ae504ad9b80710d74"
   },
   "dist/index.js": {
-    "sha": "652bdf871251c1dbe3e3a5ff594d415e4fb06dbc"
+    "sha": "64f74eccc9abe6f208f26e9275c88872ccf3a8b5"
   },
   "dist/index.js.map": {
-    "sha": "852c7c4c98f659dab8800f00dd1daa46fa0582f0"
+    "sha": "cac981f353fa0d03efa04324e45c243998bb3f78"
   },
   "dist/signal-room.worker.js": {
     "sha": "f37029d94c2c5f646df47fae781cbc781376a398"
@@ -29,13 +29,16 @@
   "dist/styles-da87zv4s.css": {
     "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
   },
+  "favicon.ico": {
+    "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
+  },
   "index.html": {
-    "sha": "ceb94765f2a324c12114ec5db533c0c7194aa941"
+    "sha": "42409159d0168e291354589af63ac3f7bce886c5"
   },
   "index.ts": {
-    "sha": "bd4b1476e3cf69e1c07c77cefc98d4276daec470"
+    "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
   },
-  "md5": "95c477c4cd151339ad669b94d0c0f21f",
+  "md5": "6d71280e57e744e578fbbd373d63d458",
   "package.json": {
     "sha": "73baf272eae2a78b06d719f1678d7d2e180989e1"
   },
@@ -46,10 +49,10 @@
     "sha": "06af8626b61d8746837db101a532f263f2ecf631"
   },
   "src/worker-room/app.worker.ts": {
-    "sha": "3a02f7f1ed1ac0d26cca9655ebb4a4014cc5e8d8"
+    "sha": "b84d8308ad947fef415d2a608f6a37de2ee24d72"
   },
   "src/worker-room/index.ts": {
-    "sha": "6d7235d8460bb6aa8c9629d3917b315dad068252"
+    "sha": "f12831ee8eeaa6012d2f2dc5c3e49a66f21c2f94"
   },
   "test-room/index.html": {
     "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
@@ -58,6 +61,6 @@
     "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
   },
   "worker-room/index.html": {
-    "sha": "037b7f335690ab76490b4db5811b10827f01d703"
+    "sha": "f672c2ad0bc426abb0617ba834becc1c6b5ba31e"
   }
 }

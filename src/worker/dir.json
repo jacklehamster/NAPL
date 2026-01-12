@@ -1,6 +1,12 @@
 {
   "CommInterface.worker.ts": {
-    "sha": "47cc723e5f55ff6893f824bddff9149166b4f1f8"
+    "sha": "57814d4a2c906fe5682d821530237cf845119e6f"
   },
-  "md5": "544dcb96919bb5501aca2ae9b41bce56"
+  "WorkerCommand.ts": {
+    "sha": "12c4de8f91a30c4161089843a41cf60c1e0c8655"
+  },
+  "WorkerResponse.ts": {
+    "sha": "18b580b4bf6f476a16da2ad6ba994ec2fc587dba"
+  },
+  "md5": "bf61d7adc78d049f66a56d89d4717524"
 }

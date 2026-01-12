@@ -40,16 +40,16 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/app.worker.js": {
-      "sha": "09e1e21a77c9047d4642258538f4840036dc9407"
+      "sha": "516d5c8e5f11bd4d2926f8e81cc1079357418423"
     },
     "dist/app.worker.js.map": {
-      "sha": "b1e4c856cc9e88f257335b9de78a7e3ac259f215"
+      "sha": "f488d693e2924f8ee012dc0ae504ad9b80710d74"
     },
     "dist/index.js": {
-      "sha": "652bdf871251c1dbe3e3a5ff594d415e4fb06dbc"
+      "sha": "64f74eccc9abe6f208f26e9275c88872ccf3a8b5"
     },
     "dist/index.js.map": {
-      "sha": "852c7c4c98f659dab8800f00dd1daa46fa0582f0"
+      "sha": "cac981f353fa0d03efa04324e45c243998bb3f78"
     },
     "dist/signal-room.worker.js": {
       "sha": "f37029d94c2c5f646df47fae781cbc781376a398"
@@ -57,13 +57,16 @@
     "dist/styles-da87zv4s.css": {
       "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
     },
+    "favicon.ico": {
+      "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
+    },
     "index.html": {
-      "sha": "ceb94765f2a324c12114ec5db533c0c7194aa941"
+      "sha": "42409159d0168e291354589af63ac3f7bce886c5"
     },
     "index.ts": {
-      "sha": "bd4b1476e3cf69e1c07c77cefc98d4276daec470"
+      "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
     },
-    "md5": "95c477c4cd151339ad669b94d0c0f21f",
+    "md5": "6d71280e57e744e578fbbd373d63d458",
     "package.json": {
       "sha": "73baf272eae2a78b06d719f1678d7d2e180989e1"
     },
@@ -74,10 +77,10 @@
       "sha": "06af8626b61d8746837db101a532f263f2ecf631"
     },
     "src/worker-room/app.worker.ts": {
-      "sha": "3a02f7f1ed1ac0d26cca9655ebb4a4014cc5e8d8"
+      "sha": "b84d8308ad947fef415d2a608f6a37de2ee24d72"
     },
     "src/worker-room/index.ts": {
-      "sha": "6d7235d8460bb6aa8c9629d3917b315dad068252"
+      "sha": "f12831ee8eeaa6012d2f2dc5c3e49a66f21c2f94"
     },
     "test-room/index.html": {
       "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
@@ -86,23 +89,23 @@
       "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
     },
     "worker-room/index.html": {
-      "sha": "037b7f335690ab76490b4db5811b10827f01d703"
+      "sha": "f672c2ad0bc426abb0617ba834becc1c6b5ba31e"
     }
   },
   "/example/dist/dir.json": {
     "app.worker.js": {
-      "sha": "09e1e21a77c9047d4642258538f4840036dc9407"
+      "sha": "516d5c8e5f11bd4d2926f8e81cc1079357418423"
     },
     "app.worker.js.map": {
-      "sha": "b1e4c856cc9e88f257335b9de78a7e3ac259f215"
+      "sha": "f488d693e2924f8ee012dc0ae504ad9b80710d74"
     },
     "index.js": {
-      "sha": "652bdf871251c1dbe3e3a5ff594d415e4fb06dbc"
+      "sha": "64f74eccc9abe6f208f26e9275c88872ccf3a8b5"
     },
     "index.js.map": {
-      "sha": "852c7c4c98f659dab8800f00dd1daa46fa0582f0"
+      "sha": "cac981f353fa0d03efa04324e45c243998bb3f78"
     },
-    "md5": "0d712d2fd7f922c54c031a6e73fc2a92",
+    "md5": "85fa6f4b8c42b6f1c6d7814eda711841",
     "signal-room.worker.js": {
       "sha": "f37029d94c2c5f646df47fae781cbc781376a398"
     },
@@ -150,15 +153,15 @@
     "index.ts": {
       "sha": "2a82df1c22fab9a2e7932652ef240a61c7e4a579"
     },
-    "md5": "edcc7a7d23a0aec39643cb83780d8658",
+    "md5": "d93fe2704448b1676a1c47e6b0417798",
     "test-room/index.ts": {
       "sha": "06af8626b61d8746837db101a532f263f2ecf631"
     },
     "worker-room/app.worker.ts": {
-      "sha": "3a02f7f1ed1ac0d26cca9655ebb4a4014cc5e8d8"
+      "sha": "b84d8308ad947fef415d2a608f6a37de2ee24d72"
     },
     "worker-room/index.ts": {
-      "sha": "6d7235d8460bb6aa8c9629d3917b315dad068252"
+      "sha": "f12831ee8eeaa6012d2f2dc5c3e49a66f21c2f94"
     }
   },
   "/example/src/test-room/dir.json": {
@@ -169,12 +172,12 @@
   },
   "/example/src/worker-room/dir.json": {
     "app.worker.ts": {
-      "sha": "3a02f7f1ed1ac0d26cca9655ebb4a4014cc5e8d8"
+      "sha": "b84d8308ad947fef415d2a608f6a37de2ee24d72"
     },
     "index.ts": {
-      "sha": "6d7235d8460bb6aa8c9629d3917b315dad068252"
+      "sha": "f12831ee8eeaa6012d2f2dc5c3e49a66f21c2f94"
     },
-    "md5": "665e31330e9fb0b4efc30b738226f95c"
+    "md5": "f7f22e74d25ef8197dac780642c69654"
   },
   "/example/test-room/dir.json": {
     "index.html": {
@@ -215,9 +218,9 @@
   },
   "/example/worker-room/dir.json": {
     "index.html": {
-      "sha": "037b7f335690ab76490b4db5811b10827f01d703"
+      "sha": "f672c2ad0bc426abb0617ba834becc1c6b5ba31e"
     },
-    "md5": "caaa9ec7a7015325423fbb675eee79e3"
+    "md5": "6e0c96d8385b5561d6964d478cdeab30"
   },
   "/package.json": {
     "name": "napl",
@@ -275,14 +278,62 @@
       "@types/npm": "^7.19.3"
     }
   },
+  "/src/app/comm/dir.json": {
+    "CommMessage.ts": {
+      "sha": "8c195a5a53f14f4ad599fdc54f5f24da9d97289e"
+    },
+    "md5": "752c285eeb60f1e3e3290f90e7a767ed"
+  },
   "/src/app/dir.json": {
     "App.ts": {
       "sha": "e5c39072c9ad9831cc07f1a62824b7caa3c8c6a5"
     },
-    "WorkerApp.ts": {
-      "sha": "c9f142c0a8f35983fa7afb73fea7953c6208c2a6"
+    "MessageType.ts": {
+      "sha": "850cc2d18b36436bf080bd975f92b274e9e76c0d"
     },
-    "md5": "30b6322b935dca797d01d11650db438d"
+    "WorkerApp.ts": {
+      "sha": "5b84043389d5a16dbcae0bce170700e8e5b31d89"
+    },
+    "comm/CommMessage.ts": {
+      "sha": "8c195a5a53f14f4ad599fdc54f5f24da9d97289e"
+    },
+    "input/KeyMessage.ts": {
+      "sha": "dca5720a1ecf2baf53c570ada1f8a6cd2ad6b6f1"
+    },
+    "md5": "e4e14aee06633a7c95301891be5435a6",
+    "messenger.ts": {
+      "sha": "f1647a3fa1c7232576d6b94b3ac833a361cf6d2e"
+    },
+    "ping/PingMessage.ts": {
+      "sha": "8d8dde627797022c4951ec0988d249cceefb89fe"
+    },
+    "utils/StringEncoder.ts": {
+      "sha": "9ecc65ef81b522310809fdf24ee36a5f2a8de019"
+    },
+    "utils/serializers.ts": {
+      "sha": "bdbd449fa6e39843386f87d3d7077cee2bcbce68"
+    }
+  },
+  "/src/app/input/dir.json": {
+    "KeyMessage.ts": {
+      "sha": "dca5720a1ecf2baf53c570ada1f8a6cd2ad6b6f1"
+    },
+    "md5": "c073f7dc34d20e9976d702ba6a32f879"
+  },
+  "/src/app/ping/dir.json": {
+    "PingMessage.ts": {
+      "sha": "8d8dde627797022c4951ec0988d249cceefb89fe"
+    },
+    "md5": "559f2d4b876671a1e00bab94a12f7f1c"
+  },
+  "/src/app/utils/dir.json": {
+    "StringEncoder.ts": {
+      "sha": "9ecc65ef81b522310809fdf24ee36a5f2a8de019"
+    },
+    "md5": "b193219118ef910ca4127847ea9f0a84",
+    "serializers.ts": {
+      "sha": "bdbd449fa6e39843386f87d3d7077cee2bcbce68"
+    }
   },
   "/src/attachments/comm/dir.json": {
     "CommAux.ts": {
@@ -360,8 +411,29 @@
     "app/App.ts": {
       "sha": "e5c39072c9ad9831cc07f1a62824b7caa3c8c6a5"
     },
+    "app/MessageType.ts": {
+      "sha": "850cc2d18b36436bf080bd975f92b274e9e76c0d"
+    },
     "app/WorkerApp.ts": {
-      "sha": "c9f142c0a8f35983fa7afb73fea7953c6208c2a6"
+      "sha": "5b84043389d5a16dbcae0bce170700e8e5b31d89"
+    },
+    "app/comm/CommMessage.ts": {
+      "sha": "8c195a5a53f14f4ad599fdc54f5f24da9d97289e"
+    },
+    "app/input/KeyMessage.ts": {
+      "sha": "dca5720a1ecf2baf53c570ada1f8a6cd2ad6b6f1"
+    },
+    "app/messenger.ts": {
+      "sha": "f1647a3fa1c7232576d6b94b3ac833a361cf6d2e"
+    },
+    "app/ping/PingMessage.ts": {
+      "sha": "8d8dde627797022c4951ec0988d249cceefb89fe"
+    },
+    "app/utils/StringEncoder.ts": {
+      "sha": "9ecc65ef81b522310809fdf24ee36a5f2a8de019"
+    },
+    "app/utils/serializers.ts": {
+      "sha": "bdbd449fa6e39843386f87d3d7077cee2bcbce68"
     },
     "attachments/comm/CommAux.ts": {
       "sha": "cd54fddaf6716cc3b28acbfb23fc5c93b871b7b2"
@@ -402,7 +474,7 @@
     "index.ts": {
       "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
     },
-    "md5": "678d41c6353e5f37414ae6de9380641d",
+    "md5": "63dba3aab2b9c488f1fdd1c554650f71",
     "observer/Observer.ts": {
       "sha": "44f85279f99eb14183fef9839d35620e14888c18"
     },
@@ -419,7 +491,13 @@
       "sha": "e718db0ff39c41b138b026df4d0f488108919aad"
     },
     "worker/CommInterface.worker.ts": {
-      "sha": "47cc723e5f55ff6893f824bddff9149166b4f1f8"
+      "sha": "57814d4a2c906fe5682d821530237cf845119e6f"
+    },
+    "worker/WorkerCommand.ts": {
+      "sha": "12c4de8f91a30c4161089843a41cf60c1e0c8655"
+    },
+    "worker/WorkerResponse.ts": {
+      "sha": "18b580b4bf6f476a16da2ad6ba994ec2fc587dba"
     }
   },
   "/src/observer/dir.json": {
@@ -445,9 +523,15 @@
   },
   "/src/worker/dir.json": {
     "CommInterface.worker.ts": {
-      "sha": "47cc723e5f55ff6893f824bddff9149166b4f1f8"
+      "sha": "57814d4a2c906fe5682d821530237cf845119e6f"
     },
-    "md5": "544dcb96919bb5501aca2ae9b41bce56"
+    "WorkerCommand.ts": {
+      "sha": "12c4de8f91a30c4161089843a41cf60c1e0c8655"
+    },
+    "WorkerResponse.ts": {
+      "sha": "18b580b4bf6f476a16da2ad6ba994ec2fc587dba"
+    },
+    "md5": "bf61d7adc78d049f66a56d89d4717524"
   },
   "/tsconfig.json": {
     "compilerOptions": {

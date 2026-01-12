@@ -2,8 +2,29 @@
   "App.ts": {
     "sha": "e5c39072c9ad9831cc07f1a62824b7caa3c8c6a5"
   },
-  "WorkerApp.ts": {
-    "sha": "c9f142c0a8f35983fa7afb73fea7953c6208c2a6"
+  "MessageType.ts": {
+    "sha": "850cc2d18b36436bf080bd975f92b274e9e76c0d"
   },
-  "md5": "30b6322b935dca797d01d11650db438d"
+  "WorkerApp.ts": {
+    "sha": "5b84043389d5a16dbcae0bce170700e8e5b31d89"
+  },
+  "comm/CommMessage.ts": {
+    "sha": "8c195a5a53f14f4ad599fdc54f5f24da9d97289e"
+  },
+  "input/KeyMessage.ts": {
+    "sha": "dca5720a1ecf2baf53c570ada1f8a6cd2ad6b6f1"
+  },
+  "md5": "e4e14aee06633a7c95301891be5435a6",
+  "messenger.ts": {
+    "sha": "f1647a3fa1c7232576d6b94b3ac833a361cf6d2e"
+  },
+  "ping/PingMessage.ts": {
+    "sha": "8d8dde627797022c4951ec0988d249cceefb89fe"
+  },
+  "utils/StringEncoder.ts": {
+    "sha": "9ecc65ef81b522310809fdf24ee36a5f2a8de019"
+  },
+  "utils/serializers.ts": {
+    "sha": "bdbd449fa6e39843386f87d3d7077cee2bcbce68"
+  }
 }
