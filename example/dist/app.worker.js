@@ -1874,8 +1874,8 @@ function hookStringEncoder() {
   const enc = new TextEncoder;
   const dec = new TextDecoder;
   let scratch = new Uint8Array(64);
-  function decodeToString(data) {
-    let offset = 0;
+  function decodeToString(data, w) {
+    let offset = w;
     const byteLength = data[offset++];
     if (!byteLength) {
       return ["", offset];
@@ -1888,16 +1888,16 @@ function hookStringEncoder() {
     offset += byteLength;
     return [str, offset];
   }
-  function encodeString(str, data) {
-    let offset = 0;
+  function encodeString(str, data, w) {
+    let offset = w;
     if (!str.length) {
       data[offset++] = 0;
       return offset;
     }
-    const bytes = enc.encode(str);
-    data[offset++] = bytes.length;
-    data.set(bytes, offset);
-    offset += bytes.length;
+    const result = enc.encodeInto(str, scratch);
+    data[offset++] = result.written;
+    data.set(scratch.subarray(0, result.written), offset);
+    offset += result.written;
     return offset;
   }
   function encodeStrings(str, data) {}
@@ -1910,16 +1910,14 @@ function hookSerializers() {
   const { encodeString, decodeToString } = hookStringEncoder();
   const keySerializer = {
     serialize: (msg, data) => {
-      let offset = 0;
-      offset += encodeString(msg.key, data);
+      data.writeString(msg.key);
       const bits = (msg.altKey ? 1 << 0 : 0) | (msg.ctrlKey ? 1 << 1 : 0) | (msg.metaKey ? 1 << 2 : 0) | (msg.shiftKey ? 1 << 3 : 0) | (msg.repeat ? 1 << 4 : 0);
-      data[offset++] = bits;
-      return offset;
+      data.writeByte(bits);
     },
-    deserialize: (data, type) => {
-      let offset = 0;
-      const [key, shift] = decodeToString(data);
-      offset += shift;
+    deserialize: (data, w, type) => {
+      let offset = w;
+      const [key, newOffset] = decodeToString(data, offset);
+      offset = newOffset;
       const bits = data[offset++];
       const altKey = (bits & 1 << 0) !== 0;
       const ctrlKey = (bits & 1 << 1) !== 0;
@@ -1947,17 +1945,13 @@ function hookSerializers() {
       2 /* PING */,
       {
         serialize(msg, data) {
-          const dv = new DataView(data.buffer, data.byteOffset, data.byteLength);
-          let offset = 0;
-          dv.setUint32(offset, msg.now);
-          offset += 4;
-          return offset;
+          data.writeFloat64(msg.now);
         },
-        deserialize(data) {
+        deserialize(data, w) {
           const dv = new DataView(data.buffer, data.byteOffset, data.byteLength);
-          let offset = 0;
-          const now = dv.getUint32(offset, true);
-          offset += 4;
+          let offset = w;
+          const now = dv.getFloat64(offset, true);
+          offset += 8;
           return [{ type: 2 /* PING */, now }, offset];
         }
       }
@@ -1966,24 +1960,22 @@ function hookSerializers() {
       3 /* ON_USER_UPDATE */,
       {
         serialize(msg, data) {
-          let offset = 0;
-          offset += encodeString(msg.user, data);
-          data[offset++] = msg.action === "join" ? 1 : 0;
+          data.writeString(msg.user);
+          data.writeByte(msg.action === "join" ? 1 : 0);
           for (const user of msg.users) {
-            offset += encodeString(user, data.subarray(offset));
+            data.writeString(user);
           }
-          offset += encodeString("", data.subarray(offset));
-          return offset;
+          data.writeString("");
         },
-        deserialize(data) {
-          let offset = 0;
-          const [user, bytesConsumed] = decodeToString(data.subarray(offset));
-          offset += bytesConsumed;
+        deserialize(data, w) {
+          let offset = w;
+          const [user, newOffset] = decodeToString(data, offset);
+          offset = newOffset;
           const action = data[offset++] === 1 ? "join" : "leave";
           const users = [];
           do {
-            const [usr, consumed] = decodeToString(data.subarray(offset));
-            offset += consumed;
+            const [usr, off] = decodeToString(data, offset);
+            offset = off;
             users.push(usr);
           } while (users[users.length - 1].length);
           users.pop();
@@ -2006,16 +1998,14 @@ function hookSerializers() {
     if (!serializer) {
       return 0;
     }
-    let offset = 0;
-    data[offset++] = message.type;
-    offset += serializer.serialize(message, data.subarray(1)) ?? 0;
-    return offset;
+    data.writeByte(message.type);
+    serializer.serialize(message, data);
   }
-  function deserialize(data) {
-    let offset = 0;
+  function deserialize(data, w) {
+    let offset = w;
     const type = data[offset++];
-    const [msg, bytesConsumed] = serializerMap.get(type)?.deserialize(data.subarray(1), type) ?? [undefined, 0];
-    offset += bytesConsumed;
+    const [msg, newOffset] = serializerMap.get(type)?.deserialize(data, offset, type) ?? [undefined, 0];
+    offset = newOffset;
     return [msg, offset];
   }
   return {
@@ -2024,7 +2014,81 @@ function hookSerializers() {
   };
 }
 
-// ../src/app/messenger.ts
+// ../src/app/utils/data-ring.ts
+class DataRing {
+  data;
+  offset = 0;
+  cap;
+  enc = new TextEncoder;
+  scratch = new Uint8Array(64);
+  floatScratch = new Uint8Array(8);
+  floatDV = new DataView(this.floatScratch.buffer);
+  constructor(data) {
+    this.data = data;
+    this.cap = data.length;
+    if (this.cap <= 0)
+      throw new Error("DataRing: data length must be > 0");
+  }
+  at(offset) {
+    this.offset = (offset % this.cap + this.cap) % this.cap;
+    return this;
+  }
+  advance(n) {
+    const x = this.offset + n;
+    this.offset = x >= this.cap ? x % this.cap : x;
+  }
+  writeU8(v) {
+    this.data[this.offset] = v & 255;
+    this.advance(1);
+  }
+  writeRawBytes(src) {
+    const n = src.length;
+    if (n === 0)
+      return;
+    const end = this.offset + n;
+    if (end <= this.cap) {
+      this.data.set(src, this.offset);
+      this.offset = end === this.cap ? 0 : end;
+      return;
+    }
+    const first = this.cap - this.offset;
+    this.data.set(src.subarray(0, first), this.offset);
+    const second = n - first;
+    this.data.set(src.subarray(first), 0);
+    this.offset = second;
+  }
+  writeByte(byte) {
+    this.writeU8(byte);
+  }
+  writeBytes(bytes) {
+    if (bytes.length > 255) {
+      throw new Error(`writeBytes: length ${bytes.length} > 255 (u8 length prefix)`);
+    }
+    this.writeU8(bytes.length);
+    this.writeRawBytes(bytes);
+  }
+  writeString(str) {
+    const needed = Math.min(255, str.length * 4);
+    if (this.scratch.length < needed) {
+      this.scratch = new Uint8Array(Math.max(needed, this.scratch.length * 2));
+    }
+    const { written, read } = this.enc.encodeInto(str, this.scratch);
+    if (read < str.length || written > 255) {
+      const bytes = this.enc.encode(str);
+      if (bytes.length > 255)
+        throw new Error(`writeString: encoded length ${bytes.length} > 255`);
+      this.writeBytes(bytes);
+      return;
+    }
+    this.writeBytes(this.scratch.subarray(0, written));
+  }
+  writeFloat64(num) {
+    this.floatDV.setFloat64(0, num, true);
+    this.writeRawBytes(this.floatScratch);
+  }
+}
+
+// ../src/app/utils/messenger.ts
 var WRITE = 0;
 var READ = 1;
 var BELL = 2;
@@ -2055,18 +2119,12 @@ async function createProgram() {
     function drain(ctrl, data) {
       const r = Atomics.load(ctrl, READ);
       const w = Atomics.load(ctrl, WRITE);
-      if (r >= w) {
-        if (r !== w) {
-          console.error(">>", r, w);
-        }
+      if (r === w) {
         return;
       }
-      const [msg, bytesConsumed] = deserialize(data.subarray(r)) ?? [
-        undefined,
-        0
-      ];
-      if (bytesConsumed) {
-        Atomics.store(ctrl, READ, r + bytesConsumed);
+      const [msg, newR] = deserialize(data, r) ?? [undefined, 0];
+      if (r !== newR) {
+        Atomics.store(ctrl, READ, newR);
       }
       return msg;
     }
@@ -2114,18 +2172,15 @@ async function createProgram() {
           userId: msg.userId,
           comm: new CommInterfaceWorker
         });
-        console.log("CREATE APP", msg);
         resolve(program);
       } else if (msg.type === "onMessage") {
         messageListeners.forEach((listener) => listener(msg.data));
-        console.log("MSG", msg);
       } else if (msg.type === "onUserUpdate") {
         if (msg.action === "join") {
           newUserListener.forEach((listener) => listener(msg.user));
         } else if (msg.action === "leave") {
           program?.setData(`users/${msg.user}`, undefined);
         }
-        console.log("USER UPDATE", msg);
       } else if (msg.type === "ping") {
         respond({ action: "ping", now: msg.now });
       }
@@ -2138,5 +2193,5 @@ async function setupApp() {
 }
 setupApp();
 
-//# debugId=1047A000F598F6D964756E2164756E21
+//# debugId=1A0E1F46F276FA5164756E2164756E21
 //# sourceMappingURL=app.worker.js.map

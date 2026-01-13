@@ -3,8 +3,8 @@ export function hookStringEncoder() {
   const dec = new TextDecoder();
 
   let scratch = new Uint8Array(64);
-  function decodeToString(data: Uint8Array): [string, number] {
-    let offset = 0;
+  function decodeToString(data: Uint8Array, w: number): [string, number] {
+    let offset = w;
     const byteLength = data[offset++];
     if (!byteLength) {
       return ["", offset];
@@ -20,16 +20,16 @@ export function hookStringEncoder() {
     return [str, offset];
   }
 
-  function encodeString(str: string, data: Uint8Array) {
-    let offset = 0;
+  function encodeString(str: string, data: Uint8Array, w: number) {
+    let offset = w;
     if (!str.length) {
       data[offset++] = 0;
       return offset;
     }
-    const bytes = enc.encode(str);
-    data[offset++] = bytes.length;
-    data.set(bytes, offset);
-    offset += bytes.length;
+    const result = enc.encodeInto(str, scratch);
+    data[offset++] = result.written;
+    data.set(scratch.subarray(0, result.written), offset);
+    offset += result.written;
     return offset;
   }
 

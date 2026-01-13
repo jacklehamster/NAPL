@@ -1,11 +1,10 @@
 import { WorkerCommand } from "@/worker/WorkerCommand";
 import { WorkerResponse } from "@/worker/WorkerResponse";
 import { enterWorld } from "@dobuki/hello-worker";
-import { setupMessenger } from "./messenger";
+import { setupMessenger } from "./utils/messenger";
 import { MessageType } from "./MessageType";
-import { PingMessage } from "./ping/PingMessage";
-import { CommMessage } from "./comm/CommMessage";
-import { act } from "react";
+import { PingMessage } from "./MessageType";
+import { UserMessage } from "./MessageType";
 
 interface Props {
   appId: string;
@@ -31,7 +30,7 @@ export function createWorkerApp({
     addMessageListener,
     addUserListener,
     end,
-  } = enterWorld({ appId, workerUrl: signalWorkerUrl });
+  } = enterWorld<Uint8Array>({ appId, workerUrl: signalWorkerUrl });
 
   enterRoom({ room: "lobby", host: "hello.dobuki.net" });
 
@@ -73,7 +72,7 @@ export function createWorkerApp({
   }
 
   const removeUserListener = addUserListener((user, action, users) => {
-    sendMessage<CommMessage>({
+    sendMessage<UserMessage>({
       type: MessageType.ON_USER_UPDATE,
       user,
       action,
@@ -95,9 +94,11 @@ export function createWorkerApp({
   });
 
   setTimeout(() => {
+    const now = performance.now();
+    console.log(now);
     sendMessage<PingMessage>({
       type: MessageType.PING,
-      now: performance.now(),
+      now,
     });
   }, 1000);
 

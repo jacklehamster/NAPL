@@ -5,7 +5,7 @@ import { IProgram, Program } from "@/core/Program";
 import { WorkerResponse } from "./WorkerResponse";
 import { WorkerCommand } from "./WorkerCommand";
 import { hookSerializers } from "@/app/utils/serializers";
-import { BELL, READ, WRITE } from "@/app/messenger";
+import { BELL, READ, WRITE } from "@/app/utils/messenger";
 
 function respond(response: WorkerResponse) {
   (self as DedicatedWorkerGlobalScope).postMessage(
@@ -41,19 +41,13 @@ export async function createProgram(): Promise<IProgram> {
     function drain(ctrl: Int32Array, data: Uint8Array) {
       const r = Atomics.load(ctrl, READ);
       const w = Atomics.load(ctrl, WRITE);
-      if (r >= w) {
-        if (r !== w) {
-          console.error(">>", r, w);
-        }
+      if (r === w) {
         return;
       }
 
-      const [msg, bytesConsumed] = deserialize(data.subarray(r)) ?? [
-        undefined,
-        0,
-      ];
-      if (bytesConsumed) {
-        Atomics.store(ctrl, READ, r + bytesConsumed);
+      const [msg, newR] = deserialize(data, r) ?? [undefined, 0];
+      if (r !== newR) {
+        Atomics.store(ctrl, READ, newR);
       }
       return msg;
     }
