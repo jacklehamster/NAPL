@@ -1,30 +1,27 @@
 {
   "app/App.ts": {
-    "sha": "e5c39072c9ad9831cc07f1a62824b7caa3c8c6a5"
+    "sha": "0094f7e927aa9239d30958bf84ed3f9b4929dd60"
   },
   "app/MessageType.ts": {
-    "sha": "850cc2d18b36436bf080bd975f92b274e9e76c0d"
+    "sha": "f71c2fc9055c4ae0479d3b942e58b0c6fe02fe9e"
   },
   "app/WorkerApp.ts": {
-    "sha": "5b84043389d5a16dbcae0bce170700e8e5b31d89"
+    "sha": "8eb7bef88a641066e6d835e3bdf8b1875c715df1"
   },
-  "app/comm/CommMessage.ts": {
-    "sha": "8c195a5a53f14f4ad599fdc54f5f24da9d97289e"
+  "app/utils/data-ring-reader.test.ts": {
+    "sha": "d0d8c3c9167c9b942a75addeefc51cf3cdae0be5"
   },
-  "app/input/KeyMessage.ts": {
-    "sha": "dca5720a1ecf2baf53c570ada1f8a6cd2ad6b6f1"
+  "app/utils/data-ring-writer.test.ts": {
+    "sha": "28ab1a65f6f06c22fc7774b6b6768a12f15eae79"
   },
-  "app/messenger.ts": {
-    "sha": "f1647a3fa1c7232576d6b94b3ac833a361cf6d2e"
+  "app/utils/data-ring.ts": {
+    "sha": "32996776a05fe01a89f3d3f09350af6037214b1e"
   },
-  "app/ping/PingMessage.ts": {
-    "sha": "8d8dde627797022c4951ec0988d249cceefb89fe"
-  },
-  "app/utils/StringEncoder.ts": {
-    "sha": "9ecc65ef81b522310809fdf24ee36a5f2a8de019"
+  "app/utils/messenger.ts": {
+    "sha": "1529df68cdcbfb296e3b65ac45fdbab62fe4c51a"
   },
   "app/utils/serializers.ts": {
-    "sha": "bdbd449fa6e39843386f87d3d7077cee2bcbce68"
+    "sha": "25823a33277afed8ce9489fbaa96d79a0aa33e38"
   },
   "attachments/comm/CommAux.ts": {
     "sha": "cd54fddaf6716cc3b28acbfb23fc5c93b871b7b2"
@@ -33,7 +30,7 @@
     "sha": "991a34c9bb3712689c11034da8f88beb76c890bb"
   },
   "clients/CommInterface.ts": {
-    "sha": "a91a9ad8be1404d0c2b8906de512aad693e9a587"
+    "sha": "9d4e02e85c9a77f9af29c4ad77835f9cc19dfbc8"
   },
   "clients/CommInterfaceHook.ts": {
     "sha": "8a2bb548b57953aa15c6ce2c1d582475149bb96a"
@@ -42,7 +39,7 @@
     "sha": "9b10e744d7e07645f91ff8985af0751b38bfa6ee"
   },
   "core/Processor.ts": {
-    "sha": "cbffb6901e070009789575ec062b6f428fd774f7"
+    "sha": "c93efd3aab1a12fc1d62b3bd0087ba244601d0dd"
   },
   "core/Program.ts": {
     "sha": "76117c44fd0a96e61dcfaef3bfeac849a10692ad"
@@ -65,7 +62,7 @@
   "index.ts": {
     "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
   },
-  "md5": "63dba3aab2b9c488f1fdd1c554650f71",
+  "md5": "b7e70677da77bd553ec0132bcf83b29c",
   "observer/Observer.ts": {
     "sha": "44f85279f99eb14183fef9839d35620e14888c18"
   },
@@ -82,7 +79,7 @@
     "sha": "e718db0ff39c41b138b026df4d0f488108919aad"
   },
   "worker/CommInterface.worker.ts": {
-    "sha": "57814d4a2c906fe5682d821530237cf845119e6f"
+    "sha": "2e0d047f9e81de13156ab0b654ae94607d222ed1"
   },
   "worker/WorkerCommand.ts": {
     "sha": "12c4de8f91a30c4161089843a41cf60c1e0c8655"

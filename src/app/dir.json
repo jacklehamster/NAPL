@@ -1,30 +1,27 @@
 {
   "App.ts": {
-    "sha": "e5c39072c9ad9831cc07f1a62824b7caa3c8c6a5"
+    "sha": "0094f7e927aa9239d30958bf84ed3f9b4929dd60"
   },
   "MessageType.ts": {
-    "sha": "850cc2d18b36436bf080bd975f92b274e9e76c0d"
+    "sha": "f71c2fc9055c4ae0479d3b942e58b0c6fe02fe9e"
   },
   "WorkerApp.ts": {
-    "sha": "5b84043389d5a16dbcae0bce170700e8e5b31d89"
+    "sha": "8eb7bef88a641066e6d835e3bdf8b1875c715df1"
   },
-  "comm/CommMessage.ts": {
-    "sha": "8c195a5a53f14f4ad599fdc54f5f24da9d97289e"
+  "md5": "9fea7be484e2035c861a565e840cd785",
+  "utils/data-ring-reader.test.ts": {
+    "sha": "d0d8c3c9167c9b942a75addeefc51cf3cdae0be5"
   },
-  "input/KeyMessage.ts": {
-    "sha": "dca5720a1ecf2baf53c570ada1f8a6cd2ad6b6f1"
+  "utils/data-ring-writer.test.ts": {
+    "sha": "28ab1a65f6f06c22fc7774b6b6768a12f15eae79"
   },
-  "md5": "e4e14aee06633a7c95301891be5435a6",
-  "messenger.ts": {
-    "sha": "f1647a3fa1c7232576d6b94b3ac833a361cf6d2e"
+  "utils/data-ring.ts": {
+    "sha": "32996776a05fe01a89f3d3f09350af6037214b1e"
   },
-  "ping/PingMessage.ts": {
-    "sha": "8d8dde627797022c4951ec0988d249cceefb89fe"
-  },
-  "utils/StringEncoder.ts": {
-    "sha": "9ecc65ef81b522310809fdf24ee36a5f2a8de019"
+  "utils/messenger.ts": {
+    "sha": "1529df68cdcbfb296e3b65ac45fdbab62fe4c51a"
   },
   "utils/serializers.ts": {
-    "sha": "bdbd449fa6e39843386f87d3d7077cee2bcbce68"
+    "sha": "25823a33277afed8ce9489fbaa96d79a0aa33e38"
   }
 }

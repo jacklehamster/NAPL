@@ -1,9 +1,18 @@
 {
-  "StringEncoder.ts": {
-    "sha": "9ecc65ef81b522310809fdf24ee36a5f2a8de019"
+  "data-ring-reader.test.ts": {
+    "sha": "d0d8c3c9167c9b942a75addeefc51cf3cdae0be5"
   },
-  "md5": "b193219118ef910ca4127847ea9f0a84",
+  "data-ring-writer.test.ts": {
+    "sha": "28ab1a65f6f06c22fc7774b6b6768a12f15eae79"
+  },
+  "data-ring.ts": {
+    "sha": "32996776a05fe01a89f3d3f09350af6037214b1e"
+  },
+  "md5": "0959e1c9f1b02977e6b25552b9b76fdc",
+  "messenger.ts": {
+    "sha": "1529df68cdcbfb296e3b65ac45fdbab62fe4c51a"
+  },
   "serializers.ts": {
-    "sha": "bdbd449fa6e39843386f87d3d7077cee2bcbce68"
+    "sha": "25823a33277afed8ce9489fbaa96d79a0aa33e38"
   }
 }

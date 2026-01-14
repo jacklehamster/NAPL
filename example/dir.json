@@ -3,7 +3,7 @@
     "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
   },
   "bun.lockb": {
-    "sha": "27d6ea4b938bf1518681a36faa997ba3a2b7b9cb"
+    "sha": "f240a62833c265275e0a09d3d2dbfb3a5b7183b9"
   },
   "bundler/bundler.ts": {
     "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
@@ -12,35 +12,32 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/app.worker.js": {
-    "sha": "516d5c8e5f11bd4d2926f8e81cc1079357418423"
+    "sha": "b171b40702e5ef7b32c4b7b8b654a7e5b86631d3"
   },
   "dist/app.worker.js.map": {
-    "sha": "f488d693e2924f8ee012dc0ae504ad9b80710d74"
+    "sha": "9971e4525063743506c41bab9377ae773368d7d2"
   },
   "dist/index.js": {
-    "sha": "64f74eccc9abe6f208f26e9275c88872ccf3a8b5"
+    "sha": "4229338af011834bd7ef72d9d8b1f10ea24cced4"
   },
   "dist/index.js.map": {
-    "sha": "cac981f353fa0d03efa04324e45c243998bb3f78"
+    "sha": "7fbbcb7f963a7b38741d900bc06d32b1a60af493"
   },
   "dist/signal-room.worker.js": {
-    "sha": "f37029d94c2c5f646df47fae781cbc781376a398"
-  },
-  "dist/styles-da87zv4s.css": {
-    "sha": "07ee8884738c76639f510b99559b8f69798f8a26"
+    "sha": "a295ff91e625230ad19c995652e21fe67f3d29cf"
   },
   "favicon.ico": {
     "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
   },
   "index.html": {
-    "sha": "42409159d0168e291354589af63ac3f7bce886c5"
+    "sha": "ccfdeee2d1e56d8522a25393611c2367c3114d31"
   },
   "index.ts": {
     "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
   },
-  "md5": "6d71280e57e744e578fbbd373d63d458",
+  "md5": "0e393aecd6f22392391d5c409fb5cf07",
   "package.json": {
-    "sha": "73baf272eae2a78b06d719f1678d7d2e180989e1"
+    "sha": "97fcc3baa8e6e96e0b4ba307cbe053e2e6489258"
   },
   "src/index.ts": {
     "sha": "2a82df1c22fab9a2e7932652ef240a61c7e4a579"
