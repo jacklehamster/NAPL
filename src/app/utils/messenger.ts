@@ -1,20 +1,10 @@
-import { UserMessage } from "../MessageType";
-import { KeyMessage } from "../MessageType";
-import { MessageType } from "../MessageType";
-import { PingMessage } from "../MessageType";
-import { DataRingWriter, IDataWriter } from "./data-ring";
+import { Message } from "../MessageType";
+import { DataRingWriter } from "./data-ring";
 import { hookSerializers } from "./serializers";
 
 export const WRITE = 0;
 export const READ = 1;
 export const BELL = 2; // doorbell
-
-export type Message = KeyMessage | PingMessage | UserMessage;
-
-export interface Serializer<M extends Message> {
-  serialize(msg: M, data: IDataWriter): void;
-  deserialize(data: Uint8Array, w: number, type: MessageType): [M, number];
-}
 
 export function setupMessenger(worker: Worker) {
   const BYTES = 1024 * 1024;

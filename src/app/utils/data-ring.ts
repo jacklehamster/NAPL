@@ -4,6 +4,7 @@ export interface IDataWriter {
   writeBytes(bytes: Uint8Array): void; // writes [u8 len][len bytes]
   writeString(str: string): void; // writes as writeBytes(utf8)
   writeFloat64(num: number): void; // IEEE754, little-endian
+  readonly offset: number;
 }
 
 export class DataRingWriter implements IDataWriter {
@@ -112,6 +113,7 @@ export interface IDataReader {
   readBytes(): Uint8Array; // reads [u8 len][len bytes] and returns payload (view or scratch)
   readString(): string; // reads bytes then decodes UTF-8
   readFloat64(): number; // IEEE754, little-endian
+  readonly offset: number;
 }
 
 export class DataRingReader implements IDataReader {

@@ -30,7 +30,7 @@ export class Processor {
     commitUpdates(context, updatedPaths);
   }
 
-  receivedData(data: ArrayBuffer | SharedArrayBuffer, context: Context) {
+  receivedData(data: Uint8Array | SharedArrayBuffer, context: Context) {
     const payload = decode(data) as Payload;
     if (!payload.updates?.length) return;
     context.incomingUpdates.push(...payload.updates);
@@ -59,10 +59,10 @@ export class Processor {
         comm.send(
           encode({
             updates: context.outgoingUpdates.filter(
-              (update) => update.peer === peer,
+              (update) => update.peer === peer
             ),
           }),
-          peer,
+          peer
         );
       });
     });

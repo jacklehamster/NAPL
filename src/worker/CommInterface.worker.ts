@@ -6,6 +6,7 @@ import { WorkerResponse } from "./WorkerResponse";
 import { WorkerCommand } from "./WorkerCommand";
 import { hookSerializers } from "@/app/utils/serializers";
 import { BELL, READ, WRITE } from "@/app/utils/messenger";
+import { DataRingReader, IDataReader } from "@/app/utils/data-ring";
 
 function respond(response: WorkerResponse) {
   (self as DedicatedWorkerGlobalScope).postMessage(
@@ -17,11 +18,11 @@ function respond(response: WorkerResponse) {
 export async function createProgram(): Promise<IProgram> {
   return new Promise<IProgram>((resolve) => {
     let program: Program | undefined;
-    const messageListeners = new Array<(data: ArrayBuffer) => void>();
+    const messageListeners = new Array<(data: Uint8Array) => void>();
     const newUserListener = new Array<(user: string) => void>();
 
     const { deserialize } = hookSerializers();
-    async function listen(ctrl: Int32Array, data: Uint8Array) {
+    async function listen(ctrl: Int32Array, data: IDataReader) {
       let lastBell = Atomics.load(ctrl, BELL);
 
       while (true) {
@@ -38,16 +39,16 @@ export async function createProgram(): Promise<IProgram> {
       }
     }
 
-    function drain(ctrl: Int32Array, data: Uint8Array) {
+    function drain(ctrl: Int32Array, data: IDataReader) {
       const r = Atomics.load(ctrl, READ);
       const w = Atomics.load(ctrl, WRITE);
       if (r === w) {
         return;
       }
 
-      const [msg, newR] = deserialize(data, r) ?? [undefined, 0];
-      if (r !== newR) {
-        Atomics.store(ctrl, READ, newR);
+      const msg = deserialize(data);
+      if (r !== data.offset) {
+        Atomics.store(ctrl, READ, data.offset);
       }
       return msg;
     }
@@ -64,7 +65,7 @@ export async function createProgram(): Promise<IProgram> {
       close(): void {
         respond({ action: "close" });
       }
-      onMessage(listener: (data: ArrayBuffer) => void): () => void {
+      onMessage(listener: (data: Uint8Array) => void): () => void {
         messageListeners.push(listener);
         return () => {
           messageListeners.splice(messageListeners.indexOf(listener), 1);
@@ -85,7 +86,7 @@ export async function createProgram(): Promise<IProgram> {
         if (msg.sab) {
           const sab = msg.sab;
           const ctrl = new Int32Array(sab, 0, 8);
-          const data = new Uint8Array(sab, 32);
+          const data = new DataRingReader(new Uint8Array(sab, 32));
           listen(ctrl, data);
 
           return;

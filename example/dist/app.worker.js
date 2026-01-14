@@ -1869,73 +1869,31 @@ class Program {
     this.commAux.disconnect();
   }
 }
-// ../src/app/utils/StringEncoder.ts
-function hookStringEncoder() {
-  const enc = new TextEncoder;
-  const dec = new TextDecoder;
-  let scratch = new Uint8Array(64);
-  function decodeToString(data, w) {
-    let offset = w;
-    const byteLength = data[offset++];
-    if (!byteLength) {
-      return ["", offset];
-    }
-    if (scratch.byteLength < byteLength) {
-      scratch = new Uint8Array(Math.max(data.byteLength, scratch.byteLength * 2));
-    }
-    scratch.set(data.subarray(offset, offset + byteLength));
-    const str = dec.decode(scratch.subarray(0, byteLength));
-    offset += byteLength;
-    return [str, offset];
-  }
-  function encodeString(str, data, w) {
-    let offset = w;
-    if (!str.length) {
-      data[offset++] = 0;
-      return offset;
-    }
-    const result = enc.encodeInto(str, scratch);
-    data[offset++] = result.written;
-    data.set(scratch.subarray(0, result.written), offset);
-    offset += result.written;
-    return offset;
-  }
-  function encodeStrings(str, data) {}
-  function decodeStrings(data) {}
-  return { encodeString, decodeToString };
-}
-
 // ../src/app/utils/serializers.ts
 function hookSerializers() {
-  const { encodeString, decodeToString } = hookStringEncoder();
   const keySerializer = {
     serialize: (msg, data) => {
       data.writeString(msg.key);
       const bits = (msg.altKey ? 1 << 0 : 0) | (msg.ctrlKey ? 1 << 1 : 0) | (msg.metaKey ? 1 << 2 : 0) | (msg.shiftKey ? 1 << 3 : 0) | (msg.repeat ? 1 << 4 : 0);
       data.writeByte(bits);
     },
-    deserialize: (data, w, type) => {
-      let offset = w;
-      const [key, newOffset] = decodeToString(data, offset);
-      offset = newOffset;
-      const bits = data[offset++];
+    deserialize: (data, type) => {
+      const key = data.readString();
+      const bits = data.readByte();
       const altKey = (bits & 1 << 0) !== 0;
       const ctrlKey = (bits & 1 << 1) !== 0;
       const metaKey = (bits & 1 << 2) !== 0;
       const shiftKey = (bits & 1 << 3) !== 0;
       const repeat = (bits & 1 << 4) !== 0;
-      return [
-        {
-          type,
-          key,
-          altKey,
-          ctrlKey,
-          metaKey,
-          shiftKey,
-          repeat
-        },
-        offset
-      ];
+      return {
+        type,
+        key,
+        altKey,
+        ctrlKey,
+        metaKey,
+        shiftKey,
+        repeat
+      };
     }
   };
   const serializers = [
@@ -1947,12 +1905,9 @@ function hookSerializers() {
         serialize(msg, data) {
           data.writeFloat64(msg.now);
         },
-        deserialize(data, w) {
-          const dv = new DataView(data.buffer, data.byteOffset, data.byteLength);
-          let offset = w;
-          const now = dv.getFloat64(offset, true);
-          offset += 8;
-          return [{ type: 2 /* PING */, now }, offset];
+        deserialize(data) {
+          const now = data.readFloat64();
+          return { type: 2 /* PING */, now };
         }
       }
     ],
@@ -1967,27 +1922,21 @@ function hookSerializers() {
           }
           data.writeString("");
         },
-        deserialize(data, w) {
-          let offset = w;
-          const [user, newOffset] = decodeToString(data, offset);
-          offset = newOffset;
-          const action = data[offset++] === 1 ? "join" : "leave";
+        deserialize(data) {
+          const user = data.readString();
+          const action = data.readByte() === 1 ? "join" : "leave";
           const users = [];
           do {
-            const [usr, off] = decodeToString(data, offset);
-            offset = off;
+            const usr = data.readString();
             users.push(usr);
           } while (users[users.length - 1].length);
           users.pop();
-          return [
-            {
-              type: 3 /* ON_USER_UPDATE */,
-              user,
-              action,
-              users
-            },
-            offset
-          ];
+          return {
+            type: 3 /* ON_USER_UPDATE */,
+            user,
+            action,
+            users
+          };
         }
       }
     ]
@@ -2001,12 +1950,9 @@ function hookSerializers() {
     data.writeByte(message.type);
     serializer.serialize(message, data);
   }
-  function deserialize(data, w) {
-    let offset = w;
-    const type = data[offset++];
-    const [msg, newOffset] = serializerMap.get(type)?.deserialize(data, offset, type) ?? [undefined, 0];
-    offset = newOffset;
-    return [msg, offset];
+  function deserialize(data) {
+    const type = data.readByte();
+    return serializerMap.get(type)?.deserialize(data, type);
   }
   return {
     serialize,
@@ -2015,7 +1961,7 @@ function hookSerializers() {
 }
 
 // ../src/app/utils/data-ring.ts
-class DataRing {
+class DataRingWriter {
   data;
   offset = 0;
   cap;
@@ -2088,6 +2034,80 @@ class DataRing {
   }
 }
 
+class DataRingReader {
+  data;
+  offset = 0;
+  cap;
+  dec = new TextDecoder;
+  scratch = new Uint8Array(64);
+  floatScratch = new Uint8Array(8);
+  floatDV = new DataView(this.floatScratch.buffer);
+  constructor(data) {
+    this.data = data;
+    this.cap = data.length;
+    if (this.cap <= 0)
+      throw new Error("DataRing: data length must be > 0");
+  }
+  at(offset) {
+    this.offset = (offset % this.cap + this.cap) % this.cap;
+    return this;
+  }
+  advance(n) {
+    const x = this.offset + n;
+    this.offset = x >= this.cap ? x % this.cap : x;
+  }
+  readU8() {
+    const v = this.data[this.offset];
+    this.advance(1);
+    return v;
+  }
+  readRawBytes(n) {
+    if (n <= 0)
+      return this.data.subarray(0, 0);
+    const end = this.offset + n;
+    if (end <= this.cap) {
+      const view = this.data.subarray(this.offset, end);
+      this.offset = end === this.cap ? 0 : end;
+      return view;
+    }
+    if (this.scratch.length < n) {
+      this.scratch = new Uint8Array(Math.max(n, this.scratch.length * 2));
+    }
+    const first = this.cap - this.offset;
+    this.scratch.set(this.data.subarray(this.offset, this.cap), 0);
+    const second = n - first;
+    this.scratch.set(this.data.subarray(0, second), first);
+    this.offset = second;
+    return this.scratch.subarray(0, n);
+  }
+  readByte() {
+    return this.readU8();
+  }
+  readBytes() {
+    const len = this.readU8();
+    return this.readRawBytes(len);
+  }
+  readString() {
+    const bytes = this.readBytes();
+    const needsCopy = bytes.buffer instanceof SharedArrayBuffer;
+    if (needsCopy) {
+      if (this.scratch.length < bytes.length) {
+        this.scratch = new Uint8Array(Math.max(bytes.length, this.scratch.length * 2));
+      }
+      this.scratch.set(bytes, 0);
+      return this.dec.decode(this.scratch.subarray(0, bytes.length));
+    }
+    return this.dec.decode(bytes);
+  }
+  readFloat64() {
+    const b = this.readRawBytes(8);
+    if (b.byteLength !== 8)
+      throw new Error("readFloat64: expected 8 bytes");
+    this.floatScratch.set(b);
+    return this.floatDV.getFloat64(0, true);
+  }
+}
+
 // ../src/app/utils/messenger.ts
 var WRITE = 0;
 var READ = 1;
@@ -2122,9 +2142,9 @@ async function createProgram() {
       if (r === w) {
         return;
       }
-      const [msg, newR] = deserialize(data, r) ?? [undefined, 0];
-      if (r !== newR) {
-        Atomics.store(ctrl, READ, newR);
+      const msg = deserialize(data);
+      if (r !== data.offset) {
+        Atomics.store(ctrl, READ, data.offset);
       }
       return msg;
     }
@@ -2159,7 +2179,7 @@ async function createProgram() {
       if (msg.sab) {
         const sab = msg.sab;
         const ctrl = new Int32Array(sab, 0, 8);
-        const data = new Uint8Array(sab, 32);
+        const data = new DataRingReader(new Uint8Array(sab, 32));
         listen(ctrl, data);
         return;
       }
@@ -2193,5 +2213,5 @@ async function setupApp() {
 }
 setupApp();
 
-//# debugId=1A0E1F46F276FA5164756E2164756E21
+//# debugId=1DF01B7C1FAB35CD64756E2164756E21
 //# sourceMappingURL=app.worker.js.map

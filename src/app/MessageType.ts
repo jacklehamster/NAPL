@@ -26,3 +26,4 @@ export type PingMessage = {
   type: MessageType.PING;
   now: number;
 };
+export type Message = KeyMessage | PingMessage | UserMessage;

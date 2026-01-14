@@ -4,6 +4,6 @@ export interface OutgoingCom {
 
 export interface CommInterface extends OutgoingCom {
   close(): void;
-  onMessage(listener: (data: ArrayBuffer) => void): () => void;
+  onMessage(listener: (data: Uint8Array) => void): () => void;
   onNewClient(listener: (peer: string) => void): () => void;
 }
