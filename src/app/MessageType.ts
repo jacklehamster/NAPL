@@ -14,7 +14,7 @@ export type UserMessage = {
 export type MsgMessage = {
   type: MessageType.ON_MESSAGE;
   data: Uint8Array;
-  user?: string;
+  from?: string;
 };
 export type KeyMessage = {
   type: MessageType.KEY_DOWN | MessageType.KEY_UP;
@@ -26,4 +26,4 @@ export type PingMessage = {
   type: MessageType.PING;
   now: number;
 };
-export type Message = KeyMessage | PingMessage | UserMessage;
+export type Message = KeyMessage | PingMessage | UserMessage | MsgMessage;

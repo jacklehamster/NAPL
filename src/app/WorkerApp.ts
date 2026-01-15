@@ -1,8 +1,7 @@
-import { WorkerCommand } from "@/worker/WorkerCommand";
 import { WorkerResponse } from "@/worker/WorkerResponse";
 import { enterWorld } from "@dobuki/hello-worker";
 import { setupMessenger } from "./utils/messenger";
-import { MessageType } from "./MessageType";
+import { MessageType, MsgMessage } from "./MessageType";
 import { PingMessage } from "./MessageType";
 import { UserMessage } from "./MessageType";
 
@@ -67,10 +66,6 @@ export function createWorkerApp({
     }
   );
 
-  function sendToWorker(msg: WorkerCommand) {
-    worker.postMessage(msg, msg.data ? [msg.data] : []);
-  }
-
   const removeUserListener = addUserListener((user, action, users) => {
     sendMessage<UserMessage>({
       type: MessageType.ON_USER_UPDATE,
@@ -80,18 +75,18 @@ export function createWorkerApp({
     });
   });
   const removeMessageListener = addMessageListener((data, from) => {
-    sendToWorker({
-      type: "onMessage",
+    sendMessage<MsgMessage>({
+      type: MessageType.ON_MESSAGE,
       data,
       from,
     });
   });
 
-  sendToWorker({
-    type: "createApp",
-    userId,
-    appId,
-  });
+  // sendToWorker({
+  //   type: "createApp",
+  //   userId,
+  //   appId,
+  // });
 
   setTimeout(() => {
     const now = performance.now();

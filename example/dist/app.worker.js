@@ -2117,101 +2117,96 @@ var BELL = 2;
 function respond(response) {
   self.postMessage(response, response.data ? [response.data] : []);
 }
-async function createProgram() {
-  return new Promise((resolve) => {
-    let program;
-    const messageListeners = new Array;
-    const newUserListener = new Array;
-    const { deserialize } = hookSerializers();
-    async function listen(ctrl, data) {
-      let lastBell = Atomics.load(ctrl, BELL);
-      while (true) {
-        const result = Atomics.waitAsync(ctrl, BELL, lastBell, 8);
-        await result.value;
-        const bellNow = Atomics.load(ctrl, BELL);
-        if (bellNow === lastBell)
-          continue;
-        lastBell = bellNow;
-        const msg = drain(ctrl, data);
-        console.log(msg);
-      }
+function initialize() {
+  let program;
+  const messageListeners = new Array;
+  const newUserListener = new Array;
+  const { deserialize } = hookSerializers();
+  async function listen(ctrl, data) {
+    let lastBell = Atomics.load(ctrl, BELL);
+    while (true) {
+      const result = Atomics.waitAsync(ctrl, BELL, lastBell, 8);
+      await result.value;
+      const bellNow = Atomics.load(ctrl, BELL);
+      if (bellNow === lastBell)
+        continue;
+      lastBell = bellNow;
+      const msg = drain(ctrl, data);
+      console.log(msg);
     }
-    function drain(ctrl, data) {
-      const r = Atomics.load(ctrl, READ);
-      const w = Atomics.load(ctrl, WRITE);
-      if (r === w) {
-        return;
-      }
-      const msg = deserialize(data);
-      if (r !== data.offset) {
-        Atomics.store(ctrl, READ, data.offset);
-      }
-      return msg;
+  }
+  function drain(ctrl, data) {
+    const r = Atomics.load(ctrl, READ);
+    const w = Atomics.load(ctrl, WRITE);
+    if (r === w) {
+      return;
     }
+    const msg = deserialize(data);
+    if (r !== data.offset) {
+      Atomics.store(ctrl, READ, data.offset);
+    }
+    return msg;
+  }
 
-    class CommInterfaceWorker {
-      constructor() {}
-      send(data, peer) {
-        respond({
-          action: "send",
-          data,
-          peer
-        });
-      }
-      close() {
-        respond({ action: "close" });
-      }
-      onMessage(listener) {
-        messageListeners.push(listener);
-        return () => {
-          messageListeners.splice(messageListeners.indexOf(listener), 1);
-        };
-      }
-      onNewClient(listener) {
-        newUserListener.push(listener);
-        return () => {
-          newUserListener.splice(newUserListener.indexOf(listener), 1);
-        };
-      }
+  class CommInterfaceWorker {
+    constructor() {}
+    send(data, peer) {
+      respond({
+        action: "send",
+        data,
+        peer
+      });
     }
-    self.addEventListener("message", (e) => {
-      const msg = e.data;
-      if (msg.sab) {
-        const sab = msg.sab;
-        const ctrl = new Int32Array(sab, 0, 8);
-        const data = new DataRingReader(new Uint8Array(sab, 32));
-        listen(ctrl, data);
-        return;
+    close() {
+      respond({ action: "close" });
+    }
+    onMessage(listener) {
+      messageListeners.push(listener);
+      return () => {
+        messageListeners.splice(messageListeners.indexOf(listener), 1);
+      };
+    }
+    onNewClient(listener) {
+      newUserListener.push(listener);
+      return () => {
+        newUserListener.splice(newUserListener.indexOf(listener), 1);
+      };
+    }
+  }
+  self.addEventListener("message", (e) => {
+    const msg = e.data;
+    if (msg.sab) {
+      const sab = msg.sab;
+      const ctrl = new Int32Array(sab, 0, 8);
+      const data = new DataRingReader(new Uint8Array(sab, 32));
+      listen(ctrl, data);
+      return;
+    }
+    if (msg.type === "createApp") {
+      if (program) {
+        throw new Error("Can only create program once");
       }
-      if (msg.type === "createApp") {
-        if (program) {
-          throw new Error("Can only create program once");
-        }
-        program = new Program({
-          appId: msg.appId,
-          userId: msg.userId,
-          comm: new CommInterfaceWorker
-        });
-        resolve(program);
-      } else if (msg.type === "onMessage") {
-        messageListeners.forEach((listener) => listener(msg.data));
-      } else if (msg.type === "onUserUpdate") {
-        if (msg.action === "join") {
-          newUserListener.forEach((listener) => listener(msg.user));
-        } else if (msg.action === "leave") {
-          program?.setData(`users/${msg.user}`, undefined);
-        }
-      } else if (msg.type === "ping") {
-        respond({ action: "ping", now: msg.now });
+      program = new Program({
+        appId: msg.appId,
+        userId: msg.userId,
+        comm: new CommInterfaceWorker
+      });
+      console.log(program);
+    } else if (msg.type === "onMessage") {
+      messageListeners.forEach((listener) => listener(msg.data));
+    } else if (msg.type === "onUserUpdate") {
+      if (msg.action === "join") {
+        newUserListener.forEach((listener) => listener(msg.user));
+      } else if (msg.action === "leave") {
+        program?.setData(`users/${msg.user}`, undefined);
       }
-    });
+    } else if (msg.type === "ping") {
+      respond({ action: "ping", now: msg.now });
+    }
   });
 }
 // src/worker-room/app.worker.ts
-async function setupApp() {
-  const program = await createProgram();
-}
-setupApp();
+initialize();
 
-//# debugId=1DF01B7C1FAB35CD64756E2164756E21
+//# debugId=E62D5AD519AC75D864756E2164756E21
 //# sourceMappingURL=app.worker.js.map
