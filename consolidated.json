@@ -40,19 +40,19 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/app.worker.js": {
-      "sha": "b171b40702e5ef7b32c4b7b8b654a7e5b86631d3"
+      "sha": "b1cb7b9ee0c7ac94d67fb7e764e2a2d65922f960"
     },
     "dist/app.worker.js.map": {
-      "sha": "9971e4525063743506c41bab9377ae773368d7d2"
+      "sha": "cb361eff1c794c6e3980e126ec741a2b36744fe4"
     },
     "dist/index.js": {
-      "sha": "4229338af011834bd7ef72d9d8b1f10ea24cced4"
+      "sha": "adb20f73829f54ca9a70ad8ad06b50ed5a23c7a1"
     },
     "dist/index.js.map": {
-      "sha": "7fbbcb7f963a7b38741d900bc06d32b1a60af493"
+      "sha": "4126e31abad86619257ffb69175fe75c5b7c794a"
     },
     "dist/signal-room.worker.js": {
-      "sha": "a295ff91e625230ad19c995652e21fe67f3d29cf"
+      "sha": "8ed8f8f366d2fd9d67351e345e1c52c94938a2b1"
     },
     "favicon.ico": {
       "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
@@ -63,7 +63,7 @@
     "index.ts": {
       "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
     },
-    "md5": "0e393aecd6f22392391d5c409fb5cf07",
+    "md5": "f5d83dd65d97c9a42bafa7245fbb19bc",
     "package.json": {
       "sha": "97fcc3baa8e6e96e0b4ba307cbe053e2e6489258"
     },
@@ -74,7 +74,7 @@
       "sha": "06af8626b61d8746837db101a532f263f2ecf631"
     },
     "src/worker-room/app.worker.ts": {
-      "sha": "b84d8308ad947fef415d2a608f6a37de2ee24d72"
+      "sha": "7b000562f7925bdfc7ba21087ee836593668a8f8"
     },
     "src/worker-room/index.ts": {
       "sha": "f12831ee8eeaa6012d2f2dc5c3e49a66f21c2f94"
@@ -91,20 +91,20 @@
   },
   "/example/dist/dir.json": {
     "app.worker.js": {
-      "sha": "b171b40702e5ef7b32c4b7b8b654a7e5b86631d3"
+      "sha": "b1cb7b9ee0c7ac94d67fb7e764e2a2d65922f960"
     },
     "app.worker.js.map": {
-      "sha": "9971e4525063743506c41bab9377ae773368d7d2"
+      "sha": "cb361eff1c794c6e3980e126ec741a2b36744fe4"
     },
     "index.js": {
-      "sha": "4229338af011834bd7ef72d9d8b1f10ea24cced4"
+      "sha": "adb20f73829f54ca9a70ad8ad06b50ed5a23c7a1"
     },
     "index.js.map": {
-      "sha": "7fbbcb7f963a7b38741d900bc06d32b1a60af493"
+      "sha": "4126e31abad86619257ffb69175fe75c5b7c794a"
     },
-    "md5": "ae724f53fe97d1322df9af82bd8e233a",
+    "md5": "7997799b83fb43efa0b0cf7f476a558c",
     "signal-room.worker.js": {
-      "sha": "a295ff91e625230ad19c995652e21fe67f3d29cf"
+      "sha": "8ed8f8f366d2fd9d67351e345e1c52c94938a2b1"
     }
   },
   "/example/package.json": {
@@ -146,12 +146,12 @@
     "index.ts": {
       "sha": "2a82df1c22fab9a2e7932652ef240a61c7e4a579"
     },
-    "md5": "d93fe2704448b1676a1c47e6b0417798",
+    "md5": "9ca11a9a9fbe3f430f547e0dc980ae24",
     "test-room/index.ts": {
       "sha": "06af8626b61d8746837db101a532f263f2ecf631"
     },
     "worker-room/app.worker.ts": {
-      "sha": "b84d8308ad947fef415d2a608f6a37de2ee24d72"
+      "sha": "7b000562f7925bdfc7ba21087ee836593668a8f8"
     },
     "worker-room/index.ts": {
       "sha": "f12831ee8eeaa6012d2f2dc5c3e49a66f21c2f94"
@@ -165,12 +165,12 @@
   },
   "/example/src/worker-room/dir.json": {
     "app.worker.ts": {
-      "sha": "b84d8308ad947fef415d2a608f6a37de2ee24d72"
+      "sha": "7b000562f7925bdfc7ba21087ee836593668a8f8"
     },
     "index.ts": {
       "sha": "f12831ee8eeaa6012d2f2dc5c3e49a66f21c2f94"
     },
-    "md5": "f7f22e74d25ef8197dac780642c69654"
+    "md5": "f013d2ed118c778bed5995b79cb59747"
   },
   "/example/test-room/dir.json": {
     "index.html": {
@@ -217,7 +217,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.98",
+    "version": "1.0.99",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -266,7 +266,7 @@
     },
     "dependencies": {
       "@dobuki/data-blob": "^1.0.18",
-      "@dobuki/hello-worker": "^1.0.51",
+      "@dobuki/hello-worker": "^1.0.54",
       "@msgpack/msgpack": "^3.1.3",
       "@types/npm": "^7.19.3"
     }
@@ -282,12 +282,12 @@
       "sha": "0094f7e927aa9239d30958bf84ed3f9b4929dd60"
     },
     "MessageType.ts": {
-      "sha": "f71c2fc9055c4ae0479d3b942e58b0c6fe02fe9e"
+      "sha": "43b45874dccc77b051e1063d5c289936c611a77e"
     },
     "WorkerApp.ts": {
-      "sha": "8eb7bef88a641066e6d835e3bdf8b1875c715df1"
+      "sha": "bf5e28e2c1a2d320a14235737bc15dd15ad1e1d5"
     },
-    "md5": "9fea7be484e2035c861a565e840cd785",
+    "md5": "13d17ac8a1f4e48f465992321655965c",
     "utils/data-ring-reader.test.ts": {
       "sha": "d0d8c3c9167c9b942a75addeefc51cf3cdae0be5"
     },
@@ -411,10 +411,10 @@
       "sha": "0094f7e927aa9239d30958bf84ed3f9b4929dd60"
     },
     "app/MessageType.ts": {
-      "sha": "f71c2fc9055c4ae0479d3b942e58b0c6fe02fe9e"
+      "sha": "43b45874dccc77b051e1063d5c289936c611a77e"
     },
     "app/WorkerApp.ts": {
-      "sha": "8eb7bef88a641066e6d835e3bdf8b1875c715df1"
+      "sha": "bf5e28e2c1a2d320a14235737bc15dd15ad1e1d5"
     },
     "app/utils/data-ring-reader.test.ts": {
       "sha": "d0d8c3c9167c9b942a75addeefc51cf3cdae0be5"
@@ -470,7 +470,7 @@
     "index.ts": {
       "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
     },
-    "md5": "b7e70677da77bd553ec0132bcf83b29c",
+    "md5": "10bcdf60f3cba3aa68ee96411081f70f",
     "observer/Observer.ts": {
       "sha": "44f85279f99eb14183fef9839d35620e14888c18"
     },
@@ -487,7 +487,7 @@
       "sha": "e718db0ff39c41b138b026df4d0f488108919aad"
     },
     "worker/CommInterface.worker.ts": {
-      "sha": "2e0d047f9e81de13156ab0b654ae94607d222ed1"
+      "sha": "45dba6b8b7ef6e96477270ce370f0c7f8fbf28a1"
     },
     "worker/WorkerCommand.ts": {
       "sha": "12c4de8f91a30c4161089843a41cf60c1e0c8655"
@@ -519,7 +519,7 @@
   },
   "/src/worker/dir.json": {
     "CommInterface.worker.ts": {
-      "sha": "2e0d047f9e81de13156ab0b654ae94607d222ed1"
+      "sha": "45dba6b8b7ef6e96477270ce370f0c7f8fbf28a1"
     },
     "WorkerCommand.ts": {
       "sha": "12c4de8f91a30c4161089843a41cf60c1e0c8655"
@@ -527,7 +527,7 @@
     "WorkerResponse.ts": {
       "sha": "18b580b4bf6f476a16da2ad6ba994ec2fc587dba"
     },
-    "md5": "99467effa8e825aa4b7c2d6be87d810c"
+    "md5": "8ed3578dbf784cb573a0f254c6362a54"
   },
   "/tsconfig.json": {
     "compilerOptions": {

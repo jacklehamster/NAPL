@@ -3,10 +3,10 @@
     "sha": "0094f7e927aa9239d30958bf84ed3f9b4929dd60"
   },
   "app/MessageType.ts": {
-    "sha": "f71c2fc9055c4ae0479d3b942e58b0c6fe02fe9e"
+    "sha": "43b45874dccc77b051e1063d5c289936c611a77e"
   },
   "app/WorkerApp.ts": {
-    "sha": "8eb7bef88a641066e6d835e3bdf8b1875c715df1"
+    "sha": "bf5e28e2c1a2d320a14235737bc15dd15ad1e1d5"
   },
   "app/utils/data-ring-reader.test.ts": {
     "sha": "d0d8c3c9167c9b942a75addeefc51cf3cdae0be5"
@@ -62,7 +62,7 @@
   "index.ts": {
     "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
   },
-  "md5": "b7e70677da77bd553ec0132bcf83b29c",
+  "md5": "10bcdf60f3cba3aa68ee96411081f70f",
   "observer/Observer.ts": {
     "sha": "44f85279f99eb14183fef9839d35620e14888c18"
   },
@@ -79,7 +79,7 @@
     "sha": "e718db0ff39c41b138b026df4d0f488108919aad"
   },
   "worker/CommInterface.worker.ts": {
-    "sha": "2e0d047f9e81de13156ab0b654ae94607d222ed1"
+    "sha": "45dba6b8b7ef6e96477270ce370f0c7f8fbf28a1"
   },
   "worker/WorkerCommand.ts": {
     "sha": "12c4de8f91a30c4161089843a41cf60c1e0c8655"

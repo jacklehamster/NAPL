@@ -3,12 +3,12 @@
     "sha": "0094f7e927aa9239d30958bf84ed3f9b4929dd60"
   },
   "MessageType.ts": {
-    "sha": "f71c2fc9055c4ae0479d3b942e58b0c6fe02fe9e"
+    "sha": "43b45874dccc77b051e1063d5c289936c611a77e"
   },
   "WorkerApp.ts": {
-    "sha": "8eb7bef88a641066e6d835e3bdf8b1875c715df1"
+    "sha": "bf5e28e2c1a2d320a14235737bc15dd15ad1e1d5"
   },
-  "md5": "9fea7be484e2035c861a565e840cd785",
+  "md5": "13d17ac8a1f4e48f465992321655965c",
   "utils/data-ring-reader.test.ts": {
     "sha": "d0d8c3c9167c9b942a75addeefc51cf3cdae0be5"
   },
