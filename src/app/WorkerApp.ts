@@ -34,9 +34,7 @@ export function createWorkerApp({
   const worker = new Worker(programWorkerUrl, { type: "module" });
 
   const { sendMessage: sendToWorker } = setupMessenger(worker);
-  const { unhook: unhookGraphics } = setupGraphics(worker, {
-    sendMessage: sendToWorker,
-  });
+  const { unhook: unhookGraphics } = setupGraphics(worker);
   const { close: unhookControls } = setupControl({ sendMessage: sendToWorker });
 
   const removeUserListener = addUserListener((user, action, users) => {

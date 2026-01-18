@@ -1,16 +1,4 @@
-import { Message } from "../MessageType";
-
-export function setupGraphics(
-  worker: Worker,
-  {
-    sendMessage,
-  }: {
-    sendMessage: <M extends Message>(
-      type: M["type"],
-      msg: Omit<M, "type">
-    ) => void;
-  }
-) {
+export function setupGraphics(worker: Worker) {
   const canvas = document.createElement("canvas");
   document.body.appendChild(canvas);
   canvas.style.width = "100%";

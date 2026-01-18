@@ -15378,9 +15378,7 @@ function setupMessenger(worker) {
   };
 }
 // ../src/app/core/graphics.ts
-function setupGraphics(worker, {
-  sendMessage
-}) {
+function setupGraphics(worker) {
   const canvas = document.createElement("canvas");
   document.body.appendChild(canvas);
   canvas.style.width = "100%";
@@ -15536,9 +15534,7 @@ function createWorkerApp({
   } = m({ worldId, workerUrl: signalWorkerUrl });
   const worker = new Worker(programWorkerUrl, { type: "module" });
   const { sendMessage: sendToWorker } = setupMessenger(worker);
-  const { unhook: unhookGraphics } = setupGraphics(worker, {
-    sendMessage: sendToWorker
-  });
+  const { unhook: unhookGraphics } = setupGraphics(worker);
   const { close: unhookControls } = setupControl({ sendMessage: sendToWorker });
   const removeUserListener = addUserListener((user, action, users) => {
     sendToWorker(3 /* ON_USER_UPDATE */, {
@@ -15845,4 +15841,4 @@ export {
   setupApp
 };
 
-//# debugId=D992406B356DAF3564756E2164756E21
+//# debugId=EA1408C66580190764756E2164756E21
