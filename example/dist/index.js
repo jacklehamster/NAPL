@@ -14623,8 +14623,8 @@ class Program {
   }
 }
 // ../node_modules/@dobuki/hello-worker/dist/index.js
-function v(S) {
-  let { userId: $, appId: C, room: T, host: P, autoRejoin: L = true, logLine: O } = S, N = false, H = 0, q, j, z = true, B = new Map, F = `wss://${P}/room/${C}/${T}?userId=${encodeURIComponent($)}`;
+function w(S) {
+  let { userId: $, worldId: C, room: T, host: P, autoRejoin: L = true, logLine: O } = S, N = false, H = 0, q, j, z = true, B = new Map, F = `wss://${P}/room/${C}/${T}?userId=${encodeURIComponent($)}`;
   function b(Z, Y, Q) {
     if (!q)
       return false;
@@ -14690,9 +14690,9 @@ function v(S) {
     N = true, clearTimeout(j), q.close();
   } };
 }
-function U({ userId: S, appId: $, room: C, host: T, autoRejoin: P = true, onOpen: L, onClose: O, onError: N, onPeerJoined: H, onPeerLeft: q, onIceUrl: j, onMessage: z, logLine: B, workerUrl: F }) {
+function g({ userId: S, worldId: $, room: C, host: T, autoRejoin: P = true, onOpen: L, onClose: O, onError: N, onPeerJoined: H, onPeerLeft: q, onIceUrl: j, onMessage: z, logLine: B, workerUrl: F }) {
   if (!F)
-    return console.warn("Warning: enterRoom called without workerUrl; this may cause issues in some environments. You should pass workerUrl explicitly. Use:", "https://cdn.jsdelivr.net/npm/@dobuki/hello-worker/dist/signal-room.worker.min.js"), v({ userId: S, appId: $, room: C, host: T, autoRejoin: P, onOpen: L, onClose: O, onError: N, onPeerJoined: H, onPeerLeft: q, onIceUrl: j, onMessage: z });
+    return console.warn("Warning: enterRoom called without workerUrl; this may cause issues in some environments. You should pass workerUrl explicitly. Use:", "https://cdn.jsdelivr.net/npm/@dobuki/hello-worker/dist/signal-room.worker.min.js"), w({ userId: S, worldId: $, room: C, host: T, autoRejoin: P, onOpen: L, onClose: O, onError: N, onPeerJoined: H, onPeerLeft: q, onIceUrl: j, onMessage: z });
   let b = new Worker(F, { type: "module" }), f = false;
   function R({ userId: Y }) {
     return { userId: Y, receive: (Q, W) => {
@@ -14720,14 +14720,14 @@ function U({ userId: S, appId: $, room: C, host: T, autoRejoin: P = true, onOpen
     else if (Q.kind === "log")
       B?.(Q.direction, Q.obj);
   };
-  return b.addEventListener("message", Z), b.postMessage({ cmd: "enter", userId: S, appId: $, room: C, host: T, autoRejoin: P }), { exitRoom: () => {
+  return b.addEventListener("message", Z), b.postMessage({ cmd: "enter", userId: S, worldId: $, room: C, host: T, autoRejoin: P }), { exitRoom: () => {
     f = true, b.removeEventListener("message", Z), b.postMessage({ cmd: "exit" });
   }, sendToServer: (Y, Q) => {
     b.postMessage({ cmd: "send", host: T, room: C, type: Y, payload: Q });
   } };
 }
-var I = U;
-function y({ appId: S, receivePeerConnection: $, peerlessUserExpiration: C = 5000, fallbackRtcConfig: T = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }, enterRoomFunction: P = I, logLine: L = console.debug, onLeaveUser: O, workerUrl: N, onRoomReady: H, onRoomClose: q }) {
+var I = g;
+function y({ worldId: S, receivePeerConnection: $, peerlessUserExpiration: C = 5000, fallbackRtcConfig: T = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }, enterRoomFunction: P = I, logLine: L = console.debug, onLeaveUser: O, workerUrl: N, onRoomReady: H, onRoomClose: q }) {
   let j = `user-${crypto.randomUUID()}`, z = new Map, B = undefined, F = { ...T, timestamp: Date.now() };
   async function b() {
     if (B)
@@ -14795,7 +14795,7 @@ function y({ appId: S, receivePeerConnection: $, peerlessUserExpiration: C = 500
         let [A] = await R(E), h = A.pc, n = await h?.createOffer();
         await h?.setLocalDescription(n), E.receive("offer", h?.localDescription?.toJSON());
       }
-      let J, { exitRoom: K, sendToServer: w } = P({ userId: j, appId: S, room: D, host: V, logLine: L, workerUrl: N, autoRejoin: true, onOpen() {
+      let J, { exitRoom: K, sendToServer: c } = P({ userId: j, worldId: S, room: D, host: V, logLine: L, workerUrl: N, autoRejoin: true, onOpen() {
         H?.({ room: D, host: V }), G();
       }, onError() {
         console.error("onError"), X();
@@ -14810,14 +14810,14 @@ function y({ appId: S, receivePeerConnection: $, peerlessUserExpiration: C = 500
           if (!x)
             return;
           async function k() {
-            await new Promise((g) => {
-              w("request-ice"), J = g;
+            await new Promise((v) => {
+              c("request-ice"), J = v;
             }), J = undefined;
-            let c = z.get(A.userId);
-            if (c) {
-              c.pc = undefined;
-              let g = await f(c);
-              $({ pc: g, userId: A.userId, initiator: true, restart: k }), await new Promise((i) => setTimeout(i, 3000)), _(A);
+            let U = z.get(A.userId);
+            if (U) {
+              U.pc = undefined;
+              let v = await f(U);
+              $({ pc: v, userId: A.userId, initiator: true, restart: k }), await new Promise((i) => setTimeout(i, 3000)), _(A);
             }
           }
           $({ pc: x, userId: A.userId, initiator: true, restart: k }), _(A);
@@ -14855,8 +14855,8 @@ function y({ appId: S, receivePeerConnection: $, peerlessUserExpiration: C = 500
           }
           try {
             await x.addIceCandidate(k);
-          } catch (c) {
-            L("⚠️ ERROR", { error: "add-ice-failed", userId: n.userId, detail: String(c) });
+          } catch (U) {
+            L("⚠️ ERROR", { error: "add-ice-failed", userId: n.userId, detail: String(U) });
           }
           return;
         }
@@ -14868,15 +14868,15 @@ function y({ appId: S, receivePeerConnection: $, peerlessUserExpiration: C = 500
     Q.forEach(({ exitRoom: D }) => D()), Q.clear(), z.forEach(({ userId: D }) => Z(D)), z.clear();
   } };
 }
-function d({ appId: S, logLine: $ = console.debug, enterRoomFunction: C = U, peerlessUserExpiration: T, workerUrl: P, onRoomReady: L, onRoomClose: O, dataChannelOptions: N }) {
+function m({ worldId: S, logLine: $ = console.debug, enterRoomFunction: C = g, peerlessUserExpiration: T, workerUrl: P, onRoomReady: L, onRoomClose: O, dataChannelOptions: N }) {
   let H = [], q = new Set;
   function j(G, X, _, J) {
     if (_) {
       let K = G.createDataChannel("data", N);
       z(X, K, J), B.set(X, K);
     } else {
-      let K = function(w) {
-        let E = w.channel;
+      let K = function(c) {
+        let E = c.channel;
         z(X, E, J), B.set(X, E);
       };
       return G.addEventListener("datachannel", K), () => {
@@ -14889,13 +14889,13 @@ function d({ appId: S, logLine: $ = console.debug, enterRoomFunction: C = U, pee
       $("\uD83D\uDCAC", { event: "dc-open", userId: G }), H.push(G), F.forEach((K) => K(G, "join", H));
     };
     let J = ({ data: K }) => {
-      q.forEach((w) => w(K, G)), $("\uD83D\uDCAC", { event: "dc-message", userId: G, data: K });
+      q.forEach((c) => c(K, G)), $("\uD83D\uDCAC", { event: "dc-message", userId: G, data: K });
     };
     X.addEventListener("message", J), X.addEventListener("close", () => {
       $("\uD83D\uDCAC", { event: "dc-close", userId: G }), H.splice(H.indexOf(G), 1), F.forEach((K) => K(G, "leave", H)), X.removeEventListener("message", J), _?.();
     }), X.onerror = () => $("⚠️ ERROR", { error: "dc-error", userId: G });
   }
-  let B = new Map, F = new Set, { userId: b, enterRoom: f, exitRoom: R, leaveUser: Z, end: Y } = y({ appId: S, enterRoomFunction: C, logLine: $, workerUrl: P, peerlessUserExpiration: T, onRoomReady: L, onRoomClose: O, onLeaveUser(G) {
+  let B = new Map, F = new Set, { userId: b, enterRoom: f, exitRoom: R, leaveUser: Z, end: Y } = y({ worldId: S, enterRoomFunction: C, logLine: $, workerUrl: P, peerlessUserExpiration: T, onRoomReady: L, onRoomClose: O, onLeaveUser(G) {
     let X = B.get(G);
     try {
       X?.close();
@@ -14946,7 +14946,7 @@ function createApp({
   onReceivedIncomingUpdates,
   workerUrl
 }) {
-  const { userId, send, enterRoom, addMessageListener, addUserListener, end } = d({ appId, workerUrl });
+  const { userId, send, enterRoom, addMessageListener, addUserListener, end } = m({ worldId: appId, workerUrl });
   function setData2(path, data) {
     program.setData(path, data);
   }
@@ -14981,19 +14981,13 @@ function createApp({
 // ../src/app/utils/serializers.ts
 function hookSerializers() {
   const keySerializer = {
-    serialize: (msg, data) => {
+    serialize: (_type, msg, data) => {
       data.writeString(msg.key);
-      const bits = (msg.altKey ? 1 << 0 : 0) | (msg.ctrlKey ? 1 << 1 : 0) | (msg.metaKey ? 1 << 2 : 0) | (msg.shiftKey ? 1 << 3 : 0) | (msg.repeat ? 1 << 4 : 0);
-      data.writeByte(bits);
+      data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey, msg.repeat);
     },
     deserialize: (data, type) => {
       const key = data.readString();
-      const bits = data.readByte();
-      const altKey = (bits & 1 << 0) !== 0;
-      const ctrlKey = (bits & 1 << 1) !== 0;
-      const metaKey = (bits & 1 << 2) !== 0;
-      const shiftKey = (bits & 1 << 3) !== 0;
-      const repeat = (bits & 1 << 4) !== 0;
+      const [altKey, ctrlKey, metaKey, shiftKey, repeat] = data.readBooleans(5);
       return {
         type,
         key,
@@ -15005,13 +14999,48 @@ function hookSerializers() {
       };
     }
   };
+  const mouseSerializer = {
+    serialize(type, msg, data) {
+      data.writeInt16(msg.movementX);
+      data.writeInt16(msg.movementY);
+      data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey);
+      data.writeByte(msg.buttons);
+      data.writeInt16(msg.clientX);
+      data.writeInt16(msg.clientY);
+      if (type !== 5 /* MOUSE_MOVE */) {
+        data.writeByte(msg.button);
+      }
+    },
+    deserialize(data, type) {
+      const movementX = data.readInt16();
+      const movementY = data.readInt16();
+      const [altKey, ctrlKey, metaKey, shiftKey] = data.readBooleans(4);
+      const buttons = data.readByte();
+      const clientX = data.readInt16();
+      const clientY = data.readInt16();
+      const button = type !== 5 /* MOUSE_MOVE */ ? data.readByte() : -1;
+      return {
+        type,
+        movementX,
+        movementY,
+        clientX,
+        clientY,
+        button,
+        buttons,
+        altKey,
+        ctrlKey,
+        metaKey,
+        shiftKey
+      };
+    }
+  };
   const serializers = [
     [0 /* KEY_DOWN */, keySerializer],
     [1 /* KEY_UP */, keySerializer],
     [
       2 /* PING */,
       {
-        serialize(msg, data) {
+        serialize(_type, msg, data) {
           data.writeFloat64(msg.now);
         },
         deserialize(data) {
@@ -15023,7 +15052,7 @@ function hookSerializers() {
     [
       3 /* ON_USER_UPDATE */,
       {
-        serialize(msg, data) {
+        serialize(_type, msg, data) {
           data.writeString(msg.user);
           data.writeByte(msg.action === "join" ? 1 : 0);
           for (const user of msg.users) {
@@ -15048,16 +15077,61 @@ function hookSerializers() {
           };
         }
       }
+    ],
+    [6 /* MOUSE_DOWN */, mouseSerializer],
+    [7 /* MOUSE_UP */, mouseSerializer],
+    [5 /* MOUSE_MOVE */, mouseSerializer],
+    [
+      8 /* WHEEL */,
+      {
+        serialize(_type, msg, data) {
+          data.writeInt16(msg.deltaX * 256);
+          data.writeInt16(msg.deltaY * 256);
+          data.writeInt16(msg.deltaZ * 256);
+          data.writeByte(msg.deltaMode);
+          data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey);
+        },
+        deserialize(data, type) {
+          const deltaX = data.readInt16() / 256;
+          const deltaY = data.readInt16() / 256;
+          const deltaZ = data.readInt16() / 256;
+          const deltaMode = data.readByte();
+          const [altKey, ctrlKey, metaKey, shiftKey] = data.readBooleans(4);
+          return {
+            type,
+            deltaX,
+            deltaY,
+            deltaZ,
+            deltaMode,
+            altKey,
+            ctrlKey,
+            metaKey,
+            shiftKey
+          };
+        }
+      }
+    ],
+    [
+      9 /* POINTER_LOCK */,
+      {
+        serialize(_type, msg, data) {
+          data.writeBooleans(msg.enter);
+        },
+        deserialize(data, type) {
+          const [enter] = data.readBooleans(1);
+          return { type, enter };
+        }
+      }
     ]
   ];
   const serializerMap = new Map(serializers);
-  function serialize(message, data) {
-    const serializer = serializerMap.get(message.type);
+  function serialize(type, message, data) {
+    const serializer = serializerMap.get(type);
     if (!serializer) {
       return 0;
     }
-    data.writeByte(message.type);
-    serializer.serialize(message, data);
+    data.writeByte(type);
+    serializer.serialize(type, message, data);
   }
   function deserialize(data) {
     const type = data.readByte();
@@ -15078,6 +15152,8 @@ class DataRingWriter {
   scratch = new Uint8Array(64);
   floatScratch = new Uint8Array(8);
   floatDV = new DataView(this.floatScratch.buffer);
+  intScratch = new Uint8Array(4);
+  intDV = new DataView(this.intScratch.buffer);
   constructor(data) {
     this.data = data;
     this.cap = data.length;
@@ -15092,8 +15168,8 @@ class DataRingWriter {
     const x = this.offset + n;
     this.offset = x >= this.cap ? x % this.cap : x;
   }
-  writeU8(v2) {
-    this.data[this.offset] = v2 & 255;
+  writeU8(v) {
+    this.data[this.offset] = v & 255;
     this.advance(1);
   }
   writeRawBytes(src) {
@@ -15114,6 +15190,18 @@ class DataRingWriter {
   }
   writeByte(byte) {
     this.writeU8(byte);
+  }
+  writeBooleans(...bools) {
+    let bits = 0;
+    for (let i = 0;i < bools.length; i++) {
+      const index = i % 8;
+      if (i && index === 0) {
+        this.writeByte(bits);
+        bits = 0;
+      }
+      bits |= bools[i] ? 1 << index : 0;
+    }
+    this.writeByte(bits);
   }
   writeBytes(bytes) {
     if (bytes.length > 255) {
@@ -15137,6 +15225,21 @@ class DataRingWriter {
     }
     this.writeBytes(this.scratch.subarray(0, written));
   }
+  clampInt16(v) {
+    if (v > 32767)
+      return 32767;
+    if (v < -32768)
+      return -32768;
+    return v | 0;
+  }
+  writeInt16(v) {
+    this.floatDV.setInt16(0, this.clampInt16(v), true);
+    this.writeRawBytes(this.floatScratch.subarray(0, 2));
+  }
+  writeInt32(v) {
+    this.floatDV.setInt32(0, v | 0, true);
+    this.writeRawBytes(this.floatScratch.subarray(0, 4));
+  }
   writeFloat64(num) {
     this.floatDV.setFloat64(0, num, true);
     this.writeRawBytes(this.floatScratch);
@@ -15151,6 +15254,7 @@ class DataRingReader {
   scratch = new Uint8Array(64);
   floatScratch = new Uint8Array(8);
   floatDV = new DataView(this.floatScratch.buffer);
+  boolScratch = [];
   constructor(data) {
     this.data = data;
     this.cap = data.length;
@@ -15166,9 +15270,9 @@ class DataRingReader {
     this.offset = x >= this.cap ? x % this.cap : x;
   }
   readU8() {
-    const v2 = this.data[this.offset];
+    const v = this.data[this.offset];
     this.advance(1);
-    return v2;
+    return v;
   }
   readRawBytes(n) {
     if (n <= 0)
@@ -15208,6 +15312,21 @@ class DataRingReader {
     }
     return this.dec.decode(bytes);
   }
+  readInt16() {
+    const b = this.readRawBytes(2);
+    if (b.byteLength !== 2)
+      throw new Error("readInt16: expected 2 bytes");
+    this.floatScratch[0] = b[0];
+    this.floatScratch[1] = b[1];
+    return this.floatDV.getInt16(0, true);
+  }
+  readInt32() {
+    const b = this.readRawBytes(4);
+    if (b.byteLength !== 4)
+      throw new Error("readInt32: expected 4 bytes");
+    this.floatScratch.set(b.subarray(0, 4), 0);
+    return this.floatDV.getInt32(0, true);
+  }
   readFloat64() {
     const b = this.readRawBytes(8);
     if (b.byteLength !== 8)
@@ -15215,9 +15334,22 @@ class DataRingReader {
     this.floatScratch.set(b);
     return this.floatDV.getFloat64(0, true);
   }
+  readBooleans(count) {
+    const bools = this.boolScratch;
+    bools.length = 0;
+    let bits = 0;
+    do {
+      const index = bools.length % 8;
+      if (index === 0) {
+        bits = this.readByte();
+      }
+      bools.push((bits & 1 << index) !== 0);
+    } while (bools.length < count);
+    return bools;
+  }
 }
 
-// ../src/app/utils/messenger.ts
+// ../src/app/core/messenger.ts
 var WRITE = 0;
 var READ = 1;
 var BELL = 2;
@@ -15228,11 +15360,11 @@ function setupMessenger(worker) {
   const data = new DataRingWriter(new Uint8Array(sab, 32));
   worker.postMessage({ sab });
   const { serialize } = hookSerializers();
-  function sendMessage(msg) {
+  function sendMessage(type, msg) {
     const w0 = Atomics.load(ctrl, WRITE);
     const r0 = Atomics.load(ctrl, READ);
     const wasEmpty = w0 === r0;
-    serialize(msg, data);
+    serialize(type, msg, data);
     if (w0 !== data.offset) {
       Atomics.store(ctrl, WRITE, data.offset);
       if (wasEmpty) {
@@ -15245,9 +15377,146 @@ function setupMessenger(worker) {
     sendMessage
   };
 }
+// ../src/app/core/graphics.ts
+function setupGraphics(worker, {
+  sendMessage
+}) {
+  const canvas = document.createElement("canvas");
+  document.body.appendChild(canvas);
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
+  const width = canvas.offsetWidth;
+  const height = canvas.offsetHeight;
+  const offscreen = canvas.transferControlToOffscreen();
+  worker.postMessage({ canvas: offscreen, width, height, dpr: window.devicePixelRatio }, [offscreen]);
+  function sendSize() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const width2 = Math.max(1, Math.floor(rect.width));
+    const height2 = Math.max(1, Math.floor(rect.height));
+    worker.postMessage({ type: "resize", width: width2, height: height2, dpr });
+  }
+  const observer = new ResizeObserver(sendSize);
+  observer.observe(canvas);
+  window.addEventListener("resize", sendSize);
+  function unhook() {
+    window.removeEventListener("resize", sendSize);
+    observer.disconnect();
+    document.body.removeChild(canvas);
+  }
+  return { unhook };
+}
+
+// ../src/app/utils/pointer-lock-hook.ts
+function hookPointerLock(onHook) {
+  const TIME_DELAY = 1400;
+  let exitedPointerLockTime = -TIME_DELAY;
+  let timeout;
+  async function enterPointerLock() {
+    if (!document.activeElement) {
+      document.body.focus();
+      exitedPointerLockTime = performance.now();
+      return;
+    }
+    document.body.style.cursor = "none";
+    const unhook = onHook();
+    const timeSinceExited = performance.now() - exitedPointerLockTime;
+    function restore() {
+      unhook();
+      document.body.style.cursor = "auto";
+      exitedPointerLockTime = performance.now();
+    }
+    clearTimeout(timeout);
+    if (timeSinceExited < TIME_DELAY) {
+      let detectExit = function() {
+        hasExited = true;
+        restore();
+      };
+      let hasExited = false;
+      document.body.addEventListener("mouseleave", detectExit, { once: true });
+      await new Promise((resolve) => timeout = setTimeout(resolve, TIME_DELAY - timeSinceExited));
+      document.body.removeEventListener("mouseleave", detectExit);
+      if (hasExited) {
+        return;
+      }
+    }
+    try {
+      console.log("HERE");
+      await document.body.requestPointerLock();
+    } catch (e) {
+      console.warn(e);
+      restore();
+      return;
+    }
+    function onPointerLockChange() {
+      if (document.pointerLockElement) {
+        return;
+      }
+      restore();
+      document.removeEventListener("pointerlockchange", onPointerLockChange);
+    }
+    document.addEventListener("pointerlockchange", onPointerLockChange);
+    document.body.style.cursor = "auto";
+  }
+  return { enterPointerLock };
+}
+
+// ../src/app/core/controls.ts
+function setupControl({
+  sendMessage
+}) {
+  const { enterPointerLock } = hookPointerLock(() => {
+    function onKeyDown(e) {
+      sendMessage(0 /* KEY_DOWN */, e);
+    }
+    function onKeyUp(e) {
+      sendMessage(1 /* KEY_UP */, e);
+    }
+    function onMouseMove(e) {
+      sendMessage(5 /* MOUSE_MOVE */, e);
+    }
+    function onMouseDown(e) {
+      sendMessage(6 /* MOUSE_DOWN */, e);
+    }
+    function onMouseUp(e) {
+      sendMessage(7 /* MOUSE_UP */, e);
+    }
+    function onWheel(e) {
+      e.preventDefault();
+      sendMessage(8 /* WHEEL */, e);
+    }
+    function handleContextMenu(e) {
+      e.preventDefault();
+    }
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("wheel", onWheel, { passive: false });
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keyup", onKeyUp);
+    sendMessage(9 /* POINTER_LOCK */, { enter: true });
+    return () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("wheel", onWheel);
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("keyup", onKeyUp);
+      sendMessage(9 /* POINTER_LOCK */, { enter: false });
+    };
+  });
+  document.addEventListener("click", enterPointerLock);
+  function close() {
+    document.removeEventListener("click", enterPointerLock);
+  }
+  return { close };
+}
+
 // ../src/app/WorkerApp.ts
 function createWorkerApp({
-  appId,
+  worldId,
   signalWorkerUrl,
   programWorkerUrl
 }) {
@@ -15264,54 +15533,29 @@ function createWorkerApp({
     addMessageListener,
     addUserListener,
     end
-  } = d({ appId, workerUrl: signalWorkerUrl });
-  enterRoom({ room: "lobby", host: "hello.dobuki.net" });
+  } = m({ worldId, workerUrl: signalWorkerUrl });
   const worker = new Worker(programWorkerUrl, { type: "module" });
-  const { sendMessage } = setupMessenger(worker);
-  document.addEventListener("keydown", ({ key, altKey, ctrlKey, metaKey, shiftKey, repeat }) => {
-    sendMessage({
-      type: 0 /* KEY_DOWN */,
-      key,
-      altKey,
-      ctrlKey,
-      metaKey,
-      shiftKey,
-      repeat
-    });
+  const { sendMessage: sendToWorker } = setupMessenger(worker);
+  const { unhook: unhookGraphics } = setupGraphics(worker, {
+    sendMessage: sendToWorker
   });
-  document.addEventListener("keyup", ({ key, altKey, ctrlKey, metaKey, shiftKey, repeat }) => {
-    sendMessage({
-      type: 1 /* KEY_UP */,
-      key,
-      altKey,
-      ctrlKey,
-      metaKey,
-      shiftKey,
-      repeat
-    });
-  });
+  const { close: unhookControls } = setupControl({ sendMessage: sendToWorker });
   const removeUserListener = addUserListener((user, action, users) => {
-    sendMessage({
-      type: 3 /* ON_USER_UPDATE */,
+    sendToWorker(3 /* ON_USER_UPDATE */, {
       user,
       action,
       users
     });
   });
   const removeMessageListener = addMessageListener((data, from) => {
-    sendMessage({
-      type: 4 /* ON_MESSAGE */,
+    sendToWorker(4 /* ON_MESSAGE */, {
       data,
       from
     });
   });
   setTimeout(() => {
     const now = performance.now();
-    console.log(now);
-    sendMessage({
-      type: 2 /* PING */,
-      now
-    });
+    sendToWorker(2 /* PING */, { now });
   }, 1000);
   const onMessage = (e) => {
     const { action } = e.data;
@@ -15338,7 +15582,9 @@ function createWorkerApp({
     worker.removeEventListener("message", onMessage);
     removeUserListener();
     removeMessageListener();
+    unhookControls();
     end();
+    unhookGraphics();
   }
   return {
     close
@@ -15589,7 +15835,7 @@ Last update: ${new Date().toISOString()}
 // src/worker-room/index.ts
 function setupWorkerApp() {
   return createWorkerApp({
-    appId: "worker-test",
+    worldId: "worker-test",
     signalWorkerUrl: new URL("./signal-room.worker.js", import.meta.url),
     programWorkerUrl: new URL("./app.worker.js", import.meta.url)
   });
@@ -15599,4 +15845,4 @@ export {
   setupApp
 };
 
-//# debugId=66505BC40BAC3B2064756E2164756E21
+//# debugId=D992406B356DAF3564756E2164756E21

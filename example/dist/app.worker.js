@@ -1869,22 +1869,31 @@ class Program {
     this.commAux.disconnect();
   }
 }
+// ../src/app/MessageType.ts
+var MessageType;
+((MessageType2) => {
+  MessageType2[MessageType2["KEY_DOWN"] = 0] = "KEY_DOWN";
+  MessageType2[MessageType2["KEY_UP"] = 1] = "KEY_UP";
+  MessageType2[MessageType2["PING"] = 2] = "PING";
+  MessageType2[MessageType2["ON_USER_UPDATE"] = 3] = "ON_USER_UPDATE";
+  MessageType2[MessageType2["ON_MESSAGE"] = 4] = "ON_MESSAGE";
+  MessageType2[MessageType2["MOUSE_MOVE"] = 5] = "MOUSE_MOVE";
+  MessageType2[MessageType2["MOUSE_DOWN"] = 6] = "MOUSE_DOWN";
+  MessageType2[MessageType2["MOUSE_UP"] = 7] = "MOUSE_UP";
+  MessageType2[MessageType2["WHEEL"] = 8] = "WHEEL";
+  MessageType2[MessageType2["POINTER_LOCK"] = 9] = "POINTER_LOCK";
+})(MessageType ||= {});
+
 // ../src/app/utils/serializers.ts
 function hookSerializers() {
   const keySerializer = {
-    serialize: (msg, data) => {
+    serialize: (_type, msg, data) => {
       data.writeString(msg.key);
-      const bits = (msg.altKey ? 1 << 0 : 0) | (msg.ctrlKey ? 1 << 1 : 0) | (msg.metaKey ? 1 << 2 : 0) | (msg.shiftKey ? 1 << 3 : 0) | (msg.repeat ? 1 << 4 : 0);
-      data.writeByte(bits);
+      data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey, msg.repeat);
     },
     deserialize: (data, type) => {
       const key = data.readString();
-      const bits = data.readByte();
-      const altKey = (bits & 1 << 0) !== 0;
-      const ctrlKey = (bits & 1 << 1) !== 0;
-      const metaKey = (bits & 1 << 2) !== 0;
-      const shiftKey = (bits & 1 << 3) !== 0;
-      const repeat = (bits & 1 << 4) !== 0;
+      const [altKey, ctrlKey, metaKey, shiftKey, repeat] = data.readBooleans(5);
       return {
         type,
         key,
@@ -1896,13 +1905,48 @@ function hookSerializers() {
       };
     }
   };
+  const mouseSerializer = {
+    serialize(type, msg, data) {
+      data.writeInt16(msg.movementX);
+      data.writeInt16(msg.movementY);
+      data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey);
+      data.writeByte(msg.buttons);
+      data.writeInt16(msg.clientX);
+      data.writeInt16(msg.clientY);
+      if (type !== 5 /* MOUSE_MOVE */) {
+        data.writeByte(msg.button);
+      }
+    },
+    deserialize(data, type) {
+      const movementX = data.readInt16();
+      const movementY = data.readInt16();
+      const [altKey, ctrlKey, metaKey, shiftKey] = data.readBooleans(4);
+      const buttons = data.readByte();
+      const clientX = data.readInt16();
+      const clientY = data.readInt16();
+      const button = type !== 5 /* MOUSE_MOVE */ ? data.readByte() : -1;
+      return {
+        type,
+        movementX,
+        movementY,
+        clientX,
+        clientY,
+        button,
+        buttons,
+        altKey,
+        ctrlKey,
+        metaKey,
+        shiftKey
+      };
+    }
+  };
   const serializers = [
     [0 /* KEY_DOWN */, keySerializer],
     [1 /* KEY_UP */, keySerializer],
     [
       2 /* PING */,
       {
-        serialize(msg, data) {
+        serialize(_type, msg, data) {
           data.writeFloat64(msg.now);
         },
         deserialize(data) {
@@ -1914,7 +1958,7 @@ function hookSerializers() {
     [
       3 /* ON_USER_UPDATE */,
       {
-        serialize(msg, data) {
+        serialize(_type, msg, data) {
           data.writeString(msg.user);
           data.writeByte(msg.action === "join" ? 1 : 0);
           for (const user of msg.users) {
@@ -1939,16 +1983,61 @@ function hookSerializers() {
           };
         }
       }
+    ],
+    [6 /* MOUSE_DOWN */, mouseSerializer],
+    [7 /* MOUSE_UP */, mouseSerializer],
+    [5 /* MOUSE_MOVE */, mouseSerializer],
+    [
+      8 /* WHEEL */,
+      {
+        serialize(_type, msg, data) {
+          data.writeInt16(msg.deltaX * 256);
+          data.writeInt16(msg.deltaY * 256);
+          data.writeInt16(msg.deltaZ * 256);
+          data.writeByte(msg.deltaMode);
+          data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey);
+        },
+        deserialize(data, type) {
+          const deltaX = data.readInt16() / 256;
+          const deltaY = data.readInt16() / 256;
+          const deltaZ = data.readInt16() / 256;
+          const deltaMode = data.readByte();
+          const [altKey, ctrlKey, metaKey, shiftKey] = data.readBooleans(4);
+          return {
+            type,
+            deltaX,
+            deltaY,
+            deltaZ,
+            deltaMode,
+            altKey,
+            ctrlKey,
+            metaKey,
+            shiftKey
+          };
+        }
+      }
+    ],
+    [
+      9 /* POINTER_LOCK */,
+      {
+        serialize(_type, msg, data) {
+          data.writeBooleans(msg.enter);
+        },
+        deserialize(data, type) {
+          const [enter] = data.readBooleans(1);
+          return { type, enter };
+        }
+      }
     ]
   ];
   const serializerMap = new Map(serializers);
-  function serialize(message, data) {
-    const serializer = serializerMap.get(message.type);
+  function serialize(type, message, data) {
+    const serializer = serializerMap.get(type);
     if (!serializer) {
       return 0;
     }
-    data.writeByte(message.type);
-    serializer.serialize(message, data);
+    data.writeByte(type);
+    serializer.serialize(type, message, data);
   }
   function deserialize(data) {
     const type = data.readByte();
@@ -1969,6 +2058,8 @@ class DataRingWriter {
   scratch = new Uint8Array(64);
   floatScratch = new Uint8Array(8);
   floatDV = new DataView(this.floatScratch.buffer);
+  intScratch = new Uint8Array(4);
+  intDV = new DataView(this.intScratch.buffer);
   constructor(data) {
     this.data = data;
     this.cap = data.length;
@@ -2006,6 +2097,18 @@ class DataRingWriter {
   writeByte(byte) {
     this.writeU8(byte);
   }
+  writeBooleans(...bools) {
+    let bits = 0;
+    for (let i = 0;i < bools.length; i++) {
+      const index = i % 8;
+      if (i && index === 0) {
+        this.writeByte(bits);
+        bits = 0;
+      }
+      bits |= bools[i] ? 1 << index : 0;
+    }
+    this.writeByte(bits);
+  }
   writeBytes(bytes) {
     if (bytes.length > 255) {
       throw new Error(`writeBytes: length ${bytes.length} > 255 (u8 length prefix)`);
@@ -2028,6 +2131,21 @@ class DataRingWriter {
     }
     this.writeBytes(this.scratch.subarray(0, written));
   }
+  clampInt16(v) {
+    if (v > 32767)
+      return 32767;
+    if (v < -32768)
+      return -32768;
+    return v | 0;
+  }
+  writeInt16(v) {
+    this.floatDV.setInt16(0, this.clampInt16(v), true);
+    this.writeRawBytes(this.floatScratch.subarray(0, 2));
+  }
+  writeInt32(v) {
+    this.floatDV.setInt32(0, v | 0, true);
+    this.writeRawBytes(this.floatScratch.subarray(0, 4));
+  }
   writeFloat64(num) {
     this.floatDV.setFloat64(0, num, true);
     this.writeRawBytes(this.floatScratch);
@@ -2042,6 +2160,7 @@ class DataRingReader {
   scratch = new Uint8Array(64);
   floatScratch = new Uint8Array(8);
   floatDV = new DataView(this.floatScratch.buffer);
+  boolScratch = [];
   constructor(data) {
     this.data = data;
     this.cap = data.length;
@@ -2099,6 +2218,21 @@ class DataRingReader {
     }
     return this.dec.decode(bytes);
   }
+  readInt16() {
+    const b = this.readRawBytes(2);
+    if (b.byteLength !== 2)
+      throw new Error("readInt16: expected 2 bytes");
+    this.floatScratch[0] = b[0];
+    this.floatScratch[1] = b[1];
+    return this.floatDV.getInt16(0, true);
+  }
+  readInt32() {
+    const b = this.readRawBytes(4);
+    if (b.byteLength !== 4)
+      throw new Error("readInt32: expected 4 bytes");
+    this.floatScratch.set(b.subarray(0, 4), 0);
+    return this.floatDV.getInt32(0, true);
+  }
   readFloat64() {
     const b = this.readRawBytes(8);
     if (b.byteLength !== 8)
@@ -2106,9 +2240,22 @@ class DataRingReader {
     this.floatScratch.set(b);
     return this.floatDV.getFloat64(0, true);
   }
+  readBooleans(count) {
+    const bools = this.boolScratch;
+    bools.length = 0;
+    let bits = 0;
+    do {
+      const index = bools.length % 8;
+      if (index === 0) {
+        bits = this.readByte();
+      }
+      bools.push((bits & 1 << index) !== 0);
+    } while (bools.length < count);
+    return bools;
+  }
 }
 
-// ../src/app/utils/messenger.ts
+// ../src/app/core/messenger.ts
 var WRITE = 0;
 var READ = 1;
 var BELL = 2;
@@ -2122,6 +2269,18 @@ function initialize() {
   const messageListeners = new Array;
   const newUserListener = new Array;
   const { deserialize } = hookSerializers();
+  let canvas;
+  let cursor = {
+    x: 0,
+    y: 0,
+    needsReset: true
+  };
+  function generateRandomHexColor() {
+    let randomNum = Math.floor(Math.random() * 16777215);
+    let hexColor = randomNum.toString(16);
+    let fullHexColor = hexColor.padStart(6, "0");
+    return `#${fullHexColor.toUpperCase()}`;
+  }
   async function listen(ctrl, data) {
     let lastBell = Atomics.load(ctrl, BELL);
     while (true) {
@@ -2132,7 +2291,33 @@ function initialize() {
         continue;
       lastBell = bellNow;
       const msg = drain(ctrl, data);
-      console.log(msg);
+      console.log({
+        ...msg,
+        type: msg ? MessageType[msg?.type] : ""
+      });
+      if (msg?.type === 9 /* POINTER_LOCK */) {
+        cursor.needsReset = true;
+      }
+      if (msg?.type === 5 /* MOUSE_MOVE */) {
+        if (cursor.needsReset) {
+          cursor.x = msg.clientX * 2;
+          cursor.y = msg.clientY * 2;
+          cursor.needsReset = false;
+        }
+        const ctx = canvas?.getContext("2d");
+        if (ctx) {
+          ctx.lineWidth = 10;
+          ctx.beginPath();
+          ctx.moveTo(cursor.x, cursor.y);
+          cursor.x += msg.movementX;
+          cursor.y += msg.movementY;
+          cursor.x = Math.max(0, Math.min(ctx.canvas.width, cursor.x));
+          cursor.y = Math.max(0, Math.min(ctx.canvas.height, cursor.y));
+          ctx.strokeStyle = generateRandomHexColor();
+          ctx.lineTo(cursor.x, cursor.y);
+          ctx.stroke();
+        }
+      }
     }
   }
   function drain(ctrl, data) {
@@ -2151,11 +2336,7 @@ function initialize() {
   class CommInterfaceWorker {
     constructor() {}
     send(data, peer) {
-      respond({
-        action: "send",
-        data,
-        peer
-      });
+      respond({ action: "send", data, peer });
     }
     close() {
       respond({ action: "close" });
@@ -2182,6 +2363,23 @@ function initialize() {
       listen(ctrl, data);
       return;
     }
+    if (msg.canvas) {
+      canvas = msg.canvas;
+      const { width, height, dpr } = msg;
+      if (width && height) {
+        canvas.width = width * (dpr ?? 1);
+        canvas.height = height * (dpr ?? 1);
+      }
+      return;
+    }
+    if (msg.type === "resize") {
+      if (canvas) {
+        const dpr = msg.dpr ?? 1;
+        canvas.width = msg.width * dpr;
+        canvas.height = msg.height * dpr;
+        return;
+      }
+    }
     if (msg.type === "createApp") {
       if (program) {
         throw new Error("Can only create program once");
@@ -2192,21 +2390,11 @@ function initialize() {
         comm: new CommInterfaceWorker
       });
       console.log(program);
-    } else if (msg.type === "onMessage") {
-      messageListeners.forEach((listener) => listener(msg.data));
-    } else if (msg.type === "onUserUpdate") {
-      if (msg.action === "join") {
-        newUserListener.forEach((listener) => listener(msg.user));
-      } else if (msg.action === "leave") {
-        program?.setData(`users/${msg.user}`, undefined);
-      }
-    } else if (msg.type === "ping") {
-      respond({ action: "ping", now: msg.now });
     }
   });
 }
 // src/worker-room/app.worker.ts
 initialize();
 
-//# debugId=E62D5AD519AC75D864756E2164756E21
+//# debugId=10E4B5D6611C247364756E2164756E21
 //# sourceMappingURL=app.worker.js.map

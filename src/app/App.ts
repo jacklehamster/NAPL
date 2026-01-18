@@ -20,7 +20,7 @@ export function createApp({
   workerUrl,
 }: Props) {
   const { userId, send, enterRoom, addMessageListener, addUserListener, end } =
-    enterWorld<Uint8Array>({ appId, workerUrl });
+    enterWorld<Uint8Array>({ worldId: appId, workerUrl });
 
   function setData(path: string, data: any) {
     program.setData(path, data);

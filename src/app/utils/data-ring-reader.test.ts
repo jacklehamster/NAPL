@@ -142,4 +142,43 @@ describe("DataRingReader", () => {
     expect(got.buffer).toBe(buf.buffer);
     expect(Array.from(got)).toEqual([1, 2, 3]);
   });
+
+  it("reads booleans", () => {
+    const { w, r } = make(1024);
+    function generateBooleans() {
+      const booleans = [];
+      for (let i = 0; i < 500; i++) {
+        booleans[i] = Math.random() < 0.5;
+      }
+      return booleans;
+    }
+    const booleans: boolean[] = [
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      false,
+    ];
+    w.writeBooleans(...booleans);
+    expect(r.readBooleans(booleans.length)).toEqual(booleans);
+  });
+
+  it("reads booleans random", () => {
+    const { w, r } = make(1024);
+    function generateBooleans() {
+      const booleans = [];
+      for (let i = 0; i < 500; i++) {
+        booleans[i] = Math.random() < 0.5;
+      }
+      return booleans;
+    }
+    const booleans: boolean[] = generateBooleans();
+    w.writeBooleans(...booleans);
+    expect(r.readBooleans(booleans.length)).toEqual(booleans);
+  });
 });

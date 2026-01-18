@@ -4,7 +4,13 @@ export enum MessageType {
   PING = 2,
   ON_USER_UPDATE = 3,
   ON_MESSAGE = 4,
+  MOUSE_MOVE = 5,
+  MOUSE_DOWN = 6,
+  MOUSE_UP = 7,
+  WHEEL = 8,
+  POINTER_LOCK = 9,
 }
+
 export type UserMessage = {
   type: MessageType.ON_USER_UPDATE;
   user: string;
@@ -26,4 +32,40 @@ export type PingMessage = {
   type: MessageType.PING;
   now: number;
 };
-export type Message = KeyMessage | PingMessage | UserMessage | MsgMessage;
+export type MouseMessage = {
+  type: MessageType.MOUSE_MOVE | MessageType.MOUSE_DOWN | MessageType.MOUSE_UP;
+} & Pick<
+  MouseEvent,
+  | "movementX"
+  | "movementY"
+  | "button"
+  | "buttons"
+  | "altKey"
+  | "ctrlKey"
+  | "shiftKey"
+  | "metaKey"
+  | "clientX"
+  | "clientY"
+>;
+export type WheelMessage = { type: MessageType.WHEEL } & Pick<
+  WheelEvent,
+  | "deltaX"
+  | "deltaY"
+  | "deltaZ"
+  | "deltaMode"
+  | "altKey"
+  | "ctrlKey"
+  | "metaKey"
+  | "shiftKey"
+>;
+export type PointerMessage = { type: MessageType.POINTER_LOCK; enter: boolean };
+
+// All messages
+export type Message =
+  | KeyMessage
+  | PingMessage
+  | UserMessage
+  | MsgMessage
+  | MouseMessage
+  | WheelMessage
+  | PointerMessage;

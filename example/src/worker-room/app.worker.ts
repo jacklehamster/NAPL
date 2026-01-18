@@ -1,3 +1,3 @@
-import { initialize, IProgram } from "napl";
+import { initialize } from "napl";
 
 initialize();

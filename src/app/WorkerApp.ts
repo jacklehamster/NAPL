@@ -1,18 +1,18 @@
 import { WorkerResponse } from "@/worker/WorkerResponse";
 import { enterWorld } from "@dobuki/hello-worker";
-import { setupMessenger } from "./utils/messenger";
-import { MessageType, MsgMessage } from "./MessageType";
-import { PingMessage } from "./MessageType";
-import { UserMessage } from "./MessageType";
+import { setupMessenger } from "./core/messenger";
+import { MessageType } from "./MessageType";
+import { setupGraphics } from "./core/graphics";
+import { setupControl } from "./core/controls";
 
 interface Props {
-  appId: string;
+  worldId: string;
   signalWorkerUrl?: URL;
   programWorkerUrl: URL;
 }
 
 export function createWorkerApp({
-  appId,
+  worldId,
   signalWorkerUrl,
   programWorkerUrl,
 }: Props) {
@@ -29,72 +29,33 @@ export function createWorkerApp({
     addMessageListener,
     addUserListener,
     end,
-  } = enterWorld<Uint8Array>({ appId, workerUrl: signalWorkerUrl });
-
-  enterRoom({ room: "lobby", host: "hello.dobuki.net" });
+  } = enterWorld<Uint8Array>({ worldId, workerUrl: signalWorkerUrl });
 
   const worker = new Worker(programWorkerUrl, { type: "module" });
 
-  const { sendMessage } = setupMessenger(worker);
-
-  document.addEventListener(
-    "keydown",
-    ({ key, altKey, ctrlKey, metaKey, shiftKey, repeat }) => {
-      sendMessage({
-        type: MessageType.KEY_DOWN,
-        key,
-        altKey,
-        ctrlKey,
-        metaKey,
-        shiftKey,
-        repeat,
-      });
-    }
-  );
-  document.addEventListener(
-    "keyup",
-    ({ key, altKey, ctrlKey, metaKey, shiftKey, repeat }) => {
-      sendMessage({
-        type: MessageType.KEY_UP,
-        key,
-        altKey,
-        ctrlKey,
-        metaKey,
-        shiftKey,
-        repeat,
-      });
-    }
-  );
+  const { sendMessage: sendToWorker } = setupMessenger(worker);
+  const { unhook: unhookGraphics } = setupGraphics(worker, {
+    sendMessage: sendToWorker,
+  });
+  const { close: unhookControls } = setupControl({ sendMessage: sendToWorker });
 
   const removeUserListener = addUserListener((user, action, users) => {
-    sendMessage<UserMessage>({
-      type: MessageType.ON_USER_UPDATE,
+    sendToWorker(MessageType.ON_USER_UPDATE, {
       user,
       action,
       users,
     });
   });
   const removeMessageListener = addMessageListener((data, from) => {
-    sendMessage<MsgMessage>({
-      type: MessageType.ON_MESSAGE,
+    sendToWorker(MessageType.ON_MESSAGE, {
       data,
       from,
     });
   });
 
-  // sendToWorker({
-  //   type: "createApp",
-  //   userId,
-  //   appId,
-  // });
-
   setTimeout(() => {
     const now = performance.now();
-    console.log(now);
-    sendMessage<PingMessage>({
-      type: MessageType.PING,
-      now,
-    });
+    sendToWorker(MessageType.PING, { now });
   }, 1000);
 
   const onMessage = (e: MessageEvent<WorkerResponse>) => {
@@ -123,7 +84,9 @@ export function createWorkerApp({
     worker.removeEventListener("message", onMessage);
     removeUserListener();
     removeMessageListener();
+    unhookControls();
     end();
+    unhookGraphics();
   }
 
   return {

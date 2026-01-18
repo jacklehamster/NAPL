@@ -1,6 +1,6 @@
-import { Message } from "../MessageType";
-import { DataRingWriter } from "./data-ring";
-import { hookSerializers } from "./serializers";
+import { Message, MessageType } from "../MessageType";
+import { DataRingWriter } from "../utils/data-ring";
+import { hookSerializers } from "../utils/serializers";
 
 export const WRITE = 0;
 export const READ = 1;
@@ -16,12 +16,15 @@ export function setupMessenger(worker: Worker) {
 
   const { serialize } = hookSerializers();
 
-  function sendMessage<M extends Message>(msg: M) {
+  function sendMessage<M extends Message>(
+    type: M["type"],
+    msg: Omit<M, "type">
+  ) {
     const w0 = Atomics.load(ctrl, WRITE);
     const r0 = Atomics.load(ctrl, READ);
     const wasEmpty = w0 === r0;
 
-    serialize(msg, data);
+    serialize(type, msg, data);
     if (w0 !== data.offset) {
       Atomics.store(ctrl, WRITE, data.offset);
 

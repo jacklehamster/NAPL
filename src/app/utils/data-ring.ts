@@ -1,8 +1,11 @@
 export interface IDataWriter {
   at(offset: number): IDataWriter;
   writeByte(byte: number): void;
+  writeBooleans(...bools: boolean[]): void;
   writeBytes(bytes: Uint8Array): void; // writes [u8 len][len bytes]
   writeString(str: string): void; // writes as writeBytes(utf8)
+  writeInt16(v: number): void;
+  writeInt32(v: number): void;
   writeFloat64(num: number): void; // IEEE754, little-endian
   readonly offset: number;
 }
@@ -17,6 +20,8 @@ export class DataRingWriter implements IDataWriter {
   private scratch = new Uint8Array(64);
   private floatScratch = new Uint8Array(8);
   private floatDV = new DataView(this.floatScratch.buffer);
+  private intScratch = new Uint8Array(4);
+  private intDV = new DataView(this.intScratch.buffer);
 
   constructor(private data: Uint8Array) {
     this.cap = data.length;
@@ -66,6 +71,19 @@ export class DataRingWriter implements IDataWriter {
     this.writeU8(byte);
   }
 
+  writeBooleans(...bools: boolean[]): void {
+    let bits = 0;
+    for (let i = 0; i < bools.length; i++) {
+      const index = i % 8;
+      if (i && index === 0) {
+        this.writeByte(bits);
+        bits = 0;
+      }
+      bits |= bools[i] ? 1 << index : 0;
+    }
+    this.writeByte(bits);
+  }
+
   /** Writes [u8 len][len bytes]. len must be <= 255. */
   writeBytes(bytes: Uint8Array) {
     if (bytes.length > 255) {
@@ -100,6 +118,22 @@ export class DataRingWriter implements IDataWriter {
     this.writeBytes(this.scratch.subarray(0, written));
   }
 
+  private clampInt16(v: number) {
+    if (v > 32767) return 32767;
+    if (v < -32768) return -32768;
+    return v | 0;
+  }
+
+  writeInt16(v: number) {
+    this.floatDV.setInt16(0, this.clampInt16(v), true);
+    this.writeRawBytes(this.floatScratch.subarray(0, 2));
+  }
+
+  writeInt32(v: number) {
+    this.floatDV.setInt32(0, v | 0, true);
+    this.writeRawBytes(this.floatScratch.subarray(0, 4));
+  }
+
   writeFloat64(num: number) {
     // write into temp 8-byte buffer (little-endian) then ring-copy
     this.floatDV.setFloat64(0, num, true);
@@ -110,8 +144,11 @@ export class DataRingWriter implements IDataWriter {
 export interface IDataReader {
   at(offset: number): IDataReader;
   readByte(): number;
+  readBooleans(count: number): boolean[];
   readBytes(): Uint8Array; // reads [u8 len][len bytes] and returns payload (view or scratch)
   readString(): string; // reads bytes then decodes UTF-8
+  readInt16(): number;
+  readInt32(): number;
   readFloat64(): number; // IEEE754, little-endian
   readonly offset: number;
 }
@@ -124,8 +161,9 @@ export class DataRingReader implements IDataReader {
 
   // scratch for wrapped reads (reused)
   private scratch = new Uint8Array(64);
-  private floatScratch = new Uint8Array(8);
-  private floatDV = new DataView(this.floatScratch.buffer);
+  private readonly floatScratch = new Uint8Array(8);
+  private readonly floatDV = new DataView(this.floatScratch.buffer);
+  private readonly boolScratch: boolean[] = [];
 
   constructor(private data: Uint8Array) {
     this.cap = data.length;
@@ -207,6 +245,25 @@ export class DataRingReader implements IDataReader {
     return this.dec.decode(bytes);
   }
 
+  readInt16(): number {
+    const b = this.readRawBytes(2);
+    if (b.byteLength !== 2) throw new Error("readInt16: expected 2 bytes");
+
+    // Copy into floatScratch so DataView reads a stable non-shared buffer
+    this.floatScratch[0] = b[0];
+    this.floatScratch[1] = b[1];
+
+    return this.floatDV.getInt16(0, true);
+  }
+
+  readInt32(): number {
+    const b = this.readRawBytes(4);
+    if (b.byteLength !== 4) throw new Error("readInt32: expected 4 bytes");
+
+    this.floatScratch.set(b.subarray(0, 4), 0);
+    return this.floatDV.getInt32(0, true);
+  }
+
   readFloat64(): number {
     // Read 8 bytes into temp (handles wrap), then interpret little-endian float64
     const b = this.readRawBytes(8);
@@ -216,5 +273,19 @@ export class DataRingReader implements IDataReader {
     // If b is scratch already, this copy is still cheap and keeps floatDV simple.
     this.floatScratch.set(b);
     return this.floatDV.getFloat64(0, true);
+  }
+
+  readBooleans(count: number): boolean[] {
+    const bools: boolean[] = this.boolScratch;
+    bools.length = 0;
+    let bits = 0;
+    do {
+      const index = bools.length % 8;
+      if (index === 0) {
+        bits = this.readByte();
+      }
+      bools.push((bits & (1 << index)) !== 0);
+    } while (bools.length < count);
+    return bools;
   }
 }

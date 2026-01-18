@@ -1,4 +1,9 @@
-import { UserMessage } from "../MessageType";
+import {
+  MouseMessage,
+  PointerMessage,
+  UserMessage,
+  WheelMessage,
+} from "../MessageType";
 import { KeyMessage } from "../MessageType";
 import { MessageType } from "../MessageType";
 import { Message } from "../MessageType";
@@ -7,27 +12,22 @@ import { IDataReader, IDataWriter } from "./data-ring";
 
 export function hookSerializers() {
   const keySerializer: Serializer<KeyMessage> = {
-    serialize: (msg: KeyMessage, data: IDataWriter) => {
+    serialize: (_type, msg: KeyMessage, data: IDataWriter) => {
       data.writeString(msg.key);
-      const bits =
-        (msg.altKey ? 1 << 0 : 0) |
-        (msg.ctrlKey ? 1 << 1 : 0) |
-        (msg.metaKey ? 1 << 2 : 0) |
-        (msg.shiftKey ? 1 << 3 : 0) |
-        (msg.repeat ? 1 << 4 : 0);
-      data.writeByte(bits);
+      data.writeBooleans(
+        msg.altKey,
+        msg.ctrlKey,
+        msg.metaKey,
+        msg.shiftKey,
+        msg.repeat
+      );
     },
     deserialize: (
       data: IDataReader,
       type: MessageType.KEY_UP | MessageType.KEY_DOWN
     ) => {
       const key = data.readString();
-      const bits = data.readByte();
-      const altKey = (bits & (1 << 0)) !== 0;
-      const ctrlKey = (bits & (1 << 1)) !== 0;
-      const metaKey = (bits & (1 << 2)) !== 0;
-      const shiftKey = (bits & (1 << 3)) !== 0;
-      const repeat = (bits & (1 << 4)) !== 0;
+      const [altKey, ctrlKey, metaKey, shiftKey, repeat] = data.readBooleans(5);
       return {
         type,
         key,
@@ -40,13 +40,51 @@ export function hookSerializers() {
     },
   };
 
-  const serializers: [MessageType, Serializer<Message>][] = [
+  const mouseSerializer: Serializer<MouseMessage> = {
+    serialize(type, msg, data) {
+      data.writeInt16(msg.movementX);
+      data.writeInt16(msg.movementY);
+      data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey);
+      data.writeByte(msg.buttons);
+      data.writeInt16(msg.clientX);
+      data.writeInt16(msg.clientY);
+      if (type !== MessageType.MOUSE_MOVE) {
+        data.writeByte(msg.button);
+      }
+    },
+    deserialize(data, type) {
+      const movementX = data.readInt16();
+      const movementY = data.readInt16();
+      const [altKey, ctrlKey, metaKey, shiftKey] = data.readBooleans(4);
+
+      const buttons = data.readByte();
+      const clientX = data.readInt16();
+      const clientY = data.readInt16();
+      const button = type !== MessageType.MOUSE_MOVE ? data.readByte() : -1;
+      return {
+        type,
+        movementX,
+        movementY,
+        clientX,
+        clientY,
+        button,
+        buttons,
+        altKey,
+        ctrlKey,
+        metaKey,
+        shiftKey,
+      };
+    },
+  };
+
+  type Pair<M extends Message = Message> = [M["type"], Serializer<M>];
+  const serializers: Pair[] = [
     [MessageType.KEY_DOWN, keySerializer],
     [MessageType.KEY_UP, keySerializer],
     [
       MessageType.PING,
       {
-        serialize(msg: PingMessage, data: IDataWriter) {
+        serialize(_type, msg: PingMessage, data: IDataWriter) {
           data.writeFloat64(msg.now);
         },
         deserialize(data: IDataReader) {
@@ -58,7 +96,7 @@ export function hookSerializers() {
     [
       MessageType.ON_USER_UPDATE,
       {
-        serialize(msg: UserMessage, data: IDataWriter) {
+        serialize(_type, msg: UserMessage, data: IDataWriter) {
           data.writeString(msg.user);
           data.writeByte(msg.action === "join" ? 1 : 0);
           for (const user of msg.users) {
@@ -84,17 +122,71 @@ export function hookSerializers() {
         },
       },
     ],
+    [MessageType.MOUSE_DOWN, mouseSerializer],
+    [MessageType.MOUSE_UP, mouseSerializer],
+    [MessageType.MOUSE_MOVE, mouseSerializer],
+    [
+      MessageType.WHEEL,
+      {
+        serialize(_type, msg: WheelMessage, data) {
+          data.writeInt16(msg.deltaX * 256);
+          data.writeInt16(msg.deltaY * 256);
+          data.writeInt16(msg.deltaZ * 256);
+          data.writeByte(msg.deltaMode);
+          data.writeBooleans(
+            msg.altKey,
+            msg.ctrlKey,
+            msg.metaKey,
+            msg.shiftKey
+          );
+        },
+        deserialize(data, type: WheelMessage["type"]) {
+          const deltaX = data.readInt16() / 256;
+          const deltaY = data.readInt16() / 256;
+          const deltaZ = data.readInt16() / 256;
+          const deltaMode = data.readByte();
+          const [altKey, ctrlKey, metaKey, shiftKey] = data.readBooleans(4);
+          return {
+            type,
+            deltaX,
+            deltaY,
+            deltaZ,
+            deltaMode,
+            altKey,
+            ctrlKey,
+            metaKey,
+            shiftKey,
+          };
+        },
+      },
+    ],
+    [
+      MessageType.POINTER_LOCK,
+      {
+        serialize(_type, msg: PointerMessage, data) {
+          data.writeBooleans(msg.enter);
+        },
+        deserialize(data, type: PointerMessage["type"]) {
+          const [enter] = data.readBooleans(1);
+          return { type, enter };
+        },
+      },
+    ],
   ];
 
   const serializerMap = new Map<MessageType, Serializer<Message>>(serializers);
 
-  function serialize(message: Message, data: IDataWriter) {
-    const serializer = serializerMap.get(message.type);
+  function serialize<M extends Message>(
+    type: M["type"],
+    message: Omit<M, "type">,
+    data: IDataWriter
+  ) {
+    const serializer = serializerMap.get(type) as Serializer<M> | undefined;
     if (!serializer) {
       return 0;
     }
-    data.writeByte(message.type);
-    serializer.serialize(message, data);
+    data.writeByte(type);
+    serializer.serialize(type, message, data);
   }
 
   function deserialize(data: IDataReader): Message | undefined {
@@ -108,6 +200,6 @@ export function hookSerializers() {
   };
 }
 export interface Serializer<M extends Message> {
-  serialize(msg: M, data: IDataWriter): void;
-  deserialize(data: IDataReader, type: MessageType): M;
+  serialize(type: M["type"], msg: Omit<M, "type">, data: IDataWriter): void;
+  deserialize(data: IDataReader, type: M["type"]): M;
 }

@@ -12,4 +12,10 @@ export type WorkerCommand =
       type: "ping";
       now: number;
       data?: undefined;
+    }
+  | {
+      type: "resize";
+      width: number;
+      height: number;
+      dpr?: number;
     };
