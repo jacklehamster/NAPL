@@ -1,4 +1,5 @@
 import {
+  LineMessage,
   MouseMessage,
   PointerMessage,
   UserMessage,
@@ -19,12 +20,12 @@ export function hookSerializers() {
         msg.ctrlKey,
         msg.metaKey,
         msg.shiftKey,
-        msg.repeat
+        msg.repeat,
       );
     },
     deserialize: (
       data: IDataReader,
-      type: MessageType.KEY_UP | MessageType.KEY_DOWN
+      type: MessageType.KEY_UP | MessageType.KEY_DOWN,
     ) => {
       const key = data.readString();
       const [altKey, ctrlKey, metaKey, shiftKey, repeat] = data.readBooleans(5);
@@ -137,7 +138,7 @@ export function hookSerializers() {
             msg.altKey,
             msg.ctrlKey,
             msg.metaKey,
-            msg.shiftKey
+            msg.shiftKey,
           );
         },
         deserialize(data, type: WheelMessage["type"]) {
@@ -172,6 +173,38 @@ export function hookSerializers() {
         },
       },
     ],
+    [
+      MessageType.LINE,
+      {
+        serialize(_type, msg: LineMessage, data) {
+          data.writeInt16(msg.from.x);
+          data.writeInt16(msg.from.y);
+          data.writeInt16(msg.to.x);
+          data.writeInt16(msg.to.y);
+          data.writeString(msg.color);
+          data.writeByte(msg.lineWidth);
+        },
+        deserialize(data, type: LineMessage["type"]) {
+          const from = {
+            x: data.readInt16(),
+            y: data.readInt16(),
+          };
+          const to = {
+            x: data.readInt16(),
+            y: data.readInt16(),
+          };
+          const color = data.readString();
+          const lineWidth = data.readByte();
+          return {
+            type,
+            from,
+            to,
+            color,
+            lineWidth,
+          };
+        },
+      },
+    ],
   ];
 
   const serializerMap = new Map<MessageType, Serializer<Message>>(serializers);
@@ -179,7 +212,7 @@ export function hookSerializers() {
   function serialize<M extends Message>(
     type: M["type"],
     message: Omit<M, "type">,
-    data: IDataWriter
+    data: IDataWriter,
   ) {
     const serializer = serializerMap.get(type) as Serializer<M> | undefined;
     if (!serializer) {

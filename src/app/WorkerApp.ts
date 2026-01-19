@@ -33,9 +33,17 @@ export function createWorkerApp({
 
   const worker = new Worker(programWorkerUrl, { type: "module" });
 
-  const { sendMessage: sendToWorker } = setupMessenger(worker);
+  const { sendMessage: sendToWorker, close: closeMessenger } = setupMessenger(
+    worker,
+    (msg) => {
+      if (msg.type === MessageType.PING) {
+        console.log("Ping", (performance.now() - msg.now).toFixed(2) + "ms");
+      }
+      console.log(msg);
+    },
+  );
   const { unhook: unhookGraphics } = setupGraphics(worker);
-  const { close: unhookControls } = setupControl({ sendMessage: sendToWorker });
+  const { close: closeControls } = setupControl({ sendMessage: sendToWorker });
 
   const removeUserListener = addUserListener((user, action, users) => {
     sendToWorker(MessageType.ON_USER_UPDATE, {
@@ -71,23 +79,19 @@ export function createWorkerApp({
       case "exitRoom":
         exitRoom({ room: e.data.room, host: e.data.host });
         break;
-      case "ping":
-        console.log("Ping", `${performance.now() - e.data.now}ms`);
-        break;
     }
   };
   worker.addEventListener("message", onMessage);
 
-  function close() {
-    worker.removeEventListener("message", onMessage);
-    removeUserListener();
-    removeMessageListener();
-    unhookControls();
-    end();
-    unhookGraphics();
-  }
-
   return {
-    close,
+    close() {
+      worker.removeEventListener("message", onMessage);
+      removeUserListener();
+      removeMessageListener();
+      closeControls();
+      unhookGraphics();
+      closeMessenger();
+      end();
+    },
   };
 }

@@ -1869,186 +1869,6 @@ class Program {
     this.commAux.disconnect();
   }
 }
-// ../src/app/MessageType.ts
-var MessageType;
-((MessageType2) => {
-  MessageType2[MessageType2["KEY_DOWN"] = 0] = "KEY_DOWN";
-  MessageType2[MessageType2["KEY_UP"] = 1] = "KEY_UP";
-  MessageType2[MessageType2["PING"] = 2] = "PING";
-  MessageType2[MessageType2["ON_USER_UPDATE"] = 3] = "ON_USER_UPDATE";
-  MessageType2[MessageType2["ON_MESSAGE"] = 4] = "ON_MESSAGE";
-  MessageType2[MessageType2["MOUSE_MOVE"] = 5] = "MOUSE_MOVE";
-  MessageType2[MessageType2["MOUSE_DOWN"] = 6] = "MOUSE_DOWN";
-  MessageType2[MessageType2["MOUSE_UP"] = 7] = "MOUSE_UP";
-  MessageType2[MessageType2["WHEEL"] = 8] = "WHEEL";
-  MessageType2[MessageType2["POINTER_LOCK"] = 9] = "POINTER_LOCK";
-})(MessageType ||= {});
-
-// ../src/app/utils/serializers.ts
-function hookSerializers() {
-  const keySerializer = {
-    serialize: (_type, msg, data) => {
-      data.writeString(msg.key);
-      data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey, msg.repeat);
-    },
-    deserialize: (data, type) => {
-      const key = data.readString();
-      const [altKey, ctrlKey, metaKey, shiftKey, repeat] = data.readBooleans(5);
-      return {
-        type,
-        key,
-        altKey,
-        ctrlKey,
-        metaKey,
-        shiftKey,
-        repeat
-      };
-    }
-  };
-  const mouseSerializer = {
-    serialize(type, msg, data) {
-      data.writeInt16(msg.movementX);
-      data.writeInt16(msg.movementY);
-      data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey);
-      data.writeByte(msg.buttons);
-      data.writeInt16(msg.clientX);
-      data.writeInt16(msg.clientY);
-      if (type !== 5 /* MOUSE_MOVE */) {
-        data.writeByte(msg.button);
-      }
-    },
-    deserialize(data, type) {
-      const movementX = data.readInt16();
-      const movementY = data.readInt16();
-      const [altKey, ctrlKey, metaKey, shiftKey] = data.readBooleans(4);
-      const buttons = data.readByte();
-      const clientX = data.readInt16();
-      const clientY = data.readInt16();
-      const button = type !== 5 /* MOUSE_MOVE */ ? data.readByte() : -1;
-      return {
-        type,
-        movementX,
-        movementY,
-        clientX,
-        clientY,
-        button,
-        buttons,
-        altKey,
-        ctrlKey,
-        metaKey,
-        shiftKey
-      };
-    }
-  };
-  const serializers = [
-    [0 /* KEY_DOWN */, keySerializer],
-    [1 /* KEY_UP */, keySerializer],
-    [
-      2 /* PING */,
-      {
-        serialize(_type, msg, data) {
-          data.writeFloat64(msg.now);
-        },
-        deserialize(data) {
-          const now = data.readFloat64();
-          return { type: 2 /* PING */, now };
-        }
-      }
-    ],
-    [
-      3 /* ON_USER_UPDATE */,
-      {
-        serialize(_type, msg, data) {
-          data.writeString(msg.user);
-          data.writeByte(msg.action === "join" ? 1 : 0);
-          for (const user of msg.users) {
-            data.writeString(user);
-          }
-          data.writeString("");
-        },
-        deserialize(data) {
-          const user = data.readString();
-          const action = data.readByte() === 1 ? "join" : "leave";
-          const users = [];
-          do {
-            const usr = data.readString();
-            users.push(usr);
-          } while (users[users.length - 1].length);
-          users.pop();
-          return {
-            type: 3 /* ON_USER_UPDATE */,
-            user,
-            action,
-            users
-          };
-        }
-      }
-    ],
-    [6 /* MOUSE_DOWN */, mouseSerializer],
-    [7 /* MOUSE_UP */, mouseSerializer],
-    [5 /* MOUSE_MOVE */, mouseSerializer],
-    [
-      8 /* WHEEL */,
-      {
-        serialize(_type, msg, data) {
-          data.writeInt16(msg.deltaX * 256);
-          data.writeInt16(msg.deltaY * 256);
-          data.writeInt16(msg.deltaZ * 256);
-          data.writeByte(msg.deltaMode);
-          data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey);
-        },
-        deserialize(data, type) {
-          const deltaX = data.readInt16() / 256;
-          const deltaY = data.readInt16() / 256;
-          const deltaZ = data.readInt16() / 256;
-          const deltaMode = data.readByte();
-          const [altKey, ctrlKey, metaKey, shiftKey] = data.readBooleans(4);
-          return {
-            type,
-            deltaX,
-            deltaY,
-            deltaZ,
-            deltaMode,
-            altKey,
-            ctrlKey,
-            metaKey,
-            shiftKey
-          };
-        }
-      }
-    ],
-    [
-      9 /* POINTER_LOCK */,
-      {
-        serialize(_type, msg, data) {
-          data.writeBooleans(msg.enter);
-        },
-        deserialize(data, type) {
-          const [enter] = data.readBooleans(1);
-          return { type, enter };
-        }
-      }
-    ]
-  ];
-  const serializerMap = new Map(serializers);
-  function serialize(type, message, data) {
-    const serializer = serializerMap.get(type);
-    if (!serializer) {
-      return 0;
-    }
-    data.writeByte(type);
-    serializer.serialize(type, message, data);
-  }
-  function deserialize(data) {
-    const type = data.readByte();
-    return serializerMap.get(type)?.deserialize(data, type);
-  }
-  return {
-    serialize,
-    deserialize
-  };
-}
-
 // ../src/app/utils/data-ring.ts
 class DataRingWriter {
   data;
@@ -2255,20 +2075,293 @@ class DataRingReader {
   }
 }
 
+// ../src/app/utils/loop.ts
+function processLoop(ctrl, callback) {
+  let lastWrite = Atomics.load(ctrl, WRITE);
+  async function tick() {
+    const result = Atomics.waitAsync(ctrl, WRITE, lastWrite, 16);
+    await result.value;
+    const writeNow = Atomics.load(ctrl, WRITE);
+    if (writeNow === lastWrite)
+      return;
+    lastWrite = writeNow;
+    callback();
+  }
+  let looping = true;
+  async function start() {
+    while (looping) {
+      await tick();
+    }
+  }
+  start();
+  return () => {
+    looping = false;
+  };
+}
+
+// ../src/app/MessageType.ts
+var MessageType;
+((MessageType2) => {
+  MessageType2[MessageType2["KEY_DOWN"] = 0] = "KEY_DOWN";
+  MessageType2[MessageType2["KEY_UP"] = 1] = "KEY_UP";
+  MessageType2[MessageType2["ON_USER_UPDATE"] = 2] = "ON_USER_UPDATE";
+  MessageType2[MessageType2["ON_MESSAGE"] = 3] = "ON_MESSAGE";
+  MessageType2[MessageType2["MOUSE_MOVE"] = 4] = "MOUSE_MOVE";
+  MessageType2[MessageType2["MOUSE_DOWN"] = 5] = "MOUSE_DOWN";
+  MessageType2[MessageType2["MOUSE_UP"] = 6] = "MOUSE_UP";
+  MessageType2[MessageType2["WHEEL"] = 7] = "WHEEL";
+  MessageType2[MessageType2["POINTER_LOCK"] = 8] = "POINTER_LOCK";
+  MessageType2[MessageType2["PING"] = 9] = "PING";
+  MessageType2[MessageType2["LINE"] = 10] = "LINE";
+})(MessageType ||= {});
+
+// ../src/app/utils/serializers.ts
+function hookSerializers() {
+  const keySerializer = {
+    serialize: (_type, msg, data) => {
+      data.writeString(msg.key);
+      data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey, msg.repeat);
+    },
+    deserialize: (data, type) => {
+      const key = data.readString();
+      const [altKey, ctrlKey, metaKey, shiftKey, repeat] = data.readBooleans(5);
+      return {
+        type,
+        key,
+        altKey,
+        ctrlKey,
+        metaKey,
+        shiftKey,
+        repeat
+      };
+    }
+  };
+  const mouseSerializer = {
+    serialize(type, msg, data) {
+      data.writeInt16(msg.movementX);
+      data.writeInt16(msg.movementY);
+      data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey);
+      data.writeByte(msg.buttons);
+      data.writeInt16(msg.clientX);
+      data.writeInt16(msg.clientY);
+      if (type !== 4 /* MOUSE_MOVE */) {
+        data.writeByte(msg.button);
+      }
+    },
+    deserialize(data, type) {
+      const movementX = data.readInt16();
+      const movementY = data.readInt16();
+      const [altKey, ctrlKey, metaKey, shiftKey] = data.readBooleans(4);
+      const buttons = data.readByte();
+      const clientX = data.readInt16();
+      const clientY = data.readInt16();
+      const button = type !== 4 /* MOUSE_MOVE */ ? data.readByte() : -1;
+      return {
+        type,
+        movementX,
+        movementY,
+        clientX,
+        clientY,
+        button,
+        buttons,
+        altKey,
+        ctrlKey,
+        metaKey,
+        shiftKey
+      };
+    }
+  };
+  const serializers = [
+    [0 /* KEY_DOWN */, keySerializer],
+    [1 /* KEY_UP */, keySerializer],
+    [
+      9 /* PING */,
+      {
+        serialize(_type, msg, data) {
+          data.writeFloat64(msg.now);
+        },
+        deserialize(data) {
+          const now = data.readFloat64();
+          return { type: 9 /* PING */, now };
+        }
+      }
+    ],
+    [
+      2 /* ON_USER_UPDATE */,
+      {
+        serialize(_type, msg, data) {
+          data.writeString(msg.user);
+          data.writeByte(msg.action === "join" ? 1 : 0);
+          for (const user of msg.users) {
+            data.writeString(user);
+          }
+          data.writeString("");
+        },
+        deserialize(data) {
+          const user = data.readString();
+          const action = data.readByte() === 1 ? "join" : "leave";
+          const users = [];
+          do {
+            const usr = data.readString();
+            users.push(usr);
+          } while (users[users.length - 1].length);
+          users.pop();
+          return {
+            type: 2 /* ON_USER_UPDATE */,
+            user,
+            action,
+            users
+          };
+        }
+      }
+    ],
+    [5 /* MOUSE_DOWN */, mouseSerializer],
+    [6 /* MOUSE_UP */, mouseSerializer],
+    [4 /* MOUSE_MOVE */, mouseSerializer],
+    [
+      7 /* WHEEL */,
+      {
+        serialize(_type, msg, data) {
+          data.writeInt16(msg.deltaX * 256);
+          data.writeInt16(msg.deltaY * 256);
+          data.writeInt16(msg.deltaZ * 256);
+          data.writeByte(msg.deltaMode);
+          data.writeBooleans(msg.altKey, msg.ctrlKey, msg.metaKey, msg.shiftKey);
+        },
+        deserialize(data, type) {
+          const deltaX = data.readInt16() / 256;
+          const deltaY = data.readInt16() / 256;
+          const deltaZ = data.readInt16() / 256;
+          const deltaMode = data.readByte();
+          const [altKey, ctrlKey, metaKey, shiftKey] = data.readBooleans(4);
+          return {
+            type,
+            deltaX,
+            deltaY,
+            deltaZ,
+            deltaMode,
+            altKey,
+            ctrlKey,
+            metaKey,
+            shiftKey
+          };
+        }
+      }
+    ],
+    [
+      8 /* POINTER_LOCK */,
+      {
+        serialize(_type, msg, data) {
+          data.writeBooleans(msg.enter);
+        },
+        deserialize(data, type) {
+          const [enter] = data.readBooleans(1);
+          return { type, enter };
+        }
+      }
+    ],
+    [
+      10 /* LINE */,
+      {
+        serialize(_type, msg, data) {
+          data.writeInt16(msg.from.x);
+          data.writeInt16(msg.from.y);
+          data.writeInt16(msg.to.x);
+          data.writeInt16(msg.to.y);
+          data.writeString(msg.color);
+          data.writeByte(msg.lineWidth);
+        },
+        deserialize(data, type) {
+          const from = {
+            x: data.readInt16(),
+            y: data.readInt16()
+          };
+          const to = {
+            x: data.readInt16(),
+            y: data.readInt16()
+          };
+          const color = data.readString();
+          const lineWidth = data.readByte();
+          return {
+            type,
+            from,
+            to,
+            color,
+            lineWidth
+          };
+        }
+      }
+    ]
+  ];
+  const serializerMap = new Map(serializers);
+  function serialize(type, message, data) {
+    const serializer = serializerMap.get(type);
+    if (!serializer) {
+      return 0;
+    }
+    data.writeByte(type);
+    serializer.serialize(type, message, data);
+  }
+  function deserialize(data) {
+    const type = data.readByte();
+    return serializerMap.get(type)?.deserialize(data, type);
+  }
+  return {
+    serialize,
+    deserialize
+  };
+}
+
+// ../src/app/utils/listener.ts
+function hookMsgListener() {
+  const { deserialize } = hookSerializers();
+  function listen(ctrl, data, onMessage) {
+    const stop = processLoop(ctrl, () => {
+      const msg = drain(ctrl, data);
+      if (msg) {
+        onMessage(msg);
+      }
+    });
+    return () => {
+      stop();
+    };
+  }
+  function drain(ctrl, data) {
+    const r = Atomics.load(ctrl, READ2);
+    const w = Atomics.load(ctrl, WRITE);
+    if (r === w) {
+      return;
+    }
+    const msg = deserialize(data);
+    if (r !== data.offset) {
+      Atomics.store(ctrl, READ2, data.offset);
+    }
+    return msg;
+  }
+  return { listen };
+}
+
 // ../src/app/core/messenger.ts
 var WRITE = 0;
-var READ = 1;
-var BELL = 2;
+var READ2 = 1;
+function hookMessenger(ctrl, data) {
+  const { serialize } = hookSerializers();
+  function sendMessage(type, msg) {
+    const w0 = Atomics.load(ctrl, WRITE);
+    serialize(type, msg, data);
+    if (w0 !== data.offset) {
+      Atomics.store(ctrl, WRITE, data.offset);
+      Atomics.notify(ctrl, WRITE);
+    }
+  }
+  return {
+    sendMessage
+  };
+}
 
 // ../src/worker/CommInterface.worker.ts
-function respond(response) {
-  self.postMessage(response, response.data ? [response.data] : []);
-}
 function initialize() {
-  let program;
-  const messageListeners = new Array;
-  const newUserListener = new Array;
-  const { deserialize } = hookSerializers();
+  let sendMessage;
   let canvas;
   let cursor = {
     x: 0,
@@ -2281,87 +2374,59 @@ function initialize() {
     let fullHexColor = hexColor.padStart(6, "0");
     return `#${fullHexColor.toUpperCase()}`;
   }
-  async function listen(ctrl, data) {
-    let lastBell = Atomics.load(ctrl, BELL);
-    while (true) {
-      const result = Atomics.waitAsync(ctrl, BELL, lastBell, 8);
-      await result.value;
-      const bellNow = Atomics.load(ctrl, BELL);
-      if (bellNow === lastBell)
-        continue;
-      lastBell = bellNow;
-      const msg = drain(ctrl, data);
-      console.log({
-        ...msg,
-        type: msg ? MessageType[msg?.type] : ""
-      });
-      if (msg?.type === 9 /* POINTER_LOCK */) {
-        cursor.needsReset = true;
-      }
-      if (msg?.type === 5 /* MOUSE_MOVE */) {
-        if (cursor.needsReset) {
-          cursor.x = msg.clientX * 2;
-          cursor.y = msg.clientY * 2;
-          cursor.needsReset = false;
-        }
-        const ctx = canvas?.getContext("2d");
-        if (ctx) {
-          ctx.lineWidth = 10;
-          ctx.beginPath();
-          ctx.moveTo(cursor.x, cursor.y);
-          cursor.x += msg.movementX;
-          cursor.y += msg.movementY;
-          cursor.x = Math.max(0, Math.min(ctx.canvas.width, cursor.x));
-          cursor.y = Math.max(0, Math.min(ctx.canvas.height, cursor.y));
-          ctx.strokeStyle = generateRandomHexColor();
-          ctx.lineTo(cursor.x, cursor.y);
-          ctx.stroke();
-        }
-      }
-    }
-  }
-  function drain(ctrl, data) {
-    const r = Atomics.load(ctrl, READ);
-    const w = Atomics.load(ctrl, WRITE);
-    if (r === w) {
-      return;
-    }
-    const msg = deserialize(data);
-    if (r !== data.offset) {
-      Atomics.store(ctrl, READ, data.offset);
-    }
-    return msg;
-  }
-
-  class CommInterfaceWorker {
-    constructor() {}
-    send(data, peer) {
-      respond({ action: "send", data, peer });
-    }
-    close() {
-      respond({ action: "close" });
-    }
-    onMessage(listener) {
-      messageListeners.push(listener);
-      return () => {
-        messageListeners.splice(messageListeners.indexOf(listener), 1);
-      };
-    }
-    onNewClient(listener) {
-      newUserListener.push(listener);
-      return () => {
-        newUserListener.splice(newUserListener.indexOf(listener), 1);
-      };
-    }
-  }
+  const { listen } = hookMsgListener();
   self.addEventListener("message", (e) => {
     const msg = e.data;
-    if (msg.sab) {
-      const sab = msg.sab;
+    if (msg.sabToWorker) {
+      const sab = msg.sabToWorker;
       const ctrl = new Int32Array(sab, 0, 8);
       const data = new DataRingReader(new Uint8Array(sab, 32));
-      listen(ctrl, data);
-      return;
+      listen(ctrl, data, (msg2) => {
+        console.log({
+          ...msg2,
+          type: MessageType[msg2.type]
+        });
+        if (msg2.type === 8 /* POINTER_LOCK */) {
+          cursor.needsReset = true;
+        }
+        if (msg2.type === 4 /* MOUSE_MOVE */) {
+          if (cursor.needsReset) {
+            cursor.x = msg2.clientX * 2;
+            cursor.y = msg2.clientY * 2;
+            cursor.needsReset = false;
+          }
+          const ctx = canvas?.getContext("2d");
+          if (ctx) {
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.moveTo(cursor.x, cursor.y);
+            const from = { x: cursor.x, y: cursor.y };
+            cursor.x += msg2.movementX;
+            cursor.y += msg2.movementY;
+            cursor.x = Math.max(0, Math.min(ctx.canvas.width, cursor.x));
+            cursor.y = Math.max(0, Math.min(ctx.canvas.height, cursor.y));
+            ctx.strokeStyle = generateRandomHexColor();
+            ctx.lineTo(cursor.x, cursor.y);
+            ctx.stroke();
+            sendMessage(10 /* LINE */, {
+              from,
+              to: { x: cursor.x, y: cursor.y },
+              color: ctx.strokeStyle,
+              lineWidth: ctx.lineWidth
+            });
+          }
+        }
+        if (msg2.type === 9 /* PING */) {
+          sendMessage(9 /* PING */, { now: msg2.now });
+        }
+      });
+    }
+    if (msg.sabFromWorker) {
+      const sab = msg.sabFromWorker;
+      const ctrl = new Int32Array(sab, 0, 8);
+      const data = new DataRingWriter(new Uint8Array(sab, 32));
+      const result = hookMessenger(ctrl, data);
+      sendMessage = result.sendMessage;
     }
     if (msg.canvas) {
       canvas = msg.canvas;
@@ -2370,7 +2435,6 @@ function initialize() {
         canvas.width = width * (dpr ?? 1);
         canvas.height = height * (dpr ?? 1);
       }
-      return;
     }
     if (msg.type === "resize") {
       if (canvas) {
@@ -2380,21 +2444,10 @@ function initialize() {
         return;
       }
     }
-    if (msg.type === "createApp") {
-      if (program) {
-        throw new Error("Can only create program once");
-      }
-      program = new Program({
-        appId: msg.appId,
-        userId: msg.userId,
-        comm: new CommInterfaceWorker
-      });
-      console.log(program);
-    }
   });
 }
 // src/worker-room/app.worker.ts
 initialize();
 
-//# debugId=10E4B5D6611C247364756E2164756E21
+//# debugId=81E7142983261FB664756E2164756E21
 //# sourceMappingURL=app.worker.js.map

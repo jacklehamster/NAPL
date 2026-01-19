@@ -1,41 +1,61 @@
-import { Message, MessageType } from "../MessageType";
-import { DataRingWriter } from "../utils/data-ring";
+import { Message } from "../MessageType";
+import {
+  DataRingReader,
+  DataRingWriter,
+  IDataWriter,
+} from "../utils/data-ring";
+import { hookMsgListener } from "../utils/listener";
 import { hookSerializers } from "../utils/serializers";
 
 export const WRITE = 0;
 export const READ = 1;
-export const BELL = 2; // doorbell
 
-export function setupMessenger(worker: Worker) {
-  const BYTES = 1024 * 1024;
-  const sab = new SharedArrayBuffer(BYTES);
-  const ctrl = new Int32Array(sab, 0, 8); // make ctrl view locally
-  const data = new DataRingWriter(new Uint8Array(sab, 32));
-
-  worker.postMessage({ sab }); //  not transferable
-
+export function hookMessenger(ctrl: Int32Array, data: IDataWriter) {
   const { serialize } = hookSerializers();
 
   function sendMessage<M extends Message>(
     type: M["type"],
-    msg: Omit<M, "type">
+    msg: Omit<M, "type">,
   ) {
     const w0 = Atomics.load(ctrl, WRITE);
-    const r0 = Atomics.load(ctrl, READ);
-    const wasEmpty = w0 === r0;
-
     serialize(type, msg, data);
     if (w0 !== data.offset) {
       Atomics.store(ctrl, WRITE, data.offset);
-
-      if (wasEmpty) {
-        Atomics.add(ctrl, BELL, 1);
-        Atomics.notify(ctrl, BELL);
-      }
+      Atomics.notify(ctrl, WRITE);
     }
   }
 
   return {
     sendMessage,
+  };
+}
+
+export function setupMessenger(
+  worker: Worker,
+  onMessage: (msg: Message) => void,
+) {
+  const BYTES = 1024 * 1024;
+  const sabToWorker = new SharedArrayBuffer(BYTES);
+  const sabFromWorker = new SharedArrayBuffer(BYTES);
+
+  const { listen } = hookMsgListener();
+
+  worker.postMessage({ sabToWorker, sabFromWorker }); //  not transferable
+
+  const unlisten = listen(
+    new Int32Array(sabFromWorker, 0, 8),
+    new DataRingReader(new Uint8Array(sabFromWorker, 32)),
+    onMessage,
+  );
+
+  const { sendMessage } = hookMessenger(
+    new Int32Array(sabToWorker, 0, 8),
+    new DataRingWriter(new Uint8Array(sabToWorker, 32)),
+  );
+  return {
+    sendMessage,
+    close: () => {
+      unlisten();
+    },
   };
 }

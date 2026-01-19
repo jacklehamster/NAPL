@@ -1,44 +1,62 @@
 export function hookPointerLock(onHook: () => () => void) {
   const TIME_DELAY = 1400;
   let exitedPointerLockTime = -TIME_DELAY;
+  let timeout: ReturnType<typeof setTimeout> | undefined;
 
-  let timeout: ReturnType<typeof setTimeout>;
-  async function enterPointerLock() {
+  function ensureFocus() {
     if (!document.activeElement) {
       document.body.focus();
       exitedPointerLockTime = performance.now();
-      return;
+      return true;
     }
+    return false;
+  }
 
-    document.body.style.cursor = "none";
-    const unhook = onHook();
+  async function waitForPointerLockExit() {
     const timeSinceExited = performance.now() - exitedPointerLockTime;
-    function restore() {
-      unhook();
-      document.body.style.cursor = "auto";
-      exitedPointerLockTime = performance.now();
-    }
-
     clearTimeout(timeout);
     if (timeSinceExited < TIME_DELAY) {
       let hasExited = false;
       function detectExit() {
         hasExited = true;
-        restore();
       }
       document.body.addEventListener("mouseleave", detectExit, { once: true });
 
       await new Promise<void>(
         (resolve) =>
-          (timeout = setTimeout(resolve, TIME_DELAY - timeSinceExited))
+          (timeout = setTimeout(resolve, TIME_DELAY - timeSinceExited)),
       );
+      timeout = undefined;
       document.body.removeEventListener("mouseleave", detectExit);
       if (hasExited) {
-        return;
+        return false;
       }
     }
+    return true;
+  }
+
+  async function enterPointerLock() {
+    if (ensureFocus()) {
+      return;
+    }
+    if (timeout) return;
+
+    document.body.style.cursor = "none";
+    //  Hook
+    const unhook = onHook();
+    const restore = () => {
+      unhook();
+      document.body.style.cursor = "auto";
+      exitedPointerLockTime = performance.now();
+    };
+    //  Wait until pointer lock is available
+    const shouldContinue = await waitForPointerLockExit();
+    if (!shouldContinue) {
+      restore();
+      return;
+    }
+    //  Enter pointer lock
     try {
-      console.log("HERE");
       await document.body.requestPointerLock();
     } catch (e) {
       console.warn(e);
@@ -46,9 +64,7 @@ export function hookPointerLock(onHook: () => () => void) {
       return;
     }
     function onPointerLockChange() {
-      if (document.pointerLockElement) {
-        return;
-      }
+      if (document.pointerLockElement) return;
       restore();
       document.removeEventListener("pointerlockchange", onPointerLockChange);
     }

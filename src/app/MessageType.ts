@@ -1,14 +1,18 @@
 export enum MessageType {
-  KEY_DOWN = 0,
-  KEY_UP = 1,
-  PING = 2,
-  ON_USER_UPDATE = 3,
-  ON_MESSAGE = 4,
-  MOUSE_MOVE = 5,
-  MOUSE_DOWN = 6,
-  MOUSE_UP = 7,
-  WHEEL = 8,
-  POINTER_LOCK = 9,
+  //  ToWorker
+  KEY_DOWN,
+  KEY_UP,
+  ON_USER_UPDATE,
+  ON_MESSAGE,
+  MOUSE_MOVE,
+  MOUSE_DOWN,
+  MOUSE_UP,
+  WHEEL,
+  POINTER_LOCK,
+  //  Both
+  PING,
+  //  FromWorker
+  LINE,
 }
 
 export type UserMessage = {
@@ -60,6 +64,14 @@ export type WheelMessage = { type: MessageType.WHEEL } & Pick<
 >;
 export type PointerMessage = { type: MessageType.POINTER_LOCK; enter: boolean };
 
+export type LineMessage = {
+  type: MessageType.LINE;
+  from: { x: number; y: number };
+  to: { x: number; y: number };
+  color: string;
+  lineWidth: number;
+};
+
 // All messages
 export type Message =
   | KeyMessage
@@ -68,4 +80,5 @@ export type Message =
   | MsgMessage
   | MouseMessage
   | WheelMessage
-  | PointerMessage;
+  | PointerMessage
+  | LineMessage;

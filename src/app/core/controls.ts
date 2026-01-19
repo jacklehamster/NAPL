@@ -1,4 +1,4 @@
-import { Message, KeyMessage, MessageType } from "../MessageType";
+import { Message, MessageType } from "../MessageType";
 import { hookPointerLock } from "../utils/pointer-lock-hook";
 
 export function setupControl({
@@ -6,18 +6,16 @@ export function setupControl({
 }: {
   sendMessage: <M extends Message>(
     type: M["type"],
-    msg: Omit<M, "type">
+    msg: Omit<M, "type">,
   ) => void;
 }) {
   const { enterPointerLock } = hookPointerLock(() => {
     function onKeyDown(e: KeyboardEvent) {
-      sendMessage<KeyMessage>(MessageType.KEY_DOWN, e);
+      sendMessage(MessageType.KEY_DOWN, e);
     }
     function onKeyUp(e: KeyboardEvent) {
       sendMessage(MessageType.KEY_UP, e);
     }
-
-    //  Handle mouse
     function onMouseMove(e: MouseEvent) {
       sendMessage(MessageType.MOUSE_MOVE, e);
     }
@@ -56,10 +54,10 @@ export function setupControl({
     };
   });
 
-  document.addEventListener("click", enterPointerLock);
+  document.addEventListener("mousedown", enterPointerLock);
 
   function close() {
-    document.removeEventListener("click", enterPointerLock);
+    document.removeEventListener("mousedown", enterPointerLock);
   }
 
   return { close };
