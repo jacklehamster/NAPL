@@ -9,7 +9,7 @@
     "sha": "de156dc081d711ccdcdb42939838fba797e8bd93"
   },
   "core/controls.ts": {
-    "sha": "b52eb2a9773a19026d24127213d42993173b8b3d"
+    "sha": "1e2f58aaeaa7a840b093858741f762ce839ecc9c"
   },
   "core/graphics.ts": {
     "sha": "95a3889955fbc681c5c567c6ac314b1e682a83bb"
@@ -17,7 +17,7 @@
   "core/messenger.ts": {
     "sha": "5153936c15ef9cd153448f993071f9387dad964c"
   },
-  "md5": "17e915cd7a26239617ced1ad4fa9f6aa",
+  "md5": "b6a8fba1ed5e0fad9f671bf28db65109",
   "utils/data-ring-reader.test.ts": {
     "sha": "836dd88de39e6f22ee439d112045ce46c8744b02"
   },

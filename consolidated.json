@@ -60,13 +60,13 @@
     "md5": "5b1aff9cdf1129896ac1c13017a00847"
   },
   "/example/config.json": {
-    "tab": "game-room"
+    "tab": "test-room"
   },
   "/example/dir-json.json": {
     "config.json": {
-      "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
+      "sha": "606335fcdf1ca59f27d92704f4a015b24633e350"
     },
-    "md5": "df4c8b9382714977b51572f1c929eb26",
+    "md5": "c4185c97f916e00d73b4b749f29bd880",
     "package.json": {
       "sha": "52318b8e22853d58cf7107bc5fcc221b133f410c"
     },
@@ -85,7 +85,7 @@
       "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
     },
     "config.json": {
-      "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
+      "sha": "606335fcdf1ca59f27d92704f4a015b24633e350"
     },
     "dist/app.worker.js": {
       "sha": "3eba90ee8f8eadbf1c691795f75dcf804aa5eb9e"
@@ -94,10 +94,10 @@
       "sha": "811acb5d4985cace6ffc2ab3fc90dd53197eb6e1"
     },
     "dist/index.js": {
-      "sha": "61bdc991d1af24248f3837e556dc964d1e1f2abf"
+      "sha": "aeccec8a6df5cb3ea5e9d057554369f6347ece4f"
     },
     "dist/index.js.map": {
-      "sha": "477af48689757c0fceb98a0c738b987e109b9fe8"
+      "sha": "fae9e0e4f107a4883327ada15cbf4e9548330951"
     },
     "dist/signal-room.worker.js": {
       "sha": "29a34814966dcb05f2d7a4197009bd493480156d"
@@ -109,12 +109,12 @@
       "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
     },
     "index.html": {
-      "sha": "124d06c45b917a3fccb528a69fb1d09b756443ae"
+      "sha": "b397978d806e7a5b7a6c281413f3a0e639082d47"
     },
     "index.ts": {
-      "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
+      "sha": "bc31864440932574e9b0eeaf61c6dba6721d1efa"
     },
-    "md5": "0f697909fad3cc092f003fc57965a8d4",
+    "md5": "d84cb21965910cbbc63bfa063cde04e5",
     "package.json": {
       "sha": "52318b8e22853d58cf7107bc5fcc221b133f410c"
     },
@@ -148,12 +148,12 @@
       "sha": "811acb5d4985cace6ffc2ab3fc90dd53197eb6e1"
     },
     "index.js": {
-      "sha": "61bdc991d1af24248f3837e556dc964d1e1f2abf"
+      "sha": "aeccec8a6df5cb3ea5e9d057554369f6347ece4f"
     },
     "index.js.map": {
-      "sha": "477af48689757c0fceb98a0c738b987e109b9fe8"
+      "sha": "fae9e0e4f107a4883327ada15cbf4e9548330951"
     },
-    "md5": "8423a70b0e4bd7012e3fdbf4c46bf705",
+    "md5": "823d6cb7085bfbf7ca6657687bc5442e",
     "signal-room.worker.js": {
       "sha": "29a34814966dcb05f2d7a4197009bd493480156d"
     },
@@ -332,12 +332,12 @@
   },
   "/src/app/core/dir.json": {
     "controls.ts": {
-      "sha": "b52eb2a9773a19026d24127213d42993173b8b3d"
+      "sha": "1e2f58aaeaa7a840b093858741f762ce839ecc9c"
     },
     "graphics.ts": {
       "sha": "95a3889955fbc681c5c567c6ac314b1e682a83bb"
     },
-    "md5": "1a513b63548cfa9dfa3928bbec21cedc",
+    "md5": "6164f1c702685b7eaaf702b02d1831a9",
     "messenger.ts": {
       "sha": "5153936c15ef9cd153448f993071f9387dad964c"
     }
@@ -353,7 +353,7 @@
       "sha": "de156dc081d711ccdcdb42939838fba797e8bd93"
     },
     "core/controls.ts": {
-      "sha": "b52eb2a9773a19026d24127213d42993173b8b3d"
+      "sha": "1e2f58aaeaa7a840b093858741f762ce839ecc9c"
     },
     "core/graphics.ts": {
       "sha": "95a3889955fbc681c5c567c6ac314b1e682a83bb"
@@ -361,7 +361,7 @@
     "core/messenger.ts": {
       "sha": "5153936c15ef9cd153448f993071f9387dad964c"
     },
-    "md5": "17e915cd7a26239617ced1ad4fa9f6aa",
+    "md5": "b6a8fba1ed5e0fad9f671bf28db65109",
     "utils/data-ring-reader.test.ts": {
       "sha": "836dd88de39e6f22ee439d112045ce46c8744b02"
     },
@@ -491,7 +491,7 @@
       "sha": "de156dc081d711ccdcdb42939838fba797e8bd93"
     },
     "app/core/controls.ts": {
-      "sha": "b52eb2a9773a19026d24127213d42993173b8b3d"
+      "sha": "1e2f58aaeaa7a840b093858741f762ce839ecc9c"
     },
     "app/core/graphics.ts": {
       "sha": "95a3889955fbc681c5c567c6ac314b1e682a83bb"
@@ -559,7 +559,7 @@
     "index.ts": {
       "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
     },
-    "md5": "5c2fa7eff4bc0c12f22d91a75ffcb6df",
+    "md5": "79d61726fb5b88555f3b8880e968e607",
     "observer/Observer.ts": {
       "sha": "44f85279f99eb14183fef9839d35620e14888c18"
     },

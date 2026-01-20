@@ -9,7 +9,7 @@
     "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
   },
   "config.json": {
-    "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
+    "sha": "606335fcdf1ca59f27d92704f4a015b24633e350"
   },
   "dist/app.worker.js": {
     "sha": "3eba90ee8f8eadbf1c691795f75dcf804aa5eb9e"
@@ -18,10 +18,10 @@
     "sha": "811acb5d4985cace6ffc2ab3fc90dd53197eb6e1"
   },
   "dist/index.js": {
-    "sha": "61bdc991d1af24248f3837e556dc964d1e1f2abf"
+    "sha": "aeccec8a6df5cb3ea5e9d057554369f6347ece4f"
   },
   "dist/index.js.map": {
-    "sha": "477af48689757c0fceb98a0c738b987e109b9fe8"
+    "sha": "fae9e0e4f107a4883327ada15cbf4e9548330951"
   },
   "dist/signal-room.worker.js": {
     "sha": "29a34814966dcb05f2d7a4197009bd493480156d"
@@ -33,12 +33,12 @@
     "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
   },
   "index.html": {
-    "sha": "124d06c45b917a3fccb528a69fb1d09b756443ae"
+    "sha": "b397978d806e7a5b7a6c281413f3a0e639082d47"
   },
   "index.ts": {
-    "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
+    "sha": "bc31864440932574e9b0eeaf61c6dba6721d1efa"
   },
-  "md5": "0f697909fad3cc092f003fc57965a8d4",
+  "md5": "d84cb21965910cbbc63bfa063cde04e5",
   "package.json": {
     "sha": "52318b8e22853d58cf7107bc5fcc221b133f410c"
   },
