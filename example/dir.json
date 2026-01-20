@@ -2,6 +2,9 @@
   "README.md": {
     "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
   },
+  "_headers": {
+    "sha": "098b15dada87a34ab0cf3721873282f622829277"
+  },
   "bundler/bundler.ts": {
     "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
   },
@@ -32,7 +35,7 @@
   "index.ts": {
     "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
   },
-  "md5": "bf993e45dff7b3efb493251a712c94a2",
+  "md5": "de61bc6d64c9d2bf9268310c5bd9b733",
   "package.json": {
     "sha": "97fcc3baa8e6e96e0b4ba307cbe053e2e6489258"
   },
