@@ -33,15 +33,12 @@
     "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
   },
   "index.html": {
-    "sha": "7c3148db7740ecd21b3ac229a4d761a4191af7bc"
+    "sha": "124d06c45b917a3fccb528a69fb1d09b756443ae"
   },
   "index.ts": {
     "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
   },
-  "index2.html": {
-    "sha": "ccfdeee2d1e56d8522a25393611c2367c3114d31"
-  },
-  "md5": "80e84642497013fd0991f0b72302c18d",
+  "md5": "0f697909fad3cc092f003fc57965a8d4",
   "package.json": {
     "sha": "52318b8e22853d58cf7107bc5fcc221b133f410c"
   },
