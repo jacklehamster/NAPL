@@ -10,6 +10,7 @@ export function processLoop(
     // sleep until WRITE changes
     const result = Atomics.waitAsync(ctrl, WRITE, lastWrite, 16);
     await result.value;
+    // await new Promise((resolve) => setTimeout(resolve));
     const writeNow = Atomics.load(ctrl, WRITE);
     if (writeNow === lastWrite) return;
     lastWrite = writeNow;

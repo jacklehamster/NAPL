@@ -1,7 +1,6 @@
 /// <reference lib="webworker" />
 
 import { WorkerCommand } from "./WorkerCommand";
-import { hookSerializers } from "@/app/utils/serializers";
 import { hookMessenger } from "@/app/core/messenger";
 import { DataRingReader, DataRingWriter } from "@/app/utils/data-ring";
 import { Message, MessageType } from "@/app/MessageType";
@@ -28,6 +27,7 @@ export function initialize(): void {
     x: 0,
     y: 0,
     needsReset: true,
+    color: "black",
   };
 
   function generateRandomHexColor() {
@@ -93,6 +93,18 @@ export function initialize(): void {
           });
           if (msg.type === MessageType.POINTER_LOCK) {
             cursor.needsReset = true;
+            cursor.color = generateRandomHexColor();
+          }
+          if (msg.type === MessageType.LINE) {
+            const ctx = canvas?.getContext("2d");
+            if (ctx) {
+              ctx.lineWidth = msg.lineWidth;
+              ctx.beginPath();
+              ctx.moveTo(msg.from.x, msg.from.y);
+              ctx.strokeStyle = msg.color;
+              ctx.lineTo(msg.to.x, msg.to.y);
+              ctx.stroke();
+            }
           }
           if (msg.type === MessageType.MOUSE_MOVE) {
             if (cursor.needsReset) {
@@ -103,15 +115,21 @@ export function initialize(): void {
             const ctx = canvas?.getContext("2d");
 
             if (ctx) {
-              ctx.lineWidth = 10;
               ctx.beginPath();
               ctx.moveTo(cursor.x, cursor.y);
               const from = { x: cursor.x, y: cursor.y };
+              ctx.lineWidth =
+                Math.sqrt(
+                  Math.sqrt(
+                    msg.movementX * msg.movementX +
+                      msg.movementY * msg.movementY,
+                  ),
+                ) * 2;
               cursor.x += msg.movementX;
               cursor.y += msg.movementY;
               cursor.x = Math.max(0, Math.min(ctx.canvas.width, cursor.x));
               cursor.y = Math.max(0, Math.min(ctx.canvas.height, cursor.y));
-              ctx.strokeStyle = generateRandomHexColor();
+              ctx.strokeStyle = cursor.color;
               ctx.lineTo(cursor.x, cursor.y);
               ctx.stroke();
               sendMessage(MessageType.LINE, {

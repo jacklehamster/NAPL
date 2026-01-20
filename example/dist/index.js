@@ -15374,7 +15374,7 @@ function hookSerializers() {
           data.writeInt16(msg.to.x);
           data.writeInt16(msg.to.y);
           data.writeString(msg.color);
-          data.writeByte(msg.lineWidth);
+          data.writeFloat64(msg.lineWidth);
         },
         deserialize(data, type) {
           const from = {
@@ -15386,7 +15386,7 @@ function hookSerializers() {
             y: data.readInt16()
           };
           const color = data.readString();
-          const lineWidth = data.readByte();
+          const lineWidth = data.readFloat64();
           return {
             type,
             from,
@@ -15520,7 +15520,7 @@ function hookPointerLock(onHook) {
     }
     return false;
   }
-  async function waitForPointerLockExit(restore) {
+  async function waitForPointerLockExit() {
     const timeSinceExited = performance.now() - exitedPointerLockTime;
     clearTimeout(timeout);
     if (timeSinceExited < TIME_DELAY) {
@@ -15546,12 +15546,12 @@ function hookPointerLock(onHook) {
       return;
     document.body.style.cursor = "none";
     const unhook = onHook();
-    function restore() {
+    const restore = () => {
       unhook();
       document.body.style.cursor = "auto";
       exitedPointerLockTime = performance.now();
-    }
-    const shouldContinue = await waitForPointerLockExit(restore);
+    };
+    const shouldContinue = await waitForPointerLockExit();
     if (!shouldContinue) {
       restore();
       return;
@@ -15564,9 +15564,8 @@ function hookPointerLock(onHook) {
       return;
     }
     function onPointerLockChange() {
-      if (document.pointerLockElement) {
+      if (document.pointerLockElement)
         return;
-      }
       restore();
       document.removeEventListener("pointerlockchange", onPointerLockChange);
     }
@@ -15633,7 +15632,8 @@ function setupControl({
 function createWorkerApp({
   worldId,
   signalWorkerUrl,
-  programWorkerUrl
+  programWorkerUrl,
+  lobby
 }) {
   if (!self.crossOriginIsolated) {
     throw new Error(`This feature can’t run in your current browser context.
@@ -15642,7 +15642,7 @@ function createWorkerApp({
   }
   const {
     userId,
-    send,
+    send: sendAcross,
     enterRoom,
     exitRoom,
     addMessageListener,
@@ -15653,6 +15653,9 @@ function createWorkerApp({
   const { sendMessage: sendToWorker, close: closeMessenger } = setupMessenger(worker, (msg) => {
     if (msg.type === 9 /* PING */) {
       console.log("Ping", (performance.now() - msg.now).toFixed(2) + "ms");
+    }
+    if (msg.type === 10 /* LINE */) {
+      sendAcross(JSON.stringify(msg));
     }
     console.log(msg);
   });
@@ -15666,6 +15669,11 @@ function createWorkerApp({
     });
   });
   const removeMessageListener = addMessageListener((data, from) => {
+    if (typeof data === "string") {
+      const obj = JSON.parse(data);
+      sendToWorker(obj.type, obj);
+      return;
+    }
     sendToWorker(3 /* ON_MESSAGE */, {
       data,
       from
@@ -15679,7 +15687,7 @@ function createWorkerApp({
     const { action } = e.data;
     switch (action) {
       case "send":
-        send(e.data.data, e.data.peer);
+        sendAcross(e.data.data, e.data.peer);
         break;
       case "close":
         close();
@@ -15693,6 +15701,9 @@ function createWorkerApp({
     }
   };
   worker.addEventListener("message", onMessage);
+  if (lobby) {
+    enterRoom(lobby);
+  }
   return {
     close() {
       worker.removeEventListener("message", onMessage);
@@ -15702,6 +15713,9 @@ function createWorkerApp({
       unhookGraphics();
       closeMessenger();
       end();
+      if (lobby) {
+        exitRoom(lobby);
+      }
     }
   };
 }
@@ -15952,7 +15966,11 @@ function setupWorkerApp() {
   return createWorkerApp({
     worldId: "worker-test",
     signalWorkerUrl: new URL("./signal-room.worker.js", import.meta.url),
-    programWorkerUrl: new URL("./app.worker.js", import.meta.url)
+    programWorkerUrl: new URL("./app.worker.js", import.meta.url),
+    lobby: {
+      room: "worker-test-room",
+      host: "hello.dobuki.net"
+    }
   });
 }
 export {
@@ -15960,4 +15978,4 @@ export {
   setupApp
 };
 
-//# debugId=89FE5D4682FFF5F964756E2164756E21
+//# debugId=294AA3DBDABA416064756E2164756E21

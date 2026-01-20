@@ -9,12 +9,17 @@ interface Props {
   worldId: string;
   signalWorkerUrl?: URL;
   programWorkerUrl: URL;
+  lobby?: {
+    host: string;
+    room: string;
+  };
 }
 
 export function createWorkerApp({
   worldId,
   signalWorkerUrl,
   programWorkerUrl,
+  lobby,
 }: Props) {
   if (!self.crossOriginIsolated) {
     throw new Error(`This feature can’t run in your current browser context.
@@ -23,13 +28,13 @@ export function createWorkerApp({
   }
   const {
     userId,
-    send,
+    send: sendAcross,
     enterRoom,
     exitRoom,
     addMessageListener,
     addUserListener,
     end,
-  } = enterWorld<Uint8Array>({ worldId, workerUrl: signalWorkerUrl });
+  } = enterWorld<Uint8Array | string>({ worldId, workerUrl: signalWorkerUrl });
 
   const worker = new Worker(programWorkerUrl, { type: "module" });
 
@@ -38,6 +43,10 @@ export function createWorkerApp({
     (msg) => {
       if (msg.type === MessageType.PING) {
         console.log("Ping", (performance.now() - msg.now).toFixed(2) + "ms");
+      }
+      if (msg.type === MessageType.LINE) {
+        sendAcross(JSON.stringify(msg));
+        // sendToWorker(MessageType.LINE, msg);
       }
       console.log(msg);
     },
@@ -53,6 +62,11 @@ export function createWorkerApp({
     });
   });
   const removeMessageListener = addMessageListener((data, from) => {
+    if (typeof data === "string") {
+      const obj = JSON.parse(data);
+      sendToWorker(obj.type, obj);
+      return;
+    }
     sendToWorker(MessageType.ON_MESSAGE, {
       data,
       from,
@@ -68,7 +82,7 @@ export function createWorkerApp({
     const { action } = e.data;
     switch (action) {
       case "send":
-        send(e.data.data, e.data.peer);
+        sendAcross(e.data.data, e.data.peer);
         break;
       case "close":
         close();
@@ -83,6 +97,10 @@ export function createWorkerApp({
   };
   worker.addEventListener("message", onMessage);
 
+  if (lobby) {
+    enterRoom(lobby);
+  }
+
   return {
     close() {
       worker.removeEventListener("message", onMessage);
@@ -92,6 +110,9 @@ export function createWorkerApp({
       unhookGraphics();
       closeMessenger();
       end();
+      if (lobby) {
+        exitRoom(lobby);
+      }
     },
   };
 }

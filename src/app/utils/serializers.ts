@@ -182,7 +182,7 @@ export function hookSerializers() {
           data.writeInt16(msg.to.x);
           data.writeInt16(msg.to.y);
           data.writeString(msg.color);
-          data.writeByte(msg.lineWidth);
+          data.writeFloat64(msg.lineWidth);
         },
         deserialize(data, type: LineMessage["type"]) {
           const from = {
@@ -194,7 +194,7 @@ export function hookSerializers() {
             y: data.readInt16(),
           };
           const color = data.readString();
-          const lineWidth = data.readByte();
+          const lineWidth = data.readFloat64();
           return {
             type,
             from,

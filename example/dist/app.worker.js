@@ -2269,7 +2269,7 @@ function hookSerializers() {
           data.writeInt16(msg.to.x);
           data.writeInt16(msg.to.y);
           data.writeString(msg.color);
-          data.writeByte(msg.lineWidth);
+          data.writeFloat64(msg.lineWidth);
         },
         deserialize(data, type) {
           const from = {
@@ -2281,7 +2281,7 @@ function hookSerializers() {
             y: data.readInt16()
           };
           const color = data.readString();
-          const lineWidth = data.readByte();
+          const lineWidth = data.readFloat64();
           return {
             type,
             from,
@@ -2366,7 +2366,8 @@ function initialize() {
   let cursor = {
     x: 0,
     y: 0,
-    needsReset: true
+    needsReset: true,
+    color: "black"
   };
   function generateRandomHexColor() {
     let randomNum = Math.floor(Math.random() * 16777215);
@@ -2388,6 +2389,18 @@ function initialize() {
         });
         if (msg2.type === 8 /* POINTER_LOCK */) {
           cursor.needsReset = true;
+          cursor.color = generateRandomHexColor();
+        }
+        if (msg2.type === 10 /* LINE */) {
+          const ctx = canvas?.getContext("2d");
+          if (ctx) {
+            ctx.lineWidth = msg2.lineWidth;
+            ctx.beginPath();
+            ctx.moveTo(msg2.from.x, msg2.from.y);
+            ctx.strokeStyle = msg2.color;
+            ctx.lineTo(msg2.to.x, msg2.to.y);
+            ctx.stroke();
+          }
         }
         if (msg2.type === 4 /* MOUSE_MOVE */) {
           if (cursor.needsReset) {
@@ -2397,15 +2410,15 @@ function initialize() {
           }
           const ctx = canvas?.getContext("2d");
           if (ctx) {
-            ctx.lineWidth = 10;
             ctx.beginPath();
             ctx.moveTo(cursor.x, cursor.y);
             const from = { x: cursor.x, y: cursor.y };
+            ctx.lineWidth = Math.sqrt(Math.sqrt(msg2.movementX * msg2.movementX + msg2.movementY * msg2.movementY)) * 2;
             cursor.x += msg2.movementX;
             cursor.y += msg2.movementY;
             cursor.x = Math.max(0, Math.min(ctx.canvas.width, cursor.x));
             cursor.y = Math.max(0, Math.min(ctx.canvas.height, cursor.y));
-            ctx.strokeStyle = generateRandomHexColor();
+            ctx.strokeStyle = cursor.color;
             ctx.lineTo(cursor.x, cursor.y);
             ctx.stroke();
             sendMessage(10 /* LINE */, {
@@ -2449,5 +2462,5 @@ function initialize() {
 // src/worker-room/app.worker.ts
 initialize();
 
-//# debugId=81E7142983261FB664756E2164756E21
+//# debugId=B983B5F83FCBCC2064756E2164756E21
 //# sourceMappingURL=app.worker.js.map
