@@ -1,4 +1,7 @@
 {
+  "_headers": {
+    "sha": "098b15dada87a34ab0cf3721873282f622829277"
+  },
   "app.worker.js": {
     "sha": "3eba90ee8f8eadbf1c691795f75dcf804aa5eb9e"
   },
@@ -11,7 +14,7 @@
   "index.js.map": {
     "sha": "ae5d77489e54b0343c99ff48ec0a0d4003b12c85"
   },
-  "md5": "b70b3ae4e6b9e9b1138ca628ca5a4d97",
+  "md5": "4943403766c0d4801d876132adcff941",
   "signal-room.worker.js": {
     "sha": "29a34814966dcb05f2d7a4197009bd493480156d"
   }
