@@ -1,26 +1,36 @@
 export default {
   async fetch(request: Request, env: any): Promise<Response> {
-    // Serve static assets first (from ./dist)
-    const assetResp = await env.ASSETS.fetch(request);
+    const url = new URL(request.url);
 
-    // If the asset doesn't exist, just return it as-is (likely 404)
-    // Still add headers, though, because you might have a SPA fallback later.
-    const headers = new Headers(assetResp.headers);
+    // If user requests a "directory" path, serve its index.html
+    // e.g. "/" -> "/index.html", "/foo/" -> "/foo/index.html"
+    if (url.pathname.endsWith("/")) {
+      url.pathname += "index.html";
+    }
 
-    // COOP/COEP for cross-origin isolation
+    // If user requests root without trailing slash, optionally redirect to "/"
+    if (url.pathname === "") {
+      return Response.redirect(url.origin + "/", 301);
+    }
+
+    // Try to fetch the asset
+    let resp = await env.ASSETS.fetch(new Request(url.toString(), request));
+
+    // Optional SPA fallback: if not found and it's not a file request, serve /index.html
+    if (resp.status === 404 && !url.pathname.includes(".")) {
+      const spaUrl = new URL(request.url);
+      spaUrl.pathname = "/index.html";
+      resp = await env.ASSETS.fetch(new Request(spaUrl.toString(), request));
+    }
+
+    // Add COOP/COEP headers
+    const headers = new Headers(resp.headers);
     headers.set("Cross-Origin-Opener-Policy", "same-origin");
     headers.set("Cross-Origin-Embedder-Policy", "require-corp");
 
-    // (Optional but commonly useful) CORS for your own origin fetches
-    // Remove if you don't need it.
-    // headers.set("Access-Control-Allow-Origin", "*");
-
-    // IMPORTANT: COEP can block third-party resources unless they send CORS/CORP headers.
-    // Keep this in mind if something breaks.
-
-    return new Response(assetResp.body, {
-      status: assetResp.status,
-      statusText: assetResp.statusText,
+    return new Response(resp.body, {
+      status: resp.status,
+      statusText: resp.statusText,
       headers,
     });
   },

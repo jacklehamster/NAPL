@@ -2,10 +2,6 @@ name = "napl-site"
 main = "index.ts"
 compatibility_date = "2026-01-19"
 
-[assets]
-directory = "./example/"
-binding = "ASSETS"
-
 [observability]
 [observability.logs]
 enabled = true
