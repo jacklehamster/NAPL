@@ -15591,6 +15591,7 @@ function setupControl({
     }
     function onMouseDown(e) {
       sendMessage(5 /* MOUSE_DOWN */, e);
+      document.exitPointerLock();
     }
     function onMouseUp(e) {
       sendMessage(6 /* MOUSE_UP */, e);
@@ -15978,4 +15979,4 @@ export {
   setupApp
 };
 
-//# debugId=B0DADD81ED9528CA64756E2164756E21
+//# debugId=FE141F5B83FC333164756E2164756E21

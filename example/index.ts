@@ -21,8 +21,7 @@ app.get("/config.json", (_req, res) => {
     return;
   }
   res.json({
-    split: false,
-    "show-tab": true,
+    "hide-tab": false,
   });
 });
 

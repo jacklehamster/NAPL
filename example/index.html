@@ -44,7 +44,7 @@
         const searchParams = new URLSearchParams(location.search);
 
         const initialTab = searchParams.get("tab") ?? configJson.tab;
-        const showTab = searchParams.get("show-tab") ?? configJson["show-tab"];
+        const hideTab = searchParams.get("hide-tab") ?? configJson["hide-tab"];
         const room = searchParams.get("room") ?? configJson.room;
 
         const tabsContainer = document.querySelector(".tabs");
@@ -91,7 +91,7 @@
           if (button) {
             button.click();
           }
-          if (!showTab) {
+          if (hideTab) {
             tabsContainer.style.display = "none";
           }
         }

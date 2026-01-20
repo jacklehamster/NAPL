@@ -21,6 +21,7 @@ export function setupControl({
     }
     function onMouseDown(e: MouseEvent) {
       sendMessage(MessageType.MOUSE_DOWN, e);
+      document.exitPointerLock();
     }
     function onMouseUp(e: MouseEvent) {
       sendMessage(MessageType.MOUSE_UP, e);
