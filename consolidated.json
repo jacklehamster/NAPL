@@ -214,7 +214,7 @@
   },
   "/package.json": {
     "name": "napl",
-    "version": "1.0.103",
+    "version": "1.0.104",
     "module": "src/index.ts",
     "type": "module",
     "repository": {
@@ -233,9 +233,9 @@
     },
     "scripts": {
       "test": "bun test",
-      "build": "bun i && rm -rf *.tsbuildinfo && rm -rf dist/*.* && bun run bundler/bundler.ts && bun run test && bun run build:declaration && bun link napl",
+      "build": "bun i && rm -rf *.tsbuildinfo && rm -rf dist/*.* && bun run bundler/bundler.ts && bun run test && bun run build:declaration && bun link",
       "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
-      "build:example": "cd example && bun i && bun run build && cd ..",
+      "build:example": "cd example && bun link napl && bun i && bun run build && cd ..",
       "example": "cd example && bun start && cd ..",
       "example:prod": "cd example && bun start:prod && cd ..",
       "build:dev": "bun run build:example && cd example && bun run build && cd ..",
