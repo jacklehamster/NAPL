@@ -23,6 +23,9 @@
   "dist/signal-room.worker.js": {
     "sha": "29a34814966dcb05f2d7a4197009bd493480156d"
   },
+  "dist/signal-room.worker.js.map": {
+    "sha": "c97e9cdfda3dfcfbbc4884d41d006509c727a1f4"
+  },
   "favicon.ico": {
     "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
   },
@@ -32,9 +35,9 @@
   "index.ts": {
     "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
   },
-  "md5": "6787ec905940e01835d5eee6159e3b01",
+  "md5": "7a7cf4f47c4b86774eb89922d0ba1070",
   "package.json": {
-    "sha": "97fcc3baa8e6e96e0b4ba307cbe053e2e6489258"
+    "sha": "52318b8e22853d58cf7107bc5fcc221b133f410c"
   },
   "src/index.ts": {
     "sha": "2a82df1c22fab9a2e7932652ef240a61c7e4a579"

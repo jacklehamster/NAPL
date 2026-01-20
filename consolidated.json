@@ -66,9 +66,9 @@
     "config.json": {
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
-    "md5": "b9e08d2e9fbca62281f73a511bb43adf",
+    "md5": "df4c8b9382714977b51572f1c929eb26",
     "package.json": {
-      "sha": "97fcc3baa8e6e96e0b4ba307cbe053e2e6489258"
+      "sha": "52318b8e22853d58cf7107bc5fcc221b133f410c"
     },
     "tsconfig.json": {
       "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
@@ -99,6 +99,9 @@
     "dist/signal-room.worker.js": {
       "sha": "29a34814966dcb05f2d7a4197009bd493480156d"
     },
+    "dist/signal-room.worker.js.map": {
+      "sha": "c97e9cdfda3dfcfbbc4884d41d006509c727a1f4"
+    },
     "favicon.ico": {
       "sha": "26617507b9baf000bd97c82ce45d831811b1e8a7"
     },
@@ -108,9 +111,9 @@
     "index.ts": {
       "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
     },
-    "md5": "6787ec905940e01835d5eee6159e3b01",
+    "md5": "7a7cf4f47c4b86774eb89922d0ba1070",
     "package.json": {
-      "sha": "97fcc3baa8e6e96e0b4ba307cbe053e2e6489258"
+      "sha": "52318b8e22853d58cf7107bc5fcc221b133f410c"
     },
     "src/index.ts": {
       "sha": "2a82df1c22fab9a2e7932652ef240a61c7e4a579"
@@ -147,9 +150,12 @@
     "index.js.map": {
       "sha": "477af48689757c0fceb98a0c738b987e109b9fe8"
     },
-    "md5": "7c85ad607c765f80140dbbaa2d47ede0",
+    "md5": "8423a70b0e4bd7012e3fdbf4c46bf705",
     "signal-room.worker.js": {
       "sha": "29a34814966dcb05f2d7a4197009bd493480156d"
+    },
+    "signal-room.worker.js.map": {
+      "sha": "c97e9cdfda3dfcfbbc4884d41d006509c727a1f4"
     }
   },
   "/example/package.json": {
@@ -162,7 +168,7 @@
       "build": "bun i && bun run build-icon && bun run copy-workers && bun run build-workers && bun run bundler/bundler.ts",
       "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons",
       "dev": "bun run build && bun --watch index.ts",
-      "copy-workers": "rm -rf ./dist && sleep 1 && mkdir -p dist && cp ../node_modules/@dobuki/hello-worker/dist/signal-room.worker.js ./dist/signal-room.worker.js",
+      "copy-workers": "rm -rf ./dist && sleep 1 && mkdir -p dist && cp ../node_modules/@dobuki/hello-worker/dist/signal-room.worker.js* ./dist",
       "build-workers": "mkdir -p dist && bun build ./src/worker-room/app.worker.ts --outdir ./dist --target=browser --format=esm --sourcemap"
     },
     "devDependencies": {
