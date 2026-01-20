@@ -35,7 +35,10 @@
   "index.ts": {
     "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
   },
-  "md5": "7a7cf4f47c4b86774eb89922d0ba1070",
+  "index2.html": {
+    "sha": "ccfdeee2d1e56d8522a25393611c2367c3114d31"
+  },
+  "md5": "250e504e57c38ff0617fb837463cf7bc",
   "package.json": {
     "sha": "52318b8e22853d58cf7107bc5fcc221b133f410c"
   },
