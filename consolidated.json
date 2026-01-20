@@ -30,6 +30,9 @@
     "README.md": {
       "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
     },
+    "_headers": {
+      "sha": "098b15dada87a34ab0cf3721873282f622829277"
+    },
     "bundler/bundler.ts": {
       "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
     },
@@ -63,7 +66,7 @@
     "index.ts": {
       "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
     },
-    "md5": "3f6eb50e5be52aa394b054984901ef21",
+    "md5": "be69b42457398ee944e81a79db44d311",
     "package.json": {
       "sha": "97fcc3baa8e6e96e0b4ba307cbe053e2e6489258"
     },
@@ -84,6 +87,9 @@
     },
     "tsconfig.json": {
       "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
+    },
+    "worker-room/_headers": {
+      "sha": "098b15dada87a34ab0cf3721873282f622829277"
     },
     "worker-room/index.html": {
       "sha": "0a341f4ea1ea7fd8bea7fb8661241debfdffd998"
@@ -213,10 +219,13 @@
     ]
   },
   "/example/worker-room/dir.json": {
+    "_headers": {
+      "sha": "098b15dada87a34ab0cf3721873282f622829277"
+    },
     "index.html": {
       "sha": "0a341f4ea1ea7fd8bea7fb8661241debfdffd998"
     },
-    "md5": "5cf394f1ea237b0b8f3f58586e8636d7"
+    "md5": "bf6ff69f91e04af75bac61908192f790"
   },
   "/package.json": {
     "name": "napl",
