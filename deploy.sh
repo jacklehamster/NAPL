@@ -1,3 +1,5 @@
+bun run build && bun run build:dev
+
 rm -rf site
 mkdir -p site
 # Copy example/ -> site/ while excluding node_modules
