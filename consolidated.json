@@ -78,6 +78,9 @@
     "README.md": {
       "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
     },
+    "_headers": {
+      "sha": "b8dc99577ee1714d52bae02715c5cff76f295668"
+    },
     "bundler/bundler.ts": {
       "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
     },
@@ -114,7 +117,7 @@
     "index2.html": {
       "sha": "ccfdeee2d1e56d8522a25393611c2367c3114d31"
     },
-    "md5": "5beaa3d0c94fc02e251c177b0646cd2e",
+    "md5": "80e84642497013fd0991f0b72302c18d",
     "package.json": {
       "sha": "52318b8e22853d58cf7107bc5fcc221b133f410c"
     },
