@@ -22,7 +22,7 @@ export function createWorkerApp({
   lobby,
 }: Props) {
   if (!self.crossOriginIsolated) {
-    throw new Error(`This feature can’t run in your current browser context.
+    console.error(`This feature can't run in your current browser context.
       It requires Cross-Origin Isolation (COOP/COEP) to enable high-performance shared memory.
       Please reload from the official site / correct environment, or contact your admin.`);
   }

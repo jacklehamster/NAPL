@@ -15636,7 +15636,7 @@ function createWorkerApp({
   lobby
 }) {
   if (!self.crossOriginIsolated) {
-    throw new Error(`This feature can’t run in your current browser context.
+    console.error(`This feature can't run in your current browser context.
       It requires Cross-Origin Isolation (COOP/COEP) to enable high-performance shared memory.
       Please reload from the official site / correct environment, or contact your admin.`);
   }
@@ -15978,4 +15978,4 @@ export {
   setupApp
 };
 
-//# debugId=294AA3DBDABA416064756E2164756E21
+//# debugId=B0DADD81ED9528CA64756E2164756E21
