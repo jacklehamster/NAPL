@@ -49,10 +49,10 @@
       "sha": "811acb5d4985cace6ffc2ab3fc90dd53197eb6e1"
     },
     "dist/index.js": {
-      "sha": "5d74fde4605dcceb0eb7365be2c956b19040f468"
+      "sha": "61bdc991d1af24248f3837e556dc964d1e1f2abf"
     },
     "dist/index.js.map": {
-      "sha": "ae5d77489e54b0343c99ff48ec0a0d4003b12c85"
+      "sha": "477af48689757c0fceb98a0c738b987e109b9fe8"
     },
     "dist/signal-room.worker.js": {
       "sha": "29a34814966dcb05f2d7a4197009bd493480156d"
@@ -66,7 +66,7 @@
     "index.ts": {
       "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
     },
-    "md5": "cbcdbebd8069721fc82373efaa6f19a3",
+    "md5": "be69b42457398ee944e81a79db44d311",
     "package.json": {
       "sha": "97fcc3baa8e6e96e0b4ba307cbe053e2e6489258"
     },
@@ -106,12 +106,12 @@
       "sha": "811acb5d4985cace6ffc2ab3fc90dd53197eb6e1"
     },
     "index.js": {
-      "sha": "5d74fde4605dcceb0eb7365be2c956b19040f468"
+      "sha": "61bdc991d1af24248f3837e556dc964d1e1f2abf"
     },
     "index.js.map": {
-      "sha": "ae5d77489e54b0343c99ff48ec0a0d4003b12c85"
+      "sha": "477af48689757c0fceb98a0c738b987e109b9fe8"
     },
-    "md5": "4943403766c0d4801d876132adcff941",
+    "md5": "e23894d8863436882a9955215d2d567a",
     "signal-room.worker.js": {
       "sha": "29a34814966dcb05f2d7a4197009bd493480156d"
     }
@@ -305,7 +305,7 @@
       "sha": "ba7982a17ac9e2ce8186c3c95049a6de5f7dc70a"
     },
     "WorkerApp.ts": {
-      "sha": "0fa83ccd1932448064fea6b3a1f35eacb94c97c0"
+      "sha": "de156dc081d711ccdcdb42939838fba797e8bd93"
     },
     "core/controls.ts": {
       "sha": "b52eb2a9773a19026d24127213d42993173b8b3d"
@@ -316,7 +316,7 @@
     "core/messenger.ts": {
       "sha": "5153936c15ef9cd153448f993071f9387dad964c"
     },
-    "md5": "81839e0f96dfe53e9ea3b41cc22e9c45",
+    "md5": "17e915cd7a26239617ced1ad4fa9f6aa",
     "utils/data-ring-reader.test.ts": {
       "sha": "836dd88de39e6f22ee439d112045ce46c8744b02"
     },
@@ -443,7 +443,7 @@
       "sha": "ba7982a17ac9e2ce8186c3c95049a6de5f7dc70a"
     },
     "app/WorkerApp.ts": {
-      "sha": "0fa83ccd1932448064fea6b3a1f35eacb94c97c0"
+      "sha": "de156dc081d711ccdcdb42939838fba797e8bd93"
     },
     "app/core/controls.ts": {
       "sha": "b52eb2a9773a19026d24127213d42993173b8b3d"
@@ -514,7 +514,7 @@
     "index.ts": {
       "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
     },
-    "md5": "655ee576471f023aa075e6afbe960417",
+    "md5": "5c2fa7eff4bc0c12f22d91a75ffcb6df",
     "observer/Observer.ts": {
       "sha": "44f85279f99eb14183fef9839d35620e14888c18"
     },

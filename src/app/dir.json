@@ -6,7 +6,7 @@
     "sha": "ba7982a17ac9e2ce8186c3c95049a6de5f7dc70a"
   },
   "WorkerApp.ts": {
-    "sha": "0fa83ccd1932448064fea6b3a1f35eacb94c97c0"
+    "sha": "de156dc081d711ccdcdb42939838fba797e8bd93"
   },
   "core/controls.ts": {
     "sha": "b52eb2a9773a19026d24127213d42993173b8b3d"
@@ -17,7 +17,7 @@
   "core/messenger.ts": {
     "sha": "5153936c15ef9cd153448f993071f9387dad964c"
   },
-  "md5": "81839e0f96dfe53e9ea3b41cc22e9c45",
+  "md5": "17e915cd7a26239617ced1ad4fa9f6aa",
   "utils/data-ring-reader.test.ts": {
     "sha": "836dd88de39e6f22ee439d112045ce46c8744b02"
   },

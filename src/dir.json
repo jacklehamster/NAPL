@@ -6,7 +6,7 @@
     "sha": "ba7982a17ac9e2ce8186c3c95049a6de5f7dc70a"
   },
   "app/WorkerApp.ts": {
-    "sha": "0fa83ccd1932448064fea6b3a1f35eacb94c97c0"
+    "sha": "de156dc081d711ccdcdb42939838fba797e8bd93"
   },
   "app/core/controls.ts": {
     "sha": "b52eb2a9773a19026d24127213d42993173b8b3d"
@@ -77,7 +77,7 @@
   "index.ts": {
     "sha": "df79ed1316cd97b3b55705b05835c8a9ea86862d"
   },
-  "md5": "655ee576471f023aa075e6afbe960417",
+  "md5": "5c2fa7eff4bc0c12f22d91a75ffcb6df",
   "observer/Observer.ts": {
     "sha": "44f85279f99eb14183fef9839d35620e14888c18"
   },
