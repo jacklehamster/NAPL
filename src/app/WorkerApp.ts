@@ -78,24 +78,24 @@ export function createWorkerApp({
     sendToWorker(MessageType.PING, { now });
   }, 1000);
 
-  const onMessage = (e: MessageEvent<WorkerResponse>) => {
-    const { action } = e.data;
-    switch (action) {
-      case "send":
-        sendAcross(e.data.data, e.data.peer);
-        break;
-      case "close":
-        close();
-        break;
-      case "enterRoom":
-        enterRoom({ room: e.data.room, host: e.data.host });
-        break;
-      case "exitRoom":
-        exitRoom({ room: e.data.room, host: e.data.host });
-        break;
-    }
-  };
-  worker.addEventListener("message", onMessage);
+  // const onMessage = (e: MessageEvent<WorkerResponse>) => {
+  //   const { action } = e.data;
+  //   switch (action) {
+  //     case "send":
+  //       sendAcross(e.data.data, e.data.peer);
+  //       break;
+  //     case "close":
+  //       close();
+  //       break;
+  //     case "enterRoom":
+  //       enterRoom({ room: e.data.room, host: e.data.host });
+  //       break;
+  //     case "exitRoom":
+  //       exitRoom({ room: e.data.room, host: e.data.host });
+  //       break;
+  //   }
+  // };
+  // worker.addEventListener("message", onMessage);
 
   if (lobby) {
     enterRoom(lobby);
@@ -103,7 +103,7 @@ export function createWorkerApp({
 
   return {
     close() {
-      worker.removeEventListener("message", onMessage);
+      // worker.removeEventListener("message", onMessage);
       removeUserListener();
       removeMessageListener();
       closeControls();
