@@ -3,7 +3,7 @@ main = "index.ts"
 compatibility_date = "2026-01-19"
 
 [assets]
-directory = "./example"
+directory = "./example/"
 binding = "ASSETS"
 
 [observability]
