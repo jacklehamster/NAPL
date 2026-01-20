@@ -1,3 +1,11 @@
 /*
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
+
+/example/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+
+/example/dist/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
