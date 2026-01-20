@@ -1,4 +1,4 @@
-name = "napl-site"
+name = "napl-site-2"
 main = "index.ts"
 compatibility_date = "2026-01-19"
 compatibility_flags = ["nodejs_compat"]
