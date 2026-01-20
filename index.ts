@@ -12,6 +12,7 @@ export default {
     if (url.pathname === "") {
       return Response.redirect(url.origin + "/", 301);
     }
+    console.log(">>>", url);
 
     // Try to fetch the asset
     let resp = await env.ASSETS.fetch(new Request(url.toString(), request));
