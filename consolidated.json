@@ -1,4 +1,52 @@
 {
+  "/.wrangler/dir.json": {
+    "md5": "3634934a5c03a57a26b2c68ff8555c7a",
+    "tmp/bundle-84HLWE/middleware-insertion-facade.js": {
+      "sha": "72654020b85a8d7993ae1da0b3dda25447169a07"
+    },
+    "tmp/bundle-84HLWE/middleware-loader.entry.ts": {
+      "sha": "30f9e3f73e923cdfd6049f682511ed411c070e87"
+    },
+    "tmp/dev-7jOIci/index.js": {
+      "sha": "fbe5cbb0daa40444de7267ce2ae5f4dcd887329c"
+    },
+    "tmp/dev-7jOIci/index.js.map": {
+      "sha": "1e0cf5b26f1ce7194a38762706d7c9cbf30fb78e"
+    }
+  },
+  "/.wrangler/tmp/bundle-84HLWE/dir.json": {
+    "md5": "a1524bbccbdd111e988df81a3fbec260",
+    "middleware-insertion-facade.js": {
+      "sha": "72654020b85a8d7993ae1da0b3dda25447169a07"
+    },
+    "middleware-loader.entry.ts": {
+      "sha": "30f9e3f73e923cdfd6049f682511ed411c070e87"
+    }
+  },
+  "/.wrangler/tmp/dev-7jOIci/dir.json": {
+    "index.js": {
+      "sha": "fbe5cbb0daa40444de7267ce2ae5f4dcd887329c"
+    },
+    "index.js.map": {
+      "sha": "1e0cf5b26f1ce7194a38762706d7c9cbf30fb78e"
+    },
+    "md5": "ea4c23e03054c6fcf14bbe7fde5c13b2"
+  },
+  "/.wrangler/tmp/dir.json": {
+    "bundle-84HLWE/middleware-insertion-facade.js": {
+      "sha": "72654020b85a8d7993ae1da0b3dda25447169a07"
+    },
+    "bundle-84HLWE/middleware-loader.entry.ts": {
+      "sha": "30f9e3f73e923cdfd6049f682511ed411c070e87"
+    },
+    "dev-7jOIci/index.js": {
+      "sha": "fbe5cbb0daa40444de7267ce2ae5f4dcd887329c"
+    },
+    "dev-7jOIci/index.js.map": {
+      "sha": "1e0cf5b26f1ce7194a38762706d7c9cbf30fb78e"
+    },
+    "md5": "c6163ff9aec223ad3067602a057fb35d"
+  },
   "/bundler/dir.json": {
     "bundler.ts": {
       "sha": "4e121451223f22f50cba22ce35b1357b9a9a0d52"
