@@ -238,7 +238,8 @@
       "build:example": "cd example && bun i && bun run build && cd ..",
       "example": "cd example && bun start && cd ..",
       "example:prod": "cd example && bun start:prod && cd ..",
-      "dev": "bun run build:example && cd example && bun --watch index.ts",
+      "build:dev": "bun run build:example && cd example && bun run build",
+      "dev": "bun run build:dev && bun --watch index.ts",
       "fix-package-name": "npm explore package-name-fixer -- bun start \"$(pwd)\"",
       "npm-patch": "npm version patch && npm publish"
     },
