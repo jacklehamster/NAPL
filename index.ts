@@ -1,33 +1,50 @@
+import { ExecutionContext } from "@cloudflare/workers-types";
+import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
+
 export default {
-  async fetch(request: Request, env: any): Promise<Response> {
-    const url = new URL(request.url);
+  async fetch(
+    request: Request,
+    env: any,
+    ctx: ExecutionContext,
+  ): Promise<Response> {
+    let resp: Response;
 
-    // If user requests a "directory" path, serve its index.html
-    // e.g. "/" -> "/index.html", "/foo/" -> "/foo/index.html"
-    if (url.pathname.endsWith("/")) {
-      url.pathname += "index.html";
+    try {
+      resp = await getAssetFromKV(
+        { request, waitUntil: ctx.waitUntil.bind(ctx) },
+        {
+          mapRequestToAsset: (req) => {
+            const url = new URL(req.url);
+            if (url.pathname === "/") url.pathname = "/index.html";
+            if (url.pathname.endsWith("/")) url.pathname += "index.html";
+            return new Request(url.toString(), req);
+          },
+        },
+      );
+    } catch {
+      // Optional SPA fallback
+      const url = new URL(request.url);
+      if (!url.pathname.includes(".")) {
+        const fallback = new URL(request.url);
+        fallback.pathname = "/index.html";
+        resp = await getAssetFromKV({
+          request: new Request(fallback.toString(), request),
+          waitUntil: ctx.waitUntil.bind(ctx),
+        });
+      } else {
+        return new Response("Not Found", { status: 404 });
+      }
     }
 
-    // If user requests root without trailing slash, optionally redirect to "/"
-    if (url.pathname === "") {
-      return Response.redirect(url.origin + "/", 301);
-    }
-    console.log(">>>", url);
-
-    // Try to fetch the asset
-    let resp = await env.ASSETS.fetch(new Request(url.toString(), request));
-
-    // Optional SPA fallback: if not found and it's not a file request, serve /index.html
-    if (resp.status === 404 && !url.pathname.includes(".")) {
-      const spaUrl = new URL(request.url);
-      spaUrl.pathname = "/index.html";
-      resp = await env.ASSETS.fetch(new Request(spaUrl.toString(), request));
-    }
-
-    // Add COOP/COEP headers
     const headers = new Headers(resp.headers);
+
+    // ✅ Cross-Origin Isolation
     headers.set("Cross-Origin-Opener-Policy", "same-origin");
     headers.set("Cross-Origin-Embedder-Policy", "require-corp");
+
+    // Recommended for COEP so the browser won’t block your own cross-originless resources
+    // (Safe default; doesn’t “open” your site)
+    headers.set("Cross-Origin-Resource-Policy", "same-origin");
 
     return new Response(resp.body, {
       status: resp.status,
