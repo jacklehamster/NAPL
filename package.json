@@ -1,6 +1,6 @@
 {
   "name": "napl",
-  "version": "1.0.103",
+  "version": "1.0.104",
   "module": "src/index.ts",
   "type": "module",
   "repository": {
