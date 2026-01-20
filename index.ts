@@ -3,13 +3,19 @@ import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
 
 export default {
   async fetch(): Promise<Response> {
-    return new Response("worker is running", {
-      headers: {
-        "content-type": "text/plain; charset=utf-8",
-        "X-Worker-Version": "FORCE-TEST-1",
-        "Cache-Control": "no-store",
-      },
-    });
+    const headers = new Headers();
+
+    headers.set("Cross-Origin-Opener-Policy", "same-origin");
+    headers.set("Cross-Origin-Embedder-Policy", "require-corp");
+    headers.set("content-type", "text/plain; charset=utf-8");
+    headers.set("X-Worker-Version", "FORCE-TEST-1");
+    headers.set("Cache-Control", "no-store");
+    headers.set("CDN-Cache-Control", "no-store");
+    headers.set("Cloudflare-CDN-Cache-Control", "no-store");
+    headers.set("Pragma", "no-cache");
+    headers.set("Expires", "0");
+
+    return new Response("worker is running", { headers });
   },
 };
 
