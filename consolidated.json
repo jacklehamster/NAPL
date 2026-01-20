@@ -31,7 +31,7 @@
       "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
     },
     "_headers": {
-      "sha": "098b15dada87a34ab0cf3721873282f622829277"
+      "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
     },
     "bundler/bundler.ts": {
       "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
@@ -40,7 +40,7 @@
       "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
     },
     "dist/_headers": {
-      "sha": "098b15dada87a34ab0cf3721873282f622829277"
+      "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
     },
     "dist/app.worker.js": {
       "sha": "3eba90ee8f8eadbf1c691795f75dcf804aa5eb9e"
@@ -66,7 +66,7 @@
     "index.ts": {
       "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
     },
-    "md5": "be69b42457398ee944e81a79db44d311",
+    "md5": "7fdca7c6bde6e2f12fe6d4fd5521565b",
     "package.json": {
       "sha": "97fcc3baa8e6e96e0b4ba307cbe053e2e6489258"
     },
@@ -82,6 +82,9 @@
     "src/worker-room/index.ts": {
       "sha": "d2831bb8b23113df142805cd4ac06ad1b2082e26"
     },
+    "test-room/_headers": {
+      "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
+    },
     "test-room/index.html": {
       "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
     },
@@ -89,7 +92,7 @@
       "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
     },
     "worker-room/_headers": {
-      "sha": "098b15dada87a34ab0cf3721873282f622829277"
+      "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
     },
     "worker-room/index.html": {
       "sha": "0a341f4ea1ea7fd8bea7fb8661241debfdffd998"
@@ -97,7 +100,7 @@
   },
   "/example/dist/dir.json": {
     "_headers": {
-      "sha": "098b15dada87a34ab0cf3721873282f622829277"
+      "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
     },
     "app.worker.js": {
       "sha": "3eba90ee8f8eadbf1c691795f75dcf804aa5eb9e"
@@ -111,7 +114,7 @@
     "index.js.map": {
       "sha": "477af48689757c0fceb98a0c738b987e109b9fe8"
     },
-    "md5": "e23894d8863436882a9955215d2d567a",
+    "md5": "0b3e491f7d15752830290172be2f4b26",
     "signal-room.worker.js": {
       "sha": "29a34814966dcb05f2d7a4197009bd493480156d"
     }
@@ -182,10 +185,13 @@
     "md5": "ecbc9252cd6a21ca65c6cf0667cf1355"
   },
   "/example/test-room/dir.json": {
+    "_headers": {
+      "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
+    },
     "index.html": {
       "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
     },
-    "md5": "14af562105a4b1bcc7b6166f249b5f59"
+    "md5": "328951f43fa48d786a8784eaefa32ded"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -220,12 +226,12 @@
   },
   "/example/worker-room/dir.json": {
     "_headers": {
-      "sha": "098b15dada87a34ab0cf3721873282f622829277"
+      "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
     },
     "index.html": {
       "sha": "0a341f4ea1ea7fd8bea7fb8661241debfdffd998"
     },
-    "md5": "bf6ff69f91e04af75bac61908192f790"
+    "md5": "34d063db5c6d0ad2c72c1c0868ecadeb"
   },
   "/package.json": {
     "name": "napl",

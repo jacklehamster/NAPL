@@ -3,7 +3,7 @@
     "sha": "2509c6de3b86d351a8deba9af4c56b19847cb2a8"
   },
   "_headers": {
-    "sha": "098b15dada87a34ab0cf3721873282f622829277"
+    "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
   },
   "bundler/bundler.ts": {
     "sha": "4aed21908bbbf25717b4d5ef228b7557f95479fb"
@@ -12,7 +12,7 @@
     "sha": "b3d1f4c97cf0c511a304b08e23b1993855cd5693"
   },
   "dist/_headers": {
-    "sha": "098b15dada87a34ab0cf3721873282f622829277"
+    "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
   },
   "dist/app.worker.js": {
     "sha": "3eba90ee8f8eadbf1c691795f75dcf804aa5eb9e"
@@ -38,7 +38,7 @@
   "index.ts": {
     "sha": "466ebd5c4ccdafe083d8fa4d86c52bd67e2d9d96"
   },
-  "md5": "be69b42457398ee944e81a79db44d311",
+  "md5": "7fdca7c6bde6e2f12fe6d4fd5521565b",
   "package.json": {
     "sha": "97fcc3baa8e6e96e0b4ba307cbe053e2e6489258"
   },
@@ -54,6 +54,9 @@
   "src/worker-room/index.ts": {
     "sha": "d2831bb8b23113df142805cd4ac06ad1b2082e26"
   },
+  "test-room/_headers": {
+    "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
+  },
   "test-room/index.html": {
     "sha": "0b0dd8128f91d50e127d0b71b1e1035bacfde262"
   },
@@ -61,7 +64,7 @@
     "sha": "8ad494131418bc842068cc6cc96b0c0f59610f1d"
   },
   "worker-room/_headers": {
-    "sha": "098b15dada87a34ab0cf3721873282f622829277"
+    "sha": "402611fa939e4def62661ec93f9041320b6c77b9"
   },
   "worker-room/index.html": {
     "sha": "0a341f4ea1ea7fd8bea7fb8661241debfdffd998"
