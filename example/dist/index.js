@@ -15623,10 +15623,10 @@ function setupControl({
     };
   });
   document.addEventListener("mousedown", enterPointerLock);
-  function close2() {
+  function close() {
     document.removeEventListener("mousedown", enterPointerLock);
   }
-  return { close: close2 };
+  return { close };
 }
 
 // ../src/app/WorkerApp.ts
@@ -15684,30 +15684,11 @@ function createWorkerApp({
     const now = performance.now();
     sendToWorker(9 /* PING */, { now });
   }, 1000);
-  const onMessage = (e) => {
-    const { action } = e.data;
-    switch (action) {
-      case "send":
-        sendAcross(e.data.data, e.data.peer);
-        break;
-      case "close":
-        close();
-        break;
-      case "enterRoom":
-        enterRoom({ room: e.data.room, host: e.data.host });
-        break;
-      case "exitRoom":
-        exitRoom({ room: e.data.room, host: e.data.host });
-        break;
-    }
-  };
-  worker.addEventListener("message", onMessage);
   if (lobby) {
     enterRoom(lobby);
   }
   return {
     close() {
-      worker.removeEventListener("message", onMessage);
       removeUserListener();
       removeMessageListener();
       closeControls();
@@ -15979,4 +15960,4 @@ export {
   setupApp
 };
 
-//# debugId=FE141F5B83FC333164756E2164756E21
+//# debugId=3BE60EC161F378D064756E2164756E21
