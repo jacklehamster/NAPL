@@ -1,4 +1,4 @@
-import { READ, WRITE } from "../core/messenger";
+import { WRITE } from "../core/messenger";
 
 export function processLoop(
   ctrl: Int32Array,

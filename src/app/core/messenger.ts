@@ -6,12 +6,21 @@ import {
 } from "../utils/data-ring";
 import { hookMsgListener } from "../utils/listener";
 import { hookSerializers } from "../utils/serializers";
+import _ from "lodash";
 
 export const WRITE = 0;
 export const READ = 1;
 
 export function hookMessenger(ctrl: Int32Array, data: IDataWriter) {
   const { serialize } = hookSerializers();
+
+  const notify = _.throttle(
+    () => {
+      Atomics.notify(ctrl, WRITE);
+    },
+    0,
+    { leading: false, trailing: true },
+  );
 
   function sendMessage<M extends Message>(
     type: M["type"],
@@ -21,7 +30,7 @@ export function hookMessenger(ctrl: Int32Array, data: IDataWriter) {
     serialize(type, msg, data);
     if (w0 !== data.offset) {
       Atomics.store(ctrl, WRITE, data.offset);
-      Atomics.notify(ctrl, WRITE);
+      notify();
     }
   }
 

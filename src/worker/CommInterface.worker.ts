@@ -87,10 +87,10 @@ export function initialize(): void {
         const ctrl = new Int32Array(sab, 0, 8);
         const data = new DataRingReader(new Uint8Array(sab, 32));
         listen(ctrl, data, (msg) => {
-          console.log({
-            ...msg,
-            type: MessageType[msg.type],
-          });
+          // console.log({
+          //   ...msg,
+          //   type: MessageType[msg.type],
+          // });
           if (msg.type === MessageType.POINTER_LOCK) {
             cursor.needsReset = true;
             cursor.color = generateRandomHexColor();

@@ -14,28 +14,32 @@ export function hookMsgListener() {
   ) {
     const stop = processLoop(ctrl, () => {
       // drain whatever is available
-      const msg = drain(ctrl, data);
-      if (msg) {
-        onMessage(msg);
-      }
+      const msgs = drain(ctrl, data);
+      msgs.forEach((msg) => {
+        if (msg) {
+          onMessage(msg);
+        }
+      });
     });
     return () => {
       stop();
     };
   }
 
+  const _msgs: (Message | undefined)[] = [];
   function drain(ctrl: Int32Array, data: IDataReader) {
     const r = Atomics.load(ctrl, READ);
     const w = Atomics.load(ctrl, WRITE);
     if (r === w) {
-      return;
+      return _msgs;
     }
 
-    const msg = deserialize(data);
-    if (r !== data.offset) {
-      Atomics.store(ctrl, READ, data.offset);
+    _msgs.length = 0;
+    while (data.offset !== w) {
+      _msgs.push(deserialize(data));
     }
-    return msg;
+    Atomics.store(ctrl, READ, data.offset);
+    return _msgs;
   }
 
   return { listen };

@@ -46,9 +46,7 @@ export function createWorkerApp({
       }
       if (msg.type === MessageType.LINE) {
         sendAcross(JSON.stringify(msg));
-        // sendToWorker(MessageType.LINE, msg);
       }
-      console.log(msg);
     },
   );
   const { unhook: unhookGraphics } = setupGraphics(worker);

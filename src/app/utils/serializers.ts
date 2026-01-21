@@ -224,7 +224,8 @@ export function hookSerializers() {
 
   function deserialize(data: IDataReader): Message | undefined {
     const type = data.readByte();
-    return serializerMap.get(type)?.deserialize(data, type);
+    const msg = serializerMap.get(type)?.deserialize(data, type);
+    return msg;
   }
 
   return {
