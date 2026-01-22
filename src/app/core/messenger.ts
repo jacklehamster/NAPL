@@ -14,13 +14,10 @@ export const READ = 1;
 export function hookMessenger(ctrl: Int32Array, data: IDataWriter) {
   const { serialize } = hookSerializers();
 
-  const notify = _.throttle(
-    () => {
-      Atomics.notify(ctrl, WRITE);
-    },
-    0,
-    { leading: false, trailing: true },
-  );
+  const notify = _.throttle(() => Atomics.notify(ctrl, WRITE), 0, {
+    leading: false,
+    trailing: true,
+  });
 
   function sendMessage<M extends Message>(
     type: M["type"],
