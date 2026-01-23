@@ -11,7 +11,9 @@ import _ from "lodash";
 export const WRITE = 0;
 export const READ = 1;
 
-export function hookMessenger(ctrl: Int32Array, data: IDataWriter) {
+export function hookMessenger(sab: SharedArrayBuffer) {
+  const ctrl = new Int32Array(sab, 0, 8);
+  const data = new DataRingWriter(new Uint8Array(sab, 32));
   const { serialize } = hookSerializers();
 
   const notify = _.throttle(() => Atomics.notify(ctrl, WRITE), 0, {
@@ -46,18 +48,12 @@ export function setupMessenger(
 
   const { listen } = hookMsgListener();
 
-  worker.postMessage({ sabToWorker, sabFromWorker }); //  not transferable
+  worker.postMessage({
+    sab: { toWorker: sabToWorker, fromWorker: sabFromWorker },
+  }); //  not transferable
 
-  const unlisten = listen(
-    new Int32Array(sabFromWorker, 0, 8),
-    new DataRingReader(new Uint8Array(sabFromWorker, 32)),
-    onMessage,
-  );
-
-  const { sendMessage } = hookMessenger(
-    new Int32Array(sabToWorker, 0, 8),
-    new DataRingWriter(new Uint8Array(sabToWorker, 32)),
-  );
+  const unlisten = listen(sabFromWorker, onMessage);
+  const { sendMessage } = hookMessenger(sabToWorker);
   return {
     sendMessage,
     close: () => {

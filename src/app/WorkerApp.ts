@@ -1,4 +1,3 @@
-import { WorkerResponse } from "@/worker/WorkerResponse";
 import { enterWorld } from "@dobuki/hello-worker";
 import { setupMessenger } from "./core/messenger";
 import { MessageType } from "./MessageType";

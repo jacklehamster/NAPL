@@ -1,10 +1,10 @@
 /// <reference lib="webworker" />
 
-import { WorkerCommand } from "./WorkerCommand";
 import { hookMessenger } from "@/app/core/messenger";
-import { DataRingReader, DataRingWriter } from "@/app/utils/data-ring";
 import { Message, MessageType } from "@/app/MessageType";
 import { hookMsgListener } from "@/app/utils/listener";
+import { WorkerCommand } from "./WorkerCommand";
+import { generateRandomHexColor } from "@/app/utils/drawing";
 
 // function respond(response: WorkerResponse) {
 //   (self as DedicatedWorkerGlobalScope).postMessage(
@@ -28,20 +28,8 @@ export function initialize(): void {
     y: 0,
     needsReset: true,
     color: "black",
+    width: 1,
   };
-
-  function generateRandomHexColor() {
-    // Generate a random number between 0 and 0xFFFFFF
-    let randomNum = Math.floor(Math.random() * 0xffffff);
-
-    // Convert the number to a hexadecimal string
-    let hexColor = randomNum.toString(16);
-
-    // Pad the string with leading zeros if necessary to ensure it is 6 digits long
-    let fullHexColor = hexColor.padStart(6, "0");
-
-    return `#${fullHexColor.toUpperCase()}`; // Prepend '#' and convert to uppercase
-  }
 
   const { listen } = hookMsgListener();
 
@@ -66,14 +54,15 @@ export function initialize(): void {
   //     };
   //   }
   // }
-
   self.addEventListener(
     "message",
     (
       e: MessageEvent<
         WorkerCommand & {
-          sabToWorker?: SharedArrayBuffer;
-          sabFromWorker?: SharedArrayBuffer;
+          sab?: {
+            toWorker: SharedArrayBuffer;
+            fromWorker: SharedArrayBuffer;
+          };
           canvas?: OffscreenCanvas;
           width?: number;
           height?: number;
@@ -82,15 +71,9 @@ export function initialize(): void {
       >,
     ) => {
       const msg = e.data;
-      if (msg.sabToWorker) {
-        const sab = msg.sabToWorker;
-        const ctrl = new Int32Array(sab, 0, 8);
-        const data = new DataRingReader(new Uint8Array(sab, 32));
-        listen(ctrl, data, (msg) => {
-          // console.log({
-          //   ...msg,
-          //   type: MessageType[msg.type],
-          // });
+      if (msg.sab) {
+        const { toWorker, fromWorker } = msg.sab;
+        listen(toWorker, (msg) => {
           if (msg.type === MessageType.POINTER_LOCK) {
             cursor.needsReset = true;
             cursor.color = generateRandomHexColor();
@@ -115,16 +98,17 @@ export function initialize(): void {
             const ctx = canvas?.getContext("2d");
 
             if (ctx) {
-              ctx.beginPath();
-              ctx.moveTo(cursor.x, cursor.y);
-              const from = { x: cursor.x, y: cursor.y };
-              ctx.lineWidth =
+              const newLineWidth = (ctx.lineWidth =
                 Math.sqrt(
                   Math.sqrt(
                     msg.movementX * msg.movementX +
                       msg.movementY * msg.movementY,
                   ),
-                ) * 2;
+                ) * 2);
+              ctx.beginPath();
+              ctx.moveTo(cursor.x, cursor.y);
+              const from = { x: cursor.x, y: cursor.y };
+              ctx.lineWidth = newLineWidth;
               cursor.x += msg.movementX;
               cursor.y += msg.movementY;
               cursor.x = Math.max(0, Math.min(ctx.canvas.width, cursor.x));
@@ -144,12 +128,7 @@ export function initialize(): void {
             sendMessage(MessageType.PING, { now: msg.now });
           }
         });
-      }
-      if (msg.sabFromWorker) {
-        const sab = msg.sabFromWorker;
-        const ctrl = new Int32Array(sab, 0, 8);
-        const data = new DataRingWriter(new Uint8Array(sab, 32));
-        const result = hookMessenger(ctrl, data);
+        const result = hookMessenger(fromWorker);
         sendMessage = result.sendMessage;
       }
       if (msg.canvas) {

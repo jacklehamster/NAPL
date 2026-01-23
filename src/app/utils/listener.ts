@@ -1,17 +1,16 @@
 import { READ, WRITE } from "../core/messenger";
 import { Message } from "../MessageType";
-import { IDataReader } from "./data-ring";
+import { DataRingReader, IDataReader } from "./data-ring";
 import { processLoop } from "./loop";
 import { hookSerializers } from "./serializers";
 
 export function hookMsgListener() {
   const { deserialize } = hookSerializers();
 
-  function listen(
-    ctrl: Int32Array,
-    data: IDataReader,
-    onMessage: (msg: Message) => void,
-  ) {
+  function listen(sab: SharedArrayBuffer, onMessage: (msg: Message) => void) {
+    const ctrl = new Int32Array(sab, 0, 8);
+    const data = new DataRingReader(new Uint8Array(sab, 32));
+
     const stop = processLoop(ctrl, () => {
       // drain whatever is available
       const msgs = drain(ctrl, data);
