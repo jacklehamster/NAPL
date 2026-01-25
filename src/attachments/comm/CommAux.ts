@@ -10,12 +10,12 @@ export class CommAux {
 
   constructor(
     private readonly comm: CommInterface,
-    private readonly context: Context
+    private readonly context: Context,
   ) {
     const { disconnect } = hookCommInterface(
       context,
       this.comm,
-      this.processor
+      this.processor,
     );
     this.disconnect = disconnect;
   }

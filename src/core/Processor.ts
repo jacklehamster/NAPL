@@ -23,7 +23,6 @@ export class Processor {
   }
 
   performCycle(context: Context, updatedPaths: Map<string, UpdatePath>) {
-    consolidateUpdates(context.incomingUpdates, context.outgoingUpdates);
     //  Send out outgoing updates
     this.sendOutgoingUpdate(context);
     //  Process incoming updates

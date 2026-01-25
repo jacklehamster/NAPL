@@ -4,8 +4,9 @@ import { CommInterface } from "@/clients/CommInterface";
 import { getData, setData } from "@/cycles/data-update/data-manager";
 import { Data } from "@/types/Data";
 import { ObserverManager } from "@/observer/ObserverManager";
-import { IObserver, Observer } from "@/observer/Observer";
+import { IObserver } from "@/observer/Observer";
 import { CommAux } from "@/attachments/comm/CommAux";
+import { consolidateUpdates } from "@/cycles/data-update/data-update";
 
 interface Props<T extends Data> {
   appId: string;
@@ -56,11 +57,16 @@ export class Program<T extends Data = Data> implements IProgram, Context {
   }
 
   performCycle() {
+    this.consolidateUpdates();
     const updates = this.commAux.performCycle();
     if (updates) {
       this.observerManager.triggerObservers(this, updates);
       this.onDataCycle?.();
     }
+  }
+
+  consolidateUpdates() {
+    consolidateUpdates(this.incomingUpdates, this.outgoingUpdates);
   }
 
   observe(paths?: string[] | string): IObserver {

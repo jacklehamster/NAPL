@@ -48,13 +48,13 @@ function setupApp() {
     const linked = program.getData("users/~{self}/linked") ?? true;
     if (linked) {
       program.setData("cursor/pos", { x: e.pageX, y: e.pageY });
-      program.setData("cursor/emoji", program.getData("users/~{self}/emoji"));
       program.setData("cursor/user", userId);
+      refreshData();
     }
   });
   program
-    .observe(["cursor/pos", "cursor/emoji", "cursor/user"])
-    .onChange(([pos, emoji, user]: [any, string, string]) => {
+    .observe(["cursor/pos", "cursor/user"])
+    .onChange(([pos, user]: [any, string, string]) => {
       const div = document.querySelector("#div-emoji") as HTMLDivElement;
       if (div) {
         const offset =
@@ -63,11 +63,13 @@ function setupApp() {
             : [-div.offsetWidth / 2, -div.offsetHeight / 2];
         div.style.left = `${pos.x + offset[0]}px`;
         div.style.top = `${pos.y + offset[1]}px`;
+        const emoji = program.getData(`users/${user}/emoji`) ?? "";
         div.textContent = emoji;
       }
     });
 
   function refreshData() {
+    program.consolidateUpdates();
     const div: HTMLDivElement =
       document.querySelector("#log-div") ??
       document.body.appendChild(document.createElement("div"));
