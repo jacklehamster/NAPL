@@ -6,18 +6,18 @@
     "config.json": {
       "createdAt": 1768905087551.9946
     },
-    "md5": "95dcf63459d7246d848ea966adabc3c9",
+    "md5": "f179c486597eb5e20f9c4551e81af38c",
     "package.json": {
       "createdAt": 1768905087556.9946
     },
-    "src/test-room/config.json": {
-      "createdAt": 1769356093250.5332
-    },
-    "src/worker-room/config.json": {
-      "createdAt": 1769356093251.5332
+    "test-room/config.json": {
+      "createdAt": 1769356298499.2063
     },
     "tsconfig.json": {
       "createdAt": 1768905087557.9946
+    },
+    "worker-room/config.json": {
+      "createdAt": 1769356298499.2063
     }
   },
   "/example/dir.json": {
@@ -42,15 +42,12 @@
     "index.ts": {
       "createdAt": 1768904719578.269
     },
-    "md5": "d35951cd783be0b820c96ca945288f6f",
+    "md5": "1b56d242fb2481044b1d65755f56a412",
     "package.json": {
       "createdAt": 1768904719578.269
     },
     "src/index.ts": {
       "createdAt": 1768904719578.269
-    },
-    "src/test-room/config.json": {
-      "createdAt": 1769356093250.5332
     },
     "src/test-room/index.ts": {
       "createdAt": 1768904719578.269
@@ -58,17 +55,20 @@
     "src/worker-room/app.worker.ts": {
       "createdAt": 1768904719579.269
     },
-    "src/worker-room/config.json": {
-      "createdAt": 1769356093251.5332
-    },
     "src/worker-room/index.ts": {
       "createdAt": 1768904719579.269
+    },
+    "test-room/config.json": {
+      "createdAt": 1769356298499.2063
     },
     "test-room/index.html": {
       "createdAt": 1768904719579.269
     },
     "tsconfig.json": {
       "createdAt": 1768904719579.269
+    },
+    "worker-room/config.json": {
+      "createdAt": 1769356298499.2063
     },
     "worker-room/index.html": {
       "createdAt": 1768904719579.269
@@ -109,32 +109,14 @@
       "unique-names-generator": "^4.7.1"
     }
   },
-  "/example/src/dir-json.json": {
-    "md5": "14751725e6569c11f29f3eaf817a954c",
-    "test-room/config.json": {
-      "createdAt": 1769356093250.5332
-    },
-    "worker-room/config.json": {
-      "createdAt": 1769356093251.5332
-    }
-  },
-  "/example/src/test-room/config.json": {
+  "/example/test-room/config.json": {
     "name": "Test Room"
   },
-  "/example/src/test-room/dir-json.json": {
+  "/example/test-room/dir-json.json": {
     "config.json": {
-      "createdAt": 1769356093250.5332
+      "createdAt": 1769356298499.2063
     },
-    "md5": "7abd52e3727e88472be98d4975e7fb96"
-  },
-  "/example/src/worker-room/config.json": {
-    "name": "Drawing board"
-  },
-  "/example/src/worker-room/dir-json.json": {
-    "config.json": {
-      "createdAt": 1769356093251.5332
-    },
-    "md5": "26ce0ca10158722f6ed5546c1d84530a"
+    "md5": "a7fb7cd04b3de0f7697d262e06dc8538"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -166,6 +148,15 @@
       "**/*.ts",
       "**/*.tsx"
     ]
+  },
+  "/example/worker-room/config.json": {
+    "name": "Drawing board"
+  },
+  "/example/worker-room/dir-json.json": {
+    "config.json": {
+      "createdAt": 1769356298499.2063
+    },
+    "md5": "a7fb7cd04b3de0f7697d262e06dc8538"
   },
   "/package.json": {
     "name": "napl",
