@@ -1,8 +1,9 @@
 import { enterWorld } from "@dobuki/hello-worker";
-import { setupMessenger } from "./core/messenger";
+import { hookMessengerFromMain } from "./core/messenger";
 import { MessageType } from "./MessageType";
 import { setupGraphics } from "./core/graphics";
 import { setupControl } from "./core/controls";
+import { hookEffect, hookMemo, startHook } from "@/worker/hooks/hookEffect";
 
 interface Props {
   worldId: string;
@@ -14,7 +15,7 @@ interface Props {
   };
 }
 
-export function createWorkerApp({
+function hookWorkerApp({
   worldId,
   signalWorkerUrl,
   programWorkerUrl,
@@ -33,47 +34,66 @@ export function createWorkerApp({
     addMessageListener,
     addUserListener,
     end,
-  } = enterWorld<Uint8Array | string>({ worldId, workerUrl: signalWorkerUrl });
+  } = hookMemo(() => {
+    return enterWorld<Uint8Array | string>({
+      worldId,
+      workerUrl: signalWorkerUrl,
+    });
+  }, [worldId, signalWorkerUrl]);
 
-  const worker = new Worker(programWorkerUrl, { type: "module" });
-
-  const { sendMessage: sendToWorker, close: closeMessenger } = setupMessenger(
-    worker,
-    (msg) => {
-      if (msg.type === MessageType.PING) {
-        console.log("Ping", (performance.now() - msg.now).toFixed(2) + "ms");
-      }
-      if (msg.type === MessageType.LINE) {
-        sendAcross(JSON.stringify(msg));
-      }
-    },
+  const worker = hookMemo(
+    () => new Worker(programWorkerUrl, { type: "module" }),
+    [programWorkerUrl],
   );
-  const { unhook: unhookGraphics } = setupGraphics(worker);
-  const { close: closeControls } = setupControl({ sendMessage: sendToWorker });
 
-  const removeUserListener = addUserListener((user, action, users) => {
-    sendToWorker(MessageType.ON_USER_UPDATE, {
-      user,
-      action,
-      users,
-    });
-  });
-  const removeMessageListener = addMessageListener((data, from) => {
-    if (typeof data === "string") {
-      const obj = JSON.parse(data);
-      sendToWorker(obj.type, obj);
-      return;
+  const { sendMessage: sendToWorker } = hookMessengerFromMain(worker, (msg) => {
+    if (msg.type === MessageType.PING) {
+      console.log("Ping", (performance.now() - msg.now).toFixed(2) + "ms");
     }
-    sendToWorker(MessageType.ON_MESSAGE, {
-      data,
-      from,
-    });
+    if (msg.type === MessageType.LINE) {
+      sendAcross(JSON.stringify(msg));
+    }
   });
+  hookEffect(() => {
+    const { unhook: unhookGraphics } = setupGraphics(worker);
+    const { close: closeControls } = setupControl({
+      sendMessage: sendToWorker,
+    });
 
-  setTimeout(() => {
-    const now = performance.now();
-    sendToWorker(MessageType.PING, { now });
-  }, 1000);
+    const removeUserListener = addUserListener((user, action, users) => {
+      sendToWorker(MessageType.ON_USER_UPDATE, {
+        user,
+        action,
+        users,
+      });
+    });
+    const removeMessageListener = addMessageListener((data, from) => {
+      if (typeof data === "string") {
+        const obj = JSON.parse(data);
+        sendToWorker(obj.type, obj);
+        return;
+      }
+      sendToWorker(MessageType.ON_MESSAGE, {
+        data,
+        from,
+      });
+    });
+    return () => {
+      unhookGraphics();
+      removeUserListener();
+      removeMessageListener();
+      closeControls();
+      unhookGraphics();
+    };
+  }, [worker]);
+
+  hookEffect(() => {
+    //  One ping
+    setTimeout(() => {
+      const now = performance.now();
+      sendToWorker(MessageType.PING, { now });
+    }, 1000);
+  }, []);
 
   // const onMessage = (e: MessageEvent<WorkerResponse>) => {
   //   const { action } = e.data;
@@ -94,22 +114,23 @@ export function createWorkerApp({
   // };
   // worker.addEventListener("message", onMessage);
 
-  if (lobby) {
-    enterRoom(lobby);
-  }
+  hookEffect(() => {
+    if (lobby) {
+      enterRoom(lobby);
+      return () => {
+        exitRoom(lobby);
+      };
+    }
+  }, [lobby]);
 
   return {
     close() {
       // worker.removeEventListener("message", onMessage);
-      removeUserListener();
-      removeMessageListener();
-      closeControls();
-      unhookGraphics();
-      closeMessenger();
       end();
-      if (lobby) {
-        exitRoom(lobby);
-      }
     },
   };
+}
+
+export function createWorkerApp(props: Props) {
+  return startHook(() => hookWorkerApp(props));
 }
