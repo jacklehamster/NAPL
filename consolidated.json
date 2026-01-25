@@ -27,24 +27,6 @@
     "config.json": {
       "createdAt": 1768904719574.269
     },
-    "dist/app.worker.js": {
-      "createdAt": 1768904719574.269
-    },
-    "dist/app.worker.js.map": {
-      "createdAt": 1768904719575.269
-    },
-    "dist/index.js": {
-      "createdAt": 1768904719576.269
-    },
-    "dist/index.js.map": {
-      "createdAt": 1768904719577.269
-    },
-    "dist/signal-room.worker.js": {
-      "createdAt": 1768904719578.269
-    },
-    "dist/signal-room.worker.js.map": {
-      "createdAt": 1768904719578.269
-    },
     "favicon.ico": {
       "createdAt": 1768904719578.269
     },
@@ -54,7 +36,7 @@
     "index.ts": {
       "createdAt": 1768904719578.269
     },
-    "md5": "cb1e53f29e528aad3d3fad8b355a0f5d",
+    "md5": "a53f19d73f61254ec739c2cbc7ccfbe9",
     "package.json": {
       "createdAt": 1768904719578.269
     },
@@ -196,7 +178,7 @@
       "fetch-blob": "^4.0.0",
       "jest": "^29.7.0",
       "ts-jest": "^29.4.6",
-      "wrangler": "^4.59.3",
+      "wrangler": "^4.60.0",
       "@cloudflare/workers-types": "latest",
       "@cloudflare/kv-asset-handler": "latest"
     },
