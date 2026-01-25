@@ -170,5 +170,4 @@ out
 # IntelliJ based IDEs
 .idea
 
-!dist
 icons

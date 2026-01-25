@@ -59,10 +59,10 @@ export class Processor {
         comm.send(
           encode({
             updates: context.outgoingUpdates.filter(
-              (update) => update.peer === peer
+              (update) => update.peer === peer,
             ),
           }),
-          peer
+          peer,
         );
       });
     });

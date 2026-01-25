@@ -1,9 +1,5 @@
 import { Message } from "../MessageType";
-import {
-  DataRingReader,
-  DataRingWriter,
-  IDataWriter,
-} from "../utils/data-ring";
+import { DataRingWriter } from "../utils/data-ring";
 import { hookMsgListener } from "../utils/listener";
 import { hookSerializers } from "../utils/serializers";
 import _ from "lodash";
@@ -33,9 +29,7 @@ export function hookMessenger(sab: SharedArrayBuffer) {
     }
   }
 
-  return {
-    sendMessage,
-  };
+  return { sendMessage };
 }
 
 export function setupMessenger(

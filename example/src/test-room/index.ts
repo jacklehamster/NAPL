@@ -194,7 +194,7 @@ function setupApp() {
     {
       let stop: undefined | (() => void);
       const button = document.body.appendChild(
-        document.createElement("button")
+        document.createElement("button"),
       );
       button.textContent = "⏸️";
       button.addEventListener("mousedown", () => {
@@ -209,11 +209,16 @@ function setupApp() {
       updateButtons.add(() => {
         button.textContent = paused ? "▶️" : "⏸️";
       });
-      stop = startLoop();
+
+      //  Initially start
+      setTimeout(() => {
+        console.log("Starting progrram...");
+        stop = startLoop();
+      }, 1000);
     }
     {
       const button = document.body.appendChild(
-        document.createElement("button")
+        document.createElement("button"),
       );
       button.textContent = "⏯️";
       button.addEventListener("mousedown", () => program.performCycle());
@@ -223,7 +228,7 @@ function setupApp() {
     }
     {
       const button = document.body.appendChild(
-        document.createElement("button")
+        document.createElement("button"),
       );
       button.textContent = "🔄";
       button.addEventListener("mousedown", () => {

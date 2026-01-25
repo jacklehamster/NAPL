@@ -9,7 +9,7 @@ export function deepShareData(
   obj: Data,
   peerProps: { active: true; peer: string },
   pathParts: string[] = [],
-  now: number = Date.now()
+  now: number = Date.now(),
 ) {
   const shouldGoDeeper =
     typeof obj === "object" &&
@@ -21,7 +21,7 @@ export function deepShareData(
       const value = Array.isArray(obj) ? obj[Number(key)] : obj[key];
       deepShareData(context, value, peerProps, [...pathParts, key], now);
     }
-  } else {
+  } else if (pathParts.length) {
     setData(now, context.outgoingUpdates, pathParts.join("/"), obj, peerProps);
   }
 }
@@ -29,7 +29,7 @@ export function deepShareData(
 export function hookCommInterface(
   context: Context,
   comm: CommInterface,
-  processor: Processor
+  processor: Processor,
 ) {
   const removeOnMessage = comm.onMessage((buffer) => {
     processor.receivedData(buffer, context);
