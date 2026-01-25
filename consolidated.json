@@ -6,9 +6,15 @@
     "config.json": {
       "createdAt": 1768905087551.9946
     },
-    "md5": "be86df25565d7970a2b8338a121733c9",
+    "md5": "95dcf63459d7246d848ea966adabc3c9",
     "package.json": {
       "createdAt": 1768905087556.9946
+    },
+    "src/test-room/config.json": {
+      "createdAt": 1769356093250.5332
+    },
+    "src/worker-room/config.json": {
+      "createdAt": 1769356093251.5332
     },
     "tsconfig.json": {
       "createdAt": 1768905087557.9946
@@ -36,18 +42,24 @@
     "index.ts": {
       "createdAt": 1768904719578.269
     },
-    "md5": "a53f19d73f61254ec739c2cbc7ccfbe9",
+    "md5": "d35951cd783be0b820c96ca945288f6f",
     "package.json": {
       "createdAt": 1768904719578.269
     },
     "src/index.ts": {
       "createdAt": 1768904719578.269
     },
+    "src/test-room/config.json": {
+      "createdAt": 1769356093250.5332
+    },
     "src/test-room/index.ts": {
       "createdAt": 1768904719578.269
     },
     "src/worker-room/app.worker.ts": {
       "createdAt": 1768904719579.269
+    },
+    "src/worker-room/config.json": {
+      "createdAt": 1769356093251.5332
     },
     "src/worker-room/index.ts": {
       "createdAt": 1768904719579.269
@@ -96,6 +108,33 @@
       "random-name": "^0.1.2",
       "unique-names-generator": "^4.7.1"
     }
+  },
+  "/example/src/dir-json.json": {
+    "md5": "14751725e6569c11f29f3eaf817a954c",
+    "test-room/config.json": {
+      "createdAt": 1769356093250.5332
+    },
+    "worker-room/config.json": {
+      "createdAt": 1769356093251.5332
+    }
+  },
+  "/example/src/test-room/config.json": {
+    "name": "Test Room"
+  },
+  "/example/src/test-room/dir-json.json": {
+    "config.json": {
+      "createdAt": 1769356093250.5332
+    },
+    "md5": "7abd52e3727e88472be98d4975e7fb96"
+  },
+  "/example/src/worker-room/config.json": {
+    "name": "Drawing board"
+  },
+  "/example/src/worker-room/dir-json.json": {
+    "config.json": {
+      "createdAt": 1769356093251.5332
+    },
+    "md5": "26ce0ca10158722f6ed5546c1d84530a"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
