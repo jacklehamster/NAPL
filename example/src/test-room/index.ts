@@ -25,7 +25,7 @@ function setupApp() {
       refreshData();
     },
     onUsersLeft: (user, users) => {
-      program.setData(`users/${user}`, undefined);
+      program.setData(`users/${user}`, null);
       userList = users;
       refreshData();
     },
