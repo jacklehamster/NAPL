@@ -1,3 +1,1 @@
-./build.sh
-
-bun run dev
+./build.sh && bun run dev

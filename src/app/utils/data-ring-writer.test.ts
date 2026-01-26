@@ -11,12 +11,6 @@ function make(cap: number) {
   return { buf, ring };
 }
 
-function readLenPrefixedBytes(buf: Uint8Array, start: number) {
-  const len = buf[start];
-  const bytes = buf.subarray(start + 1, start + 1 + len);
-  return { len, bytes };
-}
-
 describe("DataRing", () => {
   it("at() normalizes offset into [0, cap)", () => {
     const { ring } = make(8);
@@ -66,47 +60,24 @@ describe("DataRing", () => {
 
     ring.at(2).writeBytes(new Uint8Array([1, 2, 3]));
     expect(buf[2]).toBe(3); // length
-    expect(Array.from(buf.subarray(3, 6))).toEqual([1, 2, 3]);
-    expect(ring.offset).toBe(6);
+    expect(Array.from(buf.subarray(4, 7))).toEqual([1, 2, 3]);
+    expect(ring.offset).toBe(7);
   });
 
   it("writeBytes wraps payload across end", () => {
     const { buf, ring } = make(8);
 
-    // Start at 6, write len=3 + 3 bytes => total 4 bytes.
+    // Start at 6, write len=3 + 3 bytes => total 5 bytes.
     // Layout:
     // buf[6] = 3 (len)
     // payload: 9 at 7, 8 at 0, 7 at 1
     ring.at(6).writeBytes(new Uint8Array([9, 8, 7]));
 
     expect(buf[6]).toBe(3);
-    expect(buf[7]).toBe(9);
-    expect(buf[0]).toBe(8);
-    expect(buf[1]).toBe(7);
-    expect(ring.offset).toBe(2);
-  });
-
-  it("writeString writes UTF-8 bytes with u8 length prefix (ASCII)", () => {
-    const { buf, ring } = make(32);
-
-    ring.at(0).writeString("hello");
-    const { len, bytes } = readLenPrefixedBytes(buf, 0);
-
-    expect(len).toBe(5);
-    expect(dec.decode(bytes)).toBe("hello");
-    expect(ring.offset).toBe(1 + 5);
-  });
-
-  it("writeString works for non-ASCII (UTF-8)", () => {
-    const { buf, ring } = make(64);
-
-    const s = "hé🙂"; // includes accented + emoji
-    ring.at(10).writeString(s);
-
-    const { len, bytes } = readLenPrefixedBytes(buf, 10);
-    // sanity: should decode back
-    expect(dec.decode(bytes)).toBe(s);
-    expect(ring.offset).toBe(10 + 1 + len);
+    expect(buf[0]).toBe(9);
+    expect(buf[1]).toBe(8);
+    expect(buf[2]).toBe(7);
+    expect(ring.offset).toBe(3);
   });
 
   it("writeString wraps across end", () => {
@@ -118,11 +89,11 @@ describe("DataRing", () => {
     ring.at(14).writeString("abcd");
 
     expect(buf[14]).toBe(4);
-    expect(buf[15]).toBe("a".charCodeAt(0));
-    expect(buf[0]).toBe("b".charCodeAt(0));
-    expect(buf[1]).toBe("c".charCodeAt(0));
-    expect(buf[2]).toBe("d".charCodeAt(0));
-    expect(ring.offset).toBe(3);
+    expect(buf[0]).toBe("a".charCodeAt(0));
+    expect(buf[1]).toBe("b".charCodeAt(0));
+    expect(buf[2]).toBe("c".charCodeAt(0));
+    expect(buf[3]).toBe("d".charCodeAt(0));
+    expect(ring.offset).toBe(4);
   });
 
   it("writeFloat64 writes IEEE754 little-endian and wraps correctly", () => {
@@ -145,10 +116,16 @@ describe("DataRing", () => {
     expect(ring.offset).toBe(4);
   });
 
-  it("writeBytes throws if payload length > 255", () => {
-    const { ring } = make(1024);
+  it("writeBytes works if payload length > 255", () => {
+    const { ring } = make(1024 * 1024);
     const big = new Uint8Array(256);
-    expect(() => ring.writeBytes(big)).toThrow();
+    expect(() => ring.writeBytes(big)).not.toThrow();
+  });
+
+  it("writeBytes throws if payload length >= 256*256", () => {
+    const { ring } = make(1024 * 1024);
+    const huge = new Uint8Array(256 * 256);
+    expect(() => ring.writeBytes(huge)).toThrow();
   });
 
   it("constructor throws if buffer length <= 0", () => {

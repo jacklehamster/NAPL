@@ -1,6 +1,7 @@
 import {
   LineMessage,
   MouseMessage,
+  MsgMessage,
   PointerMessage,
   UserMessage,
   WheelMessage,
@@ -9,7 +10,7 @@ import { KeyMessage } from "../MessageType";
 import { MessageType } from "../MessageType";
 import { Message } from "../MessageType";
 import { PingMessage } from "../MessageType";
-import { IDataReader, IDataWriter } from "./data-ring";
+import { DataRingWriter, IDataReader, IDataWriter } from "./data-ring";
 
 export function hookSerializers() {
   const keySerializer: Serializer<KeyMessage> = {
@@ -205,6 +206,24 @@ export function hookSerializers() {
         },
       },
     ],
+    [
+      MessageType.ON_PEER_MESSAGE,
+      {
+        serialize(_type, msg: MsgMessage, data: IDataWriter) {
+          data.writeString(msg.from ?? "");
+          data.writeBytes(msg.data);
+        },
+        deserialize(data: IDataReader) {
+          const from = data.readString();
+          const dataBytes = data.readBytes();
+          return {
+            type: MessageType.ON_PEER_MESSAGE,
+            from: from.length ? from : undefined,
+            data: dataBytes.slice(),
+          };
+        },
+      },
+    ],
   ];
 
   const serializerMap = new Map<MessageType, Serializer<Message>>(serializers);
@@ -228,9 +247,17 @@ export function hookSerializers() {
     return msg;
   }
 
+  const serializerWriter = new DataRingWriter(new Uint8Array(1024));
+  const messageToBytes = (msg: Message) => {
+    serializerWriter.offset = 0;
+    serialize(msg.type, msg, serializerWriter);
+    return serializerWriter.data.subarray(0, serializerWriter.offset);
+  };
+
   return {
     serialize,
     deserialize,
+    messageToBytes,
   };
 }
 export interface Serializer<M extends Message> {

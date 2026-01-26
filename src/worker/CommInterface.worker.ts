@@ -4,7 +4,7 @@ import { hookMessenger } from "@/app/core/messenger";
 import { Message, MessageType } from "@/app/MessageType";
 import { hookMsgListener } from "@/app/utils/listener";
 import { WorkerCommand } from "./WorkerCommand";
-import { generateRandomHexColor } from "@/app/utils/drawing";
+import { hookSerializers } from "@/app/utils/serializers";
 
 // function respond(response: WorkerResponse) {
 //   (self as DedicatedWorkerGlobalScope).postMessage(
@@ -13,7 +13,7 @@ import { generateRandomHexColor } from "@/app/utils/drawing";
 //   );
 // }
 
-export function initialize(): void {
+export function initialize(onMessage: (msg: Message) => void) {
   // let program: IProgram | undefined;
   // const messageListeners = new Array<(data: Uint8Array) => void>();
   // const newUserListener = new Array<(user: string) => void>();
@@ -23,13 +23,6 @@ export function initialize(): void {
   ) => void;
 
   let canvas: OffscreenCanvas | undefined;
-  let cursor = {
-    x: 0,
-    y: 0,
-    needsReset: true,
-    color: "black",
-    width: 1,
-  };
 
   const { listen } = hookMsgListener();
 
@@ -73,61 +66,7 @@ export function initialize(): void {
       const msg = e.data;
       if (msg.sab) {
         const { toWorker, fromWorker } = msg.sab;
-        listen(toWorker, (msg) => {
-          if (msg.type === MessageType.POINTER_LOCK) {
-            cursor.needsReset = true;
-            cursor.color = generateRandomHexColor();
-          }
-          if (msg.type === MessageType.LINE) {
-            const ctx = canvas?.getContext("2d");
-            if (ctx) {
-              ctx.lineWidth = msg.lineWidth;
-              ctx.beginPath();
-              ctx.moveTo(msg.from.x, msg.from.y);
-              ctx.strokeStyle = msg.color;
-              ctx.lineTo(msg.to.x, msg.to.y);
-              ctx.stroke();
-            }
-          }
-          if (msg.type === MessageType.MOUSE_MOVE) {
-            if (cursor.needsReset) {
-              cursor.x = msg.clientX * 2;
-              cursor.y = msg.clientY * 2;
-              cursor.needsReset = false;
-            }
-            const ctx = canvas?.getContext("2d");
-
-            if (ctx) {
-              const newLineWidth = (ctx.lineWidth =
-                Math.sqrt(
-                  Math.sqrt(
-                    msg.movementX * msg.movementX +
-                      msg.movementY * msg.movementY,
-                  ),
-                ) * 2);
-              ctx.beginPath();
-              ctx.moveTo(cursor.x, cursor.y);
-              const from = { x: cursor.x, y: cursor.y };
-              ctx.lineWidth = newLineWidth;
-              cursor.x += msg.movementX;
-              cursor.y += msg.movementY;
-              cursor.x = Math.max(0, Math.min(ctx.canvas.width, cursor.x));
-              cursor.y = Math.max(0, Math.min(ctx.canvas.height, cursor.y));
-              ctx.strokeStyle = cursor.color;
-              ctx.lineTo(cursor.x, cursor.y);
-              ctx.stroke();
-              sendMessage(MessageType.LINE, {
-                from,
-                to: { x: cursor.x, y: cursor.y },
-                color: ctx.strokeStyle,
-                lineWidth: ctx.lineWidth,
-              });
-            }
-          }
-          if (msg.type === MessageType.PING) {
-            sendMessage(MessageType.PING, { now: msg.now });
-          }
-        });
+        listen(toWorker, onMessage);
         const result = hookMessenger(fromWorker);
         sendMessage = result.sendMessage;
       }
@@ -172,4 +111,19 @@ export function initialize(): void {
       // }
     },
   );
+
+  const { messageToBytes } = hookSerializers();
+
+  return {
+    sendMessage<M extends Message>(type: M["type"], msg: Omit<M, "type">) {
+      sendMessage?.(type, msg);
+    },
+    sendMessageAccross(msg: Message, peer?: string) {
+      const data = messageToBytes(msg);
+      sendMessage?.(MessageType.ON_PEER_MESSAGE, { data, from: peer });
+    },
+    getCanvas() {
+      return canvas;
+    },
+  };
 }

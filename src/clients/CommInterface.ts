@@ -1,9 +1,9 @@
 export interface OutgoingCom {
-  send(data: Uint8Array, peer?: string): void;
+  send(data: ArrayBufferView, peer?: string): void;
 }
 
 export interface CommInterface extends OutgoingCom {
   close(): void;
-  onMessage(listener: (data: Uint8Array) => void): () => void;
+  onMessage(listener: (data: ArrayBufferLike) => void): () => void;
   onNewClient(listener: (peer: string) => void): () => void;
 }

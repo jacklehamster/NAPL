@@ -5,7 +5,6 @@ import { decode, encode } from "@msgpack/msgpack";
 import { Context } from "../context/Context";
 import {
   commitUpdates,
-  consolidateUpdates,
   translateValue,
   UpdatePath,
 } from "../cycles/data-update/data-update";
@@ -29,7 +28,7 @@ export class Processor {
     commitUpdates(context, updatedPaths);
   }
 
-  receivedData(data: Uint8Array | SharedArrayBuffer, context: Context) {
+  receivedData(data: ArrayBufferLike, context: Context) {
     const payload = decode(data) as Payload;
     if (!payload.updates?.length) return;
     context.incomingUpdates.push(...payload.updates);

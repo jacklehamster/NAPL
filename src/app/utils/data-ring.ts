@@ -20,10 +20,8 @@ export class DataRingWriter implements IDataWriter {
   private scratch = new Uint8Array(64);
   private floatScratch = new Uint8Array(8);
   private floatDV = new DataView(this.floatScratch.buffer);
-  private intScratch = new Uint8Array(4);
-  private intDV = new DataView(this.intScratch.buffer);
 
-  constructor(private data: Uint8Array) {
+  constructor(public data: Uint8Array) {
     this.cap = data.length;
     if (this.cap <= 0) throw new Error("DataRing: data length must be > 0");
   }
@@ -84,14 +82,14 @@ export class DataRingWriter implements IDataWriter {
     this.writeByte(bits);
   }
 
-  /** Writes [u8 len][len bytes]. len must be <= 255. */
+  /** Writes [u8 len][len bytes]. len must be < 256*256. */
   writeBytes(bytes: Uint8Array) {
-    if (bytes.length > 255) {
+    if (bytes.length >= 256 * 256) {
       throw new Error(
-        `writeBytes: length ${bytes.length} > 255 (u8 length prefix)`
+        `writeBytes: length ${bytes.length} >= 256*256 (u16 length prefix)`,
       );
     }
-    this.writeU8(bytes.length);
+    this.writeInt16(bytes.length);
     this.writeRawBytes(bytes);
   }
 
@@ -105,16 +103,6 @@ export class DataRingWriter implements IDataWriter {
 
     const { written, read } = this.enc.encodeInto(str, this.scratch);
 
-    // If not all chars fit (read < str.length) OR written > 255, you need a different length prefix.
-    if (read < str.length || written > 255) {
-      // simplest: fall back to encode() which allocates, or upgrade to u16 length prefix
-      const bytes = this.enc.encode(str);
-      if (bytes.length > 255)
-        throw new Error(`writeString: encoded length ${bytes.length} > 255`);
-      this.writeBytes(bytes);
-      return;
-    }
-
     this.writeBytes(this.scratch.subarray(0, written));
   }
 
@@ -124,8 +112,18 @@ export class DataRingWriter implements IDataWriter {
     return v | 0;
   }
 
+  private clampUint16(v: number) {
+    if (v > 65535) return 65535;
+    if (v < 0) return 0;
+    return v | 0;
+  }
+
   writeInt16(v: number) {
-    this.floatDV.setInt16(0, this.clampInt16(v), true);
+    if (v < 0) {
+      this.floatDV.setInt16(0, this.clampInt16(v), true);
+    } else {
+      this.floatDV.setUint16(0, this.clampUint16(v), true);
+    }
     this.writeRawBytes(this.floatScratch.subarray(0, 2));
   }
 
@@ -147,7 +145,7 @@ export interface IDataReader {
   readBooleans(count: number): boolean[];
   readBytes(): Uint8Array; // reads [u8 len][len bytes] and returns payload (view or scratch)
   readString(): string; // reads bytes then decodes UTF-8
-  readInt16(): number;
+  readInt16(unsigned?: boolean): number;
   readInt32(): number;
   readFloat64(): number; // IEEE754, little-endian
   readonly offset: number;
@@ -165,7 +163,7 @@ export class DataRingReader implements IDataReader {
   private readonly floatDV = new DataView(this.floatScratch.buffer);
   private readonly boolScratch: boolean[] = [];
 
-  constructor(private data: Uint8Array) {
+  constructor(public data: Uint8Array) {
     this.cap = data.length;
     if (this.cap <= 0) throw new Error("DataRing: data length must be > 0");
   }
@@ -220,7 +218,7 @@ export class DataRingReader implements IDataReader {
   }
 
   readBytes(): Uint8Array {
-    const len = this.readU8(); // u8 length prefix
+    const len = this.readInt16(true); // u8 length prefix
     return this.readRawBytes(len); // payload
   }
 
@@ -235,7 +233,7 @@ export class DataRingReader implements IDataReader {
       // copy to non-shared and decode
       if (this.scratch.length < bytes.length) {
         this.scratch = new Uint8Array(
-          Math.max(bytes.length, this.scratch.length * 2)
+          Math.max(bytes.length, this.scratch.length * 2),
         );
       }
       this.scratch.set(bytes, 0);
@@ -245,7 +243,7 @@ export class DataRingReader implements IDataReader {
     return this.dec.decode(bytes);
   }
 
-  readInt16(): number {
+  readInt16(unsigned?: boolean): number {
     const b = this.readRawBytes(2);
     if (b.byteLength !== 2) throw new Error("readInt16: expected 2 bytes");
 
@@ -253,7 +251,9 @@ export class DataRingReader implements IDataReader {
     this.floatScratch[0] = b[0];
     this.floatScratch[1] = b[1];
 
-    return this.floatDV.getInt16(0, true);
+    return unsigned
+      ? this.floatDV.getUint16(0, true)
+      : this.floatDV.getInt16(0, true);
   }
 
   readInt32(): number {

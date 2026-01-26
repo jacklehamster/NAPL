@@ -60,8 +60,8 @@ describe("DataRingReader", () => {
     const got = r.readBytes();
     expect(Array.from(got)).toEqual([9, 8, 7]);
 
-    // After consuming: offset should be (6 + 1 + 3) % 8 = 2
-    expect(r.offset).toBe(2);
+    // After consuming: offset should be (6 + 2 + 3) % 8 = 3
+    expect(r.offset).toBe(3);
   });
 
   it("readString round-trips ASCII (no wrap)", () => {
@@ -90,7 +90,7 @@ describe("DataRingReader", () => {
 
     r.at(14);
     expect(r.readString()).toBe("abcd");
-    expect(r.offset).toBe(3); // (14 + 5) % 16
+    expect(r.offset).toBe(4); // (14 + 6) % 16
   });
 
   it("readFloat64 reads what writeFloat64 wrote (no wrap)", () => {

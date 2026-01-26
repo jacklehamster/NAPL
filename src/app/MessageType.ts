@@ -3,7 +3,7 @@ export enum MessageType {
   KEY_DOWN,
   KEY_UP,
   ON_USER_UPDATE,
-  ON_MESSAGE,
+  ON_PEER_MESSAGE,
   MOUSE_MOVE,
   MOUSE_DOWN,
   MOUSE_UP,
@@ -22,7 +22,7 @@ export type UserMessage = {
   users: string[];
 };
 export type MsgMessage = {
-  type: MessageType.ON_MESSAGE;
+  type: MessageType.ON_PEER_MESSAGE;
   data: Uint8Array;
   from?: string;
 };

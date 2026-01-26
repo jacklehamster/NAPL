@@ -13,3 +13,7 @@ export * from "./core/Program";
 export * from "./app/App";
 export * from "./worker/CommInterface.worker";
 export * from "./app/WorkerApp";
+export * from "./app/MessageType";
+export * from "./app/utils/drawing";
+export * from "./app/utils/serializers";
+export * from "./app/utils/data-ring";

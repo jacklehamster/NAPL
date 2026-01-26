@@ -2,7 +2,11 @@ import { enterWorld } from "@dobuki/hello-worker";
 import { setupMessenger } from "./core/messenger";
 import { MessageType } from "./MessageType";
 import { setupGraphics } from "./core/graphics";
-import { setupControl } from "./core/controls";
+import {
+  captureKeyboard,
+  captureMouse,
+  setupPointerLockControl,
+} from "./core/controls";
 
 interface Props {
   worldId: string;
@@ -25,6 +29,8 @@ export function createWorkerApp({
       It requires Cross-Origin Isolation (COOP/COEP) to enable high-performance shared memory.
       Please reload from the official site / correct environment, or contact your admin.`);
   }
+  const worker = new Worker(programWorkerUrl, { type: "module" });
+
   const {
     userId,
     send: sendAcross,
@@ -33,39 +39,45 @@ export function createWorkerApp({
     addMessageListener,
     addUserListener,
     end,
-  } = enterWorld<Uint8Array | string>({ worldId, workerUrl: signalWorkerUrl });
-
-  const worker = new Worker(programWorkerUrl, { type: "module" });
+  } = enterWorld<ArrayBufferView, ArrayBufferLike>({
+    worldId,
+    workerUrl: signalWorkerUrl,
+  });
 
   const { sendMessage: sendToWorker, close: closeMessenger } = setupMessenger(
     worker,
     (msg) => {
-      if (msg.type === MessageType.PING) {
-        console.log("Ping", (performance.now() - msg.now).toFixed(2) + "ms");
-      }
-      if (msg.type === MessageType.LINE) {
-        sendAcross(JSON.stringify(msg));
+      switch (msg.type) {
+        case MessageType.PING:
+          console.log("Ping", (performance.now() - msg.now).toFixed(2) + "ms");
+          break;
+        case MessageType.ON_PEER_MESSAGE:
+          sendAcross(msg.data, msg.from);
+          break;
       }
     },
   );
   const { unhook: unhookGraphics } = setupGraphics(worker);
-  const { close: closeControls } = setupControl({ sendMessage: sendToWorker });
+  const { close: closeControls } = setupPointerLockControl({
+    sendMessage: sendToWorker,
+    onPointerLock: (locked: boolean) => {
+      if (locked) {
+        const uncaptureouse = captureMouse(sendToWorker);
+        const uncapturekeyboard = captureKeyboard(sendToWorker);
+        return () => {
+          uncaptureouse();
+          uncapturekeyboard();
+        };
+      }
+    },
+  });
 
   const removeUserListener = addUserListener((user, action, users) => {
-    sendToWorker(MessageType.ON_USER_UPDATE, {
-      user,
-      action,
-      users,
-    });
+    sendToWorker(MessageType.ON_USER_UPDATE, { user, action, users });
   });
   const removeMessageListener = addMessageListener((data, from) => {
-    if (typeof data === "string") {
-      const obj = JSON.parse(data);
-      sendToWorker(obj.type, obj);
-      return;
-    }
-    sendToWorker(MessageType.ON_MESSAGE, {
-      data,
+    sendToWorker(MessageType.ON_PEER_MESSAGE, {
+      data: new Uint8Array(data),
       from,
     });
   });
@@ -99,6 +111,9 @@ export function createWorkerApp({
   }
 
   return {
+    enterRoom,
+    exitRoom,
+    userId,
     close() {
       // worker.removeEventListener("message", onMessage);
       removeUserListener();
