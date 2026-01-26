@@ -4,20 +4,20 @@
   },
   "/example/dir-json.json": {
     "config.json": {
-      "createdAt": 1768905087551.9946
+      "createdAt": 1769398712190.0808
     },
-    "md5": "f179c486597eb5e20f9c4551e81af38c",
+    "md5": "88f10aac14da00c19585f0e10afc5c6f",
     "package.json": {
-      "createdAt": 1768905087556.9946
+      "createdAt": 1769398712190.0808
     },
     "test-room/config.json": {
-      "createdAt": 1769356298499.2063
+      "createdAt": 1769398712191.0808
     },
     "tsconfig.json": {
-      "createdAt": 1768905087557.9946
+      "createdAt": 1769398712191.0808
     },
     "worker-room/config.json": {
-      "createdAt": 1769356298499.2063
+      "createdAt": 1769398712191.0808
     }
   },
   "/example/dir.json": {
@@ -114,9 +114,9 @@
   },
   "/example/test-room/dir-json.json": {
     "config.json": {
-      "createdAt": 1769356298499.2063
+      "createdAt": 1769398712191.0808
     },
-    "md5": "a7fb7cd04b3de0f7697d262e06dc8538"
+    "md5": "4ff5b19253d2f989c8f95d3d7373efbb"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -154,9 +154,9 @@
   },
   "/example/worker-room/dir-json.json": {
     "config.json": {
-      "createdAt": 1769356298499.2063
+      "createdAt": 1769398712191.0808
     },
-    "md5": "a7fb7cd04b3de0f7697d262e06dc8538"
+    "md5": "4ff5b19253d2f989c8f95d3d7373efbb"
   },
   "/package.json": {
     "name": "napl",
@@ -214,7 +214,7 @@
     },
     "dependencies": {
       "@dobuki/data-blob": "^1.0.18",
-      "@dobuki/hello-worker": "^1.0.62",
+      "@dobuki/hello-worker": "^1.0.68",
       "@msgpack/msgpack": "^3.1.3",
       "@types/lodash": "^4.17.23",
       "@types/npm": "^7.19.3",
