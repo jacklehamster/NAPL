@@ -52,9 +52,10 @@ function setupApp() {
       refreshData();
     }
   });
+
   program
     .observe(["cursor/pos", "cursor/user"])
-    .onChange(([pos, user]: [any, string, string]) => {
+    .onChange(([pos, user]: [{ x: number; y: number }, string, string]) => {
       const div = document.querySelector("#div-emoji") as HTMLDivElement;
       if (div) {
         const offset =

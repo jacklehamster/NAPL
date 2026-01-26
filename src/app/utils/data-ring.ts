@@ -13,7 +13,6 @@ export interface IDataWriter {
 export class DataRingWriter implements IDataWriter {
   offset = 0;
 
-  private cap: number;
   private enc = new TextEncoder();
 
   // scratch buffers (non-shared ok even if underlying ring is shared)
@@ -21,14 +20,12 @@ export class DataRingWriter implements IDataWriter {
   private floatScratch = new Uint8Array(8);
   private floatDV = new DataView(this.floatScratch.buffer);
 
-  constructor(public data: Uint8Array) {
-    this.cap = data.length;
-    if (this.cap <= 0) throw new Error("DataRing: data length must be > 0");
-  }
+  constructor(public data: Uint8Array) {}
 
   at(offset: number) {
     // normalize in [0, cap)
-    this.offset = ((offset % this.cap) + this.cap) % this.cap;
+    this.offset =
+      ((offset % this.data.length) + this.data.length) % this.data.length;
     return this;
   }
 
@@ -36,7 +33,7 @@ export class DataRingWriter implements IDataWriter {
 
   private advance(n: number) {
     const x = this.offset + n;
-    this.offset = x >= this.cap ? x % this.cap : x;
+    this.offset = x >= this.data.length ? x % this.data.length : x;
   }
 
   private writeU8(v: number) {
@@ -50,13 +47,13 @@ export class DataRingWriter implements IDataWriter {
     if (n === 0) return;
 
     const end = this.offset + n;
-    if (end <= this.cap) {
+    if (end <= this.data.length) {
       this.data.set(src, this.offset);
-      this.offset = end === this.cap ? 0 : end;
+      this.offset = end === this.data.length ? 0 : end;
       return;
     }
 
-    const first = this.cap - this.offset;
+    const first = this.data.length - this.offset;
     this.data.set(src.subarray(0, first), this.offset);
     const second = n - first;
     this.data.set(src.subarray(first), 0);

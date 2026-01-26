@@ -12,17 +12,12 @@ interface Props {
   worldId: string;
   signalWorkerUrl?: URL;
   programWorkerUrl: URL;
-  lobby?: {
-    host: string;
-    room: string;
-  };
 }
 
 export function createWorkerApp({
   worldId,
   signalWorkerUrl,
   programWorkerUrl,
-  lobby,
 }: Props) {
   if (!self.crossOriginIsolated) {
     console.error(`This feature can't run in your current browser context.
@@ -106,10 +101,6 @@ export function createWorkerApp({
   // };
   // worker.addEventListener("message", onMessage);
 
-  if (lobby) {
-    enterRoom(lobby);
-  }
-
   return {
     enterRoom,
     exitRoom,
@@ -122,9 +113,6 @@ export function createWorkerApp({
       unhookGraphics();
       closeMessenger();
       end();
-      if (lobby) {
-        exitRoom(lobby);
-      }
     },
   };
 }

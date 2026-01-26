@@ -13,7 +13,7 @@ import { hookSerializers } from "@/app/utils/serializers";
 //   );
 // }
 
-export function initialize(onMessage: (msg: Message) => void) {
+export function initialize(onMessage: (msg: Message, peer?: string) => void) {
   // let program: IProgram | undefined;
   // const messageListeners = new Array<(data: Uint8Array) => void>();
   // const newUserListener = new Array<(user: string) => void>();
@@ -23,6 +23,8 @@ export function initialize(onMessage: (msg: Message) => void) {
   ) => void;
 
   let canvas: OffscreenCanvas | undefined;
+
+  const { messageToBytes, bytesToMessage, deserialize } = hookSerializers();
 
   const { listen } = hookMsgListener();
 
@@ -47,6 +49,7 @@ export function initialize(onMessage: (msg: Message) => void) {
   //     };
   //   }
   // }
+
   self.addEventListener(
     "message",
     (
@@ -66,7 +69,22 @@ export function initialize(onMessage: (msg: Message) => void) {
       const msg = e.data;
       if (msg.sab) {
         const { toWorker, fromWorker } = msg.sab;
-        listen(toWorker, onMessage);
+        listen(toWorker, (msg) => {
+          //  Process incoming message from main thread
+          if (msg.type === MessageType.ON_PEER_MESSAGE) {
+            //  Message from peer. Deserializing inner message
+            const m = bytesToMessage(msg.data);
+
+            if (!m) {
+              console.warn("Failed to deserialize peer message");
+              return;
+            }
+            onMessage(m, msg.from);
+            return;
+          }
+
+          onMessage(msg);
+        });
         const result = hookMessenger(fromWorker);
         sendMessage = result.sendMessage;
       }
@@ -111,8 +129,6 @@ export function initialize(onMessage: (msg: Message) => void) {
       // }
     },
   );
-
-  const { messageToBytes } = hookSerializers();
 
   return {
     sendMessage<M extends Message>(type: M["type"], msg: Omit<M, "type">) {

@@ -22,10 +22,6 @@ export function createApp({
   const { userId, send, enterRoom, addMessageListener, addUserListener, end } =
     enterWorld<ArrayBufferView, ArrayBufferLike>({ worldId: appId, workerUrl });
 
-  function setData(path: string, data: any) {
-    program.setData(path, data);
-  }
-
   const comm: CommInterface = {
     onMessage: addMessageListener,
     onNewClient: (listener: (user: string) => void) => {
@@ -34,7 +30,7 @@ export function createApp({
           listener(user);
           onUsersJoined?.(user, users);
         } else if (action === "leave") {
-          setData(`users/${user}`, undefined);
+          program.setData(`users/${user}`, undefined);
           onUsersLeft?.(user, users);
         }
       });

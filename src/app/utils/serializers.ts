@@ -10,7 +10,12 @@ import { KeyMessage } from "../MessageType";
 import { MessageType } from "../MessageType";
 import { Message } from "../MessageType";
 import { PingMessage } from "../MessageType";
-import { DataRingWriter, IDataReader, IDataWriter } from "./data-ring";
+import {
+  DataRingReader,
+  DataRingWriter,
+  IDataReader,
+  IDataWriter,
+} from "./data-ring";
 
 export function hookSerializers() {
   const keySerializer: Serializer<KeyMessage> = {
@@ -254,10 +259,18 @@ export function hookSerializers() {
     return serializerWriter.data.subarray(0, serializerWriter.offset);
   };
 
+  const serializerReader = new DataRingReader(new Uint8Array(1024));
+  const bytesToMessage = (bytes: Uint8Array): Message | undefined => {
+    serializerReader.data = bytes;
+    serializerReader.offset = 0;
+    return deserialize(serializerReader);
+  };
+
   return {
     serialize,
     deserialize,
     messageToBytes,
+    bytesToMessage,
   };
 }
 export interface Serializer<M extends Message> {

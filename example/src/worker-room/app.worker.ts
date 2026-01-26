@@ -1,9 +1,8 @@
 /// <reference lib="webworker" />
 
-import { MessageType, Message, hookSerializers } from "napl";
+import { MessageType, Message } from "napl";
 import { generateRandomHexColor } from "napl";
 import { initialize } from "napl";
-import { DataRingReader } from "napl";
 
 const cursor = {
   x: 0,
@@ -13,23 +12,11 @@ const cursor = {
   width: 1,
 };
 
-const { deserialize } = hookSerializers();
-
 const {
   sendMessage: sendMessageBack,
   sendMessageAccross,
   getCanvas,
-} = initialize((msg: Message) => {
-  if (msg.type === MessageType.ON_PEER_MESSAGE) {
-    //  Message from peer. Deserializing inner message
-    const reader = new DataRingReader(new Uint8Array(msg.data));
-    const m = deserialize(reader);
-    if (!m) {
-      console.warn("Failed to deserialize peer message");
-      return;
-    }
-    msg = m;
-  }
+} = initialize((msg: Message, _peer?: string) => {
   if (msg.type === MessageType.POINTER_LOCK) {
     cursor.needsReset = true;
     cursor.color = generateRandomHexColor();
@@ -54,12 +41,13 @@ const {
     const ctx = getCanvas()?.getContext("2d");
 
     if (ctx && (msg.movementX !== 0 || msg.movementY !== 0)) {
-      const newLineWidth = (ctx.lineWidth =
+      const newLineWidth =
         Math.sqrt(
           Math.sqrt(
             msg.movementX * msg.movementX + msg.movementY * msg.movementY,
           ),
-        ) * 2);
+        ) * 2;
+      ctx.lineWidth = newLineWidth;
       ctx.beginPath();
       ctx.moveTo(cursor.x, cursor.y);
       const from = { x: cursor.x, y: cursor.y };

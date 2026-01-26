@@ -127,8 +127,4 @@ describe("DataRing", () => {
     const huge = new Uint8Array(256 * 256);
     expect(() => ring.writeBytes(huge)).toThrow();
   });
-
-  it("constructor throws if buffer length <= 0", () => {
-    expect(() => new DataRingWriter(new Uint8Array(0))).toThrow();
-  });
 });
