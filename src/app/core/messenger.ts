@@ -32,24 +32,30 @@ export function hookMessenger(sab: SharedArrayBuffer) {
   return { sendMessage };
 }
 
-export function setupMessenger(
-  worker: Worker,
-  onMessage: (msg: Message) => void,
-) {
+export function hookWorkerMessageListener(worker: Worker) {
   const BYTES = 1024 * 1024;
   const sabToWorker = new SharedArrayBuffer(BYTES);
   const sabFromWorker = new SharedArrayBuffer(BYTES);
 
   const { listen } = hookMsgListener();
+  const messageListeners: Array<(msg: Message) => void> = [];
 
   worker.postMessage({
     sab: { toWorker: sabToWorker, fromWorker: sabFromWorker },
   }); //  not transferable
 
-  const unlisten = listen(sabFromWorker, onMessage);
+  const unlisten = listen(sabFromWorker, (msg) => {
+    messageListeners.forEach((listener) => listener(msg));
+  });
   const { sendMessage } = hookMessenger(sabToWorker);
   return {
     sendMessage,
+    addMessageListener(listener: (msg: Message) => void) {
+      messageListeners.push(listener);
+      return () => {
+        messageListeners.splice(messageListeners.indexOf(listener), 1);
+      };
+    },
     close: () => {
       unlisten();
     },

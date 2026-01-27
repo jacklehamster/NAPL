@@ -49,12 +49,14 @@ export function hookPointerLock(onHook: () => () => void) {
       document.body.style.cursor = "auto";
       exitedPointerLockTime = performance.now();
     };
+
     //  Wait until pointer lock is available
     const shouldContinue = await waitForPointerLockExit();
     if (!shouldContinue) {
       restore();
       return;
     }
+
     //  Enter pointer lock
     try {
       await document.body.requestPointerLock();

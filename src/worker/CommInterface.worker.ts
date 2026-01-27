@@ -13,7 +13,20 @@ import { hookSerializers } from "@/app/utils/serializers";
 //   );
 // }
 
-export function initialize(onMessage: (msg: Message, peer?: string) => void) {
+export function initialize({
+  onMessage,
+  onReady,
+}: {
+  onMessage: (msg: Message, peer?: string) => void;
+  onReady: ({
+    sendMessage,
+  }: {
+    sendMessage: <M extends Message>(
+      type: M["type"],
+      msg: Omit<M, "type">,
+    ) => void;
+  }) => void;
+}) {
   // let program: IProgram | undefined;
   // const messageListeners = new Array<(data: Uint8Array) => void>();
   // const newUserListener = new Array<(user: string) => void>();
@@ -24,7 +37,7 @@ export function initialize(onMessage: (msg: Message, peer?: string) => void) {
 
   let canvas: OffscreenCanvas | undefined;
 
-  const { messageToBytes, bytesToMessage, deserialize } = hookSerializers();
+  const { messageToBytes, bytesToMessage } = hookSerializers();
 
   const { listen } = hookMsgListener();
 
@@ -87,6 +100,7 @@ export function initialize(onMessage: (msg: Message, peer?: string) => void) {
         });
         const result = hookMessenger(fromWorker);
         sendMessage = result.sendMessage;
+        onReady(result);
       }
       if (msg.canvas) {
         canvas = msg.canvas;
@@ -140,6 +154,12 @@ export function initialize(onMessage: (msg: Message, peer?: string) => void) {
     },
     getCanvas() {
       return canvas;
+    },
+    enterRoom({ room, host }: { room: string; host: string }) {
+      sendMessage?.(MessageType.ENTER_ROOM, { room, host });
+    },
+    exitRoom({ room, host }: { room: string; host: string }) {
+      sendMessage?.(MessageType.EXIT_ROOM, { room, host });
     },
   };
 }

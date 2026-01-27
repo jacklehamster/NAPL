@@ -78,8 +78,8 @@ export function setupPointerLockControl({
     const onExitPointerLock = onPointerLock?.(true);
     return () => {
       sendMessage(MessageType.POINTER_LOCK, { enter: false });
-      onPointerLock?.(false);
       onExitPointerLock?.();
+      onPointerLock?.(false);
     };
   });
 
@@ -87,9 +87,10 @@ export function setupPointerLockControl({
     document.addEventListener("mousedown", enterPointerLock);
   }
 
-  function close() {
-    document.removeEventListener("mousedown", enterPointerLock);
-  }
-
-  return { close, enterPointerLock };
+  return {
+    close: () => {
+      document.removeEventListener("mousedown", enterPointerLock);
+    },
+    enterPointerLock,
+  };
 }

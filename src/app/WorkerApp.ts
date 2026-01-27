@@ -1,5 +1,5 @@
 import { enterWorld } from "@dobuki/hello-worker";
-import { setupMessenger } from "./core/messenger";
+import { hookWorkerMessageListener } from "./core/messenger";
 import { MessageType } from "./MessageType";
 import { setupGraphics } from "./core/graphics";
 import {
@@ -39,19 +39,29 @@ export function createWorkerApp({
     workerUrl: signalWorkerUrl,
   });
 
-  const { sendMessage: sendToWorker, close: closeMessenger } = setupMessenger(
-    worker,
-    (msg) => {
-      switch (msg.type) {
-        case MessageType.PING:
-          console.log("Ping", (performance.now() - msg.now).toFixed(2) + "ms");
-          break;
-        case MessageType.ON_PEER_MESSAGE:
-          sendAcross(msg.data, msg.from);
-          break;
-      }
-    },
-  );
+  const {
+    sendMessage: sendToWorker,
+    close: closeMessenger,
+    addMessageListener: addWorkerMessageListener,
+  } = hookWorkerMessageListener(worker);
+
+  const removeWorkerMessageListener = addWorkerMessageListener((msg) => {
+    switch (msg.type) {
+      case MessageType.PING:
+        console.log("ping", (performance.now() - msg.now).toFixed(2) + "ms");
+        break;
+      case MessageType.ON_PEER_MESSAGE:
+        sendAcross(msg.data, msg.from);
+        break;
+      case MessageType.ENTER_ROOM:
+        enterRoom({ room: msg.room, host: msg.host });
+        break;
+      case MessageType.EXIT_ROOM:
+        exitRoom({ room: msg.room, host: msg.host });
+        break;
+    }
+  });
+
   const { unhook: unhookGraphics } = setupGraphics(worker);
   const { close: closeControls } = setupPointerLockControl({
     sendMessage: sendToWorker,
@@ -70,11 +80,10 @@ export function createWorkerApp({
   const removeUserListener = addUserListener((user, action, users) => {
     sendToWorker(MessageType.ON_USER_UPDATE, { user, action, users });
   });
+
   const removeMessageListener = addMessageListener((data, from) => {
-    sendToWorker(MessageType.ON_PEER_MESSAGE, {
-      data: new Uint8Array(data),
-      from,
-    });
+    const d = new Uint8Array(data);
+    sendToWorker(MessageType.ON_PEER_MESSAGE, { data: d, from });
   });
 
   setTimeout(() => {
@@ -82,33 +91,14 @@ export function createWorkerApp({
     sendToWorker(MessageType.PING, { now });
   }, 1000);
 
-  // const onMessage = (e: MessageEvent<WorkerResponse>) => {
-  //   const { action } = e.data;
-  //   switch (action) {
-  //     case "send":
-  //       sendAcross(e.data.data, e.data.peer);
-  //       break;
-  //     case "close":
-  //       close();
-  //       break;
-  //     case "enterRoom":
-  //       enterRoom({ room: e.data.room, host: e.data.host });
-  //       break;
-  //     case "exitRoom":
-  //       exitRoom({ room: e.data.room, host: e.data.host });
-  //       break;
-  //   }
-  // };
-  // worker.addEventListener("message", onMessage);
-
   return {
     enterRoom,
     exitRoom,
     userId,
     close() {
-      // worker.removeEventListener("message", onMessage);
       removeUserListener();
       removeMessageListener();
+      removeWorkerMessageListener();
       closeControls();
       unhookGraphics();
       closeMessenger();

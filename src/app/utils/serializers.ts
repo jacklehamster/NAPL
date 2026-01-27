@@ -3,6 +3,7 @@ import {
   MouseMessage,
   MsgMessage,
   PointerMessage,
+  RoomMessage,
   UserMessage,
   WheelMessage,
 } from "../MessageType";
@@ -81,6 +82,18 @@ export function hookSerializers() {
         metaKey,
         shiftKey,
       };
+    },
+  };
+
+  const roomSerializer: Serializer<RoomMessage> = {
+    serialize(type, msg, data) {
+      data.writeString(msg.host);
+      data.writeString(msg.room);
+    },
+    deserialize(data, type) {
+      const host = data.readString();
+      const room = data.readString();
+      return { type, host, room };
     },
   };
 
@@ -229,6 +242,8 @@ export function hookSerializers() {
         },
       },
     ],
+    [MessageType.ENTER_ROOM, roomSerializer],
+    [MessageType.EXIT_ROOM, roomSerializer],
   ];
 
   const serializerMap = new Map<MessageType, Serializer<Message>>(serializers);

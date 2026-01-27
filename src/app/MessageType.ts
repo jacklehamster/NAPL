@@ -13,6 +13,8 @@ export enum MessageType {
   PING,
   //  FromWorker
   LINE,
+  ENTER_ROOM,
+  EXIT_ROOM,
 }
 
 export type UserMessage = {
@@ -72,6 +74,12 @@ export type LineMessage = {
   lineWidth: number;
 };
 
+export type RoomMessage = {
+  type: MessageType.ENTER_ROOM | MessageType.EXIT_ROOM;
+  host: string;
+  room: string;
+};
+
 // All messages
 export type Message =
   | KeyMessage
@@ -81,4 +89,5 @@ export type Message =
   | MouseMessage
   | WheelMessage
   | PointerMessage
-  | LineMessage;
+  | LineMessage
+  | RoomMessage;
