@@ -20,7 +20,11 @@ export function createApp({
   workerUrl,
 }: Props) {
   const { userId, send, enterRoom, addMessageListener, addUserListener, end } =
-    enterWorld<ArrayBufferView, ArrayBufferLike>({ worldId: appId, workerUrl });
+    enterWorld<ArrayBufferView, ArrayBufferLike>({
+      worldId: appId,
+      workerUrl,
+      logLine: console.log,
+    });
 
   const comm: CommInterface = {
     onMessage: addMessageListener,
