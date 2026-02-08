@@ -5,11 +5,10 @@
   "scripts": {
     "start": "bun run build && bun --watch index.ts",
     "start:prod": "bun run build && NODE_ENV=production bun --watch index.ts",
-    "build": "bun i && bun run build-icon && bun run copy-workers && bun run build-workers && bun run bundler/bundler.ts",
+    "build": "bun i && bun run build-icon && bun run copy-workers && bun run bundler/bundler.ts",
     "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons",
     "dev": "bun run build && bun --watch index.ts",
-    "copy-workers": "rm -rf ./dist && sleep 1 && mkdir -p dist && cp ../node_modules/@dobuki/hello-worker/dist/signal-room.worker.js* ./dist",
-    "build-workers": "mkdir -p dist && bun build ./src/worker-room/app.worker.ts --outdir ./dist --target=browser --format=esm --sourcemap"
+    "copy-workers": "rm -rf ./dist && sleep 1 && mkdir -p dist && cp ../node_modules/@dobuki/hello-worker/dist/signal-room.worker.js* ./dist"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

@@ -37,6 +37,7 @@ export function createWorkerApp({
   } = enterWorld<ArrayBufferView, ArrayBufferLike>({
     worldId,
     workerUrl: signalWorkerUrl,
+    logLine: console.log,
   });
 
   const {

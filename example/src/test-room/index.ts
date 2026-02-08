@@ -29,7 +29,7 @@ function setupApp() {
       userList = users;
       refreshData();
     },
-    workerUrl: new URL("./signal-room.worker.js", import.meta.url),
+    workerUrl: new URL("../signal-room.worker.js", import.meta.url),
   });
 
   enterRoom({ room: room ?? "test-room", host: "hello.dobuki.net" });
@@ -215,7 +215,7 @@ function setupApp() {
 
       //  Initially start
       setTimeout(() => {
-        console.log("Starting progrram...");
+        console.log("Starting program...");
         stop = startLoop();
       }, 1000);
     }
