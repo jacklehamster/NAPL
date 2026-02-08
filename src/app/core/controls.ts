@@ -64,7 +64,7 @@ export function captureKeyboard(
 export function setupPointerLockControl({
   sendMessage,
   onPointerLock,
-  activateOnClick = true,
+  activateOnClick,
 }: {
   activateOnClick?: boolean;
   sendMessage: <M extends Message>(

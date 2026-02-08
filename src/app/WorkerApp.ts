@@ -12,12 +12,16 @@ interface Props {
   worldId: string;
   signalWorkerUrl?: URL;
   programWorkerUrl: URL;
+  config: {
+    usePointerLock?: boolean;
+  };
 }
 
 export function createWorkerApp({
   worldId,
   signalWorkerUrl,
   programWorkerUrl,
+  config = {},
 }: Props) {
   if (!self.crossOriginIsolated) {
     console.error(`This feature can't run in your current browser context.
@@ -64,6 +68,7 @@ export function createWorkerApp({
   });
 
   const { unhook: unhookGraphics } = setupGraphics(worker);
+
   const { close: closeControls } = setupPointerLockControl({
     sendMessage: sendToWorker,
     onPointerLock: (locked: boolean) => {
@@ -76,6 +81,7 @@ export function createWorkerApp({
         };
       }
     },
+    activateOnClick: config.usePointerLock,
   });
 
   const removeUserListener = addUserListener((user, action, users) => {
