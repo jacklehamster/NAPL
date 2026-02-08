@@ -20,7 +20,7 @@
   "index.ts": {
     "createdAt": 1768904719578.269
   },
-  "md5": "1b56d242fb2481044b1d65755f56a412",
+  "md5": "0dff935ac728d5338b793a2abefc3c69",
   "package.json": {
     "createdAt": 1768904719578.269
   },
@@ -36,6 +36,9 @@
   "src/worker-room/index.ts": {
     "createdAt": 1768904719579.269
   },
+  "src/world-room/index.ts": {
+    "createdAt": 1770531631594.7698
+  },
   "test-room/config.json": {
     "createdAt": 1769356298499.2063
   },
@@ -50,5 +53,14 @@
   },
   "worker-room/index.html": {
     "createdAt": 1768904719579.269
+  },
+  "world-room/config.json": {
+    "createdAt": 1770531631594.7698
+  },
+  "world-room/index.html": {
+    "createdAt": 1770531631594.7698
+  },
+  "world-room/styles.css": {
+    "createdAt": 1770531631594.7698
   }
 }
