@@ -12,7 +12,7 @@ interface Props {
   worldId: string;
   signalWorkerUrl?: URL;
   programWorkerUrl: URL;
-  config: {
+  config?: {
     usePointerLock?: boolean;
   };
 }
@@ -44,6 +44,7 @@ export function createWorkerApp({
     logLine: console.log,
   });
 
+  //  Cross connection
   const {
     sendMessage: sendToWorker,
     close: closeMessenger,
@@ -69,6 +70,16 @@ export function createWorkerApp({
 
   const { unhook: unhookGraphics } = setupGraphics(worker);
 
+  const removeUserListener = addUserListener((user, action, users) => {
+    sendToWorker(MessageType.ON_USER_UPDATE, { user, action, users });
+  });
+
+  const removeMessageListener = addMessageListener((data, from) => {
+    const d = new Uint8Array(data);
+    sendToWorker(MessageType.ON_PEER_MESSAGE, { data: d, from });
+  });
+
+  //  Pointer Lock
   const { close: closeControls } = setupPointerLockControl({
     sendMessage: sendToWorker,
     onPointerLock: (locked: boolean) => {
@@ -84,23 +95,13 @@ export function createWorkerApp({
     activateOnClick: config.usePointerLock,
   });
 
-  const removeUserListener = addUserListener((user, action, users) => {
-    sendToWorker(MessageType.ON_USER_UPDATE, { user, action, users });
-  });
-
-  const removeMessageListener = addMessageListener((data, from) => {
-    const d = new Uint8Array(data);
-    sendToWorker(MessageType.ON_PEER_MESSAGE, { data: d, from });
-  });
-
+  //  Ping
   setTimeout(() => {
     const now = performance.now();
     sendToWorker(MessageType.PING, { now });
   }, 1000);
 
   return {
-    enterRoom,
-    exitRoom,
     userId,
     close() {
       removeUserListener();
