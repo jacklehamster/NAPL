@@ -1,4 +1,3 @@
-import { CommInterface } from "@/clients/CommInterface";
 import { IProgram, Program } from "@/core/Program";
 import { enterWorld } from "@dobuki/hello-worker";
 
@@ -26,31 +25,29 @@ export function createApp({
       logLine: console.log,
     });
 
-  const comm: CommInterface = {
-    onMessage: addMessageListener,
-    onNewClient: (listener: (user: string) => void) => {
-      const removeListener = addUserListener((user, action, users) => {
-        if (action === "join") {
-          listener(user);
-          onUsersJoined?.(user, users);
-        } else if (action === "leave") {
-          program.setData(`users/${user}`, undefined);
-          onUsersLeft?.(user, users);
-        }
-      });
-      return () => {
-        removeListener();
-      };
-    },
-    send,
-    close: end,
-  };
-
   const program: IProgram = new Program({
     appId,
     userId,
     onDataCycle,
-    comm,
+    comm: {
+      onMessage: addMessageListener,
+      onNewClient: (listener: (user: string) => void) => {
+        const removeListener = addUserListener((user, action, users) => {
+          if (action === "join") {
+            listener(user);
+            onUsersJoined?.(user, users);
+          } else if (action === "leave") {
+            program.setData(`users/${user}`, undefined);
+            onUsersLeft?.(user, users);
+          }
+        });
+        return () => {
+          removeListener();
+        };
+      },
+      send,
+      close: end,
+    },
     onReceivedIncomingUpdates,
   });
 

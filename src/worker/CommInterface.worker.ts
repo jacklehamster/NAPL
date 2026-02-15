@@ -6,13 +6,6 @@ import { hookMsgListener } from "@/app/utils/listener";
 import { WorkerCommand } from "./WorkerCommand";
 import { hookSerializers } from "@/app/utils/serializers";
 
-// function respond(response: WorkerResponse) {
-//   (self as DedicatedWorkerGlobalScope).postMessage(
-//     response,
-//     response.data ? [response.data] : []
-//   );
-// }
-
 export function initialize({
   onMessage,
   onReady,
@@ -42,7 +35,6 @@ export function initialize({
   const { listen } = hookMsgListener();
 
   // class CommInterfaceWorker implements CommInterface {
-  //   constructor() {}
   //   send(data: Uint8Array, peer?: string): void {
   //     respond({ action: "send", data, peer });
   //   }
