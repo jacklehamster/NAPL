@@ -6,12 +6,18 @@ import { hookMsgListener } from "@/app/utils/listener";
 import { WorkerCommand } from "./WorkerCommand";
 import { hookSerializers } from "@/app/utils/serializers";
 
+type MessageHandler<M extends Message> = (
+  type: M["type"],
+  msg: M,
+  peer?: string,
+) => void;
+
 export function initialize({
   onMessage,
   onReady,
 }: {
-  onMessage: (msg: Message, peer?: string) => void;
-  onReady: ({
+  onMessage?: (msg: Message, peer?: string) => void;
+  onReady?: ({
     sendMessage,
   }: {
     sendMessage: <M extends Message>(
@@ -55,6 +61,8 @@ export function initialize({
   //   }
   // }
 
+  const messageListeners = new Set<MessageHandler<any>>();
+
   self.addEventListener(
     "message",
     (
@@ -84,15 +92,17 @@ export function initialize({
               console.warn("Failed to deserialize peer message");
               return;
             }
-            onMessage(m, msg.from);
+            onMessage?.(m, msg.from);
+            messageListeners.forEach((callback) =>
+              callback(m.type, m, msg.from),
+            );
             return;
           }
-
-          onMessage(msg);
+          messageListeners.forEach((callback) => callback(msg.type, msg));
         });
         const result = hookMessenger(fromWorker);
         sendMessage = result.sendMessage;
-        onReady(result);
+        onReady?.(result);
       }
       if (msg.canvas) {
         canvas = msg.canvas;
@@ -152,6 +162,15 @@ export function initialize({
     },
     exitRoom({ room, host }: { room: string; host: string }) {
       sendMessage?.(MessageType.EXIT_ROOM, { room, host });
+    },
+    addMessageListener<M extends Message>(callback: MessageHandler<M>) {
+      messageListeners.add(callback);
+      return () => {
+        messageListeners.delete(callback);
+      };
+    },
+    close() {
+      messageListeners.clear();
     },
   };
 }
