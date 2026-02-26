@@ -96,7 +96,7 @@ export function createWorkerApp({
   });
 
   //  Ping
-  setTimeout(() => {
+  const interval = setInterval(() => {
     const now = performance.now();
     sendToWorker(MessageType.PING, { now });
   }, 1000);
@@ -104,6 +104,7 @@ export function createWorkerApp({
   return {
     userId,
     close() {
+      clearInterval(interval);
       removeUserListener();
       removeMessageListener();
       removeWorkerMessageListener();
