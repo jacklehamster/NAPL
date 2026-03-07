@@ -1,4 +1,6 @@
 export enum MessageType {
+  //  Internal
+  INIT,
   //  ToWorker
   KEY_DOWN,
   KEY_UP,
@@ -17,6 +19,7 @@ export enum MessageType {
   EXIT_ROOM,
 }
 
+export type InitMessage = { type: MessageType.INIT };
 export type UserMessage = {
   type: MessageType.ON_USER_UPDATE;
   user: string;
@@ -90,4 +93,5 @@ export type Message =
   | WheelMessage
   | PointerMessage
   | LineMessage
-  | RoomMessage;
+  | RoomMessage
+  | InitMessage;

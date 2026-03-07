@@ -12,20 +12,7 @@ type MessageHandler<M extends Message> = (
   peer?: string,
 ) => void;
 
-export function initialize({
-  onMessage,
-  onReady,
-}: {
-  onMessage?: (msg: Message, peer?: string) => void;
-  onReady?: ({
-    sendMessage,
-  }: {
-    sendMessage: <M extends Message>(
-      type: M["type"],
-      msg: Omit<M, "type">,
-    ) => void;
-  }) => void;
-}) {
+export function initialize() {
   // let program: IProgram | undefined;
   // const messageListeners = new Array<(data: Uint8Array) => void>();
   // const newUserListener = new Array<(user: string) => void>();
@@ -40,28 +27,13 @@ export function initialize({
 
   const { listen } = hookMsgListener();
 
-  // class CommInterfaceWorker implements CommInterface {
-  //   send(data: Uint8Array, peer?: string): void {
-  //     respond({ action: "send", data, peer });
-  //   }
-  //   close(): void {
-  //     respond({ action: "close" });
-  //   }
-  //   onMessage(listener: (data: Uint8Array) => void): () => void {
-  //     messageListeners.push(listener);
-  //     return () => {
-  //       messageListeners.splice(messageListeners.indexOf(listener), 1);
-  //     };
-  //   }
-  //   onNewClient(listener: (peer: string) => void): () => void {
-  //     newUserListener.push(listener);
-  //     return () => {
-  //       newUserListener.splice(newUserListener.indexOf(listener), 1);
-  //     };
-  //   }
-  // }
+  const messageListeners = new Map<MessageType, MessageHandler<any>[]>();
 
-  const messageListeners = new Set<MessageHandler<any>>();
+  function triggerMessage(msg: Message, peer?: string) {
+    messageListeners
+      .get(msg.type)
+      ?.forEach((callback) => callback(msg.type, msg, peer));
+  }
 
   self.addEventListener(
     "message",
@@ -92,18 +64,14 @@ export function initialize({
               console.warn("Failed to deserialize peer message");
               return;
             }
-            onMessage?.(m, msg.from);
-            messageListeners.forEach((callback) =>
-              callback(m.type, m, msg.from),
-            );
+            triggerMessage(m, msg.from);
             return;
           }
-          onMessage?.(msg);
-          messageListeners.forEach((callback) => callback(msg.type, msg));
+          triggerMessage(msg);
         });
         const result = hookMessenger(fromWorker);
         sendMessage = result.sendMessage;
-        onReady?.(result);
+        triggerMessage({ type: MessageType.INIT });
       }
       if (msg.canvas) {
         canvas = msg.canvas;
@@ -164,10 +132,24 @@ export function initialize({
     exitRoom({ room, host }: { room: string; host: string }) {
       sendMessage?.(MessageType.EXIT_ROOM, { room, host });
     },
-    addMessageListener<M extends Message>(callback: MessageHandler<M>) {
-      messageListeners.add(callback);
+    addMessageListener<M extends Message>(
+      type: MessageType,
+      callback: MessageHandler<M>,
+    ) {
+      const listeners =
+        messageListeners.get(type) ??
+        (() => {
+          const arr: MessageHandler<any>[] = [];
+          messageListeners.set(type, arr);
+          return arr;
+        })();
+
+      listeners.push(callback);
       return () => {
-        messageListeners.delete(callback);
+        listeners.splice(listeners.indexOf(callback), 1);
+        if (listeners.length === 0) {
+          messageListeners.delete(type);
+        }
       };
     },
     close() {
