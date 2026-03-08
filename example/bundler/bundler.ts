@@ -3,7 +3,7 @@ import { Glob } from "bun";
 import { dirname } from "node:path";
 
 async function bundle() {
-  const glob = new Glob("**/*{index,.worker}.ts");
+  const glob = new Glob("**/{index,*.worker}.ts");
   const allTsFiles = [];
   for await (const path of glob.scan("src")) {
     allTsFiles.push(path);
@@ -12,22 +12,26 @@ async function bundle() {
   console.log(allTsFiles);
 
   return Promise.all(
-    allTsFiles.map((tsFile) =>
-      Bun.build({
+    allTsFiles.map((tsFile) => {
+      console.log(`Bundling ${tsFile}...`, dirname(tsFile));
+      return Bun.build({
         entrypoints: [`./src/${tsFile}`],
         outdir: `./dist/${dirname(tsFile)}`,
         minify: true,
-        sourcemap: "external",
+        sourcemap: "linked",
         target: "browser",
         plugins: [lightningcss()],
-      }),
-    ),
+      });
+    }),
   );
 }
 
 const result = await bundle();
-result?.forEach((r) => {
+for (const r of result) {
+  for (let output of r.outputs) {
+    console.log(output.path);
+  }
   r.logs.forEach((log, index) => console.log(index, log));
-});
+}
 
 export {};

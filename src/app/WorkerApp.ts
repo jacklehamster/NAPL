@@ -29,9 +29,7 @@ export function createWorkerApp({
   const close = workspace(({ hook }) => {
     hook<typeof WorkerComponent>(
       WorkerComponent,
-      {
-        programWorkerUrl,
-      },
+      { programWorkerUrl },
       ({ sendToWorker, addWorkerMessageListener, hook, worker }) => {
         hook(PeerComponent, {
           worldId,

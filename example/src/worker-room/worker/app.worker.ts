@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import { MessageType, Message } from "napl";
+import { MessageType } from "napl";
 import { generateRandomHexColor } from "napl";
 import { initialize } from "napl";
 
@@ -77,5 +77,6 @@ addMessageListener(MessageType.MOUSE_MOVE, (msg) => {
   }
 });
 addMessageListener(MessageType.PING, (msg) => {
+  console.log("Send message up from worker:", msg);
   sendMessageUp(MessageType.PING, msg);
 });

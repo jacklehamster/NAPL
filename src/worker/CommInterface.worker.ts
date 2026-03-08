@@ -6,11 +6,7 @@ import { hookMsgListener } from "@/app/utils/listener";
 import { WorkerCommand } from "./WorkerCommand";
 import { hookSerializers } from "@/app/utils/serializers";
 
-type MessageHandler<M extends Message> = (
-  type: M["type"],
-  msg: M,
-  peer?: string,
-) => void;
+type MessageHandler<M extends Message> = (msg: M, peer?: string) => void;
 
 export function initialize() {
   // let program: IProgram | undefined;
@@ -29,10 +25,8 @@ export function initialize() {
 
   const messageListeners = new Map<MessageType, MessageHandler<any>[]>();
 
-  function triggerMessage(msg: Message, peer?: string) {
-    messageListeners
-      .get(msg.type)
-      ?.forEach((callback) => callback(msg.type, msg, peer));
+  function triggerListeners(msg: Message, peer?: string) {
+    messageListeners.get(msg.type)?.forEach((callback) => callback(msg, peer));
   }
 
   self.addEventListener(
@@ -64,14 +58,14 @@ export function initialize() {
               console.warn("Failed to deserialize peer message");
               return;
             }
-            triggerMessage(m, msg.from);
+            triggerListeners(m, msg.from);
             return;
           }
-          triggerMessage(msg);
+          triggerListeners(msg);
         });
         const result = hookMessenger(fromWorker);
         sendMessage = result.sendMessage;
-        triggerMessage({ type: MessageType.INIT });
+        triggerListeners({ type: MessageType.INIT });
       }
       if (msg.canvas) {
         canvas = msg.canvas;
