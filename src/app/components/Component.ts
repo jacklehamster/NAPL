@@ -20,7 +20,7 @@ type Hook = <C extends Component<any, any>>(
   component: C,
   props: PropsOf<C>,
   callback?: (result: ReturnType<C> & { hook: Hook }) => (() => void) | void,
-) => (() => void) | void;
+) => ReturnType<C> & { unhook: () => void };
 
 const hook: Hook = (component, props, callback) => {
   const result = component(props);
@@ -32,17 +32,20 @@ const hook: Hook = (component, props, callback) => {
       props: PropsOf<C>,
       callback?: (result: ReturnType<C> & { hook: Hook }) => void,
     ) {
-      const unhook = hook(component, props, callback);
+      const { unhook } = hook(component, props, callback);
       if (unhook) {
         unhooks.add(unhook);
       }
     },
   });
 
-  return () => {
-    unhooks.forEach((unhook) => unhook());
-    (result as Stoppable).stop?.();
-    disposeCallback?.();
+  return {
+    ...result,
+    unhook: () => {
+      unhooks.forEach((unhook) => unhook());
+      (result as Stoppable).stop?.();
+      disposeCallback?.();
+    },
   };
 };
 
@@ -53,8 +56,5 @@ export function Workspace() {
 }
 
 export function workspace(callback: (props: { hook: Hook }) => void) {
-  const unhook = hook(Workspace, {}, callback);
-  return () => {
-    unhook?.();
-  };
+  return hook(Workspace, {}, callback);
 }

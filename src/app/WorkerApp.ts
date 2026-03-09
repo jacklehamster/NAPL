@@ -26,7 +26,7 @@ export function createWorkerApp({
       Please reload from the official site / correct environment, or contact your admin.`);
   }
 
-  const close = workspace(({ hook }) => {
+  return workspace(({ hook }) => {
     hook<typeof WorkerComponent>(
       WorkerComponent,
       { programWorkerUrl },
@@ -46,8 +46,4 @@ export function createWorkerApp({
       },
     );
   });
-
-  return {
-    close,
-  };
 }
