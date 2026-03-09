@@ -1,13 +1,14 @@
 /// <reference lib="webworker" />
 
 import {
-  Cursor,
+  CrossMessageSender,
   CursorComponent,
   EnterRoomComponent,
+  HookListener,
   InitComponent,
   LineDrawComponent,
+  LineDrawer,
   MessageType,
-  MouseMessage,
   MoveCursor,
   OnMessageComponent,
   PeerCommunicator,
@@ -68,24 +69,26 @@ workspace(({ hook }) => {
                 execute,
               });
 
-              onMoveCursor(({ from, to }) => {
-                const ctx = getCanvas()?.getContext("2d");
-                if (!ctx) return;
-
-                ctx.beginPath();
-                ctx.moveTo(from.x, from.y);
-                ctx.lineWidth = to.width;
-                ctx.strokeStyle = to.color;
-                ctx.lineTo(to.x, to.y);
-                ctx.stroke();
+              hook(LineDrawer, { getCanvas }, ({ draw }) => {
+                hook(HookListener<typeof draw>, {
+                  onListener: onMoveCursor,
+                  listener: draw,
+                });
               });
 
               hook(
                 PeerCommunicator,
                 { sendMessage, messageToBytes },
                 ({ sendMessageAccross }) => {
-                  onMoveCursor(({ from, to }) =>
-                    sendMessageAccross({ type: MessageType.LINE, from, to }),
+                  hook(
+                    CrossMessageSender,
+                    { type: MessageType.LINE, sendMessageAccross },
+                    ({ send }) => {
+                      hook(HookListener<typeof send>, {
+                        onListener: onMoveCursor,
+                        listener: send,
+                      });
+                    },
                   );
                 },
               );

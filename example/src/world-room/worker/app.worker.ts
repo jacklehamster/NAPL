@@ -1,8 +1,10 @@
 /// <reference lib="webworker" />
 
 import {
+  EnterRoomComponent,
   hookSerializers,
   MessageType,
+  OnMessageComponent,
   PingBackComponent,
   RoomComponent,
   workspace,
@@ -15,16 +17,30 @@ workspace(({ hook }) => {
     bytesToMessage,
   });
 
-  hook(RoomComponent, { sendMessage: sendMessageUp }, ({ enterRoom }) => {
-    const offInit = onMessage(MessageType.INIT, () => {
-      const lobby = { room: "worker-test-room", host: "hello.dobuki.net" };
-      enterRoom(lobby);
-    });
+  hook(
+    RoomComponent,
+    { sendMessage: sendMessageUp },
+    ({ enterRoom, exitRoom }) => {
+      hook(
+        EnterRoomComponent,
+        {
+          room: {
+            room: "world-test-room",
+            host: "hello.dobuki.net",
+          },
+          enterRoom,
+          exitRoom,
+        },
+        ({ execute }) => {
+          hook(OnMessageComponent, {
+            type: MessageType.INIT,
+            onMessage,
+            execute,
+          });
+        },
+      );
 
-    hook(PingBackComponent, { onMessage, sendMessage: sendMessageUp });
-
-    return () => {
-      offInit();
-    };
-  });
+      hook(PingBackComponent, { onMessage, sendMessage: sendMessageUp });
+    },
+  );
 });
