@@ -84,6 +84,7 @@ export function setupPointerLockControl({
   });
 
   if (activateOnClick) {
+    console.log("ACTIVATE ON CLICK");
     document.addEventListener("mousedown", enterPointerLock);
   }
 

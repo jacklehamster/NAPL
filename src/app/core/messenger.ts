@@ -50,7 +50,7 @@ export function hookWorkerMessageListener(worker: Worker) {
   const { sendMessage } = hookMessenger(sabToWorker);
   return {
     sendMessage,
-    addMessageListener(listener: (msg: Message) => void) {
+    onWorkerMessage(listener: (msg: Message) => void) {
       messageListeners.push(listener);
       return () => {
         messageListeners.splice(messageListeners.indexOf(listener), 1);

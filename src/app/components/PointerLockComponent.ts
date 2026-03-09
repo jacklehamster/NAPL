@@ -6,7 +6,7 @@ import {
 import { Message } from "../MessageType";
 
 export function PointerLockComponent({
-  active = true,
+  active,
   sendToWorker,
 }: {
   active?: boolean;

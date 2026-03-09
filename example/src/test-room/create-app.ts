@@ -1,4 +1,4 @@
-import { IProgram, Program } from "@/core/Program";
+import { Program } from "napl";
 import { enterWorld } from "@dobuki/hello-worker";
 
 interface Props {
@@ -25,7 +25,7 @@ export function createApp({
       logLine: console.log,
     });
 
-  const program: IProgram = new Program({
+  const program = new Program({
     appId,
     userId,
     onDataCycle,

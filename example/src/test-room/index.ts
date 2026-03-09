@@ -2,7 +2,7 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { createApp } from "napl";
+import { createApp } from "./create-app";
 import {
   uniqueNamesGenerator,
   adjectives,

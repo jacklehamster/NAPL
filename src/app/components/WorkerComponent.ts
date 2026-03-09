@@ -6,8 +6,8 @@ export const WorkerComponent = (config: { programWorkerUrl: URL }) => {
   const {
     sendMessage: sendToWorker,
     close,
-    addMessageListener: addWorkerMessageListener,
+    onWorkerMessage,
   } = hookWorkerMessageListener(worker);
 
-  return { worker, sendToWorker, addWorkerMessageListener, stop: close };
+  return { worker, sendToWorker, onWorkerMessage, stop: close };
 };

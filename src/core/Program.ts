@@ -22,6 +22,7 @@ export interface IProgram {
   performCycle(): void;
   observe(paths?: string[] | string): IObserver;
   setData(path: string, value: Data | undefined): void;
+  getData(path: string): Data | undefined;
   close(): void;
 }
 

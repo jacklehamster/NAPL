@@ -30,19 +30,19 @@ export function createWorkerApp({
     hook<typeof WorkerComponent>(
       WorkerComponent,
       { programWorkerUrl },
-      ({ sendToWorker, addWorkerMessageListener, hook, worker }) => {
+      ({ sendToWorker, onWorkerMessage, hook, worker }) => {
         hook(PeerComponent, {
           worldId,
           signalWorkerUrl,
           sendToWorker,
-          addWorkerMessageListener,
+          onWorkerMessage,
         });
         hook(GraphicsComponent, { worker });
         hook(PointerLockComponent, {
           active: config.usePointerLock,
           sendToWorker,
         });
-        hook(PingComponent, { sendToWorker, addWorkerMessageListener });
+        hook(PingComponent, { sendToWorker, onWorkerMessage });
       },
     );
   });

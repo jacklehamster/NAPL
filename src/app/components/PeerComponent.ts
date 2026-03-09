@@ -4,12 +4,12 @@ import { Message, MessageType } from "../MessageType";
 export function PeerComponent({
   worldId,
   signalWorkerUrl,
-  addWorkerMessageListener,
+  onWorkerMessage,
   sendToWorker,
 }: {
   worldId: string;
   signalWorkerUrl?: URL;
-  addWorkerMessageListener: (callback: (msg: Message) => void) => () => void;
+  onWorkerMessage: (callback: (msg: Message) => void) => () => void;
   sendToWorker(type: Message["type"], msg: Omit<Message, "type">): void;
 }) {
   const {
@@ -26,7 +26,7 @@ export function PeerComponent({
     logLine: console.log,
   });
 
-  const removeWorkerMessageListener = addWorkerMessageListener((msg) => {
+  const removeWorkerMessageListener = onWorkerMessage((msg) => {
     switch (msg.type) {
       case MessageType.ON_PEER_MESSAGE:
         sendAcross(msg.data, msg.from);
