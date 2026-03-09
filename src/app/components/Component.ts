@@ -1,6 +1,6 @@
 // workspace.ts
 
-type Stoppable = { stop(): void };
+export type Stoppable = { stop?(): void };
 
 /**
  * Component:
@@ -27,11 +27,11 @@ const hook: Hook = (component, props, callback) => {
   const unhooks = new Set<() => void>();
   const disposeCallback = callback?.({
     ...result,
-    hook: <C extends Component<any, any>>(
+    hook<C extends Component<any, any>>(
       component: C,
       props: PropsOf<C>,
       callback?: (result: ReturnType<C> & { hook: Hook }) => void,
-    ) => {
+    ) {
       const unhook = hook(component, props, callback);
       if (unhook) {
         unhooks.add(unhook);
@@ -41,7 +41,7 @@ const hook: Hook = (component, props, callback) => {
 
   return () => {
     unhooks.forEach((unhook) => unhook());
-    (result as Stoppable).stop();
+    (result as Stoppable).stop?.();
     disposeCallback?.();
   };
 };

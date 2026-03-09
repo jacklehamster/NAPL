@@ -1,19 +1,30 @@
 /// <reference lib="webworker" />
 
-import { MessageType } from "napl";
+import {
+  hookSerializers,
+  MessageType,
+  PingBackComponent,
+  RoomComponent,
+  workspace,
+} from "napl";
 import { initialize } from "napl";
 
-const {
-  sendMessage: sendMessageUp,
-  enterRoom,
-  addMessageListener,
-} = initialize();
+workspace(({ hook }) => {
+  const { bytesToMessage } = hookSerializers();
+  const { sendMessage: sendMessageUp, onMessage } = initialize({
+    bytesToMessage,
+  });
 
-addMessageListener(MessageType.INIT, () => {
-  const lobby = { room: "worker-test-room", host: "hello.dobuki.net" };
-  enterRoom(lobby);
-});
+  hook(RoomComponent, { sendMessage: sendMessageUp }, ({ enterRoom }) => {
+    const offInit = onMessage(MessageType.INIT, () => {
+      const lobby = { room: "worker-test-room", host: "hello.dobuki.net" };
+      enterRoom(lobby);
+    });
 
-addMessageListener(MessageType.PING, (msg) => {
-  sendMessageUp(MessageType.PING, msg);
+    hook(PingBackComponent, { onMessage, sendMessage: sendMessageUp });
+
+    return () => {
+      offInit();
+    };
+  });
 });

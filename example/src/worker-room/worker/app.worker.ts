@@ -1,82 +1,98 @@
 /// <reference lib="webworker" />
 
-import { MessageType } from "napl";
-import { generateRandomHexColor } from "napl";
-import { initialize } from "napl";
+import {
+  Cursor,
+  CursorComponent,
+  EnterRoomComponent,
+  InitComponent,
+  LineDrawComponent,
+  MessageType,
+  MouseMessage,
+  MoveCursor,
+  OnMessageComponent,
+  PeerCommunicator,
+  PingBackComponent,
+  RoomComponent,
+  Serializers,
+  workspace,
+} from "napl";
 
-const cursor = {
-  x: 0,
-  y: 0,
-  needsReset: true,
-  color: "black",
-  width: 1,
-};
+workspace(({ hook }) => {
+  hook(Serializers, {}, ({ messageToBytes, bytesToMessage }) => {
+    hook(
+      InitComponent,
+      { bytesToMessage },
+      ({ sendMessage, getCanvas, onMessage }) => {
+        hook(PingBackComponent, { onMessage, sendMessage });
+        hook(
+          RoomComponent,
+          { sendMessage },
+          ({ enterRoom, exitRoom, hook }) => {
+            hook(
+              EnterRoomComponent,
+              {
+                room: {
+                  room: "worker-test-room",
+                  host: "hello.dobuki.net",
+                },
+                enterRoom,
+                exitRoom,
+              },
+              ({ execute }) => {
+                hook(OnMessageComponent, {
+                  type: MessageType.INIT,
+                  onMessage,
+                  execute,
+                });
+              },
+            );
+          },
+        );
 
-const {
-  sendMessage: sendMessageUp,
-  sendMessageAccross,
-  getCanvas,
-  enterRoom,
-  addMessageListener,
-} = initialize();
+        hook(LineDrawComponent, { onMessage, getCanvas });
 
-addMessageListener(MessageType.INIT, () => {
-  const lobby = { room: "worker-test-room", host: "hello.dobuki.net" };
-  enterRoom(lobby);
-});
-addMessageListener(MessageType.POINTER_LOCK, () => {
-  cursor.needsReset = true;
-  cursor.color = generateRandomHexColor();
-});
-addMessageListener(MessageType.LINE, (msg) => {
-  const ctx = getCanvas()?.getContext("2d");
-  if (ctx) {
-    ctx.lineWidth = msg.lineWidth;
-    ctx.beginPath();
-    ctx.moveTo(msg.from.x, msg.from.y);
-    ctx.strokeStyle = msg.color;
-    ctx.lineTo(msg.to.x, msg.to.y);
-    ctx.stroke();
-  }
-});
-addMessageListener(MessageType.MOUSE_MOVE, (msg) => {
-  if (cursor.needsReset) {
-    cursor.x = msg.clientX * 2;
-    cursor.y = msg.clientY * 2;
-    cursor.needsReset = false;
-  }
-  const ctx = getCanvas()?.getContext("2d");
+        hook(CursorComponent, {}, ({ cursor, reset }) => {
+          hook(OnMessageComponent, {
+            type: MessageType.POINTER_LOCK,
+            onMessage,
+            execute: reset,
+          });
 
-  if (ctx && (msg.movementX !== 0 || msg.movementY !== 0)) {
-    const newLineWidth =
-      Math.sqrt(
-        Math.sqrt(
-          msg.movementX * msg.movementX + msg.movementY * msg.movementY,
-        ),
-      ) * 2;
-    ctx.lineWidth = newLineWidth;
-    ctx.beginPath();
-    ctx.moveTo(cursor.x, cursor.y);
-    const from = { x: cursor.x, y: cursor.y };
-    ctx.lineWidth = newLineWidth;
-    cursor.x += msg.movementX;
-    cursor.y += msg.movementY;
-    cursor.x = Math.max(0, Math.min(ctx.canvas.width, cursor.x));
-    cursor.y = Math.max(0, Math.min(ctx.canvas.height, cursor.y));
-    ctx.strokeStyle = cursor.color;
-    ctx.lineTo(cursor.x, cursor.y);
-    ctx.stroke();
+          hook(
+            MoveCursor,
+            { getCanvas, cursor },
+            ({ execute, onMoveCursor }) => {
+              hook(OnMessageComponent, {
+                type: MessageType.MOUSE_MOVE,
+                onMessage,
+                execute,
+              });
 
-    sendMessageAccross({
-      type: MessageType.LINE,
-      from,
-      to: { x: cursor.x, y: cursor.y },
-      color: ctx.strokeStyle,
-      lineWidth: ctx.lineWidth,
-    });
-  }
-});
-addMessageListener(MessageType.PING, (msg) => {
-  console.log("Send message up from worker:", msg);
-  sendMessageUp(MessageType.PING, msg);
+              onMoveCursor(({ from, to }) => {
+                const ctx = getCanvas()?.getContext("2d");
+                if (!ctx) return;
+
+                ctx.beginPath();
+                ctx.moveTo(from.x, from.y);
+                ctx.lineWidth = to.width;
+                ctx.strokeStyle = to.color;
+                ctx.lineTo(to.x, to.y);
+                ctx.stroke();
+              });
+
+              hook(
+                PeerCommunicator,
+                { sendMessage, messageToBytes },
+                ({ sendMessageAccross }) => {
+                  onMoveCursor(({ from, to }) =>
+                    sendMessageAccross({ type: MessageType.LINE, from, to }),
+                  );
+                },
+              );
+            },
+          );
+        });
+      },
+    );
+  });
 });

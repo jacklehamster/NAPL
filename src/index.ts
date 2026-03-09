@@ -17,3 +17,5 @@ export * from "./app/MessageType";
 export * from "./app/utils/drawing";
 export * from "./app/utils/serializers";
 export * from "./app/utils/data-ring";
+export * from "./app/components/index";
+export * from "./worker/components/index";

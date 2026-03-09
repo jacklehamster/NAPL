@@ -4,11 +4,14 @@ import { hookMessenger } from "@/app/core/messenger";
 import { Message, MessageType } from "@/app/MessageType";
 import { hookMsgListener } from "@/app/utils/listener";
 import { WorkerCommand } from "./WorkerCommand";
-import { hookSerializers } from "@/app/utils/serializers";
 
-type MessageHandler<M extends Message> = (msg: M, peer?: string) => void;
+export type MessageHandler<M extends Message> = (msg: M, peer?: string) => void;
 
-export function initialize() {
+export function initialize({
+  bytesToMessage,
+}: {
+  bytesToMessage: (data: Uint8Array) => Message | undefined;
+}) {
   // let program: IProgram | undefined;
   // const messageListeners = new Array<(data: Uint8Array) => void>();
   // const newUserListener = new Array<(user: string) => void>();
@@ -18,8 +21,6 @@ export function initialize() {
   ) => void;
 
   let canvas: OffscreenCanvas | undefined;
-
-  const { messageToBytes, bytesToMessage } = hookSerializers();
 
   const { listen } = hookMsgListener();
 
@@ -113,27 +114,14 @@ export function initialize() {
     sendMessage<M extends Message>(type: M["type"], msg: Omit<M, "type">) {
       sendMessage?.(type, msg);
     },
-    sendMessageAccross(msg: Message, peer?: string) {
-      const data = messageToBytes(msg);
-      sendMessage?.(MessageType.ON_PEER_MESSAGE, { data, from: peer });
-    },
     getCanvas() {
       return canvas;
     },
-    enterRoom({ room, host }: { room: string; host: string }) {
-      sendMessage?.(MessageType.ENTER_ROOM, { room, host });
-    },
-    exitRoom({ room, host }: { room: string; host: string }) {
-      sendMessage?.(MessageType.EXIT_ROOM, { room, host });
-    },
-    addMessageListener<M extends Message>(
-      type: MessageType,
-      callback: MessageHandler<M>,
-    ) {
+    onMessage<M extends Message>(type: M["type"], callback: MessageHandler<M>) {
       const listeners =
         messageListeners.get(type) ??
         (() => {
-          const arr: MessageHandler<any>[] = [];
+          const arr: MessageHandler<M>[] = [];
           messageListeners.set(type, arr);
           return arr;
         })();

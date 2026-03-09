@@ -1,3 +1,5 @@
+import { Cursor } from "@/worker/components";
+
 export enum MessageType {
   //  Internal
   INIT,
@@ -71,10 +73,8 @@ export type PointerMessage = { type: MessageType.POINTER_LOCK; enter: boolean };
 
 export type LineMessage = {
   type: MessageType.LINE;
-  from: { x: number; y: number };
-  to: { x: number; y: number };
-  color: string;
-  lineWidth: number;
+  from: Omit<Cursor, "needsReset">;
+  to: Omit<Cursor, "needsReset">;
 };
 
 export type RoomMessage = {

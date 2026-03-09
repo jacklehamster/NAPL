@@ -1,3 +1,4 @@
+import { Cursor } from "@/worker/components";
 import {
   LineMessage,
   MouseMessage,
@@ -17,6 +18,29 @@ import {
   IDataReader,
   IDataWriter,
 } from "./data-ring";
+
+interface Serializer<M extends Message> {
+  serialize(type: M["type"], msg: Omit<M, "type">, data: IDataWriter): void;
+  deserialize(data: IDataReader, type: M["type"]): M;
+}
+
+function serializeCursor(
+  cursor: Omit<Cursor, "needsReset">,
+  data: IDataWriter,
+) {
+  data.writeInt16(cursor.x);
+  data.writeInt16(cursor.y);
+  data.writeFloat64(cursor.width);
+  data.writeString(cursor.color);
+}
+
+function deserializeCursor(data: IDataReader): Omit<Cursor, "needsReset"> {
+  const x = data.readInt16();
+  const y = data.readInt16();
+  const width = data.readFloat64();
+  const color = data.readString();
+  return { x, y, width, color };
+}
 
 export function hookSerializers() {
   const keySerializer: Serializer<KeyMessage> = {
@@ -196,30 +220,16 @@ export function hookSerializers() {
       MessageType.LINE,
       {
         serialize(_type, msg: LineMessage, data) {
-          data.writeInt16(msg.from.x);
-          data.writeInt16(msg.from.y);
-          data.writeInt16(msg.to.x);
-          data.writeInt16(msg.to.y);
-          data.writeString(msg.color);
-          data.writeFloat64(msg.lineWidth);
+          serializeCursor(msg.from, data);
+          serializeCursor(msg.to, data);
         },
         deserialize(data, type: LineMessage["type"]) {
-          const from = {
-            x: data.readInt16(),
-            y: data.readInt16(),
-          };
-          const to = {
-            x: data.readInt16(),
-            y: data.readInt16(),
-          };
-          const color = data.readString();
-          const lineWidth = data.readFloat64();
+          const from = deserializeCursor(data);
+          const to = deserializeCursor(data);
           return {
             type,
             from,
             to,
-            color,
-            lineWidth,
           };
         },
       },
@@ -287,8 +297,4 @@ export function hookSerializers() {
     messageToBytes,
     bytesToMessage,
   };
-}
-export interface Serializer<M extends Message> {
-  serialize(type: M["type"], msg: Omit<M, "type">, data: IDataWriter): void;
-  deserialize(data: IDataReader, type: M["type"]): M;
 }
