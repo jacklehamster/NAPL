@@ -2,45 +2,39 @@
 
 import {
   EnterRoomComponent,
-  hookSerializers,
+  InitComponent,
   MessageType,
   OnMessageComponent,
   PingBackComponent,
   RoomComponent,
+  Serializers,
   workspace,
 } from "napl";
-import { initialize } from "napl";
 
 workspace(({ hook }) => {
-  const { bytesToMessage } = hookSerializers();
-  const { sendMessage: sendMessageUp, onMessage } = initialize({
-    bytesToMessage,
-  });
-
-  hook(
-    RoomComponent,
-    { sendMessage: sendMessageUp },
-    ({ enterRoom, exitRoom }) => {
-      hook(
-        EnterRoomComponent,
-        {
-          room: {
-            room: "world-test-room",
-            host: "hello.dobuki.net",
+  hook(Serializers, {}, ({ bytesToMessage }) => {
+    hook(InitComponent, { bytesToMessage }, ({ sendMessage, onMessage }) => {
+      hook(RoomComponent, { sendMessage }, ({ enterRoom, exitRoom }) => {
+        hook(
+          EnterRoomComponent,
+          {
+            room: {
+              room: "world-test-room",
+              host: "hello.dobuki.net",
+            },
+            enterRoom,
+            exitRoom,
           },
-          enterRoom,
-          exitRoom,
-        },
-        ({ execute }) => {
-          hook(OnMessageComponent, {
-            type: MessageType.INIT,
-            onMessage,
-            execute,
-          });
-        },
-      );
-
-      hook(PingBackComponent, { onMessage, sendMessage: sendMessageUp });
-    },
-  );
+          ({ execute }) => {
+            hook(OnMessageComponent, {
+              type: MessageType.INIT,
+              onMessage,
+              execute,
+            });
+          },
+        );
+        hook(PingBackComponent, { onMessage, sendMessage });
+      });
+    });
+  });
 });
