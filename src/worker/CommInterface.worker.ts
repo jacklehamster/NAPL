@@ -1,44 +1,18 @@
 /// <reference lib="webworker" />
 
-import { hookMessenger } from "@/app/core/messenger";
-import { Message, MessageType } from "@/app/MessageType";
-import { hookMsgListener } from "@/app/utils/listener";
+import { Message } from "@/app/MessageType";
 import { WorkerCommand } from "./WorkerCommand";
 
 export type MessageHandler<M extends Message> = (msg: M, peer?: string) => void;
 
-export function initialize({
-  bytesToMessage,
-}: {
-  bytesToMessage: (data: Uint8Array) => Message | undefined;
-}) {
-  // let program: IProgram | undefined;
-  // const messageListeners = new Array<(data: Uint8Array) => void>();
-  // const newUserListener = new Array<(user: string) => void>();
-  let sendMessage: <M extends Message>(
-    type: M["type"],
-    msg: Omit<M, "type">,
-  ) => void;
-
+export function initialize() {
   let canvas: OffscreenCanvas | undefined;
-
-  const { listen } = hookMsgListener();
-
-  const messageListeners = new Map<MessageType, MessageHandler<any>[]>();
-
-  function triggerListeners(msg: Message, peer?: string) {
-    messageListeners.get(msg.type)?.forEach((callback) => callback(msg, peer));
-  }
 
   self.addEventListener(
     "message",
     (
       e: MessageEvent<
         WorkerCommand & {
-          sab?: {
-            toWorker: SharedArrayBuffer;
-            fromWorker: SharedArrayBuffer;
-          };
           canvas?: OffscreenCanvas;
           width?: number;
           height?: number;
@@ -47,27 +21,6 @@ export function initialize({
       >,
     ) => {
       const msg = e.data;
-      if (msg.sab) {
-        const { toWorker, fromWorker } = msg.sab;
-        listen(toWorker, (msg) => {
-          //  Process incoming message from main thread
-          if (msg.type === MessageType.ON_PEER_MESSAGE) {
-            //  Message from peer. Deserializing inner message
-            const m = bytesToMessage(msg.data);
-
-            if (!m) {
-              console.warn("Failed to deserialize peer message");
-              return;
-            }
-            triggerListeners(m, msg.from);
-            return;
-          }
-          triggerListeners(msg);
-        });
-        const result = hookMessenger(fromWorker);
-        sendMessage = result.sendMessage;
-        triggerListeners({ type: MessageType.INIT });
-      }
       if (msg.canvas) {
         canvas = msg.canvas;
         const { width, height, dpr } = msg;
@@ -84,58 +37,12 @@ export function initialize({
           return;
         }
       }
-
-      // if (msg.type === "createApp") {
-      //   if (program) {
-      //     throw new Error("Can only create program once");
-      //   }
-      //   program = new Program({
-      //     appId: msg.appId,
-      //     userId: msg.userId,
-      //     comm: new CommInterfaceWorker(),
-      //   });
-      //   console.log(program);
-      // }
-      //  else if (msg.type === "onMessage") {
-      //   messageListeners.forEach((listener) => listener(msg.data));
-      // } else if (msg.type === "onUserUpdate") {
-      //   if (msg.action === "join") {
-      //     newUserListener.forEach((listener) => listener(msg.user));
-      //   } else if (msg.action === "leave") {
-      //     program?.setData(`users/${msg.user}`, undefined);
-      //   }
-      // } else if (msg.type === "ping") {
-      //   respond({ action: "ping", now: msg.now });
-      // }
     },
   );
 
   return {
-    sendMessage<M extends Message>(type: M["type"], msg: Omit<M, "type">) {
-      sendMessage?.(type, msg);
-    },
     getCanvas() {
       return canvas;
-    },
-    onMessage<M extends Message>(type: M["type"], callback: MessageHandler<M>) {
-      const listeners =
-        messageListeners.get(type) ??
-        (() => {
-          const arr: MessageHandler<M>[] = [];
-          messageListeners.set(type, arr);
-          return arr;
-        })();
-
-      listeners.push(callback);
-      return () => {
-        listeners.splice(listeners.indexOf(callback), 1);
-        if (listeners.length === 0) {
-          messageListeners.delete(type);
-        }
-      };
-    },
-    close() {
-      messageListeners.clear();
     },
   };
 }

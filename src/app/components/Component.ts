@@ -18,7 +18,7 @@ type PropsOf<C> = C extends (props: infer P) => any ? P : never;
 
 type Hook = <C extends Component<any, any>>(
   component: C,
-  props: PropsOf<C>,
+  props?: PropsOf<C>,
   callback?: (result: ReturnType<C> & { hook: Hook }) => (() => void) | void,
 ) => ReturnType<C> & { unhook: () => void };
 
@@ -32,10 +32,11 @@ const hook: Hook = (component, props, callback) => {
       props: PropsOf<C>,
       callback?: (result: ReturnType<C> & { hook: Hook }) => void,
     ) {
-      const { unhook } = hook(component, props, callback);
-      if (unhook) {
-        unhooks.add(unhook);
+      const result = hook(component, props, callback);
+      if (result.unhook) {
+        unhooks.add(result.unhook);
       }
+      return result;
     },
   });
 

@@ -1,18 +1,9 @@
 import { initialize } from "../CommInterface.worker";
-import { Message } from "@/app/MessageType";
 
-export function InitComponent({
-  bytesToMessage,
-}: {
-  bytesToMessage: (data: Uint8Array) => Message | undefined;
-}) {
-  const { sendMessage, getCanvas, onMessage, close } = initialize({
-    bytesToMessage,
-  });
+export function InitComponent() {
+  const { getCanvas } = initialize();
 
   return {
-    onMessage,
-    sendMessage,
     getCanvas,
     stop() {
       close();

@@ -2,39 +2,59 @@
 
 import {
   EnterRoomComponent,
+  HookListener,
   InitComponent,
   MessageType,
   OnMessageComponent,
   PingBackComponent,
   RoomComponent,
   Serializers,
+  SharedArrayBufferListener,
+  SharedArrayBufferWorkerMessage,
+  WorkerMessageListener,
   workspace,
 } from "napl";
 
 workspace(({ hook }) => {
-  hook(Serializers, {}, ({ bytesToMessage }) => {
-    hook(InitComponent, { bytesToMessage }, ({ sendMessage, onMessage }) => {
-      hook(RoomComponent, { sendMessage }, ({ enterRoom, exitRoom }) => {
+  const { bytesToMessage } = hook(Serializers);
+  hook(InitComponent, {}, () => {
+    const { sendMessage, onMessage } = hook(
+      SharedArrayBufferListener,
+      { bytesToMessage },
+      ({ handleMessage }) => {
         hook(
-          EnterRoomComponent,
-          {
-            room: {
-              room: "world-test-room",
-              host: "hello.dobuki.net",
-            },
-            enterRoom,
-            exitRoom,
-          },
-          ({ execute }) => {
-            hook(OnMessageComponent, {
-              type: MessageType.INIT,
-              onMessage,
-              execute,
+          WorkerMessageListener<SharedArrayBufferWorkerMessage>,
+          {},
+          ({ addWorkerMessageListener }) => {
+            hook(HookListener<typeof handleMessage>, {
+              onListener: addWorkerMessageListener,
+              listener: handleMessage,
             });
           },
         );
-        hook(PingBackComponent, { onMessage, sendMessage });
-      });
+      },
+    );
+
+    hook(RoomComponent, { sendMessage }, ({ enterRoom, exitRoom }) => {
+      hook(
+        EnterRoomComponent,
+        {
+          room: {
+            room: "world-test-room",
+            host: "hello.dobuki.net",
+          },
+          enterRoom,
+          exitRoom,
+        },
+        ({ execute }) => {
+          hook(OnMessageComponent, {
+            type: MessageType.INIT,
+            onMessage,
+            execute,
+          });
+        },
+      );
+      hook(PingBackComponent, { onMessage, sendMessage });
     });
   });
 });
