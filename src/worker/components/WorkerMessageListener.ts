@@ -1,14 +1,15 @@
 export function WorkerMessageListener<C>() {
   const cleanups = new Set<() => void>();
-  function onMessage(listener: (e: MessageEvent<C>) => void) {
-    self.addEventListener("message", listener);
+  function onMessage(listener: (msg: C) => void) {
+    const wrappedListener = ({ data }: MessageEvent<C>) => listener(data);
+    self.addEventListener("message", wrappedListener);
     return () => {
-      self.removeEventListener("message", listener);
+      self.removeEventListener("message", wrappedListener);
     };
   }
 
   return {
-    addWorkerMessageListener(messageListener: (e: MessageEvent<C>) => void) {
+    addWorkerMessageListener(messageListener: (msg: C) => void) {
       const removeListener = onMessage(messageListener);
       cleanups.add(removeListener);
       return () => {

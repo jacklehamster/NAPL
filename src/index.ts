@@ -10,7 +10,6 @@ export * from "./observer/ObserverManager";
 export * from "./context/Context";
 export * from "./clients/CommInterface";
 export * from "./core/Program";
-export * from "./worker/CommInterface.worker";
 export * from "./app/WorkerApp";
 export * from "./app/MessageType";
 export * from "./app/utils/drawing";

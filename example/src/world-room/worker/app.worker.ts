@@ -1,9 +1,9 @@
 /// <reference lib="webworker" />
 
 import {
+  CanvasWorkerMessage,
   EnterRoomComponent,
   HookListener,
-  InitComponent,
   MessageType,
   OnMessageComponent,
   PingBackComponent,
@@ -11,13 +11,25 @@ import {
   Serializers,
   SharedArrayBufferListener,
   SharedArrayBufferWorkerMessage,
+  WorkerCanvas,
   WorkerMessageListener,
   workspace,
 } from "napl";
 
 workspace(({ hook }) => {
   const { bytesToMessage } = hook(Serializers);
-  hook(InitComponent, {}, () => {
+  hook(WorkerCanvas, {}, ({ handleMessage }) => {
+    hook(
+      WorkerMessageListener<CanvasWorkerMessage>,
+      {},
+      ({ addWorkerMessageListener }) => {
+        hook(HookListener<typeof handleMessage>, {
+          onListener: addWorkerMessageListener,
+          listener: handleMessage,
+        });
+      },
+    );
+
     const { sendMessage, onMessage } = hook(
       SharedArrayBufferListener,
       { bytesToMessage },

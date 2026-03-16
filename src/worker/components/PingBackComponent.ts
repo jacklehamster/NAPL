@@ -1,5 +1,5 @@
 import { Message, MessageType } from "@/app/MessageType";
-import { MessageHandler } from "../CommInterface.worker";
+import { MessageHandler } from "./OnMessageComponent";
 
 export function PingBackComponent({
   onMessage,

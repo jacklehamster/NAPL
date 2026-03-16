@@ -1,6 +1,5 @@
 export * from "./RoomComponent";
 export * from "./PingBackComponent";
-export * from "./InitComponent";
 export * from "./EnterRoomComponent";
 export * from "./OnMessageComponent";
 export * from "./LineDrawComponent";
@@ -13,3 +12,4 @@ export * from "./HookListener";
 export * from "./LineDrawer";
 export * from "./WorkerMessageListener";
 export * from "./SharedArrayBufferListener";
+export * from "./WorkerCanvas";

@@ -1,7 +1,7 @@
 import { hookMessenger } from "@/app/core/messenger";
 import { Message, MessageType } from "@/app/MessageType";
-import { MessageHandler } from "../CommInterface.worker";
 import { hookMsgListener } from "@/app/utils/listener";
+import { MessageHandler } from "./OnMessageComponent";
 
 export interface SharedArrayBufferWorkerMessage {
   sab?: {
@@ -26,8 +26,7 @@ export function SharedArrayBufferListener({
     messageListeners.get(msg.type)?.forEach((callback) => callback(msg, peer));
   }
 
-  function handleMessage(e: MessageEvent<SharedArrayBufferWorkerMessage>) {
-    const msg = e.data;
+  function handleMessage(msg: SharedArrayBufferWorkerMessage) {
     if (msg.sab) {
       const { toWorker, fromWorker } = msg.sab;
       const { sendMessage } = hookMessenger(fromWorker);
