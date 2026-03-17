@@ -1,12 +1,14 @@
 import { Message } from "@/app/MessageType";
 
+interface Props<M extends Message> {
+  type: M["type"];
+  sendMessageAccross(msg: M, peer?: string): void;
+}
+
 export function CrossMessageSender<M extends Message>({
   type,
   sendMessageAccross,
-}: {
-  type: M["type"];
-  sendMessageAccross(msg: Message, peer?: string): void;
-}) {
+}: Props<M>) {
   return {
     send(msg: Omit<M, "type">, peer?: string) {
       sendMessageAccross({ type, ...msg } as M, peer);

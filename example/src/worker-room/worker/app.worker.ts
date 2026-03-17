@@ -23,27 +23,13 @@ import {
 } from "napl";
 
 workspace(({ hook }) => {
-  hook(Serializers, {}, ({ messageToBytes, bytesToMessage }) => {
-    const { sendMessage, onMessage } = hook(
-      SharedArrayBufferListener,
-      { bytesToMessage },
-      ({ handleMessage }) => {
-        hook(
-          WorkerMessageListener<SharedArrayBufferWorkerMessage>,
-          {},
-          ({ addWorkerMessageListener }) => {
-            hook(HookListener<typeof handleMessage>, {
-              onListener: addWorkerMessageListener,
-              listener: handleMessage,
-            });
-          },
-        );
-      },
-    );
-
-    hook(WorkerCanvas, {}, ({ getCanvas, handleMessage }) => {
+  const { messageToBytes, bytesToMessage } = hook(Serializers);
+  const { sendMessage, onMessage } = hook(
+    SharedArrayBufferListener,
+    { bytesToMessage },
+    ({ handleMessage }) => {
       hook(
-        WorkerMessageListener<CanvasWorkerMessage>,
+        WorkerMessageListener<SharedArrayBufferWorkerMessage>,
         {},
         ({ addWorkerMessageListener }) => {
           hook(HookListener<typeof handleMessage>, {
@@ -52,68 +38,79 @@ workspace(({ hook }) => {
           });
         },
       );
+    },
+  );
+  hook(PingBackComponent, { onMessage, sendMessage });
 
-      hook(PingBackComponent, { onMessage, sendMessage });
-      const { enterRoom, exitRoom } = hook(RoomComponent, { sendMessage });
-      hook(
-        EnterRoomComponent,
-        {
-          room: {
-            room: "worker-test-room",
-            host: "hello.dobuki.net",
-          },
-          enterRoom,
-          exitRoom,
-        },
-        ({ execute }) => {
-          hook(OnMessageComponent, {
-            type: MessageType.INIT,
-            onMessage,
-            execute,
-          });
-        },
-      );
-
-      hook(LineDrawComponent, { onMessage, getCanvas });
-
-      hook(CursorComponent, {}, ({ cursor, reset }) => {
+  hook(RoomComponent, { sendMessage }, ({ enterRoom, exitRoom }) => {
+    hook(
+      EnterRoomComponent,
+      {
+        room: { room: "worker-test-room", host: "hello.dobuki.net" },
+        enterRoom,
+        exitRoom,
+      },
+      ({ execute }) => {
         hook(OnMessageComponent, {
-          type: MessageType.POINTER_LOCK,
+          type: MessageType.INIT,
           onMessage,
-          execute: reset,
+          execute,
+        });
+      },
+    );
+  });
+
+  hook(WorkerCanvas, {}, ({ getCanvas, handleMessage }) => {
+    hook(
+      WorkerMessageListener<CanvasWorkerMessage>,
+      {},
+      ({ addWorkerMessageListener }) => {
+        hook(HookListener<typeof handleMessage>, {
+          onListener: addWorkerMessageListener,
+          listener: handleMessage,
+        });
+      },
+    );
+
+    hook(LineDrawComponent, { onMessage, getCanvas });
+
+    hook(CursorComponent, {}, ({ cursor, reset }) => {
+      hook(OnMessageComponent, {
+        type: MessageType.POINTER_LOCK,
+        onMessage,
+        execute: reset,
+      });
+
+      hook(MoveCursor, { getCanvas, cursor }, ({ execute, onMoveCursor }) => {
+        hook(OnMessageComponent, {
+          type: MessageType.MOUSE_MOVE,
+          onMessage,
+          execute,
         });
 
-        hook(MoveCursor, { getCanvas, cursor }, ({ execute, onMoveCursor }) => {
-          hook(OnMessageComponent, {
-            type: MessageType.MOUSE_MOVE,
-            onMessage,
-            execute,
+        hook(LineDrawer, { getCanvas }, ({ draw }) => {
+          hook(HookListener<typeof draw>, {
+            onListener: onMoveCursor,
+            listener: draw,
           });
-
-          hook(LineDrawer, { getCanvas }, ({ draw }) => {
-            hook(HookListener<typeof draw>, {
-              onListener: onMoveCursor,
-              listener: draw,
-            });
-          });
-
-          hook(
-            PeerCommunicator,
-            { sendMessage, messageToBytes },
-            ({ sendMessageAccross }) => {
-              hook(
-                CrossMessageSender,
-                { type: MessageType.LINE, sendMessageAccross },
-                ({ send }) => {
-                  hook(HookListener<typeof send>, {
-                    onListener: onMoveCursor,
-                    listener: send,
-                  });
-                },
-              );
-            },
-          );
         });
+
+        hook(
+          PeerCommunicator,
+          { sendMessage, messageToBytes },
+          ({ sendMessageAccross }) => {
+            hook(
+              CrossMessageSender,
+              { type: MessageType.LINE, sendMessageAccross },
+              ({ send }) => {
+                hook(HookListener<typeof send>, {
+                  onListener: onMoveCursor,
+                  listener: send,
+                });
+              },
+            );
+          },
+        );
       });
     });
   });

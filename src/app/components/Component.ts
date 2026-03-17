@@ -22,34 +22,6 @@ type Hook = <C extends Component<any, any>>(
   callback?: (result: ReturnType<C> & { hook: Hook }) => (() => void) | void,
 ) => ReturnType<C> & { unhook: () => void };
 
-const hook: Hook = (component, props, callback) => {
-  const result = component(props);
-  const unhooks = new Set<() => void>();
-  const disposeCallback = callback?.({
-    ...result,
-    hook<C extends Component<any, any>>(
-      component: C,
-      props: PropsOf<C>,
-      callback?: (result: ReturnType<C> & { hook: Hook }) => void,
-    ) {
-      const result = hook(component, props, callback);
-      if (result.unhook) {
-        unhooks.add(result.unhook);
-      }
-      return result;
-    },
-  });
-
-  return {
-    ...result,
-    unhook: () => {
-      unhooks.forEach((unhook) => unhook());
-      (result as Stoppable).stop?.();
-      disposeCallback?.();
-    },
-  };
-};
-
 export function Workspace() {
   return {
     stop() {},
@@ -57,5 +29,20 @@ export function Workspace() {
 }
 
 export function workspace(callback: (props: { hook: Hook }) => void) {
-  return hook(Workspace, {}, callback);
+  const hook: Hook = (component, props, callback) => {
+    const result = component(props);
+    const { stop } = result;
+    let disposeCallback: (() => void) | void;
+    if (callback) {
+      disposeCallback = callback?.(result);
+    }
+    return {
+      ...result,
+      unhook: () => {
+        disposeCallback?.();
+        stop?.();
+      },
+    };
+  };
+  callback({ hook });
 }

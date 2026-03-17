@@ -30,7 +30,7 @@ export function createWorkerApp({
     hook<typeof WorkerComponent>(
       WorkerComponent,
       { programWorkerUrl },
-      ({ sendToWorker, onWorkerMessage, hook, worker }) => {
+      ({ sendToWorker, onWorkerMessage, worker }) => {
         hook(PeerComponent, {
           worldId,
           signalWorkerUrl,
