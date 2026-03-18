@@ -22,12 +22,6 @@ type Hook = <C extends Component<any, any>>(
   callback?: (result: ReturnType<C> & { hook: Hook }) => (() => void) | void,
 ) => ReturnType<C> & { unhook: () => void };
 
-export function Workspace() {
-  return {
-    stop() {},
-  };
-}
-
 export function workspace(callback: (props: { hook: Hook }) => void) {
   const hook: Hook = (component, props, callback) => {
     const result = component(props);
