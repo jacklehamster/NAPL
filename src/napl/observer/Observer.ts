@@ -1,4 +1,5 @@
-import { Context, getLeafObject } from "..";
+import { Context } from "../context/Context";
+import { getLeafObject } from "../cycles/data-update/data-update";
 import { ObserverManager } from "./ObserverManager";
 
 export interface IObserver {

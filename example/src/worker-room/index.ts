@@ -1,13 +1,32 @@
-import { createWorkerApp } from "napl";
+import {
+  GraphicsComponent,
+  PeerComponent,
+  PingComponent,
+  PointerLockComponent,
+  WorkerComponent,
+  workspace,
+} from "napl";
 
 function setupWorkerApp() {
-  createWorkerApp({
-    worldId: "worker-test",
-    signalWorkerUrl: new URL("../signal-room.worker.js", import.meta.url),
-    programWorkerUrl: new URL("./worker/app.worker.js", import.meta.url),
-    config: {
-      usePointerLock: true,
-    },
+  return workspace(({ hook }) => {
+    hook(
+      WorkerComponent,
+      { programWorkerUrl: new URL("./worker/app.worker.js", import.meta.url) },
+      ({ sendToWorker, onWorkerMessage, worker }) => {
+        hook(PeerComponent, {
+          worldId: "worker-test",
+          signalWorkerUrl: new URL("../signal-room.worker.js", import.meta.url),
+          sendToWorker,
+          onWorkerMessage,
+        });
+        hook(GraphicsComponent, { worker });
+        hook(PointerLockComponent, {
+          active: true,
+          sendToWorker,
+        });
+        hook(PingComponent, { sendToWorker, onWorkerMessage });
+      },
+    );
   });
 }
 

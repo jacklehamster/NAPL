@@ -5,7 +5,7 @@ import {
   filterArray,
   UpdatePath,
 } from "./data-update";
-import { Data } from "../../types/Data";
+import { Data } from "../../../common/Data";
 
 describe("commitUpdates", () => {
   let updatedPaths: Map<string, UpdatePath>;

@@ -8,8 +8,8 @@ import {
   translateValue,
   UpdatePath,
 } from "../cycles/data-update/data-update";
-import { Payload } from "@/types/Payload";
-import { OutgoingCom } from "@/clients/CommInterface";
+import { Payload } from "@/napl/types/Payload";
+import { OutgoingCom } from "@/napl/clients/CommInterface";
 
 export class Processor {
   private readonly outingCom = new Set<OutgoingCom>();

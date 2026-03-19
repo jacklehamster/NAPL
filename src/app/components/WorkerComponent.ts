@@ -1,3 +1,4 @@
+import { Peng } from "@/peng/Peng";
 import { hookWorkerMessageListener } from "../core/messenger";
 
 export const WorkerComponent = (config: { programWorkerUrl: URL }) => {
@@ -9,5 +10,11 @@ export const WorkerComponent = (config: { programWorkerUrl: URL }) => {
     onWorkerMessage,
   } = hookWorkerMessageListener(worker);
 
-  return { worker, sendToWorker, onWorkerMessage, stop: close };
+  function handlePeng(peng: Peng) {
+    const task = peng.tasks[peng.currentTaskIndex];
+    if (task.type === "travel" && task.details?.target === "worker") {
+    }
+  }
+
+  return { worker, sendToWorker, onWorkerMessage, handlePeng, stop: close };
 };

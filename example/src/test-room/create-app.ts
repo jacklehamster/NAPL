@@ -1,5 +1,5 @@
-import { Program } from "napl";
 import { enterWorld } from "@dobuki/hello-worker";
+import { Program } from "napl";
 
 interface Props {
   appId: string;

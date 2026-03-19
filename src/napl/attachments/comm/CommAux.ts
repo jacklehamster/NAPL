@@ -1,8 +1,8 @@
-import { CommInterface } from "@/clients/CommInterface";
-import { hookCommInterface } from "@/clients/CommInterfaceHook";
-import { Context } from "@/context/Context";
-import { Processor } from "@/core/Processor";
-import { UpdatePath } from "@/cycles/data-update/data-update";
+import { CommInterface } from "@/napl/clients/CommInterface";
+import { hookCommInterface } from "@/napl/clients/CommInterfaceHook";
+import { Context } from "@/napl/context/Context";
+import { Processor } from "@/napl/core/Processor";
+import { UpdatePath } from "../../cycles/data-update/data-update";
 
 export class CommAux {
   private readonly processor = new Processor();

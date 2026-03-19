@@ -1,8 +1,8 @@
-import { CommInterface } from "@/clients/CommInterface";
-import { Context } from "@/context/Context";
+import { CommInterface } from "@/napl/clients/CommInterface";
+import { Context } from "@/napl/context/Context";
 import { Processor } from "../core/Processor";
-import { setData } from "@/cycles/data-update/data-manager";
-import { Data } from "@/types/Data";
+import { setData } from "../cycles/data-update/data-manager";
+import { Data } from "../../common/Data";
 
 export function deepShareData(
   context: Context,

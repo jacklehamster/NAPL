@@ -1,7 +1,6 @@
 import { OutgoingCom } from "../clients/CommInterface";
 import { Context } from "../context/Context";
 import { UpdatePath } from "../cycles/data-update/data-update";
-import { Data } from "../types/Data";
 import { Processor } from "./Processor";
 
 describe("Processor", () => {
@@ -26,7 +25,7 @@ describe("Processor", () => {
       send(u8) {
         const data = u8.buffer.slice(
           u8.byteOffset,
-          u8.byteOffset + u8.byteLength
+          u8.byteOffset + u8.byteLength,
         );
         processor?.receivedData(data, ctx);
       },
@@ -46,7 +45,7 @@ describe("Processor", () => {
         path: "array/1",
         value: 5,
         confirmed: 2,
-      }
+      },
     );
     processor?.performCycle(context!, updatedPaths);
     await new Promise((resolve) => setTimeout(resolve, 100));

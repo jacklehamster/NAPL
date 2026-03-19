@@ -1,6 +1,6 @@
-import { Context } from "@/context/Context";
+import { Context } from "@/napl/context/Context";
 import { Observer } from "./Observer";
-import { UpdatePath } from "@/cycles/data-update/data-update";
+import { UpdatePath } from "../cycles/data-update/data-update";
 
 export class ObserverManager {
   private readonly observers = new Map<string, Set<Observer>>();

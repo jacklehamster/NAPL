@@ -1,4 +1,4 @@
-import { Data } from "../types/Data";
+import { Data } from "../../common/Data";
 import { Update } from "../types/Update";
 
 export interface Context<T = Data> {

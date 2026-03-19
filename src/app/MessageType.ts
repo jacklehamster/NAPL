@@ -1,3 +1,4 @@
+import { Peng, Task } from "@/peng/Peng";
 import { Cursor } from "@/worker/components";
 
 export enum MessageType {
@@ -19,6 +20,8 @@ export enum MessageType {
   LINE,
   ENTER_ROOM,
   EXIT_ROOM,
+  //  Peng
+  PENG,
 }
 
 export type InitMessage = { type: MessageType.INIT };
@@ -83,6 +86,11 @@ export type RoomMessage = {
   room: string;
 };
 
+export type PengMessage = {
+  type: MessageType.PENG;
+  pengs: Peng[];
+};
+
 // All messages
 export type Message =
   | KeyMessage
@@ -94,4 +102,5 @@ export type Message =
   | PointerMessage
   | LineMessage
   | RoomMessage
-  | InitMessage;
+  | InitMessage
+  | PengMessage;

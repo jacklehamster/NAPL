@@ -1,4 +1,4 @@
-import { Data } from "./Data";
+import { Data } from "../../common/Data";
 
 export interface Update {
   path: string;

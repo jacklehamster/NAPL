@@ -1,6 +1,6 @@
 import { Update } from "../../types/Update";
 import { getLeafObject } from "./data-update";
-import { Data } from "../../types/Data";
+import { Data } from "../../../common/Data";
 import { UpdateOptions } from "./UpdateOptions";
 
 const NO_OBJ = {};
@@ -8,7 +8,7 @@ const NO_OBJ = {};
 export function getData(
   root: Data,
   path: string,
-  properties: { [key: string]: any }
+  properties: { [key: string]: any },
 ) {
   const parts = path.split("/");
   return getLeafObject(root, parts, 0, false, properties);
@@ -19,7 +19,7 @@ export function setData(
   outgoingUpdates: Update[],
   path: string,
   value: Data | undefined,
-  options: UpdateOptions = NO_OBJ
+  options: UpdateOptions = NO_OBJ,
 ) {
   const update: Update = { path, value, confirmed: 0 };
   if (options.peer) update.peer = options.peer;

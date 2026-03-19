@@ -5,4 +5,3 @@ export * from "./PeerComponent";
 export * from "./WorkerComponent";
 export * from "./PointerLockComponent";
 export * from "./WorkerComponent";
-export * from "./ActionComponent";

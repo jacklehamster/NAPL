@@ -1,12 +1,12 @@
-import { Context } from "@/context/Context";
-import { Update } from "@/types/Update";
-import { CommInterface } from "@/clients/CommInterface";
-import { getData, setData } from "@/cycles/data-update/data-manager";
-import { Data } from "@/types/Data";
-import { ObserverManager } from "@/observer/ObserverManager";
-import { IObserver } from "@/observer/Observer";
-import { CommAux } from "@/attachments/comm/CommAux";
-import { consolidateUpdates } from "@/cycles/data-update/data-update";
+import { Context } from "@/napl/context/Context";
+import { Update } from "@/napl/types/Update";
+import { CommInterface } from "@/napl/clients/CommInterface";
+import { getData, setData } from "../cycles/data-update/data-manager";
+import { Data } from "@/common/Data";
+import { ObserverManager } from "../observer/ObserverManager";
+import { IObserver } from "../observer/Observer";
+import { CommAux } from "@/napl/attachments/comm/CommAux";
+import { consolidateUpdates } from "../cycles/data-update/data-update";
 
 interface Props<T extends Data> {
   appId: string;
