@@ -6,7 +6,7 @@ export function LineDrawer({
   getCanvas: () => OffscreenCanvas | undefined;
 }) {
   return {
-    draw({ from, to }: { from: Cursor; to: Cursor }, peer?: string) {
+    draw({ from, to }: { from: Cursor; to: Cursor }) {
       const ctx = getCanvas()?.getContext("2d");
       if (!ctx) return;
 

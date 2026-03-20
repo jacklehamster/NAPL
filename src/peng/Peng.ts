@@ -3,7 +3,13 @@ import { Data } from "@/napl";
 export interface Task<D extends Data = Record<string, any>> {
   type: string;
   details?: D;
-  description: string;
+  subtasks?: TaskList;
+  description?: string;
+}
+
+export interface TaskList {
+  tasks: Task[];
+  index: number;
 }
 
 export class Peng {

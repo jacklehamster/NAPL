@@ -6,13 +6,11 @@ import {
 import { Message } from "../MessageType";
 
 export function PointerLockComponent({
-  active,
   sendToWorker,
 }: {
-  active?: boolean;
   sendToWorker(type: Message["type"], msg: Omit<Message, "type">): void;
 }) {
-  const { close } = setupPointerLockControl({
+  const { enterPointerLock } = setupPointerLockControl({
     sendMessage: sendToWorker,
     onPointerLock: (locked: boolean) => {
       if (locked) {
@@ -24,7 +22,6 @@ export function PointerLockComponent({
         };
       }
     },
-    activateOnClick: active,
   });
-  return { stop: close };
+  return { enterPointerLock };
 }

@@ -1,4 +1,4 @@
-import { Cursor } from "@/worker/components";
+import { Cursor } from "@/worker/components/CursorComponent";
 import {
   LineMessage,
   MouseMessage,

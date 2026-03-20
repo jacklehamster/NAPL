@@ -17,7 +17,7 @@ async function bundle() {
       return Bun.build({
         entrypoints: [`./src/${tsFile}`],
         outdir: `./dist/${dirname(tsFile)}`,
-        // minify: true,
+        minify: true,
         sourcemap: "linked",
         target: "browser",
         plugins: [lightningcss()],

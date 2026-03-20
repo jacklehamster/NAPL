@@ -64,9 +64,7 @@ export function captureKeyboard(
 export function setupPointerLockControl({
   sendMessage,
   onPointerLock,
-  activateOnClick,
 }: {
-  activateOnClick?: boolean;
   sendMessage: <M extends Message>(
     type: M["type"],
     msg: Omit<M, "type">,
@@ -83,14 +81,7 @@ export function setupPointerLockControl({
     };
   });
 
-  if (activateOnClick) {
-    document.addEventListener("mousedown", enterPointerLock);
-  }
-
   return {
-    close: () => {
-      document.removeEventListener("mousedown", enterPointerLock);
-    },
     enterPointerLock,
   };
 }

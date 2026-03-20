@@ -1,28 +1,37 @@
-import {
-  GraphicsComponent,
-  PeerComponent,
-  PingComponent,
-  WorkerComponent,
-  workspace,
-} from "napl";
+import { registry } from "napl";
+import { signalWorkerUrl } from "../common/signalWorker";
 
 function setupWorkerApp() {
-  return workspace(({ hook }) => {
-    hook(
-      WorkerComponent,
-      { programWorkerUrl: new URL("./worker/app.worker.js", import.meta.url) },
-      ({ sendToWorker, onWorkerMessage, worker }) => {
-        hook(PeerComponent, {
-          worldId: "world",
-          signalWorkerUrl: new URL("../signal-room.worker.js", import.meta.url),
-          sendToWorker,
-          onWorkerMessage,
-        });
-        hook(GraphicsComponent, { worker });
-        hook(PingComponent, { sendToWorker, onWorkerMessage });
-      },
-    );
-  });
+  return registry
+    .withContext({
+      signalWorkerUrl,
+      programWorkerUrl: new URL("./worker/app.worker.js", import.meta.url),
+    })
+    .configureWorkspace({
+      workspaces: [
+        {
+          configs: [
+            [
+              "WorkerComponent",
+              { programWorkerUrl: "~" },
+              [
+                [
+                  "PeerComponent",
+                  {
+                    worldId: "worker-test",
+                    signalWorkerUrl: "~",
+                    sendToWorker: "~",
+                    onWorkerMessage: "~",
+                  },
+                ],
+                ["GraphicsComponent", { worker: "~" }],
+                ["PingComponent", { sendToWorker: "~", onWorkerMessage: "~" }],
+              ],
+            ],
+          ],
+        },
+      ],
+    });
 }
 
 export { setupWorkerApp };

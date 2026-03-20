@@ -1,72 +1,68 @@
 /// <reference lib="webworker" />
 
-import {
-  CanvasWorkerMessage,
-  EnterRoomComponent,
-  HookListener,
-  MessageType,
-  OnMessageComponent,
-  PingBackComponent,
-  RoomComponent,
-  Serializers,
-  SharedArrayBufferListener,
-  SharedArrayBufferWorkerMessage,
-  WorkerCanvas,
-  WorkerMessageListener,
-  workspace,
-} from "napl";
+import { MessageType, workerRegistry } from "napl";
 
-workspace(({ hook }) => {
-  const { bytesToMessage } = hook(Serializers);
-  hook(WorkerCanvas, {}, ({ handleMessage }) => {
-    hook(
-      WorkerMessageListener<CanvasWorkerMessage>,
-      {},
-      ({ addWorkerMessageListener }) => {
-        hook(HookListener<typeof handleMessage>, {
-          onListener: addWorkerMessageListener,
-          listener: handleMessage,
-        });
-      },
-    );
-
-    const { sendMessage, onMessage } = hook(
-      SharedArrayBufferListener,
-      { bytesToMessage },
-      ({ handleMessage }) => {
-        hook(
-          WorkerMessageListener<SharedArrayBufferWorkerMessage>,
+workerRegistry.configureWorkspace({
+  configs: [
+    ["Serializers"],
+    [
+      "SharedArrayBufferListener",
+      { bytesToMessage: "~" },
+      [
+        [
+          "WorkerMessageListener",
           {},
-          ({ addWorkerMessageListener }) => {
-            hook(HookListener<typeof handleMessage>, {
-              onListener: addWorkerMessageListener,
-              listener: handleMessage,
-            });
+          [
+            [
+              "HookListener",
+              {
+                onListener: "~addWorkerMessageListener",
+                listener: "~handleMessage",
+              },
+            ],
+          ],
+        ],
+      ],
+    ],
+    ["PingBackComponent", { onMessage: "~", sendMessage: "~" }],
+    [
+      "RoomComponent",
+      { sendMessage: "~" },
+      [
+        [
+          "EnterRoomComponent",
+          {
+            room: { room: "worker-test-room", host: "hello.dobuki.net" },
+            enterRoom: "~",
+            exitRoom: "~",
           },
-        );
-      },
-    );
-
-    hook(RoomComponent, { sendMessage }, ({ enterRoom, exitRoom }) => {
-      hook(
-        EnterRoomComponent,
-        {
-          room: {
-            room: "world-test-room",
-            host: "hello.dobuki.net",
-          },
-          enterRoom,
-          exitRoom,
-        },
-        ({ execute }) => {
-          hook(OnMessageComponent, {
-            type: MessageType.INIT,
-            onMessage,
-            execute,
-          });
-        },
-      );
-      hook(PingBackComponent, { onMessage, sendMessage });
-    });
-  });
+          [
+            [
+              "OnMessageComponent",
+              { type: MessageType.INIT, onMessage: "~", execute: "~" },
+            ],
+          ],
+        ],
+      ],
+    ],
+    [
+      "WorkerCanvas",
+      {},
+      [
+        [
+          "WorkerMessageListener",
+          {},
+          [
+            [
+              "HookListener",
+              {
+                onListener: "~addWorkerMessageListener",
+                listener: "~handleMessage",
+              },
+            ],
+          ],
+        ],
+      ],
+    ],
+  ],
 });

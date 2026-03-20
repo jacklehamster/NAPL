@@ -8,4 +8,3 @@ export * from "./types/Payload";
 export * from "./core/Processor";
 export * from "./core/Program";
 export * from "./context/Context";
-export * from "./context/Context";
