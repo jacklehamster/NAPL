@@ -1,7 +1,6 @@
 import { hookWorkerMessageListener } from "../core/messenger";
 
-export const WorkerComponent = (config: { programWorkerUrl: URL }) => {
-  const worker = new Worker(config.programWorkerUrl, { type: "module" });
+export const WorkerSabCommunicator = ({ worker }: { worker: Worker }) => {
   //  Cross connection
   const {
     sendMessage: sendToWorker,

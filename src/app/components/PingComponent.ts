@@ -37,15 +37,24 @@ export const PingComponent: Component<PingProps> = ({
     sendToWorker(MessageType.PING, { now });
   }, period);
 
+  const pingListeners = new Set<(duration: number) => void>();
   const removeWorkerMessageListener = onWorkerMessage((msg) => {
     switch (msg.type) {
       case MessageType.PING:
-        console.log("ping", (performance.now() - msg.now).toFixed(2) + "ms");
+        const now = performance.now();
+        pingListeners.forEach((listener) => listener(now - msg.now));
+        console.log("ping", (now - msg.now).toFixed(2) + "ms");
         break;
     }
   });
 
   return {
+    addListener: (listener: (duration: number) => void) => {
+      pingListeners.add(listener);
+      return () => {
+        pingListeners.delete(listener);
+      };
+    },
     stop: () => {
       clearInterval(interval);
       removeWorkerMessageListener();

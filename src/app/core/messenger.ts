@@ -38,7 +38,6 @@ export function hookWorkerMessageListener(worker: Worker) {
       It requires Cross-Origin Isolation (COOP/COEP) to enable high-performance shared memory.
       Please reload from the official site / correct environment, or contact your admin.`);
   }
-
   const BYTES = 1024 * 1024;
   const sabToWorker = new SharedArrayBuffer(BYTES);
   const sabFromWorker = new SharedArrayBuffer(BYTES);

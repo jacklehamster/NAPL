@@ -8,7 +8,9 @@
     "build": "bun i && bun run build-icon && bun run copy-workers && bun run bundler/bundler.ts",
     "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons",
     "dev": "bun run build && bun --watch index.ts",
-    "copy-workers": "rm -rf ./dist && sleep 1 && mkdir -p dist && cp ../node_modules/@dobuki/hello-worker/dist/signal-room.worker.js* ./dist"
+    "copy-workers": "mv ./dist ./dist-bak && rm -rf ./dist-bak && mkdir -p dist && bun run copy-signal-worker && bun run copy-app-worker",
+    "copy-signal-worker": "cp ../node_modules/@dobuki/hello-worker/dist/signal-room.worker.js* ./dist",
+    "copy-app-worker": "cp ../dist/worker/app.worker.js* ./dist"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

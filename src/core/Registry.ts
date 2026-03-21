@@ -2,15 +2,21 @@ import { Data } from "@/napl";
 import { Component } from "../app/components/Component";
 import { Hook, workspace } from "./Workspace";
 
+type Config = Record<string, Data>;
+
+export interface RegistryConfig {
+  workspaces: { configs: WorkspaceConfig[] }[];
+}
+
 //  WorkspaceConfig
 export type WorkspaceConfig =
   | {
       name: string;
-      config?: Record<string, Data>;
+      config?: Config;
       children?: WorkspaceConfig[];
     }
-  | [string, Record<string, Data>, WorkspaceConfig[]]
-  | [string, Record<string, Data>]
+  | [string, Config, WorkspaceConfig[]]
+  | [string, Config]
   | [string];
 
 export class Registry {

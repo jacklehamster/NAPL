@@ -13,7 +13,7 @@ async function bundle() {
 
   return Promise.all(
     allTsFiles.map((tsFile) => {
-      console.log(`Bundling ${tsFile}...`, dirname(tsFile));
+      console.log(`Bundling ${tsFile}`, dirname(tsFile));
       return Bun.build({
         entrypoints: [`./src/${tsFile}`],
         outdir: `./dist/${dirname(tsFile)}`,

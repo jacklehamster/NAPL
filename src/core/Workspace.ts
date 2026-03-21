@@ -10,11 +10,15 @@ export type Hook = <C extends Component<any, any>>(
 
 export function workspace(callback: (props: { hook: Hook }) => void) {
   const hook: Hook = (component, props, callback) => {
-    const result = component(props);
-    const { stop } = result;
+    const result = component(props) ?? {};
+    const { stop, onActive } = result;
     let disposeCallback: (() => void) | void;
-    if (callback) {
+    if (!onActive) {
       disposeCallback = callback?.(result);
+    } else {
+      onActive(() => {
+        disposeCallback = callback?.(result);
+      });
     }
     return {
       ...result,
@@ -24,5 +28,5 @@ export function workspace(callback: (props: { hook: Hook }) => void) {
       },
     };
   };
-  callback({ hook });
+  return callback({ hook });
 }

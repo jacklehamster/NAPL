@@ -1,31 +1,145 @@
-import { registry } from "napl";
+import { MessageType, registry } from "napl";
 import { signalWorkerUrl } from "../common/signalWorker";
 
 function setupWorkerApp() {
   return registry
     .withContext({
       signalWorkerUrl,
-      programWorkerUrl: new URL("./worker/app.worker.js", import.meta.url),
+      programWorkerUrl: new URL("../app.worker.js", import.meta.url),
     })
     .configureWorkspace({
       workspaces: [
         {
           configs: [
             [
-              "WorkerComponent",
+              "ContextComponent",
+              {
+                workerConfig: {
+                  config: {
+                    workspaces: [
+                      {
+                        configs: [
+                          ["Serializers"],
+                          [
+                            "SharedArrayBufferListener",
+                            { bytesToMessage: "~" },
+                            [
+                              [
+                                "WorkerMessageListener",
+                                {},
+                                [
+                                  [
+                                    "HookListener",
+                                    {
+                                      onListener: "~addWorkerMessageListener",
+                                      listener: "~handleMessage",
+                                    },
+                                  ],
+                                ],
+                              ],
+                            ],
+                          ],
+                          [
+                            "PingBackComponent",
+                            { onMessage: "~", sendMessage: "~" },
+                          ],
+                          [
+                            "RoomComponent",
+                            { sendMessage: "~" },
+                            [
+                              [
+                                "EnterRoomComponent",
+                                {
+                                  room: {
+                                    room: "worker-test-room",
+                                    host: "hello.dobuki.net",
+                                  },
+                                  enterRoom: "~",
+                                  exitRoom: "~",
+                                },
+                                [
+                                  [
+                                    "OnMessageComponent",
+                                    {
+                                      type: MessageType.INIT,
+                                      onMessage: "~",
+                                      execute: "~",
+                                    },
+                                  ],
+                                ],
+                              ],
+                            ],
+                          ],
+                          [
+                            "WorkerCanvas",
+                            {},
+                            [
+                              [
+                                "WorkerMessageListener",
+                                {},
+                                [
+                                  [
+                                    "HookListener",
+                                    {
+                                      onListener: "~addWorkerMessageListener",
+                                      listener: "~handleMessage",
+                                    },
+                                  ],
+                                ],
+                              ],
+                            ],
+                          ],
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+            [
+              "WorkerLoader",
               { programWorkerUrl: "~" },
               [
                 [
-                  "PeerComponent",
-                  {
-                    worldId: "worker-test",
-                    signalWorkerUrl: "~",
-                    sendToWorker: "~",
-                    onWorkerMessage: "~",
-                  },
+                  "PendingActivation",
+                  {},
+                  [
+                    [
+                      "WorkerSabCommunicator",
+                      { worker: "~" },
+                      [
+                        [
+                          "PeerComponent",
+                          {
+                            worldId: "worker-test",
+                            signalWorkerUrl: "~",
+                            sendToWorker: "~",
+                            onWorkerMessage: "~",
+                          },
+                        ],
+                        ["GraphicsComponent", { worker: "~" }],
+                        [
+                          "PingComponent",
+                          { sendToWorker: "~", onWorkerMessage: "~" },
+                        ],
+                      ],
+                    ],
+                  ],
                 ],
-                ["GraphicsComponent", { worker: "~" }],
-                ["PingComponent", { sendToWorker: "~", onWorkerMessage: "~" }],
+                [
+                  "WorkerPostMessageComponent",
+                  { worker: "~" },
+                  [
+                    [
+                      "ActComponent",
+                      {
+                        action: "~postMessage",
+                        param: "~workerConfig",
+                        onReturn: "~activate",
+                      },
+                    ],
+                  ],
+                ],
               ],
             ],
           ],
