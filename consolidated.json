@@ -4,23 +4,23 @@
   },
   "/example/dir-json.json": {
     "config.json": {
-      "createdAt": 1770531631593.7698
+      "createdAt": 1774366005567.0107
     },
-    "md5": "c9cc70bf30944d808bdd48579b232f43",
+    "md5": "bc37411925060d510ebe6fb586ae2a40",
     "package.json": {
-      "createdAt": 1770531631594.7698
+      "createdAt": 1774366005567.0605
     },
     "test-room/config.json": {
-      "createdAt": 1770531631594.7698
+      "createdAt": 1774366005567.7986
     },
     "tsconfig.json": {
-      "createdAt": 1770531631594.7698
+      "createdAt": 1774366005567.923
     },
     "worker-room/config.json": {
-      "createdAt": 1770531631594.7698
+      "createdAt": 1774366005567.923
     },
     "world-room/config.json": {
-      "createdAt": 1770531631594.7698
+      "createdAt": 1774366005567.923
     }
   },
   "/example/dir.json": {
@@ -45,12 +45,15 @@
     "index.ts": {
       "createdAt": 1768904719578.269
     },
-    "md5": "a40c89e6a339ce2cd8930ec3e5acee9f",
+    "md5": "63f8858b88b3e297e8966ce01130e2d7",
     "package.json": {
       "createdAt": 1768904719578.269
     },
     "src/common/signalWorker.ts": {
       "createdAt": 1774098957888.2117
+    },
+    "src/common/workspaceConfig.ts": {
+      "createdAt": 1774366005567.6155
     },
     "src/index.ts": {
       "createdAt": 1768904719578.269
@@ -60,12 +63,6 @@
     },
     "src/test-room/index.ts": {
       "createdAt": 1768904719578.269
-    },
-    "src/worker-room/index.ts": {
-      "createdAt": 1768904719579.269
-    },
-    "src/world-room/index.ts": {
-      "createdAt": 1770531631594.7698
     },
     "test-room/config.json": {
       "createdAt": 1769356298499.2063
@@ -79,13 +76,7 @@
     "worker-room/config.json": {
       "createdAt": 1769356298499.2063
     },
-    "worker-room/index.html": {
-      "createdAt": 1768904719579.269
-    },
     "world-room/config.json": {
-      "createdAt": 1770531631594.7698
-    },
-    "world-room/index.html": {
       "createdAt": 1770531631594.7698
     },
     "world-room/styles.css": {
@@ -133,9 +124,9 @@
   },
   "/example/test-room/dir-json.json": {
     "config.json": {
-      "createdAt": 1770531631594.7698
+      "createdAt": 1774366005567.7986
     },
-    "md5": "8ace0a750e5841ec41375f6c92d72685"
+    "md5": "c4ff4862072a863fc175deadfe482162"
   },
   "/example/tsconfig.json": {
     "compilerOptions": {
@@ -169,22 +160,435 @@
     ]
   },
   "/example/worker-room/config.json": {
-    "name": "Drawing board"
+    "name": "Drawing board",
+    "workspaces": [
+      {
+        "configs": [
+          [
+            "ContextComponent",
+            {
+              "workerConfig": {
+                "config": {
+                  "workspaces": [
+                    {
+                      "configs": [
+                        [
+                          "Serializers"
+                        ],
+                        [
+                          "SharedArrayBufferListener",
+                          {
+                            "bytesToMessage": "~"
+                          },
+                          [
+                            [
+                              "WorkerMessageListener",
+                              {},
+                              [
+                                [
+                                  "HookListener",
+                                  {
+                                    "onListener": "~addWorkerMessageListener",
+                                    "listener": "~handleMessage"
+                                  }
+                                ]
+                              ]
+                            ]
+                          ]
+                        ],
+                        [
+                          "PingBackComponent",
+                          {
+                            "onMessage": "~",
+                            "sendMessage": "~"
+                          }
+                        ],
+                        [
+                          "RoomComponent",
+                          {
+                            "sendMessage": "~"
+                          },
+                          [
+                            [
+                              "EnterRoomComponent",
+                              {
+                                "room": {
+                                  "room": "worker-test-room",
+                                  "host": "hello.dobuki.net"
+                                },
+                                "enterRoom": "~",
+                                "exitRoom": "~"
+                              },
+                              [
+                                [
+                                  "OnMessageComponent",
+                                  {
+                                    "type": 0,
+                                    "onMessage": "~",
+                                    "execute": "~"
+                                  }
+                                ]
+                              ]
+                            ]
+                          ]
+                        ],
+                        [
+                          "WorkerCanvas",
+                          {},
+                          [
+                            [
+                              "WorkerMessageListener",
+                              {},
+                              [
+                                [
+                                  "HookListener",
+                                  {
+                                    "onListener": "~addWorkerMessageListener",
+                                    "listener": "~handleMessage"
+                                  }
+                                ]
+                              ]
+                            ],
+                            [
+                              "LineDrawComponent",
+                              {
+                                "onMessage": "~",
+                                "getCanvas": "~"
+                              }
+                            ],
+                            [
+                              "CursorComponent",
+                              {},
+                              [
+                                [
+                                  "OnMessageComponent",
+                                  {
+                                    "type": 9,
+                                    "onMessage": "~",
+                                    "execute": "~reset"
+                                  }
+                                ],
+                                [
+                                  "MoveCursor",
+                                  {
+                                    "getCanvas": "~",
+                                    "cursor": "~"
+                                  },
+                                  [
+                                    [
+                                      "OnMessageComponent",
+                                      {
+                                        "type": 5,
+                                        "onMessage": "~",
+                                        "execute": "~"
+                                      }
+                                    ],
+                                    [
+                                      "LineDrawer",
+                                      {
+                                        "getCanvas": "~"
+                                      },
+                                      [
+                                        [
+                                          "HookListener",
+                                          {
+                                            "onListener": "~onMoveCursor",
+                                            "listener": "~draw"
+                                          }
+                                        ]
+                                      ]
+                                    ],
+                                    [
+                                      "PeerCommunicator",
+                                      {
+                                        "sendMessage": "~",
+                                        "messageToBytes": "~"
+                                      }
+                                    ],
+                                    [
+                                      "CrossMessageSender",
+                                      {
+                                        "type": 11,
+                                        "sendMessageAccross": "~"
+                                      },
+                                      [
+                                        [
+                                          "HookListener",
+                                          {
+                                            "onListener": "~onMoveCursor",
+                                            "listener": "~send"
+                                          }
+                                        ]
+                                      ]
+                                    ]
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          [
+            "WorkerLoader",
+            {
+              "programWorkerUrl": "~"
+            },
+            [
+              [
+                "PendingActivation",
+                {},
+                [
+                  [
+                    "WorkerSabCommunicator",
+                    {
+                      "worker": "~"
+                    },
+                    [
+                      [
+                        "PeerComponent",
+                        {
+                          "worldId": "worker-test",
+                          "signalWorkerUrl": "~",
+                          "sendToWorker": "~",
+                          "onWorkerMessage": "~"
+                        }
+                      ],
+                      [
+                        "GraphicsComponent",
+                        {
+                          "worker": "~",
+                          "root": "~"
+                        }
+                      ],
+                      [
+                        "PointerLockComponent",
+                        {
+                          "sendToWorker": "~"
+                        },
+                        [
+                          [
+                            "ActivateOnClick",
+                            {
+                              "element": "~root",
+                              "listener": "~enterPointerLock"
+                            }
+                          ]
+                        ]
+                      ],
+                      [
+                        "PingComponent",
+                        {
+                          "sendToWorker": "~",
+                          "onWorkerMessage": "~"
+                        }
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "WorkerPostMessageComponent",
+                {
+                  "worker": "~"
+                },
+                [
+                  [
+                    "ActComponent",
+                    {
+                      "action": "~postMessage",
+                      "param": "~workerConfig",
+                      "onReturn": "~activate"
+                    }
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      }
+    ]
   },
   "/example/worker-room/dir-json.json": {
     "config.json": {
-      "createdAt": 1770531631594.7698
+      "createdAt": 1774366005567.923
     },
-    "md5": "8ace0a750e5841ec41375f6c92d72685"
+    "md5": "49c5f3d6864a35a84445529df332b508"
   },
   "/example/world-room/config.json": {
-    "name": "World"
+    "name": "World",
+    "workspaces": [
+      {
+        "configs": [
+          [
+            "ContextComponent",
+            {
+              "workerConfig": {
+                "config": {
+                  "workspaces": [
+                    {
+                      "configs": [
+                        [
+                          "Serializers"
+                        ],
+                        [
+                          "SharedArrayBufferListener",
+                          {
+                            "bytesToMessage": "~"
+                          },
+                          [
+                            [
+                              "WorkerMessageListener",
+                              {},
+                              [
+                                [
+                                  "HookListener",
+                                  {
+                                    "onListener": "~addWorkerMessageListener",
+                                    "listener": "~handleMessage"
+                                  }
+                                ]
+                              ]
+                            ]
+                          ]
+                        ],
+                        [
+                          "PingBackComponent",
+                          {
+                            "onMessage": "~",
+                            "sendMessage": "~"
+                          }
+                        ],
+                        [
+                          "RoomComponent",
+                          {
+                            "sendMessage": "~"
+                          },
+                          [
+                            [
+                              "EnterRoomComponent",
+                              {
+                                "room": {
+                                  "room": "worker-test-room",
+                                  "host": "hello.dobuki.net"
+                                },
+                                "enterRoom": "~",
+                                "exitRoom": "~"
+                              },
+                              [
+                                [
+                                  "OnMessageComponent",
+                                  {
+                                    "type": 0,
+                                    "onMessage": "~",
+                                    "execute": "~"
+                                  }
+                                ]
+                              ]
+                            ]
+                          ]
+                        ],
+                        [
+                          "WorkerCanvas",
+                          {},
+                          [
+                            [
+                              "WorkerMessageListener",
+                              {},
+                              [
+                                [
+                                  "HookListener",
+                                  {
+                                    "onListener": "~addWorkerMessageListener",
+                                    "listener": "~handleMessage"
+                                  }
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          [
+            "WorkerLoader",
+            {
+              "programWorkerUrl": "~"
+            },
+            [
+              [
+                "PendingActivation",
+                {},
+                [
+                  [
+                    "WorkerSabCommunicator",
+                    {
+                      "worker": "~"
+                    },
+                    [
+                      [
+                        "PeerComponent",
+                        {
+                          "worldId": "worker-test",
+                          "signalWorkerUrl": "~",
+                          "sendToWorker": "~",
+                          "onWorkerMessage": "~"
+                        }
+                      ],
+                      [
+                        "GraphicsComponent",
+                        {
+                          "worker": "~",
+                          "root": "~"
+                        }
+                      ],
+                      [
+                        "PingComponent",
+                        {
+                          "sendToWorker": "~",
+                          "onWorkerMessage": "~"
+                        }
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "WorkerPostMessageComponent",
+                {
+                  "worker": "~"
+                },
+                [
+                  [
+                    "ActComponent",
+                    {
+                      "action": "~postMessage",
+                      "param": "~workerConfig",
+                      "onReturn": "~activate"
+                    }
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      }
+    ]
   },
   "/example/world-room/dir-json.json": {
     "config.json": {
-      "createdAt": 1770531631594.7698
+      "createdAt": 1774366005567.923
     },
-    "md5": "8ace0a750e5841ec41375f6c92d72685"
+    "md5": "49c5f3d6864a35a84445529df332b508"
   },
   "/package.json": {
     "name": "napl",

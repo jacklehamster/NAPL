@@ -20,12 +20,15 @@
   "index.ts": {
     "createdAt": 1768904719578.269
   },
-  "md5": "a40c89e6a339ce2cd8930ec3e5acee9f",
+  "md5": "63f8858b88b3e297e8966ce01130e2d7",
   "package.json": {
     "createdAt": 1768904719578.269
   },
   "src/common/signalWorker.ts": {
     "createdAt": 1774098957888.2117
+  },
+  "src/common/workspaceConfig.ts": {
+    "createdAt": 1774366005567.6155
   },
   "src/index.ts": {
     "createdAt": 1768904719578.269
@@ -35,12 +38,6 @@
   },
   "src/test-room/index.ts": {
     "createdAt": 1768904719578.269
-  },
-  "src/worker-room/index.ts": {
-    "createdAt": 1768904719579.269
-  },
-  "src/world-room/index.ts": {
-    "createdAt": 1770531631594.7698
   },
   "test-room/config.json": {
     "createdAt": 1769356298499.2063
@@ -54,13 +51,7 @@
   "worker-room/config.json": {
     "createdAt": 1769356298499.2063
   },
-  "worker-room/index.html": {
-    "createdAt": 1768904719579.269
-  },
   "world-room/config.json": {
-    "createdAt": 1770531631594.7698
-  },
-  "world-room/index.html": {
     "createdAt": 1770531631594.7698
   },
   "world-room/styles.css": {
