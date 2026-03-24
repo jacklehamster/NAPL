@@ -1,9 +1,19 @@
-export function ActivateOnClick({ listener }: { listener: () => void }) {
-  document.addEventListener("mousedown", listener);
+export function ActivateOnClick({
+  listener,
+  element,
+}: {
+  listener: (element?: HTMLElement) => void;
+  element?: HTMLElement;
+}) {
+  const elem = element ?? document;
+  const callback = () => {
+    listener(element);
+  };
+  elem.addEventListener("click", callback);
 
   return {
-    close: () => {
-      document.removeEventListener("mousedown", listener);
+    stop: () => {
+      elem.removeEventListener("click", callback);
     },
   };
 }

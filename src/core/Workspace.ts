@@ -9,6 +9,7 @@ export type Hook = <C extends Component<any, any>>(
 ) => ReturnType<C> & { unhook: () => void };
 
 export function workspace(callback: (props: { hook: Hook }) => void) {
+  const cleanup = new Set<() => void>();
   const hook: Hook = (component, props, callback) => {
     const result = component(props) ?? {};
     const { stop, onActive } = result;
@@ -20,13 +21,15 @@ export function workspace(callback: (props: { hook: Hook }) => void) {
         disposeCallback = callback?.(result);
       });
     }
-    return {
-      ...result,
-      unhook: () => {
-        disposeCallback?.();
-        stop?.();
-      },
-    };
+    cleanup.add(() => {
+      disposeCallback?.();
+      stop?.();
+    });
+    return result;
   };
-  return callback({ hook });
+  callback({ hook });
+  return () => {
+    cleanup.forEach((clean) => clean());
+    cleanup.clear();
+  };
 }

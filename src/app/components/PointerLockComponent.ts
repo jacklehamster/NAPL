@@ -14,10 +14,10 @@ export function PointerLockComponent({
     sendMessage: sendToWorker,
     onPointerLock: (locked: boolean) => {
       if (locked) {
-        const uncaptureouse = captureMouse(sendToWorker);
+        const uncapturemouse = captureMouse(sendToWorker);
         const uncapturekeyboard = captureKeyboard(sendToWorker);
         return () => {
-          uncaptureouse();
+          uncapturemouse();
           uncapturekeyboard();
         };
       }

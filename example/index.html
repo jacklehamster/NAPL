@@ -24,6 +24,7 @@
         display: flex;
         justify-content: center;
         flex: 0 0 auto; /* Tabs take only as much space as they need */
+        background-color: lightcyan;
       }
       .container {
         flex: 1 1 auto; /* Content takes the remaining space */
@@ -38,7 +39,8 @@
     </style>
   </head>
   <body>
-    <script>
+    <script type="module">
+      import { loadWorkspace } from "../dist/index.js";
       document.addEventListener("DOMContentLoaded", async () => {
         const configJson = await fetch("config.json").then((res) => res.json());
         const searchParams = new URLSearchParams(location.search);
@@ -47,10 +49,12 @@
         const hideTab = searchParams.get("hide-tab") ?? configJson["hide-tab"];
         const room = searchParams.get("room") ?? configJson.room;
 
+        let dispose;
+
         const tabsContainer = document.querySelector(".tabs");
         const container = document.querySelector(".container");
         const dir = await fetch("dir.json").then((res) => res.json());
-        const regex = /(.*)\/index.html/;
+        const regex = /(.*)\/config.json/;
         const sites = Object.keys(dir)
           .map((file) => {
             const [, subdir] = file.match(regex) ?? [];
@@ -71,17 +75,26 @@
               });
           }
 
-          button.addEventListener("click", () => {
+          button.addEventListener("click", async () => {
+            dispose?.();
+            dispose = undefined;
             container.textContent = "";
             if (!document.querySelector(`#${site}-content`)) {
-              const frameRoom = room ?? site;
               const div = container.appendChild(document.createElement("div"));
               div.id = `${site}-content`;
               div.classList.add("content");
-              const topF = div.appendChild(document.createElement("iframe"));
-              topF.classList.add("frame");
-              topF.setAttribute("src", `${site}/?room=${frameRoom}`);
-              topF.setAttribute("allow", "autoplay");
+              const config = await fetch(`${site}/config.json`)
+                .then((res) => res.json())
+                .catch((e) => console.warn(e));
+              if (config?.workspaces) {
+                dispose = loadWorkspace(div, config);
+              } else {
+                const frameRoom = room ?? site;
+                const topF = div.appendChild(document.createElement("iframe"));
+                topF.classList.add("frame");
+                topF.setAttribute("src", `${site}/?room=${frameRoom}`);
+                topF.setAttribute("allow", "autoplay");
+              }
             }
 
             const contentDivs = document.querySelectorAll(".content");

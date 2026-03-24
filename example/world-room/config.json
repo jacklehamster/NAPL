@@ -1,3 +1,164 @@
 {
-    "name": "World"
+    "name": "World",
+    "workspaces": [
+        {
+            "configs": [
+                [
+                    "ContextComponent",
+                    {
+                        "workerConfig": {
+                            "config": {
+                                "workspaces": [
+                                    {
+                                        "configs": [
+                                            [
+                                                "Serializers"
+                                            ],
+                                            [
+                                                "SharedArrayBufferListener",
+                                                {
+                                                    "bytesToMessage": "~"
+                                                },
+                                                [
+                                                    [
+                                                        "WorkerMessageListener",
+                                                        {},
+                                                        [
+                                                            [
+                                                                "HookListener",
+                                                                {
+                                                                    "onListener": "~addWorkerMessageListener",
+                                                                    "listener": "~handleMessage"
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ]
+                                                ]
+                                            ],
+                                            [
+                                                "PingBackComponent",
+                                                {
+                                                    "onMessage": "~",
+                                                    "sendMessage": "~"
+                                                }
+                                            ],
+                                            [
+                                                "RoomComponent",
+                                                {
+                                                    "sendMessage": "~"
+                                                },
+                                                [
+                                                    [
+                                                        "EnterRoomComponent",
+                                                        {
+                                                            "room": {
+                                                                "room": "worker-test-room",
+                                                                "host": "hello.dobuki.net"
+                                                            },
+                                                            "enterRoom": "~",
+                                                            "exitRoom": "~"
+                                                        },
+                                                        [
+                                                            [
+                                                                "OnMessageComponent",
+                                                                {
+                                                                    "type": 0,
+                                                                    "onMessage": "~",
+                                                                    "execute": "~"
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ]
+                                                ]
+                                            ],
+                                            [
+                                                "WorkerCanvas",
+                                                {},
+                                                [
+                                                    [
+                                                        "WorkerMessageListener",
+                                                        {},
+                                                        [
+                                                            [
+                                                                "HookListener",
+                                                                {
+                                                                    "onListener": "~addWorkerMessageListener",
+                                                                    "listener": "~handleMessage"
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                [
+                    "WorkerLoader",
+                    {
+                        "programWorkerUrl": "~"
+                    },
+                    [
+                        [
+                            "PendingActivation",
+                            {},
+                            [
+                                [
+                                    "WorkerSabCommunicator",
+                                    {
+                                        "worker": "~"
+                                    },
+                                    [
+                                        [
+                                            "PeerComponent",
+                                            {
+                                                "worldId": "worker-test",
+                                                "signalWorkerUrl": "~",
+                                                "sendToWorker": "~",
+                                                "onWorkerMessage": "~"
+                                            }
+                                        ],
+                                        [
+                                            "GraphicsComponent",
+                                            {
+                                                "worker": "~",
+                                                "root": "~"
+                                            }
+                                        ],
+                                        [
+                                            "PingComponent",
+                                            {
+                                                "sendToWorker": "~",
+                                                "onWorkerMessage": "~"
+                                            }
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        [
+                            "WorkerPostMessageComponent",
+                            {
+                                "worker": "~"
+                            },
+                            [
+                                [
+                                    "ActComponent",
+                                    {
+                                        "action": "~postMessage",
+                                        "param": "~workerConfig",
+                                        "onReturn": "~activate"
+                                    }
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        }
+    ]
 }

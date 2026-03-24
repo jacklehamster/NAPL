@@ -3,16 +3,16 @@ export function hookPointerLock(onHook: () => () => void) {
   let exitedPointerLockTime = -TIME_DELAY;
   let timeout: ReturnType<typeof setTimeout> | undefined;
 
-  function ensureFocus() {
+  function ensureFocus(elem: HTMLElement) {
     if (!document.activeElement) {
-      document.body.focus();
+      elem.focus();
       exitedPointerLockTime = performance.now();
       return true;
     }
     return false;
   }
 
-  async function waitForPointerLockExit() {
+  async function waitForPointerLockExit(elem: HTMLElement) {
     const timeSinceExited = performance.now() - exitedPointerLockTime;
     clearTimeout(timeout);
     if (timeSinceExited < TIME_DELAY) {
@@ -20,14 +20,14 @@ export function hookPointerLock(onHook: () => () => void) {
       function detectExit() {
         hasExited = true;
       }
-      document.body.addEventListener("mouseleave", detectExit, { once: true });
+      elem.addEventListener("mouseleave", detectExit, { once: true });
 
       await new Promise<void>(
         (resolve) =>
           (timeout = setTimeout(resolve, TIME_DELAY - timeSinceExited)),
       );
       timeout = undefined;
-      document.body.removeEventListener("mouseleave", detectExit);
+      elem.removeEventListener("mouseleave", detectExit);
       if (hasExited) {
         return false;
       }
@@ -35,23 +35,24 @@ export function hookPointerLock(onHook: () => () => void) {
     return true;
   }
 
-  async function enterPointerLock() {
-    if (ensureFocus()) {
+  async function enterPointerLock(passedElem?: HTMLElement) {
+    const elem = passedElem ?? document.body;
+    if (ensureFocus(elem)) {
       return;
     }
     if (timeout) return;
 
-    document.body.style.cursor = "none";
+    elem.style.cursor = "none";
     //  Hook
     const unhook = onHook();
     const restore = () => {
       unhook();
-      document.body.style.cursor = "auto";
+      elem.style.cursor = "auto";
       exitedPointerLockTime = performance.now();
     };
 
     //  Wait until pointer lock is available
-    const shouldContinue = await waitForPointerLockExit();
+    const shouldContinue = await waitForPointerLockExit(elem);
     if (!shouldContinue) {
       restore();
       return;
@@ -59,7 +60,7 @@ export function hookPointerLock(onHook: () => () => void) {
 
     //  Enter pointer lock
     try {
-      await document.body.requestPointerLock();
+      await elem.requestPointerLock();
     } catch (e) {
       console.warn(e);
       restore();
@@ -71,7 +72,7 @@ export function hookPointerLock(onHook: () => () => void) {
       document.removeEventListener("pointerlockchange", onPointerLockChange);
     }
     document.addEventListener("pointerlockchange", onPointerLockChange);
-    document.body.style.cursor = "auto";
+    elem.style.cursor = "auto";
   }
 
   return { enterPointerLock };

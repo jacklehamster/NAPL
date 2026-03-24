@@ -20,7 +20,7 @@ export type WorkspaceConfig =
   | [string];
 
 export class Registry {
-  private context: Record<string, any> = {};
+  private readonly context: Record<string, any> = {};
   constructor(private componentMap: Record<string, Component<any, any>>) {}
 
   private injectDependencies(
@@ -80,23 +80,29 @@ export class Registry {
     );
   }
 
-  configureWorkspace(config: { workspaces: { configs: WorkspaceConfig[] }[] }) {
+  configureWorkspace(
+    config: {
+      activeWorkspaceIndex?: number;
+      workspaces: { configs: WorkspaceConfig[] }[];
+    },
+    root?: HTMLElement,
+  ) {
     console.log(
       "Configure workspace",
       JSON.parse(JSON.stringify(config, null, " ")),
     );
     const workspaceHook = ({ hook }: { hook: Hook }) => {
       const context = { ...this.context };
-      config.workspaces?.forEach(({ configs }) =>
-        configs?.forEach((config) => {
-          const result = this.configureHook(config, hook, context);
-          Object.entries(result).forEach(([key, value]) => {
-            context[key] = value;
-          });
-        }),
-      );
+      const { configs } =
+        config.workspaces[config.activeWorkspaceIndex ?? 0] ?? {};
+      configs?.forEach((config) => {
+        const result = this.configureHook(config, hook, { ...context, root });
+        Object.entries(result).forEach(([key, value]) => {
+          context[key] = value;
+        });
+      });
     };
-    workspace(workspaceHook);
+    return workspace(workspaceHook);
   }
 
   withContext(context: Record<string, any>) {

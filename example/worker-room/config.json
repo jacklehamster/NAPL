@@ -1,3 +1,255 @@
 {
-    "name": "Drawing board"
+    "name": "Drawing board",
+    "workspaces": [
+        {
+            "configs": [
+                [
+                    "ContextComponent",
+                    {
+                        "workerConfig": {
+                            "config": {
+                                "workspaces": [
+                                    {
+                                        "configs": [
+                                            [
+                                                "Serializers"
+                                            ],
+                                            [
+                                                "SharedArrayBufferListener",
+                                                {
+                                                    "bytesToMessage": "~"
+                                                },
+                                                [
+                                                    [
+                                                        "WorkerMessageListener",
+                                                        {},
+                                                        [
+                                                            [
+                                                                "HookListener",
+                                                                {
+                                                                    "onListener": "~addWorkerMessageListener",
+                                                                    "listener": "~handleMessage"
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ]
+                                                ]
+                                            ],
+                                            [
+                                                "PingBackComponent",
+                                                {
+                                                    "onMessage": "~",
+                                                    "sendMessage": "~"
+                                                }
+                                            ],
+                                            [
+                                                "RoomComponent",
+                                                {
+                                                    "sendMessage": "~"
+                                                },
+                                                [
+                                                    [
+                                                        "EnterRoomComponent",
+                                                        {
+                                                            "room": {
+                                                                "room": "worker-test-room",
+                                                                "host": "hello.dobuki.net"
+                                                            },
+                                                            "enterRoom": "~",
+                                                            "exitRoom": "~"
+                                                        },
+                                                        [
+                                                            [
+                                                                "OnMessageComponent",
+                                                                {
+                                                                    "type": 0,
+                                                                    "onMessage": "~",
+                                                                    "execute": "~"
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ]
+                                                ]
+                                            ],
+                                            [
+                                                "WorkerCanvas",
+                                                {},
+                                                [
+                                                    [
+                                                        "WorkerMessageListener",
+                                                        {},
+                                                        [
+                                                            [
+                                                                "HookListener",
+                                                                {
+                                                                    "onListener": "~addWorkerMessageListener",
+                                                                    "listener": "~handleMessage"
+                                                                }
+                                                            ]
+                                                        ]
+                                                    ],
+                                                    [
+                                                        "LineDrawComponent",
+                                                        {
+                                                            "onMessage": "~",
+                                                            "getCanvas": "~"
+                                                        }
+                                                    ],
+                                                    [
+                                                        "CursorComponent",
+                                                        {},
+                                                        [
+                                                            [
+                                                                "OnMessageComponent",
+                                                                {
+                                                                    "type": 9,
+                                                                    "onMessage": "~",
+                                                                    "execute": "~reset"
+                                                                }
+                                                            ],
+                                                            [
+                                                                "MoveCursor",
+                                                                {
+                                                                    "getCanvas": "~",
+                                                                    "cursor": "~"
+                                                                },
+                                                                [
+                                                                    [
+                                                                        "OnMessageComponent",
+                                                                        {
+                                                                            "type": 5,
+                                                                            "onMessage": "~",
+                                                                            "execute": "~"
+                                                                        }
+                                                                    ],
+                                                                    [
+                                                                        "LineDrawer",
+                                                                        {
+                                                                            "getCanvas": "~"
+                                                                        },
+                                                                        [
+                                                                            [
+                                                                                "HookListener",
+                                                                                {
+                                                                                    "onListener": "~onMoveCursor",
+                                                                                    "listener": "~draw"
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                                                    ],
+                                                                    [
+                                                                        "PeerCommunicator",
+                                                                        {
+                                                                            "sendMessage": "~",
+                                                                            "messageToBytes": "~"
+                                                                        }
+                                                                    ],
+                                                                    [
+                                                                        "CrossMessageSender",
+                                                                        {
+                                                                            "type": 11,
+                                                                            "sendMessageAccross": "~"
+                                                                        },
+                                                                        [
+                                                                            [
+                                                                                "HookListener",
+                                                                                {
+                                                                                    "onListener": "~onMoveCursor",
+                                                                                    "listener": "~send"
+                                                                                }
+                                                                            ]
+                                                                        ]
+                                                                    ]
+                                                                ]
+                                                            ]
+                                                        ]
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                [
+                    "WorkerLoader",
+                    {
+                        "programWorkerUrl": "~"
+                    },
+                    [
+                        [
+                            "PendingActivation",
+                            {},
+                            [
+                                [
+                                    "WorkerSabCommunicator",
+                                    {
+                                        "worker": "~"
+                                    },
+                                    [
+                                        [
+                                            "PeerComponent",
+                                            {
+                                                "worldId": "worker-test",
+                                                "signalWorkerUrl": "~",
+                                                "sendToWorker": "~",
+                                                "onWorkerMessage": "~"
+                                            }
+                                        ],
+                                        [
+                                            "GraphicsComponent",
+                                            {
+                                                "worker": "~",
+                                                "root": "~"
+                                            }
+                                        ],
+                                        [
+                                            "PointerLockComponent",
+                                            {
+                                                "sendToWorker": "~"
+                                            },
+                                            [
+                                                [
+                                                    "ActivateOnClick",
+                                                    {
+                                                        "element": "~root",
+                                                        "listener": "~enterPointerLock"
+                                                    }
+                                                ]
+                                            ]
+                                        ],
+                                        [
+                                            "PingComponent",
+                                            {
+                                                "sendToWorker": "~",
+                                                "onWorkerMessage": "~"
+                                            }
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        [
+                            "WorkerPostMessageComponent",
+                            {
+                                "worker": "~"
+                            },
+                            [
+                                [
+                                    "ActComponent",
+                                    {
+                                        "action": "~postMessage",
+                                        "param": "~workerConfig",
+                                        "onReturn": "~activate"
+                                    }
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        }
+    ]
 }

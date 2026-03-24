@@ -1,6 +1,6 @@
-export function setupGraphics(worker: Worker) {
-  const canvas = document.createElement("canvas");
-  document.body.appendChild(canvas);
+export function setupGraphics(worker: Worker, root?: HTMLElement) {
+  const container = root ?? document.body;
+  const canvas = container.appendChild(document.createElement("canvas"));
   canvas.style.width = "100%";
   canvas.style.height = "100%";
   const width = canvas.offsetWidth;
@@ -27,7 +27,7 @@ export function setupGraphics(worker: Worker) {
     window.removeEventListener("resize", sendSize);
     observer.unobserve(canvas);
     observer.disconnect();
-    document.body.removeChild(canvas);
+    canvas.parentElement?.removeChild(canvas);
   }
 
   return { unhook };
