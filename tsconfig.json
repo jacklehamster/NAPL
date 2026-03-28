@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "old-shitty-code/src",
+    "rootDir": "src",
     "paths": {
-      "@/*": ["old-shitty-code/src/*"]
+      "@/*": ["./src/*"]
     },
     "lib": ["ESNext"],
     "module": "esnext",
@@ -21,6 +21,6 @@
     "allowJs": true,
     "types": ["bun-types"]
   },
-  "include": ["old-shitty-code/src/**/*.ts", "old-shitty-code/src/**/*.tsx"],
-  "exclude": ["old-shitty-code/src/**/*.test.ts", "old-shitty-code/src/**/*.test.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }
