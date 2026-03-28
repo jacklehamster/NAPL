@@ -1,5 +1,5 @@
-import { CommInterface } from "../../napl/clients/CommInterface";
-import { Context } from "../../napl/context/Context";
+import { CommInterface } from "./CommInterface";
+import { Context } from "../context/Context";
 import { Processor } from "../core/Processor";
 import { setData } from "../cycles/data-update/data-manager";
 import { Data } from "../../common/Data";

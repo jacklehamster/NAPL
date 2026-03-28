@@ -1,4 +1,4 @@
-import { Context } from "../../napl/context/Context";
+import { Context } from "../context/Context";
 import { Observer } from "./Observer";
 import { UpdatePath } from "../cycles/data-update/data-update";
 

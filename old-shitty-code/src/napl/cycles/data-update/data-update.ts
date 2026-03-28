@@ -1,6 +1,6 @@
 import { Update } from "../../types/Update";
 import { Data } from "../../../common/Data";
-import { Context } from "../../../napl/context/Context";
+import { Context } from "../../context/Context";
 
 export function filterArray<T>(array: T[], cond: (v: T) => boolean) {
   let size = 0;
