@@ -45,7 +45,7 @@
     "index.ts": {
       "createdAt": 1768904719578.269
     },
-    "md5": "8a29434f7a188efa3c7d1313359f689f",
+    "md5": "81543312322849bae14c1b4ee83f430f",
     "old-shitty-code/src/common/signalWorker.ts": {
       "createdAt": 1774676553955.223
     },
@@ -78,6 +78,9 @@
     },
     "package.json": {
       "createdAt": 1768904719578.269
+    },
+    "src/index.ts": {
+      "createdAt": 1774676862581.276
     },
     "tsconfig.json": {
       "createdAt": 1768904719579.269
@@ -669,10 +672,10 @@
   "/tsconfig.json": {
     "compilerOptions": {
       "outDir": "./dist",
-      "rootDir": "old-shitty-code/src",
+      "rootDir": "src",
       "paths": {
         "@/*": [
-          "old-shitty-code/src/*"
+          "./src/*"
         ]
       },
       "lib": [
@@ -696,12 +699,12 @@
       ]
     },
     "include": [
-      "old-shitty-code/src/**/*.ts",
-      "old-shitty-code/src/**/*.tsx"
+      "src/**/*.ts",
+      "src/**/*.tsx"
     ],
     "exclude": [
-      "old-shitty-code/src/**/*.test.ts",
-      "old-shitty-code/src/**/*.test.tsx"
+      "src/**/*.test.ts",
+      "src/**/*.test.tsx"
     ]
   },
   "/tsconfig.types.json": {
