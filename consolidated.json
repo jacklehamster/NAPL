@@ -6,20 +6,20 @@
     "config.json": {
       "createdAt": 1774366005567.0107
     },
-    "md5": "bc37411925060d510ebe6fb586ae2a40",
+    "md5": "fae511ae317b3adc31cf71389d0c7e87",
+    "old-shitty-code/test-room/config.json": {
+      "createdAt": 1774676553955.4268
+    },
+    "old-shitty-code/worker-room/config.json": {
+      "createdAt": 1774676553955.5754
+    },
+    "old-shitty-code/world-room/config.json": {
+      "createdAt": 1774676553955.727
+    },
     "package.json": {
       "createdAt": 1774366005567.0605
     },
-    "test-room/config.json": {
-      "createdAt": 1774366005567.7986
-    },
     "tsconfig.json": {
-      "createdAt": 1774366005567.923
-    },
-    "worker-room/config.json": {
-      "createdAt": 1774366005567.923
-    },
-    "world-room/config.json": {
       "createdAt": 1774366005567.923
     }
   },
@@ -45,121 +45,66 @@
     "index.ts": {
       "createdAt": 1768904719578.269
     },
-    "md5": "63f8858b88b3e297e8966ce01130e2d7",
+    "md5": "8a29434f7a188efa3c7d1313359f689f",
+    "old-shitty-code/src/common/signalWorker.ts": {
+      "createdAt": 1774676553955.223
+    },
+    "old-shitty-code/src/common/workspaceConfig.ts": {
+      "createdAt": 1774676553955.223
+    },
+    "old-shitty-code/src/index.ts": {
+      "createdAt": 1774676553955.3027
+    },
+    "old-shitty-code/src/test-room/create-app.ts": {
+      "createdAt": 1774676553955.3027
+    },
+    "old-shitty-code/src/test-room/index.ts": {
+      "createdAt": 1774676553955.3027
+    },
+    "old-shitty-code/test-room/config.json": {
+      "createdAt": 1774676553955.4268
+    },
+    "old-shitty-code/test-room/index.html": {
+      "createdAt": 1774676553955.5754
+    },
+    "old-shitty-code/worker-room/config.json": {
+      "createdAt": 1774676553955.5754
+    },
+    "old-shitty-code/world-room/config.json": {
+      "createdAt": 1774676553955.727
+    },
+    "old-shitty-code/world-room/styles.css": {
+      "createdAt": 1774676553955.8225
+    },
     "package.json": {
       "createdAt": 1768904719578.269
     },
-    "src/common/signalWorker.ts": {
-      "createdAt": 1774098957888.2117
-    },
-    "src/common/workspaceConfig.ts": {
-      "createdAt": 1774366005567.6155
-    },
-    "src/index.ts": {
-      "createdAt": 1768904719578.269
-    },
-    "src/test-room/create-app.ts": {
-      "createdAt": 1773051904723.2197
-    },
-    "src/test-room/index.ts": {
-      "createdAt": 1768904719578.269
-    },
-    "test-room/config.json": {
-      "createdAt": 1769356298499.2063
-    },
-    "test-room/index.html": {
-      "createdAt": 1768904719579.269
-    },
     "tsconfig.json": {
       "createdAt": 1768904719579.269
+    }
+  },
+  "/example/old-shitty-code/dir-json.json": {
+    "md5": "c4cfcd82ec054717b40caffee7ad3d14",
+    "test-room/config.json": {
+      "createdAt": 1774676553955.4268
     },
     "worker-room/config.json": {
-      "createdAt": 1769356298499.2063
+      "createdAt": 1774676553955.5754
     },
     "world-room/config.json": {
-      "createdAt": 1770531631594.7698
-    },
-    "world-room/styles.css": {
-      "createdAt": 1770531631594.7698
+      "createdAt": 1774676553955.727
     }
   },
-  "/example/package.json": {
-    "name": "example",
-    "module": "src/index.ts",
-    "type": "module",
-    "scripts": {
-      "start": "bun run build && bun --watch index.ts",
-      "start:prod": "bun run build && NODE_ENV=production bun --watch index.ts",
-      "build": "bun i && bun run build-icon && bun run copy-workers && bun run bundler/bundler.ts",
-      "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons",
-      "dev": "bun run build && bun --watch index.ts",
-      "copy-workers": "mv ./dist ./dist-bak && rm -rf ./dist-bak && mkdir -p dist && bun run copy-signal-worker && bun run copy-app-worker",
-      "copy-signal-worker": "cp ../node_modules/@dobuki/hello-worker/dist/signal-room.worker.js* ./dist",
-      "copy-app-worker": "cp ../dist/worker/app.worker.js* ./dist"
-    },
-    "devDependencies": {
-      "@types/express": "^5.0.6",
-      "bun-lightningcss": "^0.2.0",
-      "bun-types": "^1.3.6",
-      "dotenv": "^16.6.1",
-      "express": "^4.22.1",
-      "icon-gen": "^4.0.0",
-      "png-to-ico": "^2.1.8",
-      "serve-static-bun": "^0.5.3"
-    },
-    "peerDependencies": {
-      "typescript": "^5.9.3"
-    },
-    "dependencies": {
-      "napl": "link:napl",
-      "@types/random-name": "^0.1.2",
-      "generate-random-emoji": "^1.0.2",
-      "json-stringify-pretty-compact": "^4.0.0",
-      "random-name": "^0.1.2",
-      "unique-names-generator": "^4.7.1"
-    }
-  },
-  "/example/test-room/config.json": {
+  "/example/old-shitty-code/test-room/config.json": {
     "name": "Test Room"
   },
-  "/example/test-room/dir-json.json": {
+  "/example/old-shitty-code/test-room/dir-json.json": {
     "config.json": {
       "createdAt": 1774366005567.7986
     },
     "md5": "c4ff4862072a863fc175deadfe482162"
   },
-  "/example/tsconfig.json": {
-    "compilerOptions": {
-      "outDir": "dist",
-      "rootDir": "",
-      "lib": [
-        "ESNext"
-      ],
-      "module": "esnext",
-      "target": "esnext",
-      "moduleResolution": "bundler",
-      "esModuleInterop": true,
-      "moduleDetection": "force",
-      "allowImportingTsExtensions": true,
-      "noEmit": true,
-      "composite": true,
-      "strict": true,
-      "downlevelIteration": true,
-      "skipLibCheck": true,
-      "jsx": "preserve",
-      "allowSyntheticDefaultImports": true,
-      "forceConsistentCasingInFileNames": true,
-      "allowJs": true,
-      "types": [
-        "bun-types"
-      ]
-    },
-    "include": [
-      "**/*.ts",
-      "**/*.tsx"
-    ]
-  },
-  "/example/worker-room/config.json": {
+  "/example/old-shitty-code/worker-room/config.json": {
     "name": "Drawing board",
     "workspaces": [
       {
@@ -414,13 +359,13 @@
       }
     ]
   },
-  "/example/worker-room/dir-json.json": {
+  "/example/old-shitty-code/worker-room/dir-json.json": {
     "config.json": {
       "createdAt": 1774366005567.923
     },
     "md5": "49c5f3d6864a35a84445529df332b508"
   },
-  "/example/world-room/config.json": {
+  "/example/old-shitty-code/world-room/config.json": {
     "name": "World",
     "workspaces": [
       {
@@ -584,11 +529,78 @@
       }
     ]
   },
-  "/example/world-room/dir-json.json": {
+  "/example/old-shitty-code/world-room/dir-json.json": {
     "config.json": {
       "createdAt": 1774366005567.923
     },
     "md5": "49c5f3d6864a35a84445529df332b508"
+  },
+  "/example/package.json": {
+    "name": "example",
+    "module": "src/index.ts",
+    "type": "module",
+    "scripts": {
+      "start": "bun run build && bun --watch index.ts",
+      "start:prod": "bun run build && NODE_ENV=production bun --watch index.ts",
+      "build": "bun i && bun run build-icon && bun run copy-workers && bun run bundler/bundler.ts",
+      "build-icon": "mkdir -p icons && icon-gen -i ../icon.png -o ./icons",
+      "dev": "bun run build && bun --watch index.ts",
+      "copy-workers": "mv ./dist ./dist-bak && rm -rf ./dist-bak && mkdir -p dist && bun run copy-signal-worker && bun run copy-app-worker",
+      "copy-signal-worker": "cp ../node_modules/@dobuki/hello-worker/dist/signal-room.worker.js* ./dist",
+      "copy-app-worker": "cp ../dist/worker/app.worker.js* ./dist"
+    },
+    "devDependencies": {
+      "@types/express": "^5.0.6",
+      "bun-lightningcss": "^0.2.0",
+      "bun-types": "^1.3.6",
+      "dotenv": "^16.6.1",
+      "express": "^4.22.1",
+      "icon-gen": "^4.0.0",
+      "png-to-ico": "^2.1.8",
+      "serve-static-bun": "^0.5.3"
+    },
+    "peerDependencies": {
+      "typescript": "^5.9.3"
+    },
+    "dependencies": {
+      "napl": "link:napl",
+      "@types/random-name": "^0.1.2",
+      "generate-random-emoji": "^1.0.2",
+      "json-stringify-pretty-compact": "^4.0.0",
+      "random-name": "^0.1.2",
+      "unique-names-generator": "^4.7.1"
+    }
+  },
+  "/example/tsconfig.json": {
+    "compilerOptions": {
+      "outDir": "dist",
+      "rootDir": "",
+      "lib": [
+        "ESNext"
+      ],
+      "module": "esnext",
+      "target": "esnext",
+      "moduleResolution": "bundler",
+      "esModuleInterop": true,
+      "moduleDetection": "force",
+      "allowImportingTsExtensions": true,
+      "noEmit": true,
+      "composite": true,
+      "strict": true,
+      "downlevelIteration": true,
+      "skipLibCheck": true,
+      "jsx": "preserve",
+      "allowSyntheticDefaultImports": true,
+      "forceConsistentCasingInFileNames": true,
+      "allowJs": true,
+      "types": [
+        "bun-types"
+      ]
+    },
+    "include": [
+      "**/*.ts",
+      "**/*.tsx"
+    ]
   },
   "/package.json": {
     "name": "napl",
@@ -657,10 +669,10 @@
   "/tsconfig.json": {
     "compilerOptions": {
       "outDir": "./dist",
-      "rootDir": "src",
+      "rootDir": "old-shitty-code/src",
       "paths": {
         "@/*": [
-          "./src/*"
+          "old-shitty-code/src/*"
         ]
       },
       "lib": [
@@ -684,12 +696,12 @@
       ]
     },
     "include": [
-      "src/**/*.ts",
-      "src/**/*.tsx"
+      "old-shitty-code/src/**/*.ts",
+      "old-shitty-code/src/**/*.tsx"
     ],
     "exclude": [
-      "src/**/*.test.ts",
-      "src/**/*.test.tsx"
+      "old-shitty-code/src/**/*.test.ts",
+      "old-shitty-code/src/**/*.test.tsx"
     ]
   },
   "/tsconfig.types.json": {
