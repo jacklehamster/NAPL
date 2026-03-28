@@ -1,6 +1,6 @@
-import { hookMessenger } from "@/app/core/messenger";
-import { Message, MessageType } from "@/app/MessageType";
-import { hookMsgListener } from "@/app/utils/listener";
+import { hookMessenger } from "../../app/core/messenger";
+import { Message, MessageType } from "../../app/MessageType";
+import { hookMsgListener } from "../../app/utils/listener";
 import { MessageHandler } from "./OnMessageComponent";
 
 export interface SharedArrayBufferWorkerMessage {

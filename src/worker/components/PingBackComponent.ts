@@ -1,4 +1,4 @@
-import { Message, MessageType } from "@/app/MessageType";
+import { Message, MessageType } from "../../app/MessageType";
 import { MessageHandler } from "./OnMessageComponent";
 
 export function PingBackComponent({

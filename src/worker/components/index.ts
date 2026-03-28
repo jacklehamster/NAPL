@@ -1,4 +1,4 @@
-import { Registry } from "@/core/Registry";
+import { Registry } from "../../core/Registry";
 import { RoomComponent } from "./RoomComponent";
 import { PingBackComponent } from "./PingBackComponent";
 import { EnterRoomComponent } from "./EnterRoomComponent";

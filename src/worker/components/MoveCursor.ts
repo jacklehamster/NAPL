@@ -1,4 +1,4 @@
-import { MouseMessage } from "@/app/MessageType";
+import { MouseMessage } from "../../app/MessageType";
 import { Cursor } from "./CursorComponent";
 
 export function MoveCursor({

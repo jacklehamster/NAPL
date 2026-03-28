@@ -1,4 +1,4 @@
-import { Data } from "@/napl";
+import { Data } from "../../napl";
 
 export function WorkerPostMessageComponent({ worker }: { worker: Worker }) {
   const ackListeners: Record<string, (data?: Data) => void> = {};

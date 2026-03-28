@@ -1,5 +1,5 @@
-import { Peng, Task } from "@/peng/Peng";
-import { Cursor } from "@/worker/components/CursorComponent";
+import { Peng } from "../peng/Peng";
+import { Cursor } from "../worker/components/CursorComponent";
 
 export enum MessageType {
   //  Internal

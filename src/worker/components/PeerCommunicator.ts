@@ -1,4 +1,4 @@
-import { Message, MessageType } from "@/app/MessageType";
+import { Message, MessageType } from "../../app/MessageType";
 
 export function PeerCommunicator({
   sendMessage,

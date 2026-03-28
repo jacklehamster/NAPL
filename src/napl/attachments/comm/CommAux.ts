@@ -1,7 +1,7 @@
-import { CommInterface } from "@/napl/clients/CommInterface";
-import { hookCommInterface } from "@/napl/clients/CommInterfaceHook";
-import { Context } from "@/napl/context/Context";
-import { Processor } from "@/napl/core/Processor";
+import { CommInterface } from "../../../napl/clients/CommInterface";
+import { hookCommInterface } from "../../../napl/clients/CommInterfaceHook";
+import { Context } from "../../../napl/context/Context";
+import { Processor } from "../../../napl/core/Processor";
 import { UpdatePath } from "../../cycles/data-update/data-update";
 
 export class CommAux {

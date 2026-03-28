@@ -1,4 +1,4 @@
-import { LineMessage, Message, MessageType } from "@/app/MessageType";
+import { LineMessage, Message, MessageType } from "../../app/MessageType";
 import { MessageHandler } from "./OnMessageComponent";
 
 export function LineDrawComponent({

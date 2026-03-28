@@ -1,4 +1,4 @@
-import { Data } from "@/napl";
+import { Data } from "../napl";
 
 export interface Task<D extends Data = Record<string, any>> {
   type: string;

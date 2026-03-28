@@ -2,9 +2,8 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "src",
-    "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
     "lib": ["ESNext"],
     "module": "esnext",
@@ -15,7 +14,6 @@
     "noEmit": true,
     "composite": true,
     "strict": true,
-    "downlevelIteration": true,
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,

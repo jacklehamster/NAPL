@@ -1,4 +1,4 @@
-import { hookSerializers } from "@/app/utils/serializers";
+import { hookSerializers } from "../../app/utils/serializers";
 
 export function Serializers() {
   const { messageToBytes, bytesToMessage, serialize, deserialize } =

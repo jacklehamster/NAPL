@@ -1,4 +1,4 @@
-import { Message } from "@/app/MessageType";
+import { Message } from "../../app/MessageType";
 
 interface Props<M extends Message> {
   type: M["type"];

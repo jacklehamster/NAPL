@@ -1,4 +1,4 @@
-import { Data } from "@/napl";
+import { Data } from "../napl";
 import { Component } from "../app/components/Component";
 import { Hook, workspace } from "./Workspace";
 

@@ -1,7 +1,7 @@
-import { workspace } from "@/core/Workspace";
+import { workspace } from "../core/Workspace";
 import { WorkerMessageListener } from "./components/WorkerMessageListener";
 import { workerRegistry } from "./components";
-import { RegistryConfig } from "@/core/Registry";
+import { RegistryConfig } from "../core/Registry";
 
 export interface AppConfigMessage {
   uuid?: string;

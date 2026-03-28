@@ -1,4 +1,4 @@
-import { Data } from "@/napl";
+import { Data } from "../../napl";
 
 export function ActComponent({
   action,

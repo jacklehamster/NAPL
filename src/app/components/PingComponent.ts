@@ -1,4 +1,4 @@
-import { Peng } from "@/peng/Peng";
+import { Peng } from "../../peng/Peng";
 import { Message, MessageType } from "../MessageType";
 import { Component } from "./Component";
 

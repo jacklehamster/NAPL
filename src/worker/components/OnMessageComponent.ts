@@ -1,4 +1,4 @@
-import { Message, MessageType } from "@/app/MessageType";
+import { Message, MessageType } from "../../app/MessageType";
 export type MessageHandler<M extends Message> = (msg: M, peer?: string) => void;
 
 export function OnMessageComponent({
