@@ -65,7 +65,7 @@ function setupApp() {
         div.style.left = `${pos.x + offset[0]}px`;
         div.style.top = `${pos.y + offset[1]}px`;
         const emoji = program.getData(`users/${user}/emoji`) ?? "";
-        div.textContent = emoji;
+        div.textContent = emoji + "";
       }
     });
 
